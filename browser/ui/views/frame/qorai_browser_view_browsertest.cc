@@ -1,0 +1,352 @@
+/* Copyright (c) 2025 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/ui/views/frame/qorai_browser_view.h"
+
+#include <string>
+
+#include "base/test/run_until.h"
+#include "base/test/scoped_feature_list.h"
+#include "qorai/browser/ui/bookmark/bookmark_helper.h"
+#include "qorai/browser/ui/browser_commands.h"
+#include "qorai/browser/ui/tabs/features.h"
+#include "qorai/browser/ui/views/frame/qorai_browser_view.h"
+#include "qorai/browser/ui/views/frame/qorai_contents_view_util.h"
+#include "qorai/browser/ui/views/sidebar/sidebar_container_view.h"
+#include "qorai/common/pref_names.h"
+#include "build/build_config.h"
+#include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/ui/browser_commands.h"
+#include "chrome/browser/ui/browser_tabstrip.h"
+#include "chrome/browser/ui/browser_window/public/browser_window_features.h"
+#include "chrome/browser/ui/tab_modal_confirm_dialog.h"
+#include "chrome/browser/ui/tabs/tab_strip_model.h"
+#include "chrome/browser/ui/tabs/tab_strip_user_gesture_details.h"
+#include "chrome/browser/ui/test/test_browser_ui.h"
+#include "chrome/browser/ui/ui_features.h"
+#include "chrome/browser/ui/views/bookmarks/bookmark_bar_view.h"
+#include "chrome/browser/ui/views/frame/browser_non_client_frame_view.h"
+#include "chrome/browser/ui/views/frame/browser_view.h"
+#include "chrome/browser/ui/views/frame/multi_contents_view.h"
+#include "chrome/browser/ui/views/frame/scrim_view.h"
+#include "chrome/browser/ui/views/infobars/infobar_container_view.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_ui.h"
+#include "chrome/test/base/in_process_browser_test.h"
+#include "components/prefs/pref_service.h"
+#include "content/public/browser/web_contents.h"
+#include "content/public/test/browser_test.h"
+#include "content/public/test/browser_test_utils.h"
+#include "ui/compositor/layer.h"
+#include "ui/gfx/animation/animation.h"
+#include "ui/gfx/animation/animation_test_api.h"
+#include "ui/views/view_class_properties.h"
+#include "ui/views/widget/widget.h"
+#include "ui/views/widget/widget_delegate.h"
+
+class QoraiBrowserViewTest : public InProcessBrowserTest {
+ public:
+  QoraiBrowserViewTest() = default;
+  ~QoraiBrowserViewTest() override = default;
+
+  QoraiBrowserViewTest(const QoraiBrowserViewTest&) = delete;
+  QoraiBrowserViewTest& operator=(const QoraiBrowserViewTest&) = delete;
+
+ protected:
+  void ToggleVerticalTabStrip() {
+    qorai::ToggleVerticalTabStrip(browser());
+    browser_non_client_frame_view()->DeprecatedLayoutImmediately();
+  }
+
+  BrowserNonClientFrameView* browser_non_client_frame_view() {
+    return browser_view()->browser_widget()->GetFrameView();
+  }
+
+  QoraiBrowserView* qorai_browser_view() {
+    return QoraiBrowserView::From(browser_view());
+  }
+
+  BrowserView* browser_view() {
+    return BrowserView::GetBrowserViewForBrowser(browser());
+  }
+
+  views::View* vertical_tab_strip_host_view() {
+    return qorai_browser_view()->vertical_tab_strip_host_view_;
+  }
+
+  views::View* main_container() { return browser_view()->main_container(); }
+
+  views::View* contents_container() {
+    return browser_view()->contents_container();
+  }
+
+  views::View* infobar_container() {
+    return browser_view()->infobar_container();
+  }
+
+  BookmarkBarView* bookmark_bar() { return browser_view()->bookmark_bar(); }
+};
+
+// Tests bookmark/infobar/contents container layout with vertical tab.
+IN_PROC_BROWSER_TEST_F(QoraiBrowserViewTest, LayoutWithVerticalTabTest) {
+  ToggleVerticalTabStrip();
+
+  auto* prefs = browser()->profile()->GetPrefs();
+
+  // Check bookmark only on the NTP is default.
+  EXPECT_EQ(qorai::BookmarkBarState::kNtp, qorai::GetBookmarkBarState(prefs));
+
+  // BookmarkBar not visible as current active tab is not NTP.
+  EXPECT_FALSE(bookmark_bar()->GetVisible());
+
+  const bool rounded_corners =
+      QoraiBrowserView::ShouldUseQoraiWebViewRoundedCornersForContents(
+          browser());
+
+  // With rounded corners, we need
+  // distance(tabs::kMarginForVerticalTabContainers) between vertical tab and
+  // contents. Each side has half of it as a margin.
+  const int contents_margin =
+      rounded_corners ? (tabs::kMarginForVerticalTabContainers / 2) : 0;
+  const int top_contents_separator_height = rounded_corners ? 0 : 1;
+
+  // Infobar is visible at first run.
+  // Update this test if it's not visible at first run.
+  // Wait till infobar's positioning is finished.
+  ASSERT_TRUE(base::test::RunUntil(
+      [&]() { return infobar_container()->GetVisible(); }));
+
+  auto contents_area_origin = [&]() {
+    return gfx::Point(contents_container()->bounds().x() - contents_margin,
+                      main_container()->bounds().y());
+  };
+
+  ASSERT_TRUE(base::test::RunUntil([&]() {
+    return infobar_container()->bounds().bottom_left() ==
+           contents_area_origin();
+  }));
+
+  // Bookmark bar should be visible with NTP.
+  chrome::AddTabAt(browser(), GURL(), -1, true);
+  EXPECT_TRUE(bookmark_bar()->GetVisible());
+  EXPECT_FALSE(infobar_container()->GetVisible());
+  ASSERT_TRUE(base::test::RunUntil(
+      [&]() { return !browser()->window()->IsBookmarkBarAnimating(); }));
+
+  // Check bookmark bar/contents container position.
+  EXPECT_EQ(vertical_tab_strip_host_view()->bounds().top_right(),
+            bookmark_bar()->bounds().origin());
+  EXPECT_EQ(bookmark_bar()->bounds().bottom_left() +
+                gfx::Vector2d(0, top_contents_separator_height),
+            contents_area_origin());
+
+  // Hide bookmark bar always.
+  // Check contents container is positioned right after the vertical tab.
+  qorai::SetBookmarkState(qorai::BookmarkBarState::kNever, prefs);
+  EXPECT_EQ(qorai::BookmarkBarState::kNever, qorai::GetBookmarkBarState(prefs));
+  ASSERT_TRUE(base::test::RunUntil(
+      [&]() { return !browser()->window()->IsBookmarkBarAnimating(); }));
+  EXPECT_FALSE(bookmark_bar()->GetVisible());
+  EXPECT_EQ(vertical_tab_strip_host_view()->bounds().top_right(),
+            contents_area_origin());
+
+  // Activate non-NTP tab and check contents container is positioned below the
+  // infobar.
+  browser()->tab_strip_model()->ActivateTabAt(0);
+  EXPECT_TRUE(infobar_container()->GetVisible());
+  EXPECT_EQ(infobar_container()->bounds().bottom_left(),
+            contents_area_origin());
+
+  // Show bookmark bar always.
+  // Check vertical tab is positioned below the bookmark bar.
+  // Check contents container is positioned below the info bar.
+  qorai::SetBookmarkState(qorai::BookmarkBarState::kAlways, prefs);
+  EXPECT_EQ(qorai::BookmarkBarState::kAlways,
+            qorai::GetBookmarkBarState(prefs));
+  EXPECT_TRUE(infobar_container()->GetVisible());
+  ASSERT_TRUE(base::test::RunUntil(
+      [&]() { return !browser()->window()->IsBookmarkBarAnimating(); }));
+  EXPECT_TRUE(bookmark_bar()->GetVisible());
+  EXPECT_EQ(vertical_tab_strip_host_view()->bounds().origin(),
+            bookmark_bar()->bounds().bottom_left() +
+                gfx::Vector2d(0, top_contents_separator_height));
+  EXPECT_EQ(infobar_container()->bounds().bottom_left(),
+            contents_area_origin());
+
+  // Activate NTP tab.
+  // Check vertical tab is positioned below the bookmark bar.
+  // Check contents container is positioned right after the vertical tab.
+  browser()->tab_strip_model()->ActivateTabAt(1);
+  EXPECT_FALSE(infobar_container()->GetVisible());
+  EXPECT_TRUE(bookmark_bar()->GetVisible());
+  EXPECT_EQ(vertical_tab_strip_host_view()->bounds().origin(),
+            bookmark_bar()->bounds().bottom_left() +
+                gfx::Vector2d(0, top_contents_separator_height));
+  EXPECT_EQ(vertical_tab_strip_host_view()->bounds().top_right(),
+            contents_area_origin());
+}
+
+class QoraiBrowserViewWithRoundedCornersTest
+    : public QoraiBrowserViewTest,
+      public testing::WithParamInterface<bool> {
+ public:
+  QoraiBrowserViewWithRoundedCornersTest() = default;
+
+  void SetUpOnMainThread() override {
+    QoraiBrowserViewTest::SetUpOnMainThread();
+    browser()->profile()->GetPrefs()->SetBoolean(kWebViewRoundedCorners,
+                                                 IsRoundedCornersEnabled());
+  }
+
+  void NewSplitTab() {
+    chrome::NewSplitTab(browser(),
+                        split_tabs::SplitTabCreatedSource::kToolbarButton);
+  }
+
+  bool IsRoundedCornersEnabled() const { return GetParam(); }
+};
+
+IN_PROC_BROWSER_TEST_P(QoraiBrowserViewWithRoundedCornersTest,
+                       ContentsBackgroundEventHandleTest) {
+  EXPECT_TRUE(qorai_browser_view()->contents_background_view_);
+
+  EXPECT_EQ(qorai_browser_view()->contents_background_view_->bounds(),
+            qorai_browser_view()->main_container()->bounds());
+
+  content::WebContents* web_contents =
+      browser()->tab_strip_model()->GetActiveWebContents();
+  gfx::Point screen_point = web_contents->GetContainerBounds().CenterPoint();
+
+  // Check contents background is not event handler for web contents region
+  // point.
+  views::View::ConvertPointFromScreen(browser_view(), &screen_point);
+  EXPECT_NE(qorai_browser_view()->contents_background_view_,
+            browser_view()->GetEventHandlerForPoint(screen_point));
+}
+
+IN_PROC_BROWSER_TEST_P(QoraiBrowserViewWithRoundedCornersTest,
+                       RoundedCornersForContentsTest) {
+  const gfx::AnimationTestApi::RenderModeResetter disable_rich_animations_ =
+      gfx::AnimationTestApi::SetRichAnimationRenderMode(
+          gfx::Animation::RichAnimationRenderMode::FORCE_DISABLED);
+
+  auto* panel_ui = browser()->GetFeatures().side_panel_ui();
+  panel_ui->Toggle();
+  views::View* contents_container = browser_view()->contents_container();
+  views::View* main_container = browser_view()->main_container();
+  views::View* side_panel = browser_view()->contents_height_side_panel();
+  const auto rounded_corners_margin = QoraiContentsViewUtil::kMarginThickness;
+
+  if (IsRoundedCornersEnabled()) {
+    // Check contents container has margin by comparing simply its left & bottom
+    // with main container's local bounds. As views local bounds' origin is (0,
+    // 0), checking child view's margin with child view's bounds works.
+    EXPECT_EQ(contents_container->bounds().x() - rounded_corners_margin,
+              main_container->GetLocalBounds().x());
+    EXPECT_EQ(contents_container->bounds().bottom() + rounded_corners_margin,
+              main_container->GetLocalBounds().bottom());
+    EXPECT_EQ(rounded_corners_margin,
+              QoraiContentsViewUtil::GetRoundedCornersWebViewMargin(browser()));
+    EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->left());
+    EXPECT_EQ(rounded_corners_margin,
+              side_panel->GetProperty(views::kMarginsKey)->bottom());
+    EXPECT_EQ(rounded_corners_margin,
+              side_panel->GetProperty(views::kMarginsKey)->right());
+    EXPECT_EQ(gfx::RoundedCornersF(QoraiContentsViewUtil::kBorderRadius),
+              side_panel->layer()->rounded_corner_radii());
+  } else {
+    // Check contents container doesn't have any margin. So, contents container
+    // should have same left & bottom with main container.
+    EXPECT_EQ(contents_container->bounds().x(),
+              main_container->GetLocalBounds().x());
+    EXPECT_EQ(contents_container->bounds().bottom(),
+              main_container->GetLocalBounds().bottom());
+    EXPECT_EQ(0,
+              QoraiContentsViewUtil::GetRoundedCornersWebViewMargin(browser()));
+    EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->left());
+    EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->bottom());
+    EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->right());
+
+    // Panel doesn't have layer when its shadow is not set.
+    EXPECT_FALSE(side_panel->layer());
+  }
+
+  // Create split tab and check contents container/sidebar has rounded corners
+  // margin.
+  NewSplitTab();
+  EXPECT_EQ(rounded_corners_margin,
+            QoraiContentsViewUtil::GetRoundedCornersWebViewMargin(browser()));
+  EXPECT_EQ(contents_container->bounds().x() - rounded_corners_margin,
+            main_container->GetLocalBounds().x());
+  EXPECT_EQ(contents_container->bounds().bottom() + rounded_corners_margin,
+            main_container->GetLocalBounds().bottom());
+  EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->left());
+  EXPECT_EQ(rounded_corners_margin,
+            side_panel->GetProperty(views::kMarginsKey)->bottom());
+  EXPECT_EQ(rounded_corners_margin,
+            side_panel->GetProperty(views::kMarginsKey)->right());
+  EXPECT_EQ(gfx::RoundedCornersF(QoraiContentsViewUtil::kBorderRadius),
+            side_panel->layer()->rounded_corner_radii());
+
+  // Create new active tab to not have split tab as a active tab.
+  // Check contents container doesn't have margin when rounded corners is
+  // disabled.
+  chrome::AddTabAt(browser(), GURL(), -1, true);
+
+  if (IsRoundedCornersEnabled()) {
+    EXPECT_EQ(contents_container->bounds().x() - rounded_corners_margin,
+              main_container->GetLocalBounds().x());
+    EXPECT_EQ(contents_container->bounds().bottom() + rounded_corners_margin,
+              main_container->GetLocalBounds().bottom());
+    EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->left());
+    EXPECT_EQ(rounded_corners_margin,
+              side_panel->GetProperty(views::kMarginsKey)->bottom());
+    EXPECT_EQ(rounded_corners_margin,
+              side_panel->GetProperty(views::kMarginsKey)->right());
+    EXPECT_EQ(gfx::RoundedCornersF(QoraiContentsViewUtil::kBorderRadius),
+              side_panel->layer()->rounded_corner_radii());
+  } else {
+    EXPECT_EQ(contents_container->bounds().x(),
+              main_container->GetLocalBounds().x());
+    EXPECT_EQ(contents_container->bounds().bottom(),
+              main_container->GetLocalBounds().bottom());
+    EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->left());
+    EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->bottom());
+    EXPECT_EQ(0, side_panel->GetProperty(views::kMarginsKey)->right());
+    EXPECT_FALSE(side_panel->layer());
+  }
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    /* no prefix */,
+    QoraiBrowserViewWithRoundedCornersTest,
+    testing::Bool());
+
+// MacOS does not need views window scrim. We use sheet to show window modals
+// (-[NSWindow beginSheet:]), which natively draws a scrim since macOS 11.
+// Tests that a scrim is still disabled when a window modal dialog is active.
+#if !BUILDFLAG(IS_MAC)
+IN_PROC_BROWSER_TEST_F(QoraiBrowserViewTest,
+                       ScrimForBrowserWindowModalDisabledTest) {
+  auto child_widget_delegate = std::make_unique<views::WidgetDelegate>();
+  auto child_widget = std::make_unique<views::Widget>();
+  child_widget_delegate->SetModalType(ui::mojom::ModalType::kWindow);
+  views::Widget::InitParams params(
+      views::Widget::InitParams::CLIENT_OWNS_WIDGET,
+      views::Widget::InitParams::TYPE_WINDOW);
+  params.delegate = child_widget_delegate.get();
+  params.parent = browser_view()->GetWidget()->GetNativeView();
+  child_widget->Init(std::move(params));
+
+  // Check scrim view is always not visible.
+  child_widget->Show();
+  EXPECT_FALSE(browser_view()->window_scrim_view()->GetVisible());
+  child_widget->Hide();
+  EXPECT_FALSE(browser_view()->window_scrim_view()->GetVisible());
+  child_widget->Show();
+  EXPECT_FALSE(browser_view()->window_scrim_view()->GetVisible());
+  child_widget.reset();
+  EXPECT_FALSE(browser_view()->window_scrim_view()->GetVisible());
+}
+#endif  // !BUILDFLAG(IS_MAC)

@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/vendor/qor-native-tweetnacl",
+  "+crypto",
+]

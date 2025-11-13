@@ -1,0 +1,50 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import("//qorai/build/buildflag_header_with_env_config.gni")
+import("//qorai/build/config.gni")
+import("//build/util/branding.gni")
+import("//mojo/public/tools/bindings/mojom.gni")
+
+buildflag_header_with_env_config("qorai_services_key") {
+  # Please use //qorai/components/constants instead.
+  visibility = [ ":*" ]
+
+  header = "qorai_services_key.h"
+  env_config_flags = [ "QORAI_SERVICES_KEY" ]
+}
+
+source_set("constants") {
+  sources = [
+    "qorai_constants.cc",
+    "qorai_constants.h",
+    "qorai_paths.h",
+    "qorai_switches.h",
+    "network_constants.h",
+    "pref_names.h",
+    "url_constants.h",
+    "webui_url_constants.h",
+  ]
+
+  public_deps = [
+    ":qorai_services_key",
+    "//qorai/components/ai_chat/core/common/buildflags",
+    "//qorai/components/web_discovery/buildflags",
+    "//extensions/buildflags",
+  ]
+  deps = [ "//base" ]
+}
+
+source_set("qorai_service_key_helper") {
+  sources = [
+    "qorai_services_key_helper.cc",
+    "qorai_services_key_helper.h",
+  ]
+
+  deps = [
+    "//base",
+    "//url",
+  ]
+}

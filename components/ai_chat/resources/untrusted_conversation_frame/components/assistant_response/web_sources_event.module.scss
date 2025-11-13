@@ -1,0 +1,73 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.sources {
+  h4 {
+    margin: 16px 0 6px 0;
+    font: var(--qora-font-small-regular);
+    color: var(--qora-color-text-tertiary);
+  }
+
+  ul,
+  li {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  li {
+    display: contents;
+  }
+
+  a,
+  button {
+    border-radius: var(--qora-radius-xl);
+    border: 1px solid var(--qora-color-divider-subtle);
+    padding: 2px 6px 2px 2px;
+    font: var(--qora-font-small-regular);
+    color: var(--qora-color-text-primary);
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+
+  button {
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--qora-color-text-secondary);
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: var(--qora-color-neutral-10);
+    border-radius: var(--qora-radius-l);
+    padding: 4px;
+  }
+
+  img,
+  .expandIcon {
+    --qora-icon-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .expandIcon {
+    background-color: transparent;
+  }
+}

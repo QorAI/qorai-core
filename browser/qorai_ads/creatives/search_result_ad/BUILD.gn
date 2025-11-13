@@ -1,0 +1,65 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("search_result_ad") {
+  sources = [
+    "creative_search_result_ad_clicked_infobar_delegate.cc",
+    "creative_search_result_ad_clicked_infobar_delegate.h",
+    "creative_search_result_ad_tab_helper.cc",
+    "creative_search_result_ad_tab_helper.h",
+  ]
+
+  public_deps = [
+    "//base",
+    "//qorai/components/qorai_ads/core/mojom",
+    "//qorai/components/infobars/core",
+    "//components/infobars/core",
+    "//content/public/browser",
+  ]
+
+  deps = [
+    "//qorai/app:qorai_generated_resources_grit_grit",
+    "//qorai/browser/qorai_ads",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_ads/content/browser",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_search/common",
+    "//qorai/components/vector_icons",
+    "//chrome/browser:browser_public_dependencies",
+    "//chrome/browser/infobars",
+    "//chrome/browser/profiles:profile",
+    "//chrome/common",
+    "//components/infobars/content",
+    "//components/infobars/core",
+    "//components/prefs",
+    "//components/vector_icons",
+    "//ui/base",
+    "//url",
+  ]
+}
+
+source_set("browser_tests") {
+  testonly = true
+
+  sources = [ "creative_search_result_ad_tab_helper_browsertest.cc" ]
+
+  deps = [
+    ":search_result_ad",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_ads/core/browser/service:test_support",
+    "//qorai/components/qorai_ads/core/mojom",
+    "//qorai/components/qorai_ads/core/public:headers",
+    "//chrome/browser/ui",
+    "//net:test_support",
+  ]
+
+  if (is_android) {
+    deps += [ "//chrome/test:test_support_ui_android" ]
+  } else {
+    deps += [ "//chrome/test:test_support_ui" ]
+  }
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+}

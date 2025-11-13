@@ -1,0 +1,40 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "qorai/third_party/blink/renderer/core/qorai_page_graph/graph_item/node/node_resource.h"
+
+#include "qorai/third_party/blink/renderer/core/qorai_page_graph/graph_item/edge/edge_resource_block.h"
+#include "qorai/third_party/blink/renderer/core/qorai_page_graph/graph_item/edge/request/edge_request_response.h"
+#include "qorai/third_party/blink/renderer/core/qorai_page_graph/graph_item/edge/request/edge_request_start.h"
+#include "qorai/third_party/blink/renderer/core/qorai_page_graph/graphml.h"
+#include "third_party/blink/renderer/platform/wtf/text/strcat.h"
+
+namespace qorai_page_graph {
+
+NodeResource::NodeResource(GraphItemContext* context, const RequestURL url)
+    : GraphNode(context), url_(url) {}
+
+NodeResource::~NodeResource() = default;
+
+ItemName NodeResource::GetItemName() const {
+  return "resource";
+}
+
+ItemDesc NodeResource::GetItemDesc() const {
+  return blink::StrCat({GraphNode::GetItemDesc(), " [", url_.GetString(), "]"});
+}
+
+void NodeResource::AddGraphMLAttributes(xmlDocPtr doc,
+                                        xmlNodePtr parent_node) const {
+  GraphNode::AddGraphMLAttributes(doc, parent_node);
+  GraphMLAttrDefForType(kGraphMLAttrDefURL)
+      ->AddValueNode(doc, parent_node, url_.GetString());
+}
+
+bool NodeResource::IsNodeResource() const {
+  return true;
+}
+
+}  // namespace qorai_page_graph

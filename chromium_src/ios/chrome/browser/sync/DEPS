@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/browser/sync",
+  "+qorai/components/sync/service",
+]

@@ -1,0 +1,13 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_browser_ai_chat_android_sources =
+    [ "//qorai/browser/ai_chat/android/ai_chat_utils_android.cc" ]
+
+qorai_browser_ai_chat_android_deps = [
+  "//qorai/components/ai_chat/core/browser",
+  "//qorai/components/ai_chat/core/common",
+  "//qorai/components/ai_chat/core/common/mojom",
+]

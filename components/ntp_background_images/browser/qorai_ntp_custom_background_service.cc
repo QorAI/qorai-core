@@ -1,0 +1,70 @@
+// Copyright (c) 2021 The QorAI Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+#include "qorai/components/ntp_background_images/browser/qorai_ntp_custom_background_service.h"
+
+#include <utility>
+
+#include "base/check.h"
+#include "base/files/file_path.h"
+#include "qorai/components/ntp_background_images/browser/url_constants.h"
+#include "url/gurl.h"
+
+namespace ntp_background_images {
+
+QorAINTPCustomBackgroundService::QorAINTPCustomBackgroundService(
+    std::unique_ptr<Delegate> delegate)
+    : delegate_(std::move(delegate)) {
+  DCHECK(delegate_);
+}
+
+QorAINTPCustomBackgroundService::~QorAINTPCustomBackgroundService() = default;
+
+bool QorAINTPCustomBackgroundService::ShouldShowCustomBackground() const {
+  return delegate_->IsCustomImageBackgroundEnabled() ||
+         delegate_->IsColorBackgroundEnabled() ||
+         delegate_->HasPreferredQorAIBackground();
+}
+
+base::Value::Dict QorAINTPCustomBackgroundService::GetBackground() const {
+  DCHECK(ShouldShowCustomBackground());
+
+  if (delegate_->HasPreferredQorAIBackground()) {
+    base::Value::Dict background = delegate_->GetPreferredQorAIBackground();
+    if (background.empty()) {
+      // Return empty value so that it falls back to random QorAI background.
+      return background;
+    }
+
+    background.Set(kWallpaperRandomKey, false);
+    return background;
+  }
+
+  // The |data| will be mapped to NewTab.BackgroundWallpaper type from JS side.
+  // So we need to keep names of properties same.
+  base::Value::Dict data;
+  data.Set(kIsBackgroundKey, true);
+  if (delegate_->IsCustomImageBackgroundEnabled()) {
+    data.Set(kWallpaperURLKey, delegate_->GetCustomBackgroundImageURL().spec());
+    data.Set(kWallpaperTypeKey, "image");
+    data.Set(kWallpaperRandomKey, delegate_->ShouldUseRandomValue());
+  } else if (delegate_->IsColorBackgroundEnabled()) {
+    data.Set(kWallpaperColorKey, delegate_->GetColor());
+    data.Set(kWallpaperTypeKey, "color");
+    data.Set(kWallpaperRandomKey, delegate_->ShouldUseRandomValue());
+  }
+  return data;
+}
+
+base::FilePath QorAINTPCustomBackgroundService::GetImageFilePath(
+    const GURL& url) {
+  return delegate_->GetCustomBackgroundImageLocalFilePath(url);
+}
+
+void QorAINTPCustomBackgroundService::Shutdown() {
+  delegate_.reset();
+}
+
+}  // namespace ntp_background_images

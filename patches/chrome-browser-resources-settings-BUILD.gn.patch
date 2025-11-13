@@ -1,0 +1,10 @@
+diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resources/settings/BUILD.gn
+index c364fbf73290ec8713c9bc4c46c8ec79cbfd726d..bdbb3c2b5f3c661539a22bf2bd53c778e596b04e 100644
+--- a/chrome/browser/resources/settings/BUILD.gn
++++ b/chrome/browser/resources/settings/BUILD.gn
+@@ -492,4 +492,5 @@ build_webui("build") {
+               "$root_gen_dir/chrome/browser/resources/settings_shared/tsc",
+               root_build_dir) ]
+   }
++  import("//qorai/browser/resources/settings/sources.gni") web_component_files += qorai_settings_web_component_files ts_files += qorai_settings_ts_files css_files += qorai_settings_local_css_files exclude_html_css_preprocess_files = qorai_settings_local_html_files + qorai_settings_local_css_files exclude_ts_preprocess_files = qorai_settings_local_ts_files preprocess_deps = qorai_settings_preprocess_deps ts_extra_deps = qorai_settings_ts_extra_deps ts_definitions += qorai_settings_ts_definitions if (optimize_webui) { extra_grdp_deps = [ "//qorai/browser/resources/settings:resources" ] extra_grdp_files = [] } mojo_files = qorai_settings_mojo_files mojo_files_deps = qorai_settings_mojo_files_deps ts_deps += qorai_settings_ts_deps
+ }

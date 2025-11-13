@@ -1,0 +1,6 @@
+include_rules = [
+  "+qorai/components/qorai_ads/core/public",
+  "+qorai/components/qorai_stats/browser",
+  "+qorai/components/qorai_wallet/browser",
+  "+qorai/components/webcompat_reporter/buildflags",
+]

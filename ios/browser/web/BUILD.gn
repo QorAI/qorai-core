@@ -1,0 +1,40 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("web") {
+  sources = [
+    "qorai_web_client.h",
+    "qorai_web_client.mm",
+    "qorai_web_main_parts.h",
+    "qorai_web_main_parts.mm",
+  ]
+  deps = [
+    "//base",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/qorai_component_updater/browser:public",
+    "//qorai/components/qorai_user_agent/browser",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/constants",
+    "//qorai/ios/browser/api/web_view",
+    "//qorai/ios/browser/application_context",
+    "//qorai/ios/browser/component_updater:zxcvbn_data_component_installer",
+    "//qorai/ios/browser/ui/web_view:features",
+    "//components/component_updater/installer_policies",
+    "//components/translate/ios/browser",
+    "//ios/chrome/browser/application_context/model",
+    "//ios/chrome/browser/shared/model/application_context",
+    "//ios/chrome/browser/shared/model/paths",
+    "//ios/chrome/browser/shared/model/url",
+    "//ios/chrome/browser/shared/model/url:constants",
+    "//ios/chrome/browser/web/model:web_internal",
+    "//ios/components/security_interstitials",
+    "//ios/components/security_interstitials/lookalikes",
+    "//ios/components/security_interstitials/safe_browsing",
+    "//ios/components/webui:url_constants",
+    "//ios/public/provider/chrome/browser/url_rewriters:url_rewriters_api",
+    "//ios/web_view/framework:web_view_sources",
+  ]
+  frameworks = [ "Foundation.framework" ]
+}

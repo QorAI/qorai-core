@@ -1,0 +1,3 @@
+include_rules = [
+  "+qorai/components/infobars/core/qorai_confirm_infobar_delegate.h",
+]

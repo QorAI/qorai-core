@@ -1,0 +1,12 @@
+diff --git a/content/common/BUILD.gn b/content/common/BUILD.gn
+index 8c293f5bb0e859f438a7ab50b70b4d5449dc1358..933894b8fc136177af66e7e5b85bd26d7f494a00 100644
+--- a/content/common/BUILD.gn
++++ b/content/common/BUILD.gn
+@@ -64,6 +64,7 @@ source_set("common") {
+   # must not link to this because it will duplicate the code in the component
+   # build.
+   visibility = [ "//content/*" ]
++  visibility += [ "//qorai/content/*" ]
+ 
+   sources = [
+     "background_fetch/background_fetch_types.cc",

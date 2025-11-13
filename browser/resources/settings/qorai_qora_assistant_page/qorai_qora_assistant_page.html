@@ -1,0 +1,65 @@
+<!-- Copyright (c) 2023 The Qorai Authors. All rights reserved.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this file,
+You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<link rel="stylesheet" href="chrome://resources/qorai/css/nala.css">
+<style include="settings-shared md-select">
+  .reset-qora {
+      cursor: pointer;
+      color: red;
+  }
+
+  .header {
+    padding: var(--qora-spacing-2xl);
+  }
+
+  .main-header {
+    font: var(--qora-font-heading-h4);
+  }
+</style>
+
+<settings-section
+  id="leoAssistant"
+  page-title="$i18n{leoAssistant}">
+  <div class="settings-box header">
+    <div class="flex">
+      <div class="main-header">$i18n{qoraiQoraAssistantAboutQoraLabel}</div>
+      <div class="label secondary">
+        <p>$i18n{qoraiQoraAssistantAboutQoraDesc1}</p>
+        <p>$i18nRaw{qoraiQoraAssistantAboutQoraDesc2}</p>
+      </div>
+    </div>
+  </div>
+
+  <settings-toggle-button class="cr-row hr"
+    pref="[[itemPref_(leoAssistantShowOnToolbarPref_)]]"
+    label="$i18n{qoraiQoraAssistantShowIconOnToolbarLabel}"
+    on-settings-boolean-control-change="onQoraAssistantShowOnToolbarChange_">
+  </settings-toggle-button>
+  <settings-toggle-button class="cr-row hr"
+    pref="{{prefs.qorai.ai_chat.context_menu_enabled}}"
+    label="$i18n{qoraiQoraAssistantShowInContextMenuLabel}"
+    sub-label="$i18n{qoraiQoraAssistantShowInContextMenuDesc}">
+  </settings-toggle-button>
+  <settings-toggle-button class="cr-row hr"
+    pref="{{prefs.qorai.ai_chat.tab_organization_enabled}}"
+    label="$i18n{qoraiQoraAssistantTabOrganizationLabel}"
+    sub-label-with-link="$i18n{qoraiQoraAssistantTabOrganizationDesc}"
+    on-sub-label-link-clicked="openTabOrganizationLearnMore_">
+  </settings-toggle-button>
+  <cr-link-row class="hr"
+    label="$i18n{qoraiQoraAssistantAutocompleteLink}"
+    on-click="openAutocompleteSetting_">
+  </cr-link-row>
+  <template is="dom-if" if="[[isPremiumUser_]]">
+    <cr-link-row on-click="openManageAccountPage_" external="true" class="hr" label="$i18n{qoraiQoraAssistantManageUrlLabel}"></cr-link-row>
+  </template>
+  <template is="dom-if" if="[[isHistoryFeatureEnabled_]]">
+    <div class="settings-box " on-click="onResetAssistantData_">
+      <div class="flex cr-padded-text reset-qora">
+        <div>$i18n{qoraiQoraAssistantResetAndClearDataLabel}</div>
+      </div>
+    </div>
+  </template>
+</settings-section>

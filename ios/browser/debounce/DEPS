@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/debounce/core/browser",
+  "+qorai/components/debounce/core/common",
+  "+qorai/components/debounce/ios/browser",
+]

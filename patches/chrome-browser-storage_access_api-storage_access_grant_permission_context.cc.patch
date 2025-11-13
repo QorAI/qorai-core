@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc b/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
+index 35829d8519dfa6d09b65c34079d302a980628169..e813421bdd282fbac84ade7a58561ff070ea03f9 100644
+--- a/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
++++ b/chrome/browser/storage_access_api/storage_access_grant_permission_context.cc
+@@ -497,6 +497,7 @@ void StorageAccessGrantPermissionContext::CheckForAutoGrantOrAutoDenial(
+         break;
+     }
+   }
++  QORAI_STORAGE_ACCESS_GRANT_PERMISSION_CONTEXT_CHECK_FOR_AUTO_GRANT_OR_AUTO_DENIAL  // NOLINT
+ 
+   // Get all of our implicit grants and see which ones apply to our
+   // |requesting_origin|.

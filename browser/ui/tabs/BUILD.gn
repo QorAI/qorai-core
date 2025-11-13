@@ -1,0 +1,70 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+assert(is_win || is_mac || is_linux || is_chromeos || is_android)
+
+# Note: Target names in this file should match those upstream where possible.
+
+source_set("tabs_public") {
+  sources = [ "public/qorai_tab_features.h" ]
+
+  public_deps = [
+    "//qorai/components/psst/buildflags",
+    "//chrome/browser/ui/tabs:tabs_public",
+  ]
+
+  if (!is_android) {
+    sources += [ "public/constants.h" ]
+  }
+}
+
+if (!is_android) {
+  source_set("impl") {
+    visibility = [ "//chrome/browser" ]
+
+    sources = [ "qorai_tab_features.cc" ]
+
+    deps = [
+      ":tabs_public",
+      "//qorai/browser/ai_chat",
+      "//qorai/browser/psst",
+      "//qorai/browser/ui/side_panel",
+      "//qorai/components/psst/browser/content",
+      "//chrome/browser/profiles",
+      "//chrome/browser/ui/tabs:impl",
+    ]
+  }
+
+  # This source set is counterpart to the upstream `tab_strip` source set.
+  source_set("tab_strip") {
+    sources = [
+      "qorai_tab_strip_model.cc",
+      "qorai_tab_strip_model.h",
+    ]
+
+    deps = [
+      "//qorai/browser/ui:qorai_tab_features",
+      "//qorai/components/tabs",
+      "//chrome/browser/ui/tabs:tab_strip",
+    ]
+
+    public_deps = [ "//chrome/browser:browser_public_dependencies" ]
+  }
+}
+
+source_set("tab_model") {
+  sources = [
+    "qorai_split_tab_menu_model.cc",
+    "qorai_split_tab_menu_model.h",
+  ]
+
+  deps = [
+    "//qorai/components/resources:strings_grit",
+    "//qorai/components/vector_icons",
+    "//chrome/browser/ui/tabs",
+    "//chrome/browser/ui/tabs:tab_model",
+    "//ui/base",
+  ]
+}

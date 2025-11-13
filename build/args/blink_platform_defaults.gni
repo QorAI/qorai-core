@@ -1,0 +1,17 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# This file contains defaults for gn values in Chromium which are always
+# overridden in Qorai builds. This file in particular is only included in
+# builds for platforms supporting blink, meaning anything other than iOS.
+
+# Please provide a reason if you are adding new overrides to this file.
+
+proprietary_codecs = true
+ffmpeg_branding = "Chrome"
+branding_path_component = "qorai"
+branding_path_product = "qorai"
+enable_glic = false
+enable_widevine = true

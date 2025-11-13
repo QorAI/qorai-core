@@ -1,0 +1,10 @@
+include_rules = [
+  "+qorai/browser/qorai_vpn/win/qorai_vpn_helper",
+  "+qorai/browser/qorai_vpn/win/qorai_vpn_wireguard_service",
+  "+qorai/browser/qorai_vpn/win/wireguard_utils_win.h",
+  "+qorai/components/qorai_vpn/browser/connection/ikev2/win",
+  "+qorai/components/qorai_vpn/common/buildflags",
+  "+qorai/elevation_service",
+  "+qorai/installer/setup/qorai_vpn",
+  "+chrome/installer/util",
+]

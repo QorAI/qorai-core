@@ -1,0 +1,23 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/common/typescript.gni")
+
+transpile_web_ui("qorai_adblock_ui") {
+  output_module = false
+  entry_points = [ [
+        "qorai_adblock",
+        rebase_path("qorai_adblock.tsx"),
+      ] ]
+
+  resource_name = "qorai_adblock"
+  imports_from = [ "//qorai/components/qorai_adblock_ui/" ]
+}
+
+pack_web_resources("generated_resources") {
+  resource_name = "qorai_adblock"
+  output_dir = "$root_gen_dir/qorai/components/qorai_adblock/resources"
+  deps = [ ":qorai_adblock_ui" ]
+}

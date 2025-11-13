@@ -1,0 +1,12 @@
+diff --git a/components/permissions/android/BUILD.gn b/components/permissions/android/BUILD.gn
+index 5919f82d15266947d07fdbe1ef55b20cc006130f..efee9412a91ac3f22350e7e1a91bd8fa14024cb0 100644
+--- a/components/permissions/android/BUILD.gn
++++ b/components/permissions/android/BUILD.gn
+@@ -204,6 +204,7 @@ android_library("java") {
+     "//third_party/jni_zero:jni_zero_java",
+     "//ui/android:ui_java",
+   ]
++  sources += qorai_components_permissions_java_sources deps += qorai_components_permissions_java_deps
+   resources_package = "org.chromium.components.permissions"
+ }
+ 

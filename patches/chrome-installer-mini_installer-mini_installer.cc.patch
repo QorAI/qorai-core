@@ -1,0 +1,12 @@
+diff --git a/chrome/installer/mini_installer/mini_installer.cc b/chrome/installer/mini_installer/mini_installer.cc
+index 44f29f2fafda83685479c791da3aa4ddbd4cde73..6231ec19c1955931f1caf1cf7b862f8003095e8c 100644
+--- a/chrome/installer/mini_installer/mini_installer.cc
++++ b/chrome/installer/mini_installer/mini_installer.cc
+@@ -499,6 +499,7 @@ ProcessExitResult RunSetup(const Configuration& configuration,
+   // on to setup.exe
+   AppendCommandLineFlags(configuration.command_line(), &cmd_line);
+ 
++  QORAI_RUN_SETUP
+   return RunProcessAndWait(setup_exe.get(), cmd_line.get(),
+                            RUN_SETUP_FAILED_FILE_NOT_FOUND,
+                            RUN_SETUP_FAILED_PATH_NOT_FOUND,

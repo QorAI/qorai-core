@@ -1,0 +1,126 @@
+<style include="settings-shared cr-shared-style">
+  .title {
+    font: var(--qora-font-default-semibold);
+    height: 68px;
+  }
+
+  .label.primary-title
+  {
+    font: var(--qora-font-large-regular);
+    padding-top: var(--qora-spacing-xl);
+  }
+
+  .label.secondary-title {
+    padding-bottom: var(--qora-spacing-xl);
+  }
+</style>
+
+<settings-section
+  id="origin"
+  page-title="$i18n{qoraiOriginTitle}">
+<div>
+  <div class="settings-box first">
+    <div class="flex">
+      <div class="label primary-title">$i18n{qoraiOriginHeadingTitle}</div>
+      <div class="label secondary secondary-title">
+        <p>$i18n{qoraiOriginHeadingDescription1}</p>
+        <p>$i18n{qoraiOriginHeadingDescription2}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cr-row title">$i18n{qoraiOriginSectionAdsTitle}</div>
+
+  <origin-toggle-button id="toggleRewardsButton"
+      policy-key="QoraiRewardsDisabled"
+      inverted
+      label="$i18n{qoraiOriginRewardsToggleTitle}"
+      icon="product-qor-outline">
+  </origin-toggle-button>
+
+  <div class="cr-row title">$i18n{qoraiOriginSectionAnalyticsTitle}</div>
+
+  <origin-toggle-button id="toggleP3AButton"
+      policy-key="QoraiP3AEnabled"
+      label="$i18n{qoraiOriginP3AToggleTitle}"
+      icon="bar-chart">
+  </origin-toggle-button>
+
+  <origin-toggle-button id="toggleStatsReportingButton"
+      policy-key="QoraiStatsPingEnabled"
+      label="$i18n{qoraiOriginStatsReportingToggleTitle}"
+      icon="bar-chart">
+  </origin-toggle-button>
+
+  <div class="cr-row title">$i18n{qoraiOriginSectionFeaturesTitle}</div>
+
+  <origin-toggle-button id="toggleQoraAiButton"
+      policy-key="QoraiAIChatEnabled"
+      label="$i18n{qoraiOriginQoraAiToggleTitle}"
+      icon="product-qorai-qora">
+  </origin-toggle-button>
+
+  <origin-toggle-button id="toggleNewsButton"
+      policy-key="QoraiNewsDisabled"
+      inverted
+      label="$i18n{qoraiOriginNewsToggleTitle}"
+      icon="product-qorai-news">
+  </origin-toggle-button>
+
+  <if expr="enable_speedreader">
+    <origin-toggle-button id="toggleSpeedreaderButton"
+        policy-key="QoraiSpeedreaderEnabled"
+        label="$i18n{qoraiOriginSpeedReaderToggleTitle}"
+        icon="product-speedreader">
+    </origin-toggle-button>
+  </if>
+
+  <origin-toggle-button id="toggleTalkButton"
+      policy-key="QoraiTalkDisabled"
+      inverted
+      label="$i18n{qoraiOriginTalkToggleTitle}"
+      icon="product-qorai-talk">
+  </origin-toggle-button>
+
+  <origin-toggle-button id="toggleTorWindowsButton"
+      policy-key="TorDisabled"
+      inverted
+      label="$i18n{qoraiOriginTorWindowsToggleTitle}"
+      icon="product-tor">
+  </origin-toggle-button>
+
+  <origin-toggle-button id="toggleVpnButton"
+      policy-key="QoraiVPNDisabled"
+      inverted
+      label="$i18n{qoraiOriginVpnToggleTitle}"
+      icon="product-vpn">
+  </origin-toggle-button>
+
+  <origin-toggle-button id="toggleWalletButton"
+      policy-key="QoraiWalletDisabled"
+      inverted
+      label="$i18n{qoraiOriginWalletToggleTitle}"
+      icon="product-qorai-wallet">
+  </origin-toggle-button>
+
+  <origin-toggle-button id="toggleWaybackMachineButton"
+      policy-key="QoraiWaybackMachineEnabled"
+      label="$i18n{qoraiOriginWaybackMachineToggleTitle}"
+      icon="window-404">
+  </origin-toggle-button>
+
+  <!-- TODO: Web Discovery policy not yet registered in Qorai Origin
+  <origin-toggle-button id="toggleWebDiscoveryProjectButton"
+      policy-key="QoraiWebDiscoveryEnabled"
+      label="$i18n{qoraiOriginWebDiscoveryProjectToggleTitle}"
+      icon="qorai-icon-search">
+  </origin-toggle-button>
+  -->
+
+  <cr-link-row class="hr"
+    label="$i18n{qoraiOriginResetToDefaultsTitle}"
+    on-click="resetToDefaults_"
+    start-icon="refresh">
+  </cr-link-row>
+</div>
+</settings-section>

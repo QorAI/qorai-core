@@ -1,0 +1,44 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_education/buildflags.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/containers/buildflags/buildflags.gni")
+import("//qorai/components/playlist/core/common/buildflags/buildflags.gni")
+
+# This is required for chromium_src overrides.
+qorai_browser_ui_webui_configs_deps = [
+  "//base",
+  "//qorai/browser/ui",
+  "//qorai/components/qorai_account:features",
+  "//qorai/components/qorai_education:buildflags",
+  "//qorai/components/qorai_shields/content/browser",
+  "//qorai/components/qorai_vpn/common/buildflags",
+  "//qorai/components/containers/buildflags",
+  "//qorai/components/playlist/core/common/buildflags",
+]
+
+if (enable_playlist_webui) {
+  qorai_browser_ui_webui_configs_deps +=
+      [ "//qorai/components/playlist/core/common" ]
+}
+
+if (enable_qorai_vpn) {
+  qorai_browser_ui_webui_configs_deps +=
+      [ "//qorai/components/qorai_vpn/browser" ]
+}
+
+if (enable_qorai_education) {
+  qorai_browser_ui_webui_configs_deps +=
+      [ "//qorai/browser/ui/webui/qorai_education" ]
+}
+
+if (enable_containers) {
+  qorai_browser_ui_webui_configs_deps += [
+    "//qorai/components/containers/core/browser",
+    "//qorai/components/containers/core/common",
+    "//qorai/components/containers/core/mojom",
+  ]
+}

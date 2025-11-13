@@ -1,0 +1,6 @@
+include_rules = [
+  "+qorai/components/ephemeral_storage",
+  "+qorai/components/qorai_shields/content/test",
+  "!qorai/components/qorai_component_updater/browser/local_data_files_service.h",
+  "!qorai/components/qorai_component_updater/browser/local_data_files_observer.h",
+]

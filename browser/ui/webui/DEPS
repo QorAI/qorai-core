@@ -1,0 +1,24 @@
+from qorai_chromium_utils import inline_file
+inline_file('//chrome/browser/ui/webui/DEPS', globals(), locals())
+
+include_rules += [
+  "+qorai/qorai_domains",
+  "+qorai/components/qorai_adblock/resources",
+  "+qorai/components/qorai_shields/core/browser",
+  "+qorai/components/qorai_ads/core/browser/service",
+  "+qorai/components/qorai_ads/core/mojom",
+  "+qorai/components/qorai_private_cdn",
+  "+qorai/components/qorai_rewards/resources",
+  "+qorai/components/email_aliases",
+  "+qorai/components/ntp_background_images/browser",
+  "+qorai/components/version_info",
+  "+qorai/components/webui",
+  "+chrome/services/qrcode_generator/public/mojom",
+  "+chrome/services/qrcode_generator/public/cpp",
+]
+
+specific_include_rules = {
+  "qorai_adblock_internals_ui\.cc": [
+    "+qorai/components/qorai_adblock/adblock_internals/resources/grit/qorai_adblock_internals_generated_map.h",
+  ],
+}

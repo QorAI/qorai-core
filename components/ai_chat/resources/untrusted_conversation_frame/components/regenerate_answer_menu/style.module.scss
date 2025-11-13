@@ -1,0 +1,112 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.buttonMenu {
+  qora-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--qora-spacing-xl);
+    padding: var(--qora-spacing-m);
+    min-width: 240px;
+  }
+}
+
+.menuHeader {
+  display: flex;
+  background-color: var(--qora-color-container-highlight);
+  padding: var(--qora-spacing-l) var(--qora-spacing-xl);
+  color: var(--qora-color-text-secondary);
+  font: var(--qora-font-components-label);
+  position: absolute;
+  border-radius: 8px 8px 0px 0px;
+  border-top: 1px solid var(--qora-color-divider-subtle);
+  border-left: 1px solid var(--qora-color-divider-subtle);
+  border-right: 1px solid var(--qora-color-divider-subtle);
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.headerGap {
+  min-height: 37px;
+}
+
+.anchorButton {
+  --qora-button-padding: 0px;
+  --qora-button-color: none;
+  --anchor-button-text-color: var(--qora-color-text-tertiary);
+  --anchor-button-icon-color: var(--qora-color-icon-secondary);
+  opacity: 0.7;
+  display: flex;
+  flex: 0;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.anchorButtonOpen {
+  opacity: 1;
+  --anchor-button-text-color: var(--qora-color-text-interactive);
+  --anchor-button-icon-color: var(--qora-color-icon-interactive);
+}
+
+.anchorButtonContent {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--qora-spacing-s);
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.anchorButtonText {
+  font: var(--qora-font-small-regular);
+  color: var(--anchor-button-text-color);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.anchorButtonIcon {
+  --qora-icon-size: 18px;
+  --qora-icon-color: var(--anchor-button-icon-color);
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.anchorButtonIconOpen {
+  transform: rotate(180deg);
+}
+
+.menuFooter {
+  display: flex;
+  width: 100%;
+  padding: var(--qora-spacing-s);
+  background-color: var(--qora-color-container-background);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--qora-color-container-background);
+  border-radius: 0px 0px 8px 8px;
+  border: 1px solid var(--qora-color-divider-subtle);
+  qora-menu-item {
+    --qora-icon-size: 20px;
+    font: var(--qora-font-default-regular);
+    justify-content: flex-start;
+    border-radius: var(--qora-radius-s);
+    margin: 0;
+    gap: var(--qora-spacing-m);
+    &:hover {
+      background-color: var(--qora-color-container-highlight);
+    }
+  }
+}
+
+.footerGap {
+  min-height: 47px;
+}

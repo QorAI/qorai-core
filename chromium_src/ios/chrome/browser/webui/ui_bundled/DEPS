@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/version_info/version_info.h",
+  "+qorai/components/webui/about_ui.h",
+]

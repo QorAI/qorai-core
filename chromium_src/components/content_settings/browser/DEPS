@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/qorai_shields/core/common",
+  "+components/content_settings/common",
+]

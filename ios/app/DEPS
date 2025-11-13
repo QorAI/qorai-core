@@ -1,0 +1,25 @@
+
+from qorai_chromium_utils import inline_file
+inline_file('//ios/chrome/app/DEPS', globals(), locals())
+
+include_rules += [
+  "+ios/chrome/app",
+  "+ios/web_view",
+  "+qorai/ios/app",
+  "+qorai/ios/browser",
+
+  "+qorai/components/ai_chat",
+  "+qorai/components/qorai_component_updater",
+  "+qorai/components/qorai_sync/buildflags.h",
+  "+qorai/components/qorai_shields/ios/browser",
+  "+qorai/components/qorai_user_agent/browser",
+  "+qorai/components/ntp_background_images/browser",
+  "+qorai/components/ntp_background_images/common",
+  "+qorai/components/p3a",
+  "+qorai/components/update_client/buildflags.h",
+  "+qorai/components/variations",
+
+  "+components/browser_sync",
+  "+components/safe_browsing/core/common",
+  "+components/sync/base",
+]

@@ -1,0 +1,12 @@
+diff --git a/front_end/panels/application/ApplicationPanelSidebar.ts b/front_end/panels/application/ApplicationPanelSidebar.ts
+index ebf3994f8422b8269fe44060b02639eef2d8c304..5eca0b70ed1b7311a7e373e39c3db28502d121cd 100644
+--- a/front_end/panels/application/ApplicationPanelSidebar.ts
++++ b/front_end/panels/application/ApplicationPanelSidebar.ts
+@@ -563,6 +563,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
+         new Common.ObjectWrapper.ObjectWrapper<SharedStorageTreeElementDispatcher.EventTypes>();
+ 
+     this.contentElement.style.contain = 'layout style';
++    [this.trustTokensTreeElement, this.interestGroupTreeElement, this.sharedStorageListTreeElement].forEach(e => storageTreeElement.removeChild(e)); [this.backgroundFetchTreeElement, this.backgroundSyncTreeElement, this.periodicBackgroundSyncTreeElement, this.reportingApiTreeElement].forEach(e => backgroundServiceTreeElement.removeChild(e));
+   }
+ 
+   private addSidebarSection(title: string, jslogContext: string): UI.TreeOutline.TreeElement {

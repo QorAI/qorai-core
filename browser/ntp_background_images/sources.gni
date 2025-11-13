@@ -1,0 +1,50 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/ntp_background_images/buildflags/buildflags.gni")
+
+qorai_browser_ntp_background_images_sources = [
+  "//qorai/browser/ntp_background_images/view_counter_service_factory.cc",
+  "//qorai/browser/ntp_background_images/view_counter_service_factory.h",
+]
+
+qorai_browser_ntp_background_images_deps = [
+  "//base",
+  "//qorai/browser:browser_process",
+  "//qorai/browser/profiles:util",
+  "//qorai/components/qorai_ads/browser",
+  "//qorai/components/qorai_stats/browser",
+  "//qorai/components/constants",
+  "//qorai/components/ntp_background_images/browser",
+  "//qorai/components/ntp_background_images/buildflags",
+  "//qorai/components/ntp_background_images/common",
+  "//qorai/components/p3a",
+  "//qorai/components/p3a_utils",
+  "//chrome/browser:browser_process",
+  "//chrome/browser/profiles:profile",
+  "//chrome/common",
+  "//components/keyed_service/content",
+  "//components/pref_registry",
+  "//components/prefs",
+  "//content/public/browser",
+]
+
+if (enable_custom_background) {
+  qorai_browser_ntp_background_images_deps +=
+      [ "//qorai/browser/ntp_background_images:ntp_custom_background_images" ]
+}
+
+if (is_android) {
+  qorai_browser_ntp_background_images_sources += [
+    "//qorai/browser/ntp_background_images/android/ntp_background_images_bridge.cc",
+    "//qorai/browser/ntp_background_images/android/ntp_background_images_bridge.h",
+  ]
+
+  qorai_browser_ntp_background_images_deps += [
+    "//qorai/build/android:jni_headers",
+    "//components/keyed_service/content",
+    "//components/keyed_service/core",
+  ]
+}

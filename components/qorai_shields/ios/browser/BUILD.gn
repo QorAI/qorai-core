@@ -1,0 +1,22 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/ios/mojom/mojom_wrappers.gni")
+
+source_set("browser") {
+  sources = [
+    "qorai_shields_settings_bridge.h",
+    "qorai_shields_settings_bridge_impl.h",
+    "qorai_shields_settings_bridge_impl.mm",
+  ]
+  deps = [
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/qorai_shields/ios/common:mojom",
+    "//components/content_settings/core/browser",
+    "//components/prefs",
+    "//net",
+    "//url",
+  ]
+}

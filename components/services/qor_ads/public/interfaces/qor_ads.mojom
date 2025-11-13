@@ -1,0 +1,218 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+module qor_ads.mojom;
+
+import "qorai/components/qorai_ads/core/mojom/qorai_ads.mojom";
+import "mojo/public/mojom/base/big_string.mojom";
+import "mojo/public/mojom/base/file.mojom";
+import "mojo/public/mojom/base/file_path.mojom";
+import "mojo/public/mojom/base/time.mojom";
+import "mojo/public/mojom/base/values.mojom";
+import "url/mojom/url.mojom";
+
+interface QorAdsService {
+  Create(mojo_base.mojom.FilePath service_path,
+         pending_associated_remote<QorAdsClient>
+             qor_ads_client_pending_associated_remote,
+         pending_associated_receiver<QorAds>
+             qor_ads_pending_associated_receiver,
+         pending_receiver<QorAdsClientNotifier>
+             qor_ads_client_notifier) => ();
+};
+
+interface qorAdsClientNotifier {
+  // See AdsClientNotifier for documentation.
+
+  NotifyDidInitializeAds();
+
+  NotifyPrefDidChange(string path);
+
+  NotifyResourceComponentDidChange(string manifest_version, string id);
+  NotifyDidUnregisterResourceComponent(string id);
+
+  NotifyRewardsWalletDidUpdate(string payment_id, string recovery_seed_base64);
+
+  NotifyTabTextContentDidChange(int32 tab_id,
+                                array<url.mojom.Url> redirect_chain,
+                                mojo_base.mojom.BigString text);
+  NotifyTabHtmlContentDidChange(int32 tab_id,
+                                array<url.mojom.Url> redirect_chain,
+                                mojo_base.mojom.BigString html);
+  NotifyTabDidStartPlayingMedia(int32 tab_id);
+  NotifyTabDidStopPlayingMedia(int32 tab_id);
+  NotifyTabDidChange(int32 tab_id,
+                     array<url.mojom.Url> redirect_chain,
+                     bool is_new_navigation,
+                     bool is_restoring,
+                     bool is_visible);
+  NotifyTabDidLoad(int32 tab_id,
+                   int32 http_status_code);
+  NotifyDidCloseTab(int32 tab_id);
+
+  NotifyUserGestureEventTriggered(int32 page_transition_type);
+
+  NotifyUserDidBecomeIdle();
+  NotifyUserDidBecomeActive(mojo_base.mojom.TimeDelta idle_time,
+                            bool screen_was_locked);
+
+  NotifyBrowserDidEnterForeground();
+  NotifyBrowserDidEnterBackground();
+  NotifyBrowserDidBecomeActive();
+  NotifyBrowserDidResignActive();
+
+  NotifyDidSolveAdaptiveCaptcha();
+};
+
+interface QorAdsClient {
+  // See AdsClient for documentation.
+
+  [Sync]
+  IsNetworkConnectionAvailable() => (bool available);
+
+  [Sync]
+  IsBrowserActive() => (bool is_browser_active);
+  [Sync]
+  IsBrowserInFullScreenMode() => (bool is_browser_in_full_screen_mode);
+
+  [Sync]
+  CanShowNotificationAds() => (bool can_show);
+  [Sync]
+  CanShowNotificationAdsWhileBrowserIsBackgrounded() => (bool can_show);
+  ShowNotificationAd(mojo_base.mojom.DictionaryValue value);
+  CloseNotificationAd(string placement_id);
+
+  GetSiteHistory(int32 max_count, int32 days_ago) =>
+      (array<url.mojom.Url> site_history);
+
+  UrlRequest(qorai_ads.mojom.UrlRequestInfo mojom_url_request) =>
+      (qorai_ads.mojom.UrlResponseInfo mojom_url_response);
+
+  Save(string name, string value) => (bool success);
+  Load(string name) => (string? value);
+
+  LoadResourceComponent(string id, int32 version) =>
+      (mojo_base.mojom.File? file);
+
+  ShowScheduledCaptcha(string payment_id, string captcha_id);
+
+  [Sync]
+  FindProfilePref(string path) => (bool value);
+  [Sync]
+  GetProfilePref(string path) => (mojo_base.mojom.Value? value);
+  SetProfilePref(string path, mojo_base.mojom.Value value);
+  ClearProfilePref(string path);
+  [Sync]
+  HasProfilePrefPath(string path) => (bool value);
+
+  [Sync]
+  FindLocalStatePref(string path) => (bool value);
+  [Sync]
+  GetLocalStatePref(string path) => (mojo_base.mojom.Value? value);
+  SetLocalStatePref(string path, mojo_base.mojom.Value value);
+  ClearLocalStatePref(string path);
+  [Sync]
+  HasLocalStatePrefPath(string path) => (bool value);
+
+  [Sync]
+  GetVirtualPrefs() => (mojo_base.mojom.DictionaryValue value);
+
+  Log(string file, int32 line, int32 verbose_level, string message);
+};
+
+interface QorAdsObserver {
+  // See AdsObserver for documentation.
+
+  OnAdRewardsDidChange();
+
+  OnBrowserUpgradeRequiredToServeAds();
+
+  OnIneligibleWalletToServeAds();
+
+  OnRemindUser(qorai_ads.mojom.ReminderType mojom_reminder_type);
+};
+
+interface QorAds {
+  // See Ads for documentation.
+
+  AddQorAdsObserver(pending_remote<QorAdsObserver> qor_ads_observer);
+
+  SetSysInfo(qorai_ads.mojom.SysInfo mojom_sys_info);
+  SetBuildChannel(qorai_ads.mojom.BuildChannelInfo mojom_build_channel);
+  SetFlags(qorai_ads.mojom.Flags mojom_flags);
+  SetContentSettings(qorai_ads.mojom.ContentSettings mojom_content_settings);
+
+  Initialize(qorai_ads.mojom.WalletInfo? mojom_wallet) => (bool success);
+  Shutdown() => (bool success);
+
+  GetInternals() => (mojo_base.mojom.DictionaryValue? value);
+
+  GetDiagnostics() => (mojo_base.mojom.ListValue? value);
+
+  GetStatementOfAccounts() => (qorai_ads.mojom.StatementInfo? mojom_statement);
+
+  MaybeServeInlineContentAd(string dimensions) =>
+      (string dimensions, mojo_base.mojom.DictionaryValue? value);
+  TriggerInlineContentAdEvent(
+      string placement_id,
+      string creative_instance_id,
+      qorai_ads.mojom.InlineContentAdEventType mojom_ad_event_type) =>
+          (bool success);
+
+  ParseAndSaveNewTabPageAds(mojo_base.mojom.DictionaryValue value) => (bool success);
+  MaybeServeNewTabPageAd() => (mojo_base.mojom.DictionaryValue? value);
+  TriggerNewTabPageAdEvent(
+      string placement_id,
+      string creative_instance_id,
+      qorai_ads.mojom.NewTabPageAdMetricType mojom_ad_metric_type,
+      qorai_ads.mojom.NewTabPageAdEventType mojom_ad_event_type) =>
+          (bool success);
+
+  MaybeGetNotificationAd(string placement_id) =>
+      (mojo_base.mojom.DictionaryValue? value);
+  TriggerNotificationAdEvent(
+      string placement_id,
+      qorai_ads.mojom.NotificationAdEventType mojom_ad_event_type) =>
+          (bool success);
+
+  TriggerPromotedContentAdEvent(
+      string placement_id,
+      string creative_instance_id,
+      qorai_ads.mojom.PromotedContentAdEventType mojom_ad_event_type) =>
+          (bool success);
+
+  MaybeGetSearchResultAd(string placement_id) =>
+      (qorai_ads.mojom.CreativeSearchResultAdInfo? search_result_ad);
+  TriggerSearchResultAdEvent(
+      qorai_ads.mojom.CreativeSearchResultAdInfo mojom_creative_ad,
+      qorai_ads.mojom.SearchResultAdEventType mojom_ad_event_type) =>
+          (bool success);
+
+  PurgeOrphanedAdEventsForType(qorai_ads.mojom.AdType mojom_ad_type) =>
+      (bool success);
+
+  GetAdHistory(mojo_base.mojom.Time from_time, mojo_base.mojom.Time to_time) =>
+      (mojo_base.mojom.ListValue? value);
+
+  ToggleLikeAd(qorai_ads.mojom.ReactionInfo mojom_reaction) => (bool success);
+  ToggleDislikeAd(qorai_ads.mojom.ReactionInfo mojom_reaction) =>
+      (bool success);
+  ToggleLikeSegment(qorai_ads.mojom.ReactionInfo mojom_reaction) =>
+      (bool success);
+  ToggleDislikeSegment(qorai_ads.mojom.ReactionInfo mojom_reaction) =>
+      (bool success);
+  ToggleSaveAd(qorai_ads.mojom.ReactionInfo mojom_reaction) => (bool success);
+  ToggleMarkAdAsInappropriate(qorai_ads.mojom.ReactionInfo mojom_reaction) =>
+      (bool success);
+};
+
+interface AdsInternals {
+  CreateAdsInternalsPageHandler(pending_remote<AdsInternalsPage> page);
+  GetAdsInternals() => (string response);
+  ClearAdsData() => (bool success);
+};
+
+interface AdsInternalsPage {
+  UpdateQoraiRewardsEnabled(bool enabled);
+};

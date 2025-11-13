@@ -1,0 +1,63 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+qorai_browser_qorai_vpn_sources = []
+qorai_browser_qorai_vpn_deps = []
+
+if (enable_qorai_vpn) {
+  qorai_browser_qorai_vpn_sources += [
+    "//qorai/browser/qorai_vpn/qorai_vpn_service_factory.cc",
+    "//qorai/browser/qorai_vpn/qorai_vpn_service_factory.h",
+  ]
+
+  if (is_win) {
+    qorai_browser_qorai_vpn_sources += [
+      "//qorai/browser/qorai_vpn/dns/qorai_vpn_dns_observer_factory_win.cc",
+      "//qorai/browser/qorai_vpn/dns/qorai_vpn_dns_observer_factory_win.h",
+      "//qorai/browser/qorai_vpn/dns/qorai_vpn_dns_observer_service_win.cc",
+      "//qorai/browser/qorai_vpn/dns/qorai_vpn_dns_observer_service_win.h",
+      "//qorai/browser/qorai_vpn/win/qorai_vpn_wireguard_observer_factory_win.cc",
+      "//qorai/browser/qorai_vpn/win/qorai_vpn_wireguard_observer_factory_win.h",
+      "//qorai/browser/qorai_vpn/win/qorai_vpn_wireguard_observer_service_win.cc",
+      "//qorai/browser/qorai_vpn/win/qorai_vpn_wireguard_observer_service_win.h",
+    ]
+
+    qorai_browser_qorai_vpn_deps += [
+      "//qorai/app:qorai_generated_resources_grit",
+      "//qorai/browser:browser_process",
+      "//qorai/browser/qorai_vpn/win",
+      "//qorai/browser/qorai_vpn/win:wireguard_utils",
+      "//qorai/browser/qorai_vpn/win/qorai_vpn_helper:common",
+      "//qorai/components/qorai_vpn/common/win",
+      "//chrome/common:constants",
+      "//components/prefs",
+      "//net",
+    ]
+  }
+
+  qorai_browser_qorai_vpn_deps += [
+    "//base",
+    "//qorai/browser/qorai_vpn",
+    "//qorai/components/qorai_vpn/browser",
+    "//chrome/browser/profiles:profile",
+    "//components/keyed_service/content",
+    "//components/user_prefs",
+    "//content/public/browser",
+  ]
+
+  if (is_android) {
+    qorai_browser_qorai_vpn_sources += [
+      "//qorai/browser/qorai_vpn/android/qorai_vpn_native_worker.cc",
+      "//qorai/browser/qorai_vpn/android/qorai_vpn_native_worker.h",
+      "//qorai/browser/qorai_vpn/android/qorai_vpn_service_factory_android.cc",
+    ]
+    qorai_browser_qorai_vpn_deps += [
+      "//qorai/build/android:jni_headers",
+      "//mojo/public/cpp/bindings",
+    ]
+  }
+}

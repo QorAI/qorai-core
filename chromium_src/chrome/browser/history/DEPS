@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/request_otr/common",
+  "+qorai/components/request_otr/browser",
+]

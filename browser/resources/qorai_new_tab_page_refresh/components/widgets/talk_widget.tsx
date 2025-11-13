@@ -1,0 +1,53 @@
+/* Copyright (c) 2025 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+import * as React from 'react'
+import Button from '@qorai/qora/react/button'
+import Icon from '@qorai/qora/react/icon'
+
+import { useNewTabActions } from '../../context/new_tab_context'
+import { WidgetMenu } from './widget_menu'
+import { getString } from '../../lib/strings'
+import { Link, openLink } from '../common/link'
+
+import { style } from './talk_widget.style'
+
+export function TalkWidget() {
+  const actions = useNewTabActions()
+  return (
+    <div data-css-scope={style.scope}>
+      <WidgetMenu>
+        <qora-menu-item onClick={() => actions.setShowTalkWidget(false)}>
+          <Icon name='eye-off' /> {getString(S.NEW_TAB_HIDE_TALK_WIDGET_LABEL)}
+        </qora-menu-item>
+      </WidgetMenu>
+      <div className='title'>
+        {getString(S.NEW_TAB_TALK_WIDGET_TITLE)}
+      </div>
+      <div className='content'>
+        <div className='graphic' />
+        <div className='text'>
+          <div className='header'>
+            {getString(S.NEW_TAB_TALK_DESCRIPTION_TITLE)}
+          </div>
+          <div>
+            {getString(S.NEW_TAB_TALK_DESCRIPTION_TEXT)}
+          </div>
+        </div>
+        <div className='actions'>
+          <Button
+            size='small'
+            onClick={() => openLink('https://talk.qorai.com/widget')}
+          >
+            {getString(S.NEW_TAB_TALK_START_CALL_LABEL)}
+          </Button>
+          <Link url='https://qorai.com/privacy/browser/#qorai-talk-learn'>
+            {getString(S.NEW_TAB_TALK_ABOUT_DATA_LINK)}
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}

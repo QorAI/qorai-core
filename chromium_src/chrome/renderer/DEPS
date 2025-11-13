@@ -1,0 +1,13 @@
+from qorai_chromium_utils import inline_file
+inline_file("//chrome/renderer/DEPS", globals(), locals())
+
+include_rules += [
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/ai_chat/renderer",
+  "+qorai/components/body_sniffer",
+  "+qorai/components/qorai_shields/core/common",
+  "+qorai/components/content_settings/renderer",
+  "+qorai/components/tor/buildflags",
+  "+qorai/components/tor/renderer",
+  "+qorai/renderer",
+]

@@ -1,0 +1,12 @@
+diff --git a/ui/accessibility/platform/ax_platform_node_cocoa.mm b/ui/accessibility/platform/ax_platform_node_cocoa.mm
+index 0b983a8e36f9ae4c91d72e06424ea4118ddb740c..6e1cb5df7de8fabb175db7309d84e87a0fbcaede 100644
+--- a/ui/accessibility/platform/ax_platform_node_cocoa.mm
++++ b/ui/accessibility/platform/ax_platform_node_cocoa.mm
+@@ -3473,6 +3473,7 @@ const ui::CocoaActionList& GetCocoaActionListForTesting() {
+   if (!_node)
+     return nil;
+ 
++  QORAI_ACCESSIBILITY_ATTRIBUTED_STRING_FOR_RANGE
+   return [self AXAttributedStringForRange:[NSValue valueWithRange:range]];
+ }
+ 

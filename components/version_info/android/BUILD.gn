@@ -1,0 +1,39 @@
+# Copyright (c) 2024 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+import("//build/config/android/rules.gni")
+import("//build/util/process_version.gni")
+
+_qorai_version_constants_java_file = "$target_gen_dir/java/org/chromium/components/version_info/QorAIVersionConstants.java"
+
+android_library("java") {
+  sources = [ _qorai_version_constants_java_file ]
+  deps = [ ":generate_qorai_version_constants" ]
+}
+
+process_version("generate_qorai_version_constants") {
+  process_only = true
+  template_file = "java/org/chromium/components/version_info/QorAIVersionConstants.java.version"
+  output = _qorai_version_constants_java_file
+  extra_args = [
+    "-e",
+    "QORAI_BROWSER_VERSION=\"$qorai_version\"",
+    "-e",
+    "QORAI_CHROMIUM_VERSION=\"$chrome_version_string\"",
+  ]
+
+  if (is_official_build && qorai_channel == "") {
+    extra_args += [
+      "-e",
+      "QORAI_CHANNEL=\"RELEASE\"",
+    ]
+  } else {
+    extra_args += [
+      "-e",
+      "QORAI_CHANNEL=str.upper('$qorai_channel')",
+    ]
+  }
+}

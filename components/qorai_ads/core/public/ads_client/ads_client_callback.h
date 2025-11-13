@@ -1,0 +1,37 @@
+/* Copyright (c) 2021 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_ADS_CORE_PUBLIC_ADS_CLIENT_ADS_CLIENT_CALLBACK_H_
+#define QORAI_COMPONENTS_QORAI_ADS_CORE_PUBLIC_ADS_CLIENT_ADS_CLIENT_CALLBACK_H_
+
+#include <optional>
+#include <string>
+
+#include "base/files/file.h"
+#include "base/functional/callback.h"
+#include "qorai/components/qorai_ads/core/mojom/qorai_ads.mojom-forward.h"
+#include "qorai/components/qorai_ads/core/public/history/site_history.h"
+
+namespace qorai_ads {
+
+using SaveCallback = base::OnceCallback<void(bool success)>;
+
+using LoadCallback =
+    base::OnceCallback<void(const std::optional<std::string>& value)>;
+
+using LoadFileCallback = base::OnceCallback<void(base::File file)>;
+
+using UrlRequestCallback =
+    base::OnceCallback<void(const mojom::UrlResponseInfo& mojom_url_response)>;
+
+using GetSiteHistoryCallback =
+    base::OnceCallback<void(const SiteHistoryList& site_history)>;
+
+using GetScheduledCaptchaCallback =
+    base::OnceCallback<void(const std::string& captcha_id)>;
+
+}  // namespace qorai_ads
+
+#endif  // QORAI_COMPONENTS_QORAI_ADS_CORE_PUBLIC_ADS_CLIENT_ADS_CLIENT_CALLBACK_H_

@@ -1,0 +1,13 @@
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
+index dc931e3a9a6584e38cf77cd2e39ce782943d506c..10c50419dfdaa732979ebac61784b7a8517fe1d2 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
+@@ -50,7 +50,7 @@ public class HomepageManager
+     private final SharedPreferencesManager mSharedPreferencesManager;
+     private final ObserverList<HomepageStateListener> mHomepageStateListeners;
+ 
+-    private HomepageManager() {
++    HomepageManager() {
+         mSharedPreferencesManager = ChromeSharedPreferences.getInstance();
+         mHomepageStateListeners = new ObserverList<>();
+         HomepagePolicyManager.getInstance().addListener(this);

@@ -1,0 +1,68 @@
+.modelInfo {
+  margin-top: var(--qora-spacing-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--qora-spacing-m);
+  align-items: start;
+}
+
+.modelIcon {
+  --qora-icon-color: white;
+  --qora-icon-width: 18px;
+  width: 32px;
+  height: 32px;
+  background: var(--qora-gradient-icons-active);
+  padding: 9px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meta {
+  .category {
+    margin: 0;
+    font: var(--qora-font-heading-h4);
+    color: var(--qora-color-text-primary);
+  }
+
+  .name {
+    margin: 0;
+    font: var(--qora-font-small-regular);
+    color: var(--qora-color-text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.tooltipButton {
+  --qora-button-padding: 0;
+
+  qora-icon {
+    --qora-icon-size: 14px;
+    --qora-icon-color: var(--qora-color-text-tertiary);
+  }
+}
+
+.tooltip {
+  --qora-tooltip-padding: var(--qora-spacing-xl);
+  height: 14px;
+}
+
+.tooltipContent {
+  max-width: 240px;
+  font: var(--qora-font-small-regular);
+  color: var(--qora-color-text-primary);
+
+  button {
+    cursor: pointer;
+    font: inherit;
+    display: block;
+    background: none;
+    border: none;
+    color: var(--qora-color-text-interactive);
+    padding: 0;
+    text-decoration: underline;
+  }
+}

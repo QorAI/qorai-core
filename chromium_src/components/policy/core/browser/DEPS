@@ -1,0 +1,6 @@
+from qorai_chromium_utils import inline_file
+inline_file("//components/policy/core/browser/DEPS", globals(), locals())
+
+include_rules = [
+  "+components/grit/qorai_components_strings.h",
+]

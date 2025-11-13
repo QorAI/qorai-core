@@ -1,0 +1,26 @@
+<style include="settings-shared">
+  .alert-container {
+    padding-top: var(--qora-spacing-m);
+    padding-bottom: var(--qora-spacing-xl);
+  }
+  .alert-title {
+    font: var(--qora-font-heading-h4);
+  }
+  .alert-content {
+    font: var(--qora-font-default-regular);
+  }
+</style>
+
+<template is="dom-if" if="[[isAdBlockOnlyModeEnabled_]]">
+  <div class="alert-container">
+    <qora-alert type="info" hideIcon="true">
+      <div class="alert-title">$i18n{adBlockOnlyModeAlertTitle}</div>
+      <div class="alert-content">$i18n{adBlockOnlyModeAlertDesc}</div>
+      <div slot="actions">
+        <qora-button on-click="onTurnOffAdBlockOnlyMode_" class="alert-button">
+          $i18n{adBlockOnlyModeAlertTurnOffButton}
+        </qora-button>
+      </div>
+    </qora-alert>
+  </div>
+</template>

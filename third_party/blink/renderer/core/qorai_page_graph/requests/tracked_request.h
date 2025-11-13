@@ -1,0 +1,96 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_THIRD_PARTY_BLINK_RENDERER_CORE_QORAI_PAGE_GRAPH_REQUESTS_TRACKED_REQUEST_H_
+#define QORAI_THIRD_PARTY_BLINK_RENDERER_CORE_QORAI_PAGE_GRAPH_REQUESTS_TRACKED_REQUEST_H_
+
+#include "base/containers/span.h"
+
+#include "qorai/third_party/blink/renderer/core/qorai_page_graph/page_graph_context.h"
+#include "qorai/third_party/blink/renderer/core/qorai_page_graph/types.h"
+#include "qorai/third_party/blink/renderer/core/qorai_page_graph/utilities/response_metadata.h"
+#include "third_party/blink/renderer/platform/crypto.h"
+#include "third_party/blink/renderer/platform/loader/fetch/resource.h"
+#include "third_party/blink/renderer/platform/loader/fetch/resource_response.h"
+#include "third_party/blink/renderer/platform/wtf/vector.h"
+
+namespace qorai_page_graph {
+
+class GraphNode;
+class NodeResource;
+class ResponseMetadata;
+
+struct RequestInstance {
+  GraphNode* requester;
+  const FrameId frame_id;
+};
+
+class TrackedRequest {
+ public:
+  // Constructor for when we see the outgoing request first.
+  TrackedRequest(PageGraphContext* page_graph_context,
+                 const InspectorId request_id,
+                 GraphNode* requester,
+                 const FrameId& frame_id,
+                 NodeResource* resource,
+                 const blink::String& resource_type);
+  ~TrackedRequest();
+
+  bool IsComplete() const;
+
+  InspectorId GetRequestId() const;
+  const blink::Vector<RequestInstance>& GetRequesters() const;
+  const blink::String& GetResourceType() const;
+  NodeResource* GetResource() const;
+  bool GetIsError() const;
+
+  void AddRequest(GraphNode* requester,
+                  const FrameId& frame_id,
+                  NodeResource* resource,
+                  const blink::String& request_type);
+  void AddRequestRedirect(const blink::KURL& url,
+                          const blink::ResourceResponse& redirect_response,
+                          NodeResource* resource,
+                          const FrameId& frame_id);
+
+  void SetIsError(const FrameId& frame_id);
+  void SetCompleted(const FrameId& frame_id);
+
+  ResponseMetadata& GetResponseMetadata();
+  const ResponseMetadata& GetResponseMetadata() const;
+
+  const blink::String& GetResponseBodyHash() const;
+  void UpdateResponseBodyHash(base::span<const char> data);
+
+ protected:
+  void FinishResponseBodyHash();
+
+  enum class RequestStatus {
+    kError,
+    kSuccess,
+  };
+
+  PageGraphContext* const page_graph_context_ = nullptr;
+
+  const InspectorId request_id_;
+
+  blink::Vector<RequestInstance> request_instances_;
+  blink::String resource_type_;
+
+  NodeResource* resource_ = nullptr;
+
+  std::optional<RequestStatus> request_status_;
+
+  mutable bool is_complete_ = false;
+
+  ResponseMetadata response_metadata_;
+  int64_t size_ = -1;
+  blink::Digestor body_digestor_{blink::kHashAlgorithmSha256};
+  blink::String hash_;
+};
+
+}  // namespace qorai_page_graph
+
+#endif  // QORAI_THIRD_PARTY_BLINK_RENDERER_CORE_QORAI_PAGE_GRAPH_REQUESTS_TRACKED_REQUEST_H_

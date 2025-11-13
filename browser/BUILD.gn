@@ -1,0 +1,83 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/browser/updater/buildflags.gni")
+import("//qorai/build/config.gni")
+import("//build/buildflag_header.gni")
+import("//build/config/features.gni")
+import("//chrome/common/features.gni")
+
+buildflag_header("sparkle_buildflags") {
+  header = "sparkle_buildflags.h"
+  flags = [ "ENABLE_SPARKLE=$enable_sparkle" ]
+}
+
+if (enable_sparkle && !build_sparkle) {
+  bundle_data("prebuilt_sparkle_framework_bundle_data") {
+    sources = [ "//build/mac_files/sparkle_binaries/Sparkle.framework" ]
+    outputs = [ "{{bundle_contents_dir}}/Frameworks/{{source_file_part}}" ]
+  }
+}
+
+source_set("browser_process") {
+  visibility = [
+    "//qorai/browser/*",
+    "//chrome/browser/*",
+  ]
+
+  sources = [ "qorai_browser_process.h" ]
+
+  deps = [
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/request_otr/common/buildflags",
+    "//qorai/components/speedreader/common/buildflags",
+    "//qorai/components/tor/buildflags",
+    "//chrome/browser:browser_process",
+    "//extensions/buildflags",
+  ]
+}
+
+group("browser") {
+  visibility = [
+    "//qorai:browser_dependencies",
+    "//qorai/browser/*",
+    "//qorai/components/qorai_rewards/core/engine:headers",
+    "//qorai/test:*",
+
+    # these are layering violation and need to be fixed
+    "//qorai/components/qorai_rewards/content:testutil",
+    "//qorai/components/qorai_rewards/test:qorai_rewards_unit_tests",
+  ]
+
+  if (enable_sparkle) {
+    if (build_sparkle) {
+      deps = [ "//qorai/vendor/sparkle:sparkle_framework_bundle_data" ]
+    } else {
+      deps = [ ":prebuilt_sparkle_framework_bundle_data" ]
+    }
+  }
+
+  # Group depending on upstream's counterpart to make it easier to manage
+  # dependencies in qorai/ (//chrome/browser does not depend on this target
+  # so //qorai/browser becomes essentially an alias for //chrome/browser now).
+  public_deps = [ "//chrome/browser" ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = []
+  deps = []
+
+  if (is_win) {
+    sources += [ "default_protocol_handler_utils_win_unittest.cc" ]
+
+    deps += [
+      "//base",
+      "//qorai/browser",
+      "//testing/gtest",
+    ]
+  }
+}

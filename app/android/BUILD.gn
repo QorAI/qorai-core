@@ -1,0 +1,66 @@
+import("//qorai/build/config.gni")
+
+if (should_generate_symbols) {
+  action("generate_breakpad_symbols") {
+    symbols_dir = "$qorai_dist_dir/$qorai_product_name.breakpad.syms"
+    outputs = [ symbols_dir ]
+
+    package_path = rebase_path(qorai_android_output)
+
+    script = "//qorai/tools/android/generate_breakpad_symbols.py"
+    args = [
+      "--symbols-dir=" + rebase_path(symbols_dir),
+      "--jobs=16",
+      "--build-dir=" + rebase_path(root_out_dir),
+      "--package-path=" + package_path,
+      "--src-root=" + rebase_path("//"),
+      "--clear",
+      "--verbose",
+    ]
+
+    deps = [
+      "//qorai/build/android:qorai",
+      "//third_party/breakpad:dump_syms",
+    ]
+  }
+} else {
+  group("generate_breakpad_symbols") {
+  }
+}
+
+group("symbol_dist_resources") {
+  public_deps = [
+    ":create_symbol_archive",
+    ":generate_breakpad_symbols",
+  ]
+}
+
+group("dist_resources") {
+}
+
+group("create_dist_zips") {
+}
+
+action("create_symbol_archive") {
+  script = "//build/gn_run_binary.py"
+  shell_script = "//qorai/build/android/pack_symbols.sh"
+
+  deps = [ "//qorai/build/android:qorai" ]
+
+  archive_dir_path = "$root_out_dir/dist"
+  archive_file_name = "Default$target_cpu$target_android_base.tar"
+  archive_file_path = "$archive_dir_path/$archive_file_name"
+
+  inputs = [
+    script,
+    shell_script,
+    qorai_android_output,
+  ]
+
+  outputs = [ archive_file_path ]
+  args = [
+    rebase_path(shell_script, root_build_dir),
+    rebase_path(archive_dir_path, root_out_dir),
+    rebase_path(archive_file_path, root_out_dir),
+  ]
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2025 The Qorai Authors. All rights reserved.
+     This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this file,
+     You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+     <org.chromium.components.browser_ui.widget.RadioButtonWithDescription
+          android:id="@+id/adaptive_option_bookmarks"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/min_touch_target_size"
+          android:paddingTop="10dp"
+          app:iconSrc="@drawable/qorai_menu_bookmarks"
+          app:primaryText="@string/menu_bookmarks"/>
+
+     <org.chromium.components.browser_ui.widget.RadioButtonWithDescription
+          android:id="@+id/adaptive_option_history"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/min_touch_target_size"
+          android:paddingTop="10dp"
+          app:iconSrc="@drawable/qorai_menu_history"
+          app:primaryText="@string/menu_history"/>
+
+     <org.chromium.components.browser_ui.widget.RadioButtonWithDescription
+          android:id="@+id/adaptive_option_downloads"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/min_touch_target_size"
+          android:paddingTop="10dp"
+          app:iconSrc="@drawable/qorai_menu_downloads"
+          app:primaryText="@string/menu_downloads"/>
+
+     <org.chromium.components.browser_ui.widget.RadioButtonWithDescription
+          android:id="@+id/adaptive_option_qoraiqora"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/min_touch_target_size"
+          android:paddingTop="10dp"
+          app:iconSrc="@drawable/ic_qorai_ai"
+          app:primaryText="@string/menu_qoraiqora"/>
+
+     <org.chromium.components.browser_ui.widget.RadioButtonWithDescription
+          android:id="@+id/adaptive_option_qorai_wallet"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/min_touch_target_size"
+          android:paddingTop="10dp"
+          app:iconSrc="@drawable/ic_crypto_wallets"
+          app:primaryText="@string/menu_qorai_wallet"/>
+
+</merge>

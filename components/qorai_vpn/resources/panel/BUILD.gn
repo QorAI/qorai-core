@@ -1,0 +1,43 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# you can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/common/typescript.gni")
+import("//qorai/resources/qorai_grit.gni")
+import("//mojo/public/tools/bindings/mojom.gni")
+import("//tools/grit/repack.gni")
+
+transpile_web_ui("qorai_vpn_panel_ui") {
+  output_module = false
+  entry_points = [ [
+        "qorai_vpn_panel",
+        rebase_path("vpn_panel.tsx"),
+      ] ]
+  resource_name = "qorai_vpn_panel"
+
+  imports_from = [
+    "//qorai/components/qorai_vpn/resources/panel/",
+    "//qorai/components/web-components",
+  ]
+
+  deps = [
+    "//qorai/components/qorai_vpn/common/mojom:mojom_js",
+    "//qorai/components/qorai_vpn/common/mojom:preprocess_mojo",
+  ]
+}
+
+pack_web_resources("qorai_vpn_panel_generated") {
+  resource_name = "qorai_vpn_panel"
+  output_dir = "$root_gen_dir/qorai/components/qorai_vpn/resources/panel"
+  deps = [ ":qorai_vpn_panel_ui" ]
+}
+
+repack("resources") {
+  sources = [ "$root_gen_dir/qorai/components/qorai_vpn/resources/panel/qorai_vpn_panel_generated.pak" ]
+
+  deps = [ ":qorai_vpn_panel_generated" ]
+
+  output =
+      "$root_gen_dir/qorai/components/qorai_vpn/qorai_vpn_panel_resources.pak"
+}

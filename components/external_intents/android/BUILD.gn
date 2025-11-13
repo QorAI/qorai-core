@@ -1,0 +1,9 @@
+group("android") {
+  deps = [
+    "//qorai/components/constants",
+    "//components/prefs",
+    "//components/user_prefs",
+    "//net",
+    "//url",
+  ]
+}

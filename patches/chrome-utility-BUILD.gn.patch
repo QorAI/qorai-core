@@ -1,0 +1,12 @@
+diff --git a/chrome/utility/BUILD.gn b/chrome/utility/BUILD.gn
+index c524bf95656e79249463ea9898bbd7342bb06999..5dada809a85cd92097e7a110c69648f33726cd3b 100644
+--- a/chrome/utility/BUILD.gn
++++ b/chrome/utility/BUILD.gn
+@@ -261,6 +261,7 @@ static_library("utility") {
+   if (enable_on_device_translation) {
+     deps += [ "//components/services/on_device_translation:on_device_translation_service" ]
+   }
++  import("//qorai/utility/sources.gni") sources += qorai_utility_sources deps += qorai_utility_deps public_deps += qorai_utility_public_deps
+ }
+ 
+ if (!is_android) {

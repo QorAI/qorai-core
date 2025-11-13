@@ -1,0 +1,34 @@
+# Copyright (c) 2024 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("impl") {
+  visibility = [ "//chrome/browser" ]
+
+  sources = [ "qorai_adaptive_captcha_service_factory.cc" ]
+
+  deps = [
+    ":qorai_adaptive_captcha",
+    "//base",
+    "//qorai/browser/qorai_rewards",
+    "//qorai/components/qorai_adaptive_captcha",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui",
+    "//components/keyed_service/content",
+    "//components/user_prefs",
+  ]
+
+  if (!is_android) {
+    deps += [ "//chrome/browser/ui/browser_window" ]
+  }
+}
+
+source_set("qorai_adaptive_captcha") {
+  sources = [ "qorai_adaptive_captcha_service_factory.h" ]
+
+  public_deps = [
+    "//components/keyed_service/content",
+    "//content/public/browser",
+  ]
+}

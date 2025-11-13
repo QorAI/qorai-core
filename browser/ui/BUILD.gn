@@ -1,0 +1,1501 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/browser/shell_integrations/buildflags/buildflags.gni")
+import("//qorai/browser/ui/config.gni")
+import("//qorai/browser/updater/buildflags.gni")
+import("//qorai/build/config.gni")
+import("//qorai/components/ai_rewriter/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_education/buildflags.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_wayback_machine/buildflags/buildflags.gni")
+import("//qorai/components/commander/common/buildflags/buildflags.gni")
+import("//qorai/components/containers/buildflags/buildflags.gni")
+import("//qorai/components/ntp_background_images/buildflags/buildflags.gni")
+import("//qorai/components/playlist/core/common/buildflags/buildflags.gni")
+import("//qorai/components/request_otr/common/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/text_recognition/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//qorai/components/web_discovery/buildflags/buildflags.gni")
+import("//build/config/features.gni")
+import("//chrome/common/features.gni")
+import("//components/gcm_driver/config.gni")
+import("//mojo/public/tools/bindings/mojom.gni")
+import("//third_party/widevine/cdm/widevine.gni")
+
+# See //chrome/browser/ui:ui_public_dependencies.
+group("ui_public_dependencies") {
+  visibility = [
+    "//qorai/browser/ui",
+    "//chrome/browser/ui:ui_public_dependencies",
+  ]
+  public_deps = [
+    ":qorai_tab_features",
+    ":qorai_tab_prefs",
+    "//qorai/components/qorai_wayback_machine/buildflags",
+    "//qorai/components/playlist/core/common/buildflags",
+    "//qorai/components/speedreader/common/buildflags",
+  ]
+}
+
+source_set("ui") {
+  # Depend on //chrome/browser/ui instead of //qorai/browser/ui.
+  visibility = [
+    "//chrome/browser",
+    "//chrome/browser/ui",
+    "//chrome/browser/ui/webui:configs",
+  ]
+
+  deps = [
+    "//qorai/qorai_domains",
+    "//qorai/browser/ai_chat",
+    "//qorai/browser/qorai_adaptive_captcha",
+    "//qorai/browser/qorai_ads",
+    "//qorai/browser/qorai_origin",
+    "//qorai/browser/qorai_rewards",
+    "//qorai/browser/skus",
+    "//qorai/browser/ui/page_info",
+    "//qorai/browser/ui/webui/qorai_account",
+    "//qorai/components/qorai_origin",
+    "//qorai/components/qorai_private_cdn",
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/webcompat/core/common",
+    "//chrome/browser/history",
+    "//chrome/browser/image_fetcher",
+    "//chrome/browser/ui:browser_navigator_params_headers",
+    "//chrome/browser/ui/startup",
+    "//chrome/browser/ui/tabs:tabs_public",
+    "//media",
+  ]
+
+  allow_circular_includes_from = qorai_ui_allow_circular_includes_from
+  deps += qorai_ui_allow_circular_includes_from
+
+  public_deps = [ ":ui_public_dependencies" ]
+
+  sources = [
+    "qorai_ui_features.cc",
+    "qorai_ui_features.h",
+    "webui/qorai_adblock_internals_ui.cc",
+    "webui/qorai_adblock_internals_ui.h",
+    "webui/qorai_adblock_ui.cc",
+    "webui/qorai_adblock_ui.h",
+    "webui/qorai_rewards/rewards_page_data_source.cc",
+    "webui/qorai_rewards/rewards_page_data_source.h",
+    "webui/qorai_rewards/rewards_page_handler.cc",
+    "webui/qorai_rewards/rewards_page_handler.h",
+    "webui/qorai_rewards/rewards_page_ui.cc",
+    "webui/qorai_rewards/rewards_page_ui.h",
+    "webui/qorai_rewards/rewards_web_ui_utils.cc",
+    "webui/qorai_rewards/rewards_web_ui_utils.h",
+    "webui/qorai_rewards_internals_ui.cc",
+    "webui/qorai_rewards_internals_ui.h",
+    "webui/qorai_sanitized_image_source.cc",
+    "webui/qorai_sanitized_image_source.h",
+    "webui/qorai_wallet/line_chart/line_chart_ui.cc",
+    "webui/qorai_wallet/line_chart/line_chart_ui.h",
+    "webui/qorai_wallet/market/market_ui.cc",
+    "webui/qorai_wallet/market/market_ui.h",
+    "webui/qorai_wallet/nft/nft_ui.cc",
+    "webui/qorai_wallet/nft/nft_ui.h",
+    "webui/qorai_web_ui_controller_factory.cc",
+    "webui/qorai_web_ui_controller_factory.h",
+    "webui/qorai_webui_source.cc",
+    "webui/qorai_webui_source.h",
+    "webui/skus_internals_ui.cc",
+    "webui/skus_internals_ui.h",
+    "webui/untrusted_sanitized_image_source.cc",
+    "webui/untrusted_sanitized_image_source.h",
+  ]
+
+  # It doesn't make sense to view the webcompat webui on iOS & Android.
+  if (!is_android && !is_ios) {
+    sources += [
+      "webui/webcompat_reporter/webcompat_reporter_ui.cc",
+      "webui/webcompat_reporter/webcompat_reporter_ui.h",
+    ]
+    deps += [
+      "//qorai/browser/ui/webui/qorai_browser_command",
+      "//qorai/components/webcompat_reporter/common:mojom",
+      "//qorai/ui/webui/resources/js/qorai_browser_command:mojo_bindings",
+    ]
+  }
+
+  if (is_android) {
+    sources += [
+      "android/ai_chat/qorai_qora_settings_launcher_helper.cc",
+      "android/ai_chat/qorai_qora_settings_launcher_helper.h",
+      "android/qorai_rewards/rewards_page_helper.cc",
+      "android/qorai_rewards/rewards_page_helper.h",
+    ]
+
+    deps += [
+      "//qorai/browser/ui/webui/new_tab_takeover/android:new_tab_takeover",
+      "//qorai/build/android:jni_headers",
+      "//chrome/browser/ui/android/tab_model",
+    ]
+  }
+
+  if (enable_ai_rewriter) {
+    sources += [
+      "ai_rewriter/ai_rewriter_dialog_delegate.cc",
+      "ai_rewriter/ai_rewriter_dialog_delegate.h",
+      "webui/ai_rewriter/ai_rewriter_ui.cc",
+      "webui/ai_rewriter/ai_rewriter_ui.h",
+    ]
+
+    deps += [
+      "//qorai/browser/ui/webui/ai_chat",
+      "//qorai/components/ai_rewriter/common",
+      "//qorai/components/ai_rewriter/resources/page:generated_resources",
+      "//components/web_modal",
+    ]
+  }
+
+  if (enable_qorai_education) {
+    deps += [ "webui/qorai_education" ]
+  }
+
+  if (!is_android) {
+    sources += [
+      "bookmark/bookmark_helper.cc",
+      "bookmark/bookmark_helper.h",
+      "bookmark/bookmark_prefs_service.cc",
+      "bookmark/bookmark_prefs_service.h",
+      "bookmark/bookmark_prefs_service_factory.cc",
+      "bookmark/bookmark_prefs_service_factory.h",
+      "bookmark/qorai_bookmark_prefs.cc",
+      "bookmark/qorai_bookmark_prefs.h",
+      "qorai_browser.cc",
+      "qorai_browser.h",
+      "qorai_browser_actions.cc",
+      "qorai_browser_actions.h",
+      "qorai_browser_command_controller.cc",
+      "qorai_browser_command_controller.h",
+      "qorai_browser_content_setting_bubble_model_delegate.cc",
+      "qorai_browser_content_setting_bubble_model_delegate.h",
+      "qorai_browser_window.cc",
+      "qorai_browser_window.h",
+      "qorai_file_select_utils.cc",
+      "qorai_file_select_utils.h",
+      "qorai_icon_with_badge_image_source.cc",
+      "qorai_icon_with_badge_image_source.h",
+      "qorai_pages.cc",
+      "qorai_pages.h",
+      "qorai_scheme_utils.cc",
+      "qorai_scheme_utils.h",
+      "qorai_tab_strip_model_delegate.cc",
+      "qorai_tab_strip_model_delegate.h",
+      "qorai_view_ids.h",
+      "browser_commands.cc",
+      "browser_commands.h",
+      "browser_dialogs.h",
+      "content_settings/qorai_autoplay_blocked_image_model.cc",
+      "content_settings/qorai_autoplay_blocked_image_model.h",
+      "content_settings/qorai_autoplay_content_setting_bubble_model.cc",
+      "content_settings/qorai_autoplay_content_setting_bubble_model.h",
+      "content_settings/qorai_content_setting_image_models.cc",
+      "content_settings/qorai_content_setting_image_models.h",
+      "omnibox/qorai_omnibox_client_impl.cc",
+      "omnibox/qorai_omnibox_client_impl.h",
+      "page_action/qorai_page_action_icon_type.h",
+      "session_crashed_bubble_qorai.cc",
+      "side_panel/ai_chat/ai_chat_side_panel_utils.cc",
+      "side_panel/ai_chat/ai_chat_side_panel_utils.h",
+      "startup/qorai_startup_tab_provider_impl.cc",
+      "startup/qorai_startup_tab_provider_impl.h",
+      "tabs/qorai_tab_color_mixer.cc",
+      "tabs/qorai_tab_color_mixer.h",
+      "tabs/qorai_tab_menu_model.cc",
+      "tabs/qorai_tab_menu_model.h",
+      "tabs/shared_pinned_tab_dummy_view.h",
+      "tabs/shared_pinned_tab_service.cc",
+      "tabs/shared_pinned_tab_service.h",
+      "tabs/shared_pinned_tab_service_factory.cc",
+      "tabs/shared_pinned_tab_service_factory.h",
+      "toolbar/app_menu_icons.cc",
+      "toolbar/app_menu_icons.h",
+      "toolbar/bookmark_bar_sub_menu_model.cc",
+      "toolbar/bookmark_bar_sub_menu_model.h",
+      "toolbar/qorai_app_menu_model.cc",
+      "toolbar/qorai_app_menu_model.h",
+      "toolbar/qorai_bookmark_context_menu_controller.cc",
+      "toolbar/qorai_bookmark_context_menu_controller.h",
+      "toolbar/qorai_bookmark_sub_menu_model.cc",
+      "toolbar/qorai_bookmark_sub_menu_model.h",
+      "toolbar/qorai_recent_tabs_sub_menu_model.h",
+      "webui/qorai_rewards/rewards_page_top_ui.cc",
+      "webui/qorai_rewards/rewards_page_top_ui.h",
+      "webui/qorai_settings_ui.cc",
+      "webui/qorai_settings_ui.h",
+      "webui/qorai_shields/shields_panel_data_handler.cc",
+      "webui/qorai_shields/shields_panel_data_handler.h",
+      "webui/qorai_shields/shields_panel_handler.cc",
+      "webui/qorai_shields/shields_panel_handler.h",
+      "webui/qorai_shields/shields_panel_ui.cc",
+      "webui/qorai_shields/shields_panel_ui.h",
+      "webui/navigation_bar_data_provider.cc",
+      "webui/navigation_bar_data_provider.h",
+      "webui/new_tab_page/qorai_new_tab_message_handler.cc",
+      "webui/new_tab_page/qorai_new_tab_message_handler.h",
+      "webui/new_tab_page/qorai_new_tab_page_handler.cc",
+      "webui/new_tab_page/qorai_new_tab_page_handler.h",
+      "webui/new_tab_page/qorai_new_tab_ui.cc",
+      "webui/new_tab_page/qorai_new_tab_ui.h",
+      "webui/new_tab_page/qorai_new_tab_ui_utils.cc",
+      "webui/new_tab_page/qorai_new_tab_ui_utils.h",
+      "webui/new_tab_page/top_sites_message_handler.cc",
+      "webui/new_tab_page/top_sites_message_handler.h",
+      "webui/private_new_tab_page/qorai_private_new_tab_page_handler.cc",
+      "webui/private_new_tab_page/qorai_private_new_tab_page_handler.h",
+      "webui/private_new_tab_page/qorai_private_new_tab_ui.cc",
+      "webui/private_new_tab_page/qorai_private_new_tab_ui.h",
+      "webui/settings/qorai_account_settings_handler.cc",
+      "webui/settings/qorai_account_settings_handler.h",
+      "webui/settings/qorai_adblock_handler.cc",
+      "webui/settings/qorai_adblock_handler.h",
+      "webui/settings/qorai_appearance_handler.cc",
+      "webui/settings/qorai_appearance_handler.h",
+      "webui/settings/qorai_clear_browsing_data_handler.cc",
+      "webui/settings/qorai_clear_browsing_data_handler.h",
+      "webui/settings/qorai_import_bulk_data_handler.cc",
+      "webui/settings/qorai_import_bulk_data_handler.h",
+      "webui/settings/qorai_import_data_handler.cc",
+      "webui/settings/qorai_import_data_handler.h",
+      "webui/settings/qorai_importer_observer.cc",
+      "webui/settings/qorai_importer_observer.h",
+      "webui/settings/qorai_privacy_handler.cc",
+      "webui/settings/qorai_privacy_handler.h",
+      "webui/settings/qorai_search_engines_handler.cc",
+      "webui/settings/qorai_search_engines_handler.h",
+      "webui/settings/qorai_settings_qora_assistant_handler.cc",
+      "webui/settings/qorai_settings_qora_assistant_handler.h",
+      "webui/settings/qorai_settings_localized_strings_provider.cc",
+      "webui/settings/qorai_settings_localized_strings_provider.h",
+      "webui/settings/qorai_site_settings_handler.cc",
+      "webui/settings/qorai_site_settings_handler.h",
+      "webui/settings/qorai_sync_handler.cc",
+      "webui/settings/qorai_sync_handler.h",
+      "webui/settings/qorai_wallet_handler.cc",
+      "webui/settings/qorai_wallet_handler.h",
+      "webui/settings/default_qorai_shields_handler.cc",
+      "webui/settings/default_qorai_shields_handler.h",
+      "webui/side_panel/reading_list/qorai_reading_list_page_handler.cc",
+      "webui/side_panel/reading_list/qorai_reading_list_page_handler.h",
+      "webui/webcompat_reporter/webcompat_reporter_dialog.cc",
+      "webui/webcompat_reporter/webcompat_reporter_dialog.h",
+      "webui/welcome_page/qorai_welcome_ui.cc",
+      "webui/welcome_page/qorai_welcome_ui.h",
+      "webui/welcome_page/qorai_welcome_ui_prefs.cc",
+      "webui/welcome_page/qorai_welcome_ui_prefs.h",
+      "webui/welcome_page/welcome_dom_handler.cc",
+      "webui/welcome_page/welcome_dom_handler.h",
+      "whats_new/pref_names.h",
+      "whats_new/whats_new_util.cc",
+      "whats_new/whats_new_util.h",
+    ]
+
+    if (enable_speedreader) {
+      sources += [
+        "webui/speedreader/speedreader_toolbar_data_handler_impl.cc",
+        "webui/speedreader/speedreader_toolbar_data_handler_impl.h",
+        "webui/speedreader/speedreader_toolbar_ui.cc",
+        "webui/speedreader/speedreader_toolbar_ui.h",
+      ]
+    }
+
+    deps += [
+      "//base",
+      "//qorai/browser/email_aliases",
+      "//qorai/browser/ntp_background",
+      "//qorai/browser/profiles:util",
+      "//qorai/browser/ui/sidebar",
+      "//qorai/browser/ui/tabs:tab_model",
+      "//qorai/browser/ui/tabs:tab_strip",
+      "//qorai/common",
+      "//qorai/components/qorai_account:features",
+      "//qorai/components/qorai_account/mojom",
+      "//qorai/components/qorai_wayback_machine/buildflags",
+      "//qorai/components/constants",
+      "//qorai/components/email_aliases:features",
+      "//qorai/components/email_aliases:mojom",
+      "//qorai/components/misc_metrics",
+      "//qorai/components/sidebar/browser",
+      "//qorai/components/sidebar/common",
+      "//qorai/components/speedreader/common/buildflags",
+      "//chrome/app:generated_resources",
+      "//chrome/browser/app_mode",
+      "//chrome/browser/content_settings:content_settings_factory",
+      "//chrome/browser/favicon",
+      "//chrome/browser/importer",
+      "//chrome/browser/profiles",
+      "//chrome/browser/search",
+      "//chrome/browser/send_tab_to_self",
+      "//chrome/browser/sync",
+      "//chrome/browser/themes",
+      "//chrome/browser/ui:layout_constants",
+      "//chrome/browser/ui:url_identity",
+      "//chrome/browser/ui/browser_window",
+      "//chrome/browser/ui/content_settings",
+      "//chrome/browser/ui/extensions",
+      "//chrome/browser/ui/omnibox",
+      "//chrome/browser/ui/prefs",
+      "//chrome/browser/ui/profiles",
+      "//chrome/browser/ui/tabs:tab_menu",
+      "//chrome/browser/ui/thumbnails",
+      "//chrome/browser/ui/views/page_action",
+      "//chrome/browser/ui/views/side_panel",
+      "//chrome/browser/ui/webui/searchbox",
+      "//chrome/browser/ui/webui/settings",
+      "//chrome/browser/ui/webui/side_panel/reading_list:mojo_bindings",
+      "//chrome/browser/ui/webui/util",
+      "//chrome/browser/ui/webui_browser:feature_flag",
+      "//chrome/common:channel_info",
+      "//components/bookmarks/common",
+      "//components/google/core/common",
+      "//components/keyed_service/content",
+      "//components/keyed_service/core",
+      "//components/omnibox/browser:mojo_bindings",
+      "//components/password_manager/core/browser/ui",
+      "//components/pref_registry",
+      "//components/prefs",
+      "//components/regional_capabilities",
+      "//components/sessions",
+      "//components/user_prefs",
+      "//content/public/browser",
+      "//content/public/common",
+      "//extensions/buildflags",
+      "//skia",
+      "//third_party/abseil-cpp:absl",
+      "//ui/actions:actions_headers",
+      "//ui/base/clipboard",
+      "//ui/color:color_headers",
+      "//ui/color:mixers",
+      "//url",
+    ]
+
+    if (enable_request_otr) {
+      deps += [
+        "//qorai/components/request_otr/common",
+        "//qorai/components/request_otr/common/buildflags",
+      ]
+    }
+
+    if (is_win) {
+      deps += [ "//qorai/components/windows_recall" ]
+    }
+
+    if (enable_pin_shortcut) {
+      sources += [
+        "webui/settings/pin_shortcut_handler.cc",
+        "webui/settings/pin_shortcut_handler.h",
+      ]
+    }
+
+    if (is_mac) {
+      sources += [
+        "webui/settings/qorai_full_disk_access_confirm_dialog_delegate.h",
+        "webui/settings/qorai_full_disk_access_confirm_dialog_delegate_mac.mm",
+      ]
+    }
+
+    if (enable_sparkle) {
+      sources += [
+        "webui/settings/qorai_relaunch_handler_mac.h",
+        "webui/settings/qorai_relaunch_handler_mac.mm",
+      ]
+      deps += [ "//qorai/browser/updater:buildflags" ]
+      if (enable_omaha4) {
+        deps += [ "//qorai/browser/updater:features" ]
+      }
+    }
+
+    if (enable_tor) {
+      sources += [
+        "webui/settings/qorai_tor_handler.cc",
+        "webui/settings/qorai_tor_handler.h",
+      ]
+
+      deps += [ "//qorai/browser/tor" ]
+    }
+    if (enable_extensions) {
+      sources += [
+        "webui/settings/qorai_extensions_manifest_v2_handler.cc",
+        "webui/settings/qorai_extensions_manifest_v2_handler.h",
+        "webui/settings/qorai_tor_snowflake_extension_handler.cc",
+        "webui/settings/qorai_tor_snowflake_extension_handler.h",
+      ]
+
+      deps += [
+        "//qorai/browser/extensions/manifest_v2",
+        "//chrome/browser/extensions",
+        "//extensions/browser",
+        "//extensions/common",
+      ]
+    }
+  }
+
+  if (enable_commander) {
+    sources += [
+      "commander/bookmark_command_source.cc",
+      "commander/bookmark_command_source.h",
+      "commander/command_source.cc",
+      "commander/command_source.h",
+      "commander/commander_service.cc",
+      "commander/commander_service.h",
+      "commander/commander_service_factory.cc",
+      "commander/commander_service_factory.h",
+      "commander/entity_match.cc",
+      "commander/entity_match.h",
+      "commander/open_url_command_source.cc",
+      "commander/open_url_command_source.h",
+      "commander/ranker.cc",
+      "commander/ranker.h",
+      "commander/simple_command_source.cc",
+      "commander/simple_command_source.h",
+      "commander/tab_command_source.cc",
+      "commander/tab_command_source.h",
+      "commander/window_command_source.cc",
+      "commander/window_command_source.h",
+    ]
+
+    deps += [
+      "//qorai/browser/ui/commander:fuzzy_finder",
+      "//qorai/components/commander/browser",
+      "//chrome/browser/ui/location_bar",
+    ]
+  }
+
+  if (toolkit_views) {
+    sources += [
+      "views/bookmarks/bookmark_bar_instructions_view.cc",
+      "views/bookmarks/bookmark_bar_instructions_view.h",
+      "views/bookmarks/qorai_bookmark_bar_view.cc",
+      "views/bookmarks/qorai_bookmark_bar_view.h",
+      "views/bookmarks/qorai_bookmark_context_menu.cc",
+      "views/bookmarks/qorai_bookmark_context_menu.h",
+      "views/bookmarks/saved_tab_groups/qorai_saved_tab_group_button.cc",
+      "views/bookmarks/saved_tab_groups/qorai_saved_tab_group_button.h",
+      "views/qorai_first_run_dialog.cc",
+      "views/qorai_first_run_dialog.h",
+      "views/qorai_javascript_tab_modal_dialog_view_views.cc",
+      "views/qorai_javascript_tab_modal_dialog_view_views.h",
+      "views/qorai_layout_provider.cc",
+      "views/qorai_layout_provider.h",
+      "views/qorai_news/qorai_news_bubble_view.cc",
+      "views/qorai_news/qorai_news_bubble_view.h",
+      "views/qorai_news/qorai_news_feed_item_view.cc",
+      "views/qorai_news/qorai_news_feed_item_view.h",
+      "views/qorai_news/qorai_news_feeds_container_view.cc",
+      "views/qorai_news/qorai_news_feeds_container_view.h",
+      "views/qorai_tab_search_bubble_host.cc",
+      "views/qorai_tab_search_bubble_host.h",
+      "views/commands/default_accelerators_views.cc",
+      "views/crash_report_permission_ask_dialog_view.cc",
+      "views/crash_report_permission_ask_dialog_view.h",
+      "views/dialog_footnote_utils.cc",
+      "views/dialog_footnote_utils.h",
+      "views/extensions/qorai_extension_menu_item_view.cc",
+      "views/extensions/qorai_extension_menu_item_view.h",
+      "views/extensions/qorai_extensions_menu_main_page_view.cc",
+      "views/extensions/qorai_extensions_menu_main_page_view.h",
+      "views/frame/qorai_browser_root_view.cc",
+      "views/frame/qorai_browser_root_view.h",
+      "views/frame/qorai_browser_view.cc",
+      "views/frame/qorai_browser_view.h",
+      "views/frame/qorai_browser_view_layout.cc",
+      "views/frame/qorai_browser_view_layout.h",
+      "views/frame/qorai_browser_widget.cc",
+      "views/frame/qorai_browser_widget.h",
+      "views/frame/qorai_contents_layout_manager.cc",
+      "views/frame/qorai_contents_layout_manager.h",
+      "views/frame/qorai_contents_view_util.cc",
+      "views/frame/qorai_contents_view_util.h",
+      "views/frame/qorai_non_client_hit_test_helper.cc",
+      "views/frame/qorai_non_client_hit_test_helper.h",
+      "views/frame/qorai_opaque_browser_frame_view.cc",
+      "views/frame/qorai_opaque_browser_frame_view.h",
+      "views/frame/qorai_system_menu_model_builder.cc",
+      "views/frame/qorai_system_menu_model_builder.h",
+      "views/frame/qorai_tab_strip_region_view.cc",
+      "views/frame/qorai_tab_strip_region_view.h",
+      "views/frame/qorai_window_frame_graphic.cc",
+      "views/frame/qorai_window_frame_graphic.h",
+      "views/omnibox/qorai_omnibox_popup_view_views.cc",
+      "views/omnibox/qorai_omnibox_popup_view_views.h",
+      "views/omnibox/qorai_omnibox_result_view.cc",
+      "views/omnibox/qorai_omnibox_result_view.h",
+      "views/omnibox/qorai_omnibox_view_views.cc",
+      "views/omnibox/qorai_omnibox_view_views.h",
+      "views/omnibox/qorai_rounded_omnibox_results_frame.cc",
+      "views/omnibox/qorai_rounded_omnibox_results_frame.h",
+      "views/omnibox/qorai_search_conversion_promotion_view.cc",
+      "views/omnibox/qorai_search_conversion_promotion_view.h",
+      "views/overlay/qorai_back_to_tab_label_button.cc",
+      "views/overlay/qorai_back_to_tab_label_button.h",
+      "views/overlay/qorai_video_overlay_window_views.cc",
+      "views/overlay/qorai_video_overlay_window_views.h",
+      "views/page_action/qorai_page_action_icon_container_view.cc",
+      "views/page_action/qorai_page_action_icon_container_view.h",
+      "views/rounded_separator.cc",
+      "views/rounded_separator.h",
+      "views/side_panel/bookmarks/qorai_bookmarks_side_panel_coordinator.cc",
+      "views/side_panel/bookmarks/qorai_bookmarks_side_panel_coordinator.h",
+      "views/side_panel/qorai_bookmarks_side_panel_view.cc",
+      "views/side_panel/qorai_bookmarks_side_panel_view.h",
+      "views/side_panel/qorai_read_later_side_panel_view.cc",
+      "views/side_panel/qorai_read_later_side_panel_view.h",
+      "views/side_panel/qorai_side_panel.cc",
+      "views/side_panel/qorai_side_panel.h",
+      "views/side_panel/qorai_side_panel_coordinator.cc",
+      "views/side_panel/qorai_side_panel_coordinator.h",
+      "views/side_panel/qorai_side_panel_resize_widget.cc",
+      "views/side_panel/qorai_side_panel_resize_widget.h",
+      "views/side_panel/qorai_side_panel_utils.cc",
+      "views/side_panel/qorai_side_panel_view_base.cc",
+      "views/side_panel/qorai_side_panel_view_base.h",
+      "views/side_panel/side_panel_web_ui_view_utils.cc",
+      "views/side_panel/side_panel_web_ui_view_utils.h",
+      "views/tabs/qorai_browser_tab_strip_controller.cc",
+      "views/tabs/qorai_browser_tab_strip_controller.h",
+      "views/tabs/qorai_compound_tab_container.cc",
+      "views/tabs/qorai_compound_tab_container.h",
+      "views/tabs/qorai_tab.cc",
+      "views/tabs/qorai_tab.h",
+      "views/tabs/qorai_tab_container.cc",
+      "views/tabs/qorai_tab_container.h",
+      "views/tabs/qorai_tab_context_menu_contents.cc",
+      "views/tabs/qorai_tab_context_menu_contents.h",
+      "views/tabs/qorai_tab_group_header.cc",
+      "views/tabs/qorai_tab_group_header.h",
+      "views/tabs/qorai_tab_group_highlight.cc",
+      "views/tabs/qorai_tab_group_highlight.h",
+      "views/tabs/qorai_tab_group_underline.cc",
+      "views/tabs/qorai_tab_group_underline.h",
+      "views/tabs/qorai_tab_hover_card_controller.cc",
+      "views/tabs/qorai_tab_hover_card_controller.h",
+      "views/tabs/qorai_tab_strip.cc",
+      "views/tabs/qorai_tab_strip.h",
+      "views/tabs/qorai_tab_strip_layout_helper.cc",
+      "views/tabs/qorai_tab_strip_layout_helper.h",
+      "views/tabs/dragging/dragging_tabs_session.cc",
+      "views/tabs/dragging/dragging_tabs_session.h",
+      "views/tabs/dragging/tab_drag_controller.cc",
+      "views/tabs/dragging/tab_drag_controller.h",
+      "views/tabs/shared_pinned_tab_dummy_view_views.cc",
+      "views/tabs/shared_pinned_tab_dummy_view_views.h",
+      "views/tabs/switches.h",
+      "views/tabs/vertical_tab_utils.cc",
+      "views/tabs/vertical_tab_utils.h",
+      "views/toolbar/ai_chat_button.cc",
+      "views/toolbar/ai_chat_button.h",
+      "views/toolbar/bookmark_button.cc",
+      "views/toolbar/bookmark_button.h",
+      "views/toolbar/qorai_app_menu.cc",
+      "views/toolbar/qorai_app_menu.h",
+      "views/toolbar/qorai_browser_app_menu_button.cc",
+      "views/toolbar/qorai_browser_app_menu_button.h",
+      "views/toolbar/side_panel_button.cc",
+      "views/toolbar/side_panel_button.h",
+      "views/view_shadow.cc",
+      "views/view_shadow.h",
+      "views/window_closing_confirm_dialog_view.cc",
+      "views/window_closing_confirm_dialog_view.h",
+    ]
+
+    deps += [
+      "//qorai/browser/ui/darker_theme",
+      "//qorai/browser/ui/side_panel",
+      "//chrome/browser:shell_integration",
+      "//chrome/browser/devtools",
+      "//chrome/browser/enterprise/watermark:watermark_view_lib",
+      "//chrome/browser/sharing_hub",
+      "//chrome/browser/ui/download",
+      "//chrome/browser/ui/exclusive_access",
+      "//chrome/browser/ui/javascript_dialogs",
+      "//chrome/browser/ui/thumbnails",
+      "//chrome/browser/ui/views/bubble",
+      "//chrome/browser/ui/views/download",
+      "//chrome/browser/ui/views/infobars",
+      "//chrome/browser/ui/views/interaction",
+      "//chrome/browser/ui/views/toolbar",
+      "//components/bookmarks/browser",
+    ]
+
+    if (enable_glic) {
+      deps += [ "//chrome/browser/glic" ]
+    }
+
+    if (enable_qorai_vpn) {
+      deps += [ "//qorai/browser/ui/qorai_vpn" ]
+
+      if (is_win) {
+        sources += [
+          "views/qorai_vpn/qorai_vpn_dns_settings_notificiation_dialog_view.cc",
+          "views/qorai_vpn/qorai_vpn_dns_settings_notificiation_dialog_view.h",
+          "views/qorai_vpn/qorai_vpn_fallback_dialog_view.cc",
+          "views/qorai_vpn/qorai_vpn_fallback_dialog_view.h",
+          "webui/settings/qorai_settings_secure_dns_handler.cc",
+          "webui/settings/qorai_settings_secure_dns_handler.h",
+          "webui/settings/qorai_vpn/qorai_vpn_handler.cc",
+          "webui/settings/qorai_vpn/qorai_vpn_handler.h",
+        ]
+
+        deps += [
+          "//qorai/browser/qorai_vpn/win:wireguard_utils",
+          "//chrome/browser:flags",
+        ]
+      }
+      sources += [ "qorai_vpn/qorai_vpn_controller.cc" ]
+    }
+
+    if (use_aura) {
+      sources += [
+        "views/renderer_context_menu/qorai_render_view_context_menu_views.cc",
+        "views/renderer_context_menu/qorai_render_view_context_menu_views.h",
+      ]
+    }
+
+    if (is_linux && use_dbus) {
+      sources += [
+        "views/qorai_dark_mode_manager_linux.cc",
+        "views/qorai_dark_mode_manager_linux.h",
+      ]
+      deps += [ "//ui/linux:linux_ui_factory" ]
+    }
+
+    if (enable_sparkle) {
+      sources += [
+        "views/update_recommended_message_box_mac.h",
+        "views/update_recommended_message_box_mac.mm",
+      ]
+    }
+
+    if (is_win) {
+      sources += [
+        "views/frame/qorai_browser_frame_view_win.cc",
+        "views/frame/qorai_browser_frame_view_win.h",
+      ]
+
+      deps += [ "//chrome/browser:titlebar_config" ]
+    }
+
+    if (is_linux) {
+      sources += [
+        "views/frame/qorai_browser_frame_view_linux_native.cc",
+        "views/frame/qorai_browser_frame_view_linux_native.h",
+      ]
+    }
+
+    if (is_mac) {
+      sources += [
+        "views/commands/default_accelerators_mac.h",
+        "views/commands/default_accelerators_mac.mm",
+        "views/frame/qorai_browser_frame_view_mac.h",
+        "views/frame/qorai_browser_frame_view_mac.mm",
+        "views/frame/qorai_browser_native_widget_mac.h",
+        "views/frame/qorai_browser_native_widget_mac.mm",
+      ]
+    }
+  }
+
+  if (is_win || is_mac || is_linux) {
+    sources += [
+      "views/profiles/qorai_incognito_menu_view.cc",
+      "views/profiles/qorai_incognito_menu_view.h",
+      "views/profiles/qorai_profile_menu_view.cc",
+      "views/profiles/qorai_profile_menu_view.h",
+    ]
+
+    deps += [ "//qorai/components/tor/buildflags" ]
+
+    if (enable_tor) {
+      deps += [ "//qorai/browser/tor" ]
+    }
+  }
+
+  if (is_win || is_mac || is_linux) {
+    sources += [
+      "geolocation/qorai_geolocation_permission_tab_helper.cc",
+      "geolocation/qorai_geolocation_permission_tab_helper.h",
+      "geolocation/geolocation_utils.h",
+    ]
+
+    deps += [ "//qorai/components/qorai_geolocation_permission/common:qorai_geolocation_permission" ]
+
+    if (is_win) {
+      sources += [ "geolocation/geolocation_utils_win.cc" ]
+    }
+
+    if (is_mac) {
+      sources += [ "geolocation/geolocation_utils_mac.mm" ]
+      frameworks = [ "CoreLocation.framework" ]
+    }
+
+    if (is_linux) {
+      sources += [ "geolocation/geolocation_utils_linux.cc" ]
+    }
+  }
+
+  # qorai's obsolete infobar is only used on Windows and Mac now.
+  if (is_win || is_mac) {
+    sources += [
+      "startup/qorai_obsolete_system_infobar_delegate.cc",
+      "startup/qorai_obsolete_system_infobar_delegate.h",
+    ]
+
+    if (toolkit_views) {
+      sources += [
+        "views/obsolete_system_confirm_dialog_view.cc",
+        "views/obsolete_system_confirm_dialog_view.h",
+      ]
+    }
+
+    deps += [ "//chrome/browser/infobars" ]
+  }
+
+  deps += [
+    "//base",
+    "//qorai/app:command_ids",
+    "//qorai/app/vector_icons",
+    "//qorai/browser:browser_process",
+    "//qorai/browser:sparkle_buildflags",
+    "//qorai/browser/qorai_rewards:util",
+    "//qorai/browser/misc_metrics",
+    "//qorai/browser/shell_integrations/buildflags",
+    "//qorai/browser/themes",
+    "//qorai/browser/ui/qorai_ads",
+    "//qorai/browser/ui/qorai_tooltips",
+
+    # //chrome/browser/ui depends on //qorai/browser/ui, add this target here
+    # to pull in dependencies needed for the overwrite codes in chromium_src.
+    "//qorai/chromium_src/chrome/browser/ui",
+    "//qorai/common",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/ai_chat/core/common/buildflags",
+    "//qorai/components/ai_rewriter/common/buildflags",
+    "//qorai/components/qorai_adaptive_captcha",
+    "//qorai/components/qorai_adblock_ui:generated_resources",
+    "//qorai/components/qorai_adblock_ui/adblock_internals:generated_resources",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_news/browser",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_perf_predictor/common",
+    "//qorai/components/qorai_rewards/content",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_rewards/core:features",
+    "//qorai/components/qorai_rewards/core/engine:headers",
+    "//qorai/components/qorai_rewards/core/mojom",
+    "//qorai/components/qorai_rewards/core/mojom:webui",
+    "//qorai/components/qorai_rewards/resources",
+    "//qorai/components/qorai_rewards/resources:internals_generated_resources",
+    "//qorai/components/qorai_rewards/resources/rewards_page:rewards_page_generated",
+    "//qorai/components/qorai_search/common",
+    "//qorai/components/qorai_search_conversion",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/qorai_shields/core/common:mojom",
+    "//qorai/components/qorai_sync:crypto",
+    "//qorai/components/qorai_sync:prefs",
+    "//qorai/components/qorai_sync:time_limited_codes",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:constants",
+    "//qorai/components/qorai_wallet/browser:pref_names",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//qorai/components/qorai_wallet_ui/line_chart:line_chart_display_generated",
+    "//qorai/components/qorai_wallet_ui/market:market_display_generated",
+    "//qorai/components/qorai_wallet_ui/nft:nft_display_generated",
+    "//qorai/components/qorai_wallet_ui/page:qorai_wallet_page_generated",
+    "//qorai/components/constants",
+    "//qorai/components/containers/buildflags",
+    "//qorai/components/cosmetic_filters/resources/data:generated_resources",
+    "//qorai/components/de_amp/common",
+    "//qorai/components/debounce/core/browser",
+    "//qorai/components/debounce/core/common",
+    "//qorai/components/decentralized_dns/core",
+    "//qorai/components/google_sign_in_permission",
+    "//qorai/components/infobars/core",
+    "//qorai/components/l10n/common",
+    "//qorai/components/misc_metrics",
+    "//qorai/components/ntp_background_images/browser",
+    "//qorai/components/ntp_background_images/common",
+    "//qorai/components/p3a",
+    "//qorai/components/p3a_utils",
+    "//qorai/components/playlist/core/common",
+    "//qorai/components/query_filter",
+    "//qorai/components/resources:static_resources",
+    "//qorai/components/services/bat_ads/public/interfaces",
+    "//qorai/components/skus/browser",
+    "//qorai/components/skus/browser/resources:generated_resources",
+    "//qorai/components/skus/common",
+    "//qorai/components/skus/common:mojom",
+    "//qorai/components/text_recognition/common/buildflags",
+    "//qorai/components/time_period_storage",
+    "//qorai/components/tor/buildflags",
+    "//qorai/components/url_sanitizer/core/browser",
+    "//qorai/components/vector_icons",
+    "//qorai/components/web_discovery/buildflags",
+    "//qorai/components/webui",
+    "//chrome/app:command_ids",
+    "//chrome/app/vector_icons",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/bitmap_fetcher",
+    "//chrome/browser/media/router:media_router_feature",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/search_engines",
+    "//chrome/browser/ui/color:color_headers",
+    "//chrome/browser/ui/color:mixers",
+    "//chrome/browser/ui/search_engines",
+    "//chrome/browser/ui/webui",
+    "//chrome/common",
+    "//components/bookmarks/common",
+    "//components/content_settings/browser",
+    "//components/country_codes",
+    "//components/favicon/content",
+    "//components/favicon/core",
+    "//components/gcm_driver:gcm_buildflags",
+    "//components/image_fetcher/core",
+    "//components/infobars/content",
+    "//components/language/core/browser",
+    "//components/omnibox/browser:vector_icons",
+    "//components/optimization_guide/core:features",
+    "//components/optimization_guide/optimization_guide_internals/webui:url_constants",
+    "//components/prefs",
+    "//components/qr_code_generator:bitmap_generator",
+    "//components/resources:components_resources_grit",
+    "//components/search_engines",
+    "//components/sessions",
+    "//components/strings:components_strings",
+    "//components/tab_groups",
+    "//components/update_client",
+    "//components/user_prefs",
+    "//components/webui/flags",
+    "//content/public/browser",
+    "//content/public/common",
+    "//mojo/public/cpp/bindings",
+    "//services/network/public/cpp",
+    "//services/resource_coordinator/public/cpp/memory_instrumentation:browser",
+    "//skia",
+    "//third_party/abseil-cpp:absl",
+    "//ui/accessibility",
+    "//ui/base",
+    "//ui/base/mojom",
+    "//ui/gfx",
+    "//ui/resources",
+    "//ui/shell_dialogs",
+    "//ui/webui",
+    "//url",
+  ]
+
+  if (enable_qorai_vpn) {
+    deps += [
+      "//qorai/browser/qorai_vpn",
+      "//qorai/components/qorai_vpn/browser",
+      "//qorai/components/qorai_vpn/browser/connection:api",
+      "//qorai/components/qorai_vpn/common",
+    ]
+    if (is_win) {
+      deps += [
+        "//qorai/components/qorai_vpn/common/win",
+        "//qorai/components/qorai_vpn/common/wireguard",
+      ]
+    }
+  }
+
+  if (enable_web_discovery_native) {
+    deps += [ "//qorai/components/web_discovery/common" ]
+  }
+
+  if (is_linux) {
+    sources += [
+      "views/qorai_views_delegate_linux.cc",
+      "views/qorai_views_delegate_linux.h",
+    ]
+
+    deps += [ "//chrome/app/theme:chrome_unscaled_resources_grit" ]
+  }
+
+  if (toolkit_views) {
+    sources += [
+      "views/infobars/qorai_confirm_infobar.cc",
+      "views/infobars/qorai_confirm_infobar.h",
+      "views/infobars/qorai_infobar_container_view.cc",
+      "views/infobars/qorai_infobar_container_view.h",
+      "views/infobars/qorai_sync_account_deleted_infobar.cc",
+      "views/infobars/qorai_sync_account_deleted_infobar.h",
+      "views/infobars/custom_styled_label.cc",
+      "views/infobars/custom_styled_label.h",
+      "views/infobars/web_discovery_infobar_content_view.cc",
+      "views/infobars/web_discovery_infobar_content_view.h",
+      "views/infobars/web_discovery_infobar_view.cc",
+      "views/infobars/web_discovery_infobar_view.h",
+    ]
+
+    deps += [
+      "//qorai/browser/ui/views/qorai_ads",
+      "//qorai/browser/ui/views/qorai_tooltips",
+      "//qorai/browser/ui/views/page_info",
+      "//ui/views/controls/webview",
+    ]
+  }
+
+  if (enable_text_recognition) {
+    sources += [
+      "views/text_recognition_dialog_tracker.cc",
+      "views/text_recognition_dialog_tracker.h",
+      "views/text_recognition_dialog_view.cc",
+      "views/text_recognition_dialog_view.h",
+    ]
+
+    deps += [ "//qorai/components/text_recognition/browser" ]
+  }
+
+  if (!is_android && !is_ios) {
+    deps += [
+      "//qorai/app/theme:qorai_theme_resources",
+      "//qorai/app/theme:qorai_unscaled_resources",
+      "//qorai/components/webcompat_reporter/browser",
+      "//qorai/components/webcompat_reporter/ui:generated_resources",
+    ]
+  }
+
+  # These are no longer compiled into Chromium on Android, but we still
+  # need them
+  if (is_android) {
+    sources += [
+      "//chrome/browser/ui/webui/favicon_source.cc",
+      "//chrome/browser/ui/webui/favicon_source.h",
+      "//chrome/browser/ui/webui/sanitized_image_source.cc",
+      "//chrome/browser/ui/webui/sanitized_image_source.h",
+    ]
+
+    deps += [
+      "//chrome/browser/favicon",
+      "//chrome/browser/signin",
+      "//components/favicon/core",
+      "//components/favicon_base",
+      "//components/history/core/browser",
+      "//net",
+      "//ui/native_theme",
+      "//url",
+    ]
+  }
+
+  if (enable_qorai_wayback_machine) {
+    deps += [ "//qorai/components/qorai_wayback_machine" ]
+
+    if (toolkit_views) {
+      sources += [
+        "views/page_action/wayback_machine_action_icon_view.cc",
+        "views/page_action/wayback_machine_action_icon_view.h",
+        "views/page_action/wayback_machine_state_manager.cc",
+        "views/page_action/wayback_machine_state_manager.h",
+        "views/wayback_machine_bubble_view.cc",
+        "views/wayback_machine_bubble_view.h",
+      ]
+    }
+  }
+
+  if (enable_speedreader) {
+    deps += [ "//qorai/browser/ui/speedreader" ]
+    if (toolkit_views) {
+      deps += [ "//qorai/browser/ui/views/speedreader" ]
+    }
+  }
+
+  if (enable_request_otr) {
+    deps += [
+      "//qorai/components/request_otr/browser",
+      "//qorai/components/request_otr/common",
+    ]
+  }
+
+  if (toolkit_views) {
+    deps += [
+      "//qorai/components/sidebar/browser",
+      "//chrome/app:generated_resources",
+      "//chrome/browser/ui/views",
+      "//components/favicon_base",
+    ]
+
+    sources += [
+      "views/sidebar/sidebar_add_item_bubble_delegate_view.cc",
+      "views/sidebar/sidebar_add_item_bubble_delegate_view.h",
+      "views/sidebar/sidebar_button_view.cc",
+      "views/sidebar/sidebar_button_view.h",
+      "views/sidebar/sidebar_container_view.cc",
+      "views/sidebar/sidebar_container_view.h",
+      "views/sidebar/sidebar_control_view.cc",
+      "views/sidebar/sidebar_control_view.h",
+      "views/sidebar/sidebar_edit_item_bubble_delegate_view.cc",
+      "views/sidebar/sidebar_edit_item_bubble_delegate_view.h",
+      "views/sidebar/sidebar_item_add_button.cc",
+      "views/sidebar/sidebar_item_add_button.h",
+      "views/sidebar/sidebar_item_added_feedback_bubble.cc",
+      "views/sidebar/sidebar_item_added_feedback_bubble.h",
+      "views/sidebar/sidebar_item_drag_context.cc",
+      "views/sidebar/sidebar_item_drag_context.h",
+      "views/sidebar/sidebar_item_view.cc",
+      "views/sidebar/sidebar_item_view.h",
+      "views/sidebar/sidebar_items_contents_view.cc",
+      "views/sidebar/sidebar_items_contents_view.h",
+      "views/sidebar/sidebar_items_scroll_view.cc",
+      "views/sidebar/sidebar_items_scroll_view.h",
+    ]
+  }
+
+  if (!is_android) {
+    deps += [
+      "//qorai/app:qorai_generated_resources_grit",
+      "//qorai/browser/qorai_wallet",
+      "//qorai/browser/resources/settings:resources",
+      "//qorai/common/importer",
+      "//qorai/components/qorai_new_tab_ui:generated_resources",
+      "//qorai/components/qorai_new_tab_ui:mojom",
+      "//qorai/components/qorai_private_new_tab_ui/common",
+      "//qorai/components/qorai_private_new_tab_ui/common:mojom",
+      "//qorai/components/qorai_private_new_tab_ui/resources/page:generated_resources",
+      "//qorai/components/qorai_rewards/content",
+      "//qorai/components/qorai_shields/resources/panel:qorai_shields_panel_generated",
+      "//qorai/components/qorai_sync",
+      "//qorai/components/qorai_sync:sync_service_impl_helper",
+      "//qorai/components/qorai_wallet/common",
+      "//qorai/components/qorai_welcome/common",
+      "//qorai/components/qorai_welcome_ui:generated_resources",
+      "//qorai/components/commands/common",
+      "//qorai/components/version_info",
+      "//chrome/app:branded_strings",
+      "//chrome/browser/ui/tabs:tab_enums",
+      "//chrome/browser/ui/webui/top_chrome",
+      "//components/input",
+      "//components/sync_device_info",
+      "//mojo/public/cpp/bindings",
+      "//third_party/blink/public/common",
+      "//ui/color",
+      "//ui/web_dialogs",
+    ]
+
+    if (enable_speedreader) {
+      deps += [
+        "//qorai/components/speedreader/common",
+        "//qorai/components/speedreader/common:mojom",
+        "//qorai/components/speedreader/resources/panel:generated_resources",
+      ]
+    }
+  }
+
+  if (enable_extensions && toolkit_views) {
+    sources += [
+      "toolbar/qorai_location_bar_model_delegate.cc",
+      "toolbar/qorai_location_bar_model_delegate.h",
+      "views/qorai_actions/qorai_actions_container.cc",
+      "views/qorai_actions/qorai_actions_container.h",
+      "views/qorai_actions/qorai_rewards_action_view.cc",
+      "views/qorai_actions/qorai_rewards_action_view.h",
+      "views/qorai_actions/qorai_shields_action_view.cc",
+      "views/qorai_actions/qorai_shields_action_view.h",
+      "views/qorai_help_bubble/qorai_help_bubble_delegate_view.cc",
+      "views/qorai_help_bubble/qorai_help_bubble_delegate_view.h",
+      "views/qorai_help_bubble/qorai_help_bubble_host_view.cc",
+      "views/qorai_help_bubble/qorai_help_bubble_host_view.h",
+      "views/qorai_news/qorai_news_action_icon_view.cc",
+      "views/qorai_news/qorai_news_action_icon_view.h",
+      "views/qorai_news/qorai_news_bubble_controller.cc",
+      "views/qorai_news/qorai_news_bubble_controller.h",
+      "views/location_bar/qorai_location_bar_view.cc",
+      "views/location_bar/qorai_location_bar_view.h",
+      "views/location_bar/qorai_search_conversion/promotion_button_controller.cc",
+      "views/location_bar/qorai_search_conversion/promotion_button_controller.h",
+      "views/location_bar/qorai_search_conversion/promotion_button_view.cc",
+      "views/location_bar/qorai_search_conversion/promotion_button_view.h",
+      "views/location_bar/qorai_selected_keyword_view_util.cc",
+      "views/location_bar/qorai_selected_keyword_view_util.h",
+      "views/location_bar/qorai_star_view.cc",
+      "views/location_bar/qorai_star_view.h",
+      "views/profiles/qorai_avatar_toolbar_button.cc",
+      "views/profiles/qorai_avatar_toolbar_button.h",
+      "views/tabs/qorai_new_tab_button.cc",
+      "views/tabs/qorai_new_tab_button.h",
+      "views/tabs/qorai_tab_search_button.cc",
+      "views/tabs/qorai_tab_search_button.h",
+      "views/toolbar/qorai_toolbar_view.cc",
+      "views/toolbar/qorai_toolbar_view.h",
+    ]
+
+    if (enable_extensions) {
+      sources += [
+        "webui/settings/qorai_default_extensions_handler.cc",
+        "webui/settings/qorai_default_extensions_handler.h",
+      ]
+
+      deps += [
+        "//qorai/browser/extensions:component_loader",
+        "//chrome/browser:flags",
+        "//third_party/widevine/cdm:buildflags",
+      ]
+
+      if (enable_widevine) {
+        deps += [ "//qorai/browser/widevine" ]
+      }
+    }
+
+    if (enable_tor) {
+      sources += [
+        "views/location_bar/onion_location_view.cc",
+        "views/location_bar/onion_location_view.h",
+      ]
+
+      deps += [
+        "//qorai/browser/tor",
+        "//qorai/components/tor",
+        "//qorai/components/tor:pref_names",
+        "//qorai/components/tor/resources",
+      ]
+    }
+
+    deps += [
+      # "//qorai/browser/extensions",
+      "//qorai/components/qorai_extension:generated_resources",
+      "//qorai/components/qorai_extension:static_resources",
+      "//qorai/components/decentralized_dns/content",
+      "//qorai/components/resources:static_resources",
+      "//qorai/components/resources:strings_grit",
+      "//chrome/browser/extensions",
+      "//chrome/browser/ui/exclusive_access",
+      "//components/sessions",
+      "//extensions/browser",
+      "//extensions/common:common_constants",
+      "//ui/base/dragdrop:types",
+    ]
+  }
+
+  if (enable_custom_background) {
+    deps += [ "//qorai/components/ntp_background_images/browser" ]
+  }
+
+  if (enable_qorai_vpn && !is_android) {
+    sources += [
+      "toolbar/qorai_vpn_menu_model.cc",
+      "toolbar/qorai_vpn_menu_model.h",
+      "webui/qorai_vpn/vpn_panel_handler.cc",
+      "webui/qorai_vpn/vpn_panel_handler.h",
+      "webui/qorai_vpn/vpn_panel_ui.cc",
+      "webui/qorai_vpn/vpn_panel_ui.h",
+    ]
+    deps += [
+      "//qorai/components/qorai_vpn/common/mojom",
+      "//qorai/components/qorai_vpn/resources:panel_resources",
+      "//mojo/public/cpp/bindings",
+      "//ui/webui",
+    ]
+
+    if (toolkit_views) {
+      sources += [
+        "views/toolbar/qorai_vpn_button.cc",
+        "views/toolbar/qorai_vpn_button.h",
+        "views/toolbar/qorai_vpn_panel_controller.cc",
+        "views/toolbar/qorai_vpn_panel_controller.h",
+        "views/toolbar/qorai_vpn_status_label.cc",
+        "views/toolbar/qorai_vpn_status_label.h",
+        "views/toolbar/qorai_vpn_toggle_button.cc",
+        "views/toolbar/qorai_vpn_toggle_button.h",
+      ]
+    }
+  }
+
+  if (is_win && is_official_build) {
+    sources += [ "//chrome/browser/ui/webui/help/version_updater_win.cc" ]
+    deps += [ "//chrome/updater/app/server/win:updater_legacy_idl" ]
+  }
+
+  if (enable_tor) {
+    sources += [
+      "webui/tor_internals_ui.cc",
+      "webui/tor_internals_ui.h",
+    ]
+
+    deps += [ "//qorai/components/tor/resources:internals_generated_resources" ]
+  }
+
+  if (!is_android) {
+    sources += [
+      "qorai_rewards/rewards_panel_coordinator.cc",
+      "qorai_rewards/rewards_panel_coordinator.h",
+      "commands/accelerator_service.cc",
+      "commands/accelerator_service.h",
+      "commands/accelerator_service_factory.cc",
+      "commands/accelerator_service_factory.h",
+      "commands/default_accelerators.h",
+      "views/permission_bubble/qorai_wallet_permission_prompt_impl.cc",
+      "views/permission_bubble/qorai_wallet_permission_prompt_impl.h",
+      "views/toolbar/wallet_button.cc",
+      "views/toolbar/wallet_button.h",
+      "views/toolbar/wallet_button_notification_source.cc",
+      "views/toolbar/wallet_button_notification_source.h",
+      "views/wallet_bubble_focus_observer.cc",
+      "views/wallet_bubble_focus_observer.h",
+      "wallet_bubble_manager_delegate_impl.cc",
+      "wallet_bubble_manager_delegate_impl.h",
+      "webui/qorai_wallet/ledger/ledger_ui.cc",
+      "webui/qorai_wallet/ledger/ledger_ui.h",
+      "webui/qorai_wallet/page_handler/wallet_page_handler.cc",
+      "webui/qorai_wallet/page_handler/wallet_page_handler.h",
+      "webui/qorai_wallet/panel_handler/wallet_panel_handler.cc",
+      "webui/qorai_wallet/panel_handler/wallet_panel_handler.h",
+      "webui/qorai_wallet/trezor/trezor_ui.cc",
+      "webui/qorai_wallet/trezor/trezor_ui.h",
+      "webui/qorai_wallet/wallet_common_ui.cc",
+      "webui/qorai_wallet/wallet_common_ui.h",
+      "webui/qorai_wallet/wallet_page_ui.cc",
+      "webui/qorai_wallet/wallet_page_ui.h",
+      "webui/qorai_wallet/wallet_panel_ui.cc",
+      "webui/qorai_wallet/wallet_panel_ui.h",
+    ]
+    deps += [
+      "//qorai/browser/qorai_wallet:tab_helper",
+      "//qorai/browser/ui/qorai_wallet",
+      "//qorai/components/qorai_news/common",
+      "//qorai/components/qorai_rewards/core",
+      "//qorai/components/qorai_wallet/browser:permission_utils",
+      "//qorai/components/qorai_wallet/browser:wallet_handler",
+      "//qorai/components/qorai_wallet/common",
+      "//qorai/components/qorai_wallet/common:buildflags",
+      "//qorai/components/qorai_wallet/common:mojom",
+      "//qorai/components/qorai_wallet/common:pref_names",
+      "//qorai/components/qorai_wallet_ui:resources",
+      "//qorai/components/qorai_wallet_ui/ledger:ledger_bridge_generated",
+      "//qorai/components/qorai_wallet_ui/panel:qorai_wallet_panel_generated",
+      "//qorai/components/qorai_wallet_ui/trezor:trezor_bridge_generated",
+      "//qorai/components/commands/browser",
+      "//qorai/components/constants",
+      "//qorai/components/resources:strings_grit",
+      "//components/permissions",
+      "//components/pref_registry",
+      "//mojo/public/cpp/bindings",
+    ]
+
+    if (enable_qorai_vpn) {
+      deps += [ "//qorai/components/qorai_vpn/common" ]
+    }
+
+    if (enable_tor) {
+      deps += [ "//qorai/components/tor:pref_names" ]
+    }
+  }
+  if (is_android) {
+    sources += [
+      "webui/qorai_wallet/android/android_wallet_page_handler.cc",
+      "webui/qorai_wallet/android/android_wallet_page_handler.h",
+      "webui/qorai_wallet/android/android_wallet_page_ui.cc",
+      "webui/qorai_wallet/android/android_wallet_page_ui.h",
+      "webui/qorai_wallet/page_handler/wallet_page_handler.cc",
+      "webui/qorai_wallet/page_handler/wallet_page_handler.h",
+      "webui/qorai_wallet/wallet_common_ui.cc",
+      "webui/qorai_wallet/wallet_common_ui.h",
+    ]
+    deps += [
+      "//qorai/browser/qorai_wallet",
+      "//qorai/components/qorai_wallet/browser:hd_keyring",
+      "//qorai/components/qorai_wallet/browser:wallet_handler",
+      "//qorai/components/qorai_wallet/common",
+      "//qorai/components/qorai_wallet/common:mojom",
+      "//qorai/components/qorai_wallet_ui:resources",
+      "//qorai/components/qorai_wallet_ui/page/screens/android-buy/android:qorai_wallet_fund_wallet_page_generated",
+      "//qorai/components/qorai_wallet_ui/page/screens/fund-wallet/android:qorai_wallet_deposit_page_generated",
+      "//qorai/components/qorai_wallet_ui/page/screens/send/android:qorai_wallet_send_page_generated",
+      "//qorai/components/qorai_wallet_ui/page/screens/swap/android:qorai_wallet_swap_page_generated",
+    ]
+  }
+
+  if (enable_playlist_webui) {
+    sources += [
+      "playlist/playlist_browser_finder.cc",
+      "playlist/playlist_browser_finder.h",
+      "playlist/playlist_dialogs.cc",
+      "playlist/playlist_dialogs.h",
+      "views/playlist/playlist_action_dialogs.cc",
+      "views/playlist/playlist_action_dialogs.h",
+      "views/playlist/playlist_action_icon_view.cc",
+      "views/playlist/playlist_action_icon_view.h",
+      "views/playlist/playlist_add_bubble_view.cc",
+      "views/playlist/playlist_add_bubble_view.h",
+      "views/playlist/playlist_browser_finder_views.cc",
+      "views/playlist/playlist_bubble_view.cc",
+      "views/playlist/playlist_bubble_view.h",
+      "views/playlist/playlist_bubbles_controller.cc",
+      "views/playlist/playlist_bubbles_controller.h",
+      "views/playlist/playlist_edit_bubble_view.cc",
+      "views/playlist/playlist_edit_bubble_view.h",
+      "views/playlist/selectable_list_view.cc",
+      "views/playlist/selectable_list_view.h",
+      "views/playlist/thumbnail_provider.cc",
+      "views/playlist/thumbnail_provider.h",
+      "views/playlist/thumbnail_view.cc",
+      "views/playlist/thumbnail_view.h",
+      "views/side_panel/playlist/playlist_contents_wrapper.cc",
+      "views/side_panel/playlist/playlist_contents_wrapper.h",
+      "views/side_panel/playlist/playlist_side_panel_coordinator.cc",
+      "views/side_panel/playlist/playlist_side_panel_coordinator.h",
+      "webui/playlist_active_tab_tracker.cc",
+      "webui/playlist_active_tab_tracker.h",
+      "webui/playlist_ui.cc",
+      "webui/playlist_ui.h",
+    ]
+    deps += [
+      "//qorai/components/playlist/content/browser",
+      "//qorai/components/playlist/content/browser/resources:generated_resources",
+      "//chrome/browser/picture_in_picture",
+      "//chrome/browser/ui/exclusive_access",
+      "//components/user_prefs",
+    ]
+  }
+
+  if (toolkit_views) {
+    deps += [
+      "//components/constrained_window",
+      "//ui/events",
+      "//ui/views",
+    ]
+  }
+
+  if (enable_containers) {
+    deps += [
+      "//qorai/components/containers/core/browser",
+      "//qorai/components/containers/core/common",
+      "//qorai/components/containers/core/mojom",
+    ]
+  }
+}
+
+source_set("qorai_layout_constants") {
+  visibility = [ "//chrome/browser/ui:layout_constants" ]
+  sources = [
+    "qorai_layout_constants.cc",
+    "qorai_layout_constants.h",
+    "tabs/qorai_tab_layout_constants.cc",
+    "tabs/qorai_tab_layout_constants.h",
+  ]
+
+  # Circular dependency on "//chrome/browser/ui:layout_constants" is addressed
+  # via qorai_chrome_browser_ui_layout_constants_allow_circular_includes_from
+  # in qorai/browser/sources.gni. This approach is only done as a one-off
+  # because "//chrome/browser/ui/views" target is a `component` and it depends
+  # on "//chrome/browser/ui:layout_constants".
+  deps = [
+    ":qorai_tab_features",
+    "//ui/base",
+  ]
+}
+
+source_set("qorai_tab_prefs") {
+  sources = [
+    "tabs/qorai_tab_prefs.cc",
+    "tabs/qorai_tab_prefs.h",
+  ]
+  deps = [
+    ":qorai_tab_features",
+    "//components/prefs",
+  ]
+}
+
+source_set("qorai_tab_features") {
+  sources = [
+    "tabs/features.cc",
+    "tabs/features.h",
+  ]
+  deps = [
+    "//base",
+    "//chrome/browser/ui:ui_features",
+  ]
+}
+
+source_set("unit_tests") {
+  if (!is_android) {
+    testonly = true
+    sources = [
+      "qorai_file_select_utils_unittest.cc",
+      "qorai_layout_constants_unittest.cc",
+      "qorai_scheme_utils_unittest.cc",
+      "managed_ui_unittest.cc",
+      "views/side_panel/side_panel_web_ui_view_unittest.cc",
+    ]
+    deps = [
+      "//base/test:test_support",
+      "//qorai/components/l10n/common:test_support",
+      "//chrome/browser/ui",
+      "//components/javascript_dialogs",
+      "//testing/gmock",
+      "//testing/gtest",
+      "//ui/base:test_support",
+      "//ui/gfx",
+    ]
+
+    if (enable_qorai_vpn) {
+      sources += [ "views/toolbar/qorai_vpn_button_unittest.cc" ]
+      deps += [
+        "//base",
+        "//qorai/components/qorai_vpn/browser",
+        "//qorai/components/qorai_vpn/browser/connection:api",
+        "//qorai/components/qorai_vpn/browser/connection/ikev2:sim",
+        "//qorai/components/skus/browser",
+        "//chrome/browser/prefs",
+        "//chrome/browser/themes",
+        "//chrome/test:test_support",
+        "//skia",
+        "//third_party/abseil-cpp:absl",
+      ]
+    }
+  }
+}
+
+source_set("browser_tests") {
+  if (!is_android) {
+    testonly = true
+    defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+    sources = [
+      "qorai_browser_browsertest.cc",
+      "views/frame/qorai_system_menu_model_builder_browsertest.cc",
+      "window_closing_confirm_browsertest.cc",
+    ]
+
+    deps = [
+      "//qorai/app:command_ids",
+      "//qorai/components/constants",
+      "//chrome/browser",
+      "//chrome/browser/devtools:test_support",
+      "//chrome/browser/profiles:profile",
+      "//chrome/browser/ui",
+      "//chrome/browser/ui/browser_window",
+      "//chrome/browser/ui/startup",
+      "//chrome/test:test_support",
+      "//chrome/test:test_support_ui",
+      "//components/javascript_dialogs",
+      "//components/optimization_guide/core:features",
+      "//components/optimization_guide/optimization_guide_internals/webui:url_constants",
+      "//components/prefs",
+      "//content/test:test_support",
+    ]
+
+    if (enable_playlist_webui) {
+      sources += [ "views/side_panel/playlist/playlist_side_panel_coordinator_browsertest.cc" ]
+
+      deps += [
+        "//qorai/browser/ui/sidebar",
+        "//qorai/components/playlist/core/common",
+        "//chrome/browser/ui/browser_window",
+        "//chrome/browser/web_applications:web_applications_test_support",
+      ]
+    }
+
+    if (enable_text_recognition) {
+      sources += [ "text_recognition_browsertest.cc" ]
+    }
+  }
+}

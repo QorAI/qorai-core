@@ -1,0 +1,46 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//extensions/buildflags/buildflags.gni")
+import("//testing/test.gni")
+
+source_set("browser_tests") {
+  testonly = true
+
+  sources = [
+    "digital_goods_api_browsertest.cc",
+    "file_system_access_browsertest.cc",
+    "font_browsertest.cc",
+    "js_ethereum_provider_browsertest.cc",
+    "navigator_connection_attribute_browsertest.cc",
+    "subresource_web_bundles_browsertest.cc",
+  ]
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+  deps = [
+    "//base/test:test_support",
+    "//qorai/browser/qorai_wallet",
+    "//qorai/common",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui",
+    "//chrome/common",
+    "//chrome/test:test_support_ui",
+    "//components/embedder_support",
+    "//components/web_package",
+    "//content/test:test_support",
+    "//net:test_support",
+  ]
+
+  if (enable_extensions) {
+    deps += [
+      "//chrome/browser/extensions",
+      "//extensions:test_support",
+      "//extensions/browser",
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+specific_include_rules = {
+  # browser tests should not be in renderer
+  "digital_goods_api_browsertest\.cc": [
+    "!qorai/components/constants/qorai_paths.h",
+    "!chrome/browser/ui/browser.h",
+    "!chrome/browser/ui/tabs/tab_strip_model.h",
+    "!content/public/browser/render_frame_host.h",
+    "!content/public/browser/web_contents.h",
+  ],
+  "file_system_access_browsertest\.cc": [
+    "!qorai/components/constants/qorai_paths.h",
+    "!chrome/browser/ui/browser.h",
+    "!chrome/browser/ui/tabs/tab_strip_model.h",
+    "!content/public/browser/render_frame_host.h",
+    "!content/public/browser/web_contents.h",
+  ],
+  "js_ethereum_provider_browsertest\.cc": [
+    "!qorai/browser/qorai_wallet/qorai_wallet_service_factory.h",
+    "!chrome/browser/profiles/profile.h",
+    "!chrome/browser/ui/browser.h",
+    "!chrome/browser/ui/browser_commands.h",
+    "!chrome/browser/ui/tabs/tab_strip_model.h",
+    "!content/public/browser/web_contents.h",
+    "!chrome/browser/extensions/extension_service.h",
+    "!extensions/browser/extension_system.h",
+    "!extensions/common/extension.h",
+    "!extensions/common/extension_builder.h",
+    "!qorai/components/qorai_wallet/browser/qorai_wallet_service.h",
+    "!qorai/components/qorai_wallet/browser/qorai_wallet_utils.h",
+    "!qorai/components/qorai_wallet/browser/json_rpc_service.h",
+    "!qorai/components/qorai_wallet/browser/keyring_service.h",
+    "!qorai/components/constants/qorai_paths.h",
+  ],
+  "navigator_connection_attribute_browsertest\.cc": [
+    "!qorai/components/constants/qorai_paths.h",
+    "!chrome/browser/ui/browser.h",
+    "!chrome/browser/ui/tabs/tab_strip_model.h",
+    "!content/public/browser/render_frame_host.h",
+    "!content/public/browser/web_contents.h",
+  ],
+  "subresource_web_bundles_browsertest\.cc": [
+    "!chrome/browser/ui/browser.h",
+    "!chrome/browser/ui/tabs/tab_strip_model.h",
+    "!components/web_package/web_bundle_builder.h",
+    "!content/public/browser/render_frame_host.h",
+    "!content/public/browser/web_contents.h",
+  ],
+  "font_browsertest\.cc": [
+    "!qorai/components/constants/qorai_paths.h",
+  ],
+}

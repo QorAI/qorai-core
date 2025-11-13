@@ -1,0 +1,12 @@
+diff --git a/net/dns/BUILD.gn b/net/dns/BUILD.gn
+index 4428896957be15908ce992189db2a0fe95ba3bbd..35823ad8beb3142da73e45da1dfe9695a24cfb43 100644
+--- a/net/dns/BUILD.gn
++++ b/net/dns/BUILD.gn
+@@ -112,6 +112,7 @@ source_set("dns") {
+     "test_dns_config_service.cc",
+     "test_dns_config_service.h",
+   ]
++  sources += qorai_net_dns_sources
+ 
+   if (is_win) {
+     sources += [

@@ -1,0 +1,16 @@
+// Copyright (c) 2021 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+module blink.mojom;
+
+import "qorai/components/qorai_shields/core/common/shields_settings.mojom";
+
+[QoraiExtend]
+interface WorkerContentSettingsProxy {
+  // Returns whether the worker is allowed access to privileged functions that
+  // could be used for fingerprinting.
+  [Sync]
+  GetQoraiShieldsSettings() => (qorai_shields.mojom.ShieldsSettings result);
+};

@@ -1,0 +1,25 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+qorai_chromium_src_chrome_test_test_support_sources = [
+  "//qorai/test/base/testing_qorai_browser_process.cc",
+  "//qorai/test/base/testing_qorai_browser_process.h",
+]
+
+qorai_chromium_src_chrome_test_test_support_deps = [
+  "//qorai/components/ai_chat/core/browser:test_support",
+  "//qorai/components/qorai_origin",
+  "//qorai/components/qorai_shields/content/browser",
+  "//qorai/components/qorai_shields/content/browser:test_support",
+  "//qorai/components/qorai_vpn/common/buildflags",
+  "//qorai/components/tor/buildflags",
+]
+
+if (enable_qorai_vpn) {
+  qorai_chromium_src_chrome_test_test_support_deps +=
+      [ "//qorai/components/qorai_vpn/browser/connection:api" ]
+}

@@ -1,0 +1,127 @@
+# Copyright 2023 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# @generated from third_party/rust/chromium_crates_io/BUILD.gn.hbs by
+# tools/crates/gnrt.
+# Do not edit!
+
+import("//build/rust/cargo_crate.gni")
+
+cargo_crate("lib") {
+  crate_name = "halo2_proofs"
+  epoch = "0.3"
+  crate_type = "rlib"
+  crate_root = "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/lib.rs"
+  sources = [
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/arithmetic.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/circuit.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/circuit/floor_planner.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/circuit/floor_planner/single_pass.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/circuit/floor_planner/v1.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/circuit/floor_planner/v1/strategy.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/circuit/layouter.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/circuit/value.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/cost.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/failure.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/failure/emitter.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/gates.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/graph.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/graph/layout.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/metadata.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/tfp.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/dev/util.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/helpers.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/lib.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/multicore.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/assigned.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/circuit.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/circuit/compress_selectors.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/error.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/keygen.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/lookup.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/lookup/prover.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/lookup/verifier.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/permutation.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/permutation/keygen.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/permutation/prover.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/permutation/verifier.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/prover.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/vanishing.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/vanishing/prover.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/vanishing/verifier.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/verifier.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/plonk/verifier/batch.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/commitment.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/commitment/msm.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/commitment/prover.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/commitment/verifier.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/domain.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/evaluator.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/multiopen.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/multiopen/prover.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/poly/multiopen/verifier.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/halo2_proofs-v0_3/src/transcript.rs",
+  ]
+  inputs = []
+
+  build_native_rust_unit_tests = false
+  edition = "2021"
+  cargo_pkg_authors = "Sean Bowe <sean@electriccoin.co>, Ying Tong Lai <yingtong@electriccoin.co>, Daira Hopwood <daira@electriccoin.co>, Jack Grigg <jack@electriccoin.co>"
+  cargo_pkg_name = "halo2_proofs"
+  cargo_pkg_description =
+      "Fast PLONK-based zero-knowledge proving system with no trusted setup"
+  cargo_pkg_repository = "https://github.com/zcash/halo2"
+  cargo_pkg_version = "0.3.0"
+
+  deps = [
+    "//qorai/third_party/rust/blake2b_simd/v1:lib",
+    "//qorai/third_party/rust/ff/v0_13:lib",
+    "//qorai/third_party/rust/group/v0_13:lib",
+    "//qorai/third_party/rust/halo2_legacy_pdqsort/v0_1:lib",
+    "//qorai/third_party/rust/maybe_rayon/v0_1:lib",
+    "//qorai/third_party/rust/pasta_curves/v0_5:lib",
+    "//qorai/third_party/rust/rand_core/v0_6:lib",
+    "//qorai/third_party/rust/tracing/v0_1:lib",
+  ]
+  features = [
+    "batch",
+    "floor-planner-v1-legacy-pdqsort",
+    "halo2_legacy_pdqsort",
+  ]
+  rustenv = []
+  rustflags = []
+
+  #####################################################################
+  # Tweaking which GN `config`s apply to this target.
+
+  # Config changes that apply to all `//third_party/rust` crates.
+  _configs_to_remove = [
+    # We don't need code coverage data for any `chromium_crates_io` crates.
+    "//build/config/coverage:default_coverage",
+
+    # This is third-party code, so remove `chromium_code` config.  We are not
+    # at the same time adding `//build/config/compiler:no_chromium_code`,
+    # because 1) we don't want to pull how warnings are handled by that config
+    # and 2) that config doesn't have any non-warnings-related stuff.
+    "//build/config/compiler:chromium_code",
+  ]
+  _configs_to_add = []
+
+  # Changing (if needed) which configs apply to this specific crate (based on
+  # `extra_kv.configs_to_remove` and `extra_kv.configs_to_add` from
+  # `gnrt_config.toml`).
+  _configs_to_remove += []
+  _configs_to_add += []
+
+  # Applying config changes.
+  library_configs -= _configs_to_remove
+  library_configs += _configs_to_add
+  executable_configs -= _configs_to_remove
+  executable_configs += _configs_to_add
+  proc_macro_configs -= _configs_to_remove
+  proc_macro_configs += _configs_to_add
+}

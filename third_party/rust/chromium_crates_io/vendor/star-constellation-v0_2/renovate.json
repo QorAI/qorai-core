@@ -1,0 +1,14 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>qorai/renovate-config"
+  ],
+  "packageRules": [
+    {
+      "description": "Stay compatible with older deps for qorai-core",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": false
+    }
+  ]
+}

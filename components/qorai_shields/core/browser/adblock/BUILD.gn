@@ -1,0 +1,22 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+group("adblock") {
+  visibility = [
+    "//qorai/components/qorai_shields/content/browser:*",
+    "//qorai/components/qorai_shields/content/test:test_support",
+    "//qorai/components/qorai_shields/content/test:unit_tests",
+    "//qorai/components/qorai_shields/core/browser:*",
+    "//qorai/components/qorai_shields/core/common:*",
+    "//qorai/fuzzers:*",
+    "//qorai/ios/browser/api/qorai_shields:*",
+  ]
+  deps = [
+    "resolver",
+    "rs:rust_lib",
+  ]
+
+  public_deps = [ "rs:rust_lib_cxx_generated_gen" ]
+}

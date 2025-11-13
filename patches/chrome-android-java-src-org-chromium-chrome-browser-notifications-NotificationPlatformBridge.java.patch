@@ -1,0 +1,22 @@
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/notifications/NotificationPlatformBridge.java b/chrome/android/java/src/org/chromium/chrome/browser/notifications/NotificationPlatformBridge.java
+index d5a80c11fe79af5b6e5e8b396c877010ead82a39..ef5b3d133eee599987c5a0f52ace166cfe4f9b30 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/notifications/NotificationPlatformBridge.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/notifications/NotificationPlatformBridge.java
+@@ -150,7 +150,7 @@ public class NotificationPlatformBridge {
+     private static long sLastPreUnsubscribePreNativeTaskStartRealMillis = -1;
+ 
+     /** Encapsulates attributes that identify a notification and where it originates from. */
+-    private static class NotificationIdentifyingAttributes {
++    public static class NotificationIdentifyingAttributes {
+         public final String notificationId;
+         public final @NotificationType int notificationType;
+         public final String origin;
+@@ -1055,7 +1055,7 @@ public class NotificationPlatformBridge {
+                 .storeNotificationResourcesIfSuspended(notification);
+     }
+ 
+-    private static NotificationBuilderBase prepareNotificationBuilder(
++    protected static NotificationBuilderBase prepareNotificationBuilder(
+             NotificationIdentifyingAttributes identifyingAttributes,
+             boolean vibrateEnabled,
+             String title,

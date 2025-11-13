@@ -1,0 +1,226 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_wayback_machine/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//qorai/components/web_discovery/buildflags/buildflags.gni")
+import("//build/config/features.gni")
+import("//build/config/ui.gni")
+import("//components/gcm_driver/config.gni")
+
+assert(toolkit_views)
+
+source_set("component_loader") {
+  sources = [
+    "qorai_component_loader.cc",
+    "qorai_component_loader.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_extension:static_resources",
+    "//chrome/browser/extensions",
+    "//chrome/browser/profiles:profile",
+    "//components/prefs",
+    "//extensions/browser",
+    "//extensions/common",
+    "//ui/base",
+  ]
+
+  if (enable_web_discovery_native) {
+    deps += [ "//qorai/components/web_discovery/common" ]
+  }
+}
+
+# This is split out from extensions and the rest of qorai_prefs_util because it
+# has circular dependencies on //chrome/browser.
+# https://github.com/qorai/qorai-browser/issues/41418
+source_set("qorai_prefs_util_impl") {
+  visibility = [
+    ":*",
+    "//chrome/browser",
+  ]
+  sources = [ "api/settings_private/qorai_prefs_util_impl.cc" ]
+
+  deps = [
+    "//qorai/components/qorai_shields/core/browser",
+    "//chrome/browser:browser_public_dependencies",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/profiles:profile",
+    "//chrome/common/extensions/api",
+    "//components/content_settings/core/browser:cookie_settings",
+    "//components/content_settings/core/common",
+    "//content/public/browser",
+    "//url",
+  ]
+}
+
+source_set("extensions") {
+  sources = [
+    "api/qorai_extensions_api_client.cc",
+    "api/qorai_extensions_api_client.h",
+    "api/qorai_rewards_api.cc",
+    "api/qorai_rewards_api.h",
+    "api/qorai_talk_api.cc",
+    "api/qorai_talk_api.h",
+    "api/qorai_theme_api.cc",
+    "api/qorai_theme_api.h",
+    "api/identity/qorai_web_auth_flow.cc",
+    "api/identity/qorai_web_auth_flow.h",
+    "api/settings_private/qorai_prefs_util.cc",
+    "api/settings_private/qorai_prefs_util.h",
+    "api/web_discovery_api.cc",
+    "api/web_discovery_api.h",
+    "qorai_extension_management.cc",
+    "qorai_extension_management.h",
+    "qorai_extension_provider.cc",
+    "qorai_extension_provider.h",
+    "qorai_extensions_browser_api_provider.cc",
+    "qorai_extensions_browser_api_provider.h",
+    "qorai_extensions_browser_client_impl.cc",
+    "qorai_extensions_browser_client_impl.h",
+    "updater/qorai_update_client_config.cc",
+    "updater/qorai_update_client_config.h",
+  ]
+
+  deps = [
+    ":qorai_prefs_util_impl",
+    ":resources",
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/browser:browser_process",
+    "//qorai/browser/qorai_adaptive_captcha",
+    "//qorai/browser/qorai_ads",
+    "//qorai/browser/qorai_rewards",
+    "//qorai/browser/qorai_rewards:util",
+    "//qorai/browser/qorai_search",
+    "//qorai/browser/component_updater",
+    "//qorai/browser/extensions/api:generated_api_registration",
+    "//qorai/browser/themes",
+    "//qorai/browser/ui:qorai_tab_prefs",
+    "//qorai/common",
+    "//qorai/common/extensions/api",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/qorai_adaptive_captcha",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_ads/core/public:headers",
+    "//qorai/components/qorai_extension:static_resources",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_rewards/content",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_rewards/core/mojom",
+    "//qorai/components/qorai_search/browser",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wallet/browser:pref_names",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//qorai/components/qorai_wallet/common",
+    "//qorai/components/qorai_wayback_machine/buildflags",
+    "//qorai/components/constants",
+    "//qorai/components/de_amp/common",
+    "//qorai/components/debounce/core/common",
+    "//qorai/components/decentralized_dns/core",
+    "//qorai/components/ntp_background_images/common",
+    "//qorai/components/playlist/core/common",
+    "//qorai/components/request_otr/common",
+    "//qorai/components/sidebar/browser",
+    "//qorai/components/tor/buildflags",
+    "//qorai/components/web_discovery/buildflags",
+    "//qorai/components/webcompat_reporter/common",
+    "//chrome/browser:browser_process",
+    "//chrome/browser:browser_public_dependencies",
+    "//chrome/browser/extensions",
+    "//chrome/browser/extensions:chrome_extensions_browser_client",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui",
+    "//chrome/browser/ui/browser_window",
+    "//chrome/common",
+    "//components/browsing_data/core",
+    "//components/gcm_driver:gcm_buildflags",
+    "//components/prefs",
+    "//components/update_client:network_impl",
+    "//components/user_prefs",
+    "//content/public/browser",
+  ]
+
+  public_deps = [
+    ":component_loader",
+    "//qorai/components/qorai_ads/core/mojom",
+    "//qorai/components/qorai_rewards/core/mojom",
+    "//extensions/browser",
+  ]
+
+  if (use_gcm_from_platform) {
+    deps += [ "//components/gcm_driver" ]
+  }
+
+  if (enable_qorai_wayback_machine) {
+    deps += [ "//qorai/components/qorai_wayback_machine" ]
+  }
+
+  if (enable_speedreader) {
+    deps += [ "//qorai/components/speedreader" ]
+  }
+
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/components/qorai_vpn/common" ]
+  }
+
+  if (enable_tor) {
+    deps += [
+      "//qorai/browser/tor",
+      "//qorai/components/tor",
+      "//qorai/components/tor:pref_names",
+    ]
+  }
+
+  if (enable_web_discovery_native) {
+    deps += [ "//qorai/components/web_discovery/common" ]
+  }
+
+  if (is_win) {
+    deps += [ "//qorai/components/windows_recall" ]
+  }
+
+  deps += [
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/common:buildflags",
+    "//components/prefs",
+  ]
+
+  allow_circular_includes_from = [ ":qorai_prefs_util_impl" ]
+}
+
+group("resources") {
+  deps = [
+    "//qorai/components/qorai_extension:generated_resources",
+    "//qorai/components/qorai_extension:static_resources",
+  ]
+}
+
+source_set("test_support") {
+  testonly = true
+
+  sources = [
+    "qorai_base_local_data_files_browsertest.cc",
+    "qorai_base_local_data_files_browsertest.h",
+  ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/browser",
+    "//qorai/components/qorai_component_updater/browser",
+    "//qorai/components/constants",
+    "//chrome/browser/extensions",
+    "//chrome/test:test_support",
+    "//content/public/browser",
+    "//content/test:test_support",
+    "//net",
+    "//net:test_support",
+  ]
+}

@@ -1,0 +1,6 @@
+include_rules = [
+  "+qorai/v8/include",
+  "+qorai/components/qorai_page_graph/common/buildflags.h",
+  "+qorai/components/qorai_shields/core/common",
+  "+net/base",
+]

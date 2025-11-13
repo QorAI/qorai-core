@@ -1,0 +1,23 @@
+<if expr="enable_qorai_vpn_wireguard">
+  <style include="settings-shared cr-shared-style">
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      height: 68px;
+    }
+  </style>
+
+  <settings-section
+    page-title="$i18n{vpnPageTitle}">
+    <settings-vpn-page prefs="{{prefs}}">
+
+      <settings-toggle-button id="toggleWireguardButton"
+        pref="{{prefs.qorai.qorai_vpn.wireguard_enabled}}"
+        label="$i18n{useWireguardLabel}"
+        sub-label="[[toggleWireguardSubLabel_]]"
+        disabled="[[qoraiVpnConnected_]]">
+      </settings-toggle-button>
+
+    </settings-vpn-page>
+  </settings-section>
+</if>

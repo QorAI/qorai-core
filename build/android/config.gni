@@ -1,0 +1,147 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/android/qorai_java_resources.gni")
+import("//qorai/android/qorai_java_sources.gni")
+import("//qorai/android/java/org/chromium/chrome/browser/billing/sources.gni")
+import("//qorai/android/java/org/chromium/chrome/browser/playlist/sources.gni")
+import("//qorai/build/android/bytecode/bytecode_rewriter.gni")
+
+declare_args() {
+  qorai_android_manifest_includes = []
+  extra_libchrome_junit_tests_visibility = [ "//qorai/test:*" ]
+}
+
+qorai_android_manifest_includes = [
+  "//qorai/android/java/AndroidManifest.xml",
+  "//qorai/android/java/AndroidManifest_intent_filters.xml",
+  "//qorai/android/java/AndroidManifest_user_permissions.xml",
+]
+
+qorai_chrome_java_deps = [
+  "//qorai/android/java/org/chromium/chrome/browser/search_engines:java",
+  "//qorai/qorai_domains/android:java",
+  "//qorai/browser/customize_menu/android:java",
+  "//qorai/browser/download/android:java",
+  "//qorai/browser/notifications/android:qorai_java",
+  "//qorai/browser/notifications/android:java",
+  "//qorai/browser/password_entry_edit:public_java",
+  "//qorai/browser/quick_search_engines/android:java",
+  "//qorai/browser/safe_browsing/android/java/src/org/chromium/chrome/browser/safe_browsing/settings:java",
+  "//qorai/browser/skus/android:java",
+  "//qorai/browser/tab_group_sync:java",
+  "//qorai/browser/tabmodel/android:java",
+  "//qorai/browser/ui/android/logo:java",
+  "//qorai/browser/ui/android/omnibox:java",
+  "//qorai/browser/ui/android/theme:java",
+  "//qorai/browser/ui/android/toolbar:java",
+  "//qorai/components/ai_chat/core/common/mojom:mojom_java",
+  "//qorai/components/qorai_ads/core/mojom:mojom_java",
+  "//qorai/components/qorai_news/common:mojom_java",
+  "//qorai/components/qorai_rewards/core/mojom:mojom_java",
+  "//qorai/components/qorai_shields/core/common:mojom_java",
+  "//qorai/components/qorai_vpn/common/mojom:mojom_java",
+  "//qorai/components/qorai_wallet/common:mojom_java",
+  "//qorai/components/browser_ui/media/android:java",
+  "//qorai/components/browser_ui/notifications/android:java",
+  "//qorai/components/browser_ui/site_settings/android:java",
+  "//qorai/components/misc_metrics/common:mojom_java",
+  "//qorai/components/playlist/core/common/mojom:mojom_java",
+  "//qorai/components/safe_browsing/android:qorai_safe_browsing_java",
+  "//qorai/components/skus/common:mojom_java",
+  "//qorai/components/url_sanitizer/core/common/mojom:mojom_java",
+  "//qorai/components/variations/android:java",
+  "//qorai/components/version_info/android:java",
+  "//qorai/components/webcompat_reporter/common:mojom_java",
+  "//qorai/third_party/android_deps:com_android_installreferrer_java",
+  "//qorai/third_party/android_deps:com_github_bumptech_glide_java",
+  "//qorai/third_party/android_deps:com_google_android_play_integrity_java",
+  "//qorai/third_party/android_deps:com_wireguard_android_J__unpack_aar",
+  "//qorai/third_party/android_deps:com_wireguard_android_java",
+  "//qorai/third_party/android_deps:google_play_services_safetynet_java",
+  "//qorai/third_party/zxing:zxing_java",
+  "//qorai/ui/android:base_java",
+  "//third_party/android_deps:com_android_support_support_annotations_java",
+  "//third_party/android_deps:com_google_code_gson_gson_java",
+  "//third_party/android_deps:google_play_services_vision_common_java",
+  "//third_party/android_deps:google_play_services_vision_java",
+  "//third_party/android_deps:org_jetbrains_kotlinx_kotlinx_coroutines_android_java",
+  "//third_party/androidx:androidx_lifecycle_lifecycle_livedata_core_java",
+  "//third_party/androidx:androidx_lifecycle_lifecycle_livedata_java",
+  "//third_party/androidx:androidx_lifecycle_lifecycle_viewmodel_java",
+  "//ui/android:java_enums_srcjar",
+  "//url/mojom:url_mojom_origin_java",
+]
+
+qorai_chrome_java_deps += qorai_app_billing_deps
+qorai_chrome_java_deps += qorai_app_playlist_deps
+
+qorai_chrome_all_java_deps = [
+  "//qorai/android/features/tab_ui:java",
+  "//qorai/browser/download/internal/android:java",
+  "//qorai/browser/partnercustomizations:delegate_public_impl_java",
+  "//qorai/browser/password_entry_edit/android/internal:java",
+]
+
+# To use our overrided enum in java, put the header file of our overrided enum
+# in qorai_android_java_enums_srcjar target and add the chromium header file of
+# the enum we're replacing in qorai_java_cpp_enum_filter.
+qorai_java_cpp_enum_filter =
+    [ "//chrome/browser/notifications/notification_handler.h" ]
+qorai_chrome_java_srcjar_deps = [
+  "//qorai/android:qorai_android_java_enums_srcjar",
+  "//qorai/android:qorai_config_java",
+  "//qorai/browser/android/preferences:java_pref_names_srcjar",
+  "//qorai/components/web_discovery/browser/android:java_pref_names_srcjar",
+]
+
+qorai_chrome_app_java_resources_deps = [
+  "//qorai/android:java_resources",
+  "//qorai/browser/quick_search_engines/android:java_resources",
+  "//qorai/build/android:android_qorai_strings_grd",
+]
+
+qorai_resources_exclusion_exceptions =
+    [ "*com_google_android_material*design_bottom_*" ]
+
+# Re-define play core target to use full library as we need it for seemless review processes.
+playcore_target =
+    "//qorai/third_party/android_deps:com_google_android_play_core_java"
+
+qorai_jni_headers_sources = [
+  "//qorai/android/java/org/chromium/chrome/browser/QoraiFeatureUtil.java",
+  "//qorai/android/java/org/chromium/chrome/browser/QoraiLocalState.java",
+  "//qorai/android/java/org/chromium/chrome/browser/QoraiRelaunchUtils.java",
+  "//qorai/android/java/org/chromium/chrome/browser/QoraiRewardsNativeWorker.java",
+  "//qorai/android/java/org/chromium/chrome/browser/QoraiSyncWorker.java",
+  "//qorai/android/java/org/chromium/chrome/browser/app/QoraiActivity.java",
+  "//qorai/android/java/org/chromium/chrome/browser/bookmarks/QoraiBookmarkBridge.java",
+  "//qorai/android/java/org/chromium/chrome/browser/qoraiqora/QoraiQoraMojomHelper.java",
+  "//qorai/android/java/org/chromium/chrome/browser/qoraiqora/QoraiQoraUtils.java",
+  "//qorai/android/java/org/chromium/chrome/browser/qorai_news/QoraiNewsControllerFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/cosmetic_filters/QoraiCosmeticFiltersUtils.java",
+  "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/AssetRatioServiceFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/BlockchainRegistryFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/QoraiWalletProviderDelegateImplHelper.java",
+  "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/QoraiWalletServiceFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/SwapServiceFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/fragments/dapps/ConnectAccountFragment.java",
+  "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/permission/QoraiDappPermissionPromptDialog.java",
+  "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/util/WalletNativeUtils.java",
+  "//qorai/android/java/org/chromium/chrome/browser/misc_metrics/MiscAndroidMetricsFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/ntp_background_images/NTPBackgroundImagesBridge.java",
+  "//qorai/android/java/org/chromium/chrome/browser/playlist/PlaylistServiceFactoryAndroid.java",
+  "//qorai/android/java/org/chromium/chrome/browser/preferences/QoraiPrefServiceBridge.java",
+  "//qorai/android/java/org/chromium/chrome/browser/preferences/website/QoraiShieldsContentSettings.java",
+  "//qorai/android/java/org/chromium/chrome/browser/shields/FilterListServiceFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/shields/UrlSanitizerServiceFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/sync/QoraiSyncDevices.java",
+  "//qorai/android/java/org/chromium/chrome/browser/util/QoraiReferrer.java",
+  "//qorai/android/java/org/chromium/chrome/browser/vpn/QoraiVpnNativeWorker.java",
+  "//qorai/android/java/org/chromium/chrome/browser/vpn/QoraiVpnServiceFactoryAndroid.java",
+  "//qorai/android/java/org/chromium/chrome/browser/webcompat_reporter/WebcompatReporterServiceFactory.java",
+  "//qorai/android/java/org/chromium/chrome/browser/youtube_script_injector/QoraiYouTubeScriptInjectorNativeHelper.java",
+  "//qorai/browser/qorai_ads/android/java/org/chromium/chrome/browser/QoraiAdsNativeHelper.java",
+]

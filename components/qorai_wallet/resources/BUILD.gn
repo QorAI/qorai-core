@@ -1,0 +1,31 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/common/typescript.gni")
+import("//tools/grit/grit_rule.gni")
+import("//tools/grit/repack.gni")
+
+transpile_web_ui("qorai_wallet_script_resources") {
+  output_module = false
+  entry_points = [
+    [
+      "ethereum_provider_script",
+      rebase_path("ethereum_provider.js"),
+    ],
+    [
+      "solana_provider_script",
+      rebase_path("solana_provider.js"),
+    ],
+  ]
+
+  resource_name = "qorai_wallet_script"
+  imports_from = [ "//qorai/components/qorai_wallet/resources/" ]
+}
+
+pack_web_resources("ethereum_provider_generated_resources") {
+  resource_name = "qorai_wallet_script"
+  output_dir = "$root_gen_dir/qorai/components/qorai_wallet/resources"
+  deps = [ ":qorai_wallet_script_resources" ]
+}

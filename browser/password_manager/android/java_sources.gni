@@ -1,0 +1,32 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_browser_password_manager_java_sources = [
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/QoraiPasswordManagerHelper.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/QoraiPasswordsPreference.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/CallbackDelayer.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/DialogManager.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/ExportErrorDialogFragment.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/ExportFlow.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/ExportFlowInterface.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/ImportFlow.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/NonCancelableProgressBar.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordAccessReauthenticationHelper.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordListObserver.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordManagerHandler.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordManagerHandlerProvider.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordReauthenticationFragment.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordUiView.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/ProgressBarDialogFragment.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/ReauthenticationManager.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/SavedPasswordEntry.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/SingleThreadBarrierClosure.java",
+  "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/TimedCallbackDelayer.java",
+]
+
+qorai_browser_password_manager_deps =
+    [ "//qorai/build/android:android_qorai_strings_grd" ]
+
+qorai_browser_password_manager_jni_headers = [ "//qorai/browser/password_manager/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordUiView.java" ]

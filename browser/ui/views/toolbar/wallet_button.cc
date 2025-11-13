@@ -1,0 +1,279 @@
+// Copyright (c) 2021 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// you can obtain one at http://mozilla.org/MPL/2.0/.
+
+#include "qorai/browser/ui/views/toolbar/wallet_button.h"
+
+#include <algorithm>
+#include <utility>
+
+#include "base/check.h"
+#include "base/strings/string_number_conversions.h"
+#include "qorai/browser/qorai_wallet/qorai_wallet_tab_helper.h"
+#include "qorai/browser/ui/qorai_icon_with_badge_image_source.h"
+#include "qorai/browser/ui/color/qorai_color_id.h"
+#include "qorai/components/qorai_wallet/browser/pref_names.h"
+#include "qorai/components/qorai_wallet/common/common_utils.h"
+#include "qorai/components/constants/webui_url_constants.h"
+#include "qorai/components/vector_icons/vector_icons.h"
+#include "qorai/grit/qorai_generated_resources.h"
+#include "chrome/browser/ui/browser.h"
+#include "chrome/browser/ui/browser_finder.h"
+#include "chrome/browser/ui/browser_list.h"
+#include "chrome/browser/ui/color/chrome_color_id.h"
+#include "chrome/browser/ui/tabs/tab_strip_model.h"
+#include "chrome/browser/ui/views/chrome_layout_provider.h"
+#include "chrome/browser/ui/views/toolbar/toolbar_ink_drop_util.h"
+#include "components/grit/qorai_components_strings.h"
+#include "components/prefs/pref_service.h"
+#include "content/public/browser/web_contents.h"
+#include "ui/base/l10n/l10n_util.h"
+#include "ui/base/metadata/metadata_impl_macros.h"
+#include "ui/color/color_provider_manager.h"
+#include "ui/gfx/geometry/rect_f.h"
+#include "ui/gfx/geometry/rrect_f.h"
+#include "ui/gfx/paint_vector_icon.h"
+#include "ui/menus/simple_menu_model.h"
+#include "ui/views/controls/highlight_path_generator.h"
+#include "ui/views/layout/fill_layout.h"
+
+namespace {
+
+constexpr int kQoraiWalletLeftMarginExtra = -3;
+
+content::WebContents* GetActiveWebContents() {
+  return BrowserList::GetInstance()
+      ->GetLastActive()
+      ->tab_strip_model()
+      ->GetActiveWebContents();
+}
+
+class QoraiWalletButtonHighlightPathGenerator
+    : public views::HighlightPathGenerator {
+ public:
+  explicit QoraiWalletButtonHighlightPathGenerator(bool use_extra_left_margin)
+      : use_extra_left_margin_(use_extra_left_margin) {}
+
+  // HighlightPathGenerator:
+  SkPath GetHighlightPath(const views::View* view) override {
+    DCHECK(view);
+
+    gfx::Rect rect(view->size());
+    rect.Inset(GetToolbarInkDropInsets(view));
+    rect.Outset(gfx::Outsets::TLBR(
+        0, 0, 0, use_extra_left_margin_ ? kQoraiWalletLeftMarginExtra : 0));
+
+    auto* layout_provider = ChromeLayoutProvider::Get();
+    DCHECK(layout_provider);
+
+    const int radius =
+        layout_provider->GetCornerRadiusMetric(views::Emphasis::kMaximum, {});
+    SkPath path;
+    path.addRoundRect(gfx::RectToSkRect(rect), radius, radius);
+    return path;
+  }
+
+ private:
+  bool use_extra_left_margin_ = false;
+};
+
+class WalletButtonMenuModel : public ui::SimpleMenuModel,
+                              public ui::SimpleMenuModel::Delegate {
+ public:
+  explicit WalletButtonMenuModel(PrefService* prefs)
+      : SimpleMenuModel(this), prefs_(prefs) {
+    Build();
+  }
+
+  ~WalletButtonMenuModel() override = default;
+  WalletButtonMenuModel(const WalletButtonMenuModel&) = delete;
+  WalletButtonMenuModel& operator=(const WalletButtonMenuModel&) = delete;
+
+ private:
+  enum ContextMenuCommand {
+    HideQoraiWalletIcon,
+  };
+
+  // ui::SimpleMenuModel::Delegate override:
+  void ExecuteCommand(int command_id, int event_flags) override {
+    if (command_id == HideQoraiWalletIcon) {
+      prefs_->SetBoolean(kShowWalletIconOnToolbar, false);
+    }
+  }
+
+  void Build() {
+    AddItemWithStringId(HideQoraiWalletIcon,
+                        IDS_HIDE_QORAI_WALLET_ICON_ON_TOOLBAR);
+  }
+
+  raw_ptr<PrefService> prefs_ = nullptr;
+};
+
+const ui::ColorProvider* GetColorProviderForView(
+    base::WeakPtr<WalletButton> view) {
+  if (view) {
+    return view->GetColorProvider();
+  }
+
+  return ui::ColorProviderManager::Get().GetColorProviderFor(
+      ui::NativeTheme::GetInstanceForNativeUi()->GetColorProviderKey(nullptr));
+}
+
+}  // namespace
+
+WalletButton::WalletButton(View* backup_anchor_view, Profile* profile)
+    : ToolbarButton(
+          base::BindRepeating(&WalletButton::OnWalletPressed,
+                              base::Unretained(this)),
+          std::make_unique<WalletButtonMenuModel>(profile->GetPrefs()),
+          nullptr,
+          false),  // Long-pressing is not intended for something that
+                   // already shows a panel on click
+      prefs_(profile->GetPrefs()),
+      backup_anchor_view_(backup_anchor_view) {
+  SetTooltipText(l10n_util::GetStringUTF16(IDS_TOOLTIP_WALLET));
+
+  // The MenuButtonController makes sure the panel closes when clicked if the
+  // panel is already open.
+  auto menu_button_controller = std::make_unique<views::MenuButtonController>(
+      this,
+      base::BindRepeating(&WalletButton::OnWalletPressed,
+                          base::Unretained(this)),
+      std::make_unique<views::Button::DefaultButtonControllerDelegate>(this));
+  menu_button_controller_ = menu_button_controller.get();
+  SetButtonController(std::move(menu_button_controller));
+
+  notification_source_ =
+      std::make_unique<qorai_wallet::WalletButtonNotificationSource>(
+          profile, base::BindRepeating(&WalletButton::OnNotificationUpdate,
+                                       weak_ptr_factory_.GetWeakPtr()));
+}
+
+WalletButton::~WalletButton() = default;
+
+void WalletButton::AddedToWidget() {
+  if (notification_source_) {
+    notification_source_->Init();
+  }
+}
+
+void WalletButton::OnWalletPressed(const ui::Event& event) {
+  if (IsShowingBubble()) {
+    CloseWalletBubble();
+    return;
+  }
+
+  ShowWalletBubble();
+  notification_source_->MarkWalletButtonWasClicked();
+}
+
+void WalletButton::OnNotificationUpdate(bool show_suggest_badge,
+                                        size_t counter) {
+  show_suggest_badge_ = show_suggest_badge;
+  counter_ = counter;
+  UpdateImageAndText();
+}
+
+void WalletButton::InkDropRippleAnimationEnded(views::InkDropState state) {
+  const bool activated = state == views::InkDropState::ACTIVATED;
+  UpdateImageAndText(activated);
+}
+
+void WalletButton::OnThemeChanged() {
+  ToolbarButton::OnThemeChanged();
+
+  views::HighlightPathGenerator::Install(
+      this, std::make_unique<QoraiWalletButtonHighlightPathGenerator>(
+                (counter_ > 0)));
+}
+
+std::string WalletButton::GetBadgeText() {
+  if (counter_ > 0) {
+    std::string text = counter_ > 99 ? "99+" : base::NumberToString(counter_);
+    return text;
+  }
+  return "";
+}
+
+void WalletButton::UpdateImageAndText(bool activated) {
+  views::HighlightPathGenerator::Install(
+      this, std::make_unique<QoraiWalletButtonHighlightPathGenerator>(
+                (counter_ > 0)));
+
+  const ui::ColorProvider* color_provider = GetColorProvider();
+
+  ui::ColorId color_id = kColorToolbarButtonIcon;
+  if (activated) {
+    color_id = kColorToolbarButtonActivated;
+  }
+
+  if (counter_ == 0) {
+    SetImageModel(views::Button::STATE_NORMAL,
+                  ui::ImageModel::FromVectorIcon(
+                      kQoraProductQoraiWalletIcon,
+                      color_provider->GetColor(color_id), GetIconSize()));
+    return;
+  }
+
+  auto icon = gfx::CreateVectorIcon(kQoraProductQoraiWalletIcon, GetIconSize(),
+                                    color_provider->GetColor(color_id));
+
+  size_t icon_size = std::max(icon.width(), icon.height());
+  auto badge_size = qorai::QoraiIconWithBadgeImageSource::GetMaxBadgeSize();
+  gfx::Size preferred_size(icon_size + badge_size.width(),
+                           icon_size + badge_size.height() / 2);
+
+  auto image_source = std::make_unique<qorai::QoraiIconWithBadgeImageSource>(
+      preferred_size,
+      base::BindRepeating(&GetColorProviderForView,
+                          weak_ptr_factory_.GetWeakPtr()),
+      icon_size, kQoraiWalletLeftMarginExtra);
+  image_source->SetAllowEmptyText(show_suggest_badge_);
+  image_source->SetIcon(gfx::Image(icon));
+
+  auto text = GetBadgeText();
+  image_source->SetBadge(std::make_unique<IconWithBadgeImageSource::Badge>(
+      text, qorai::kBadgeTextColor, qorai::kBadgeNotificationBG));
+  SetImageModel(views::Button::STATE_NORMAL,
+                ui::ImageModel::FromImageSkia(
+                    gfx::ImageSkia(std::move(image_source), preferred_size)));
+}
+
+void WalletButton::ShowWalletBubble() {
+  qorai_wallet::QoraiWalletTabHelper::FromWebContents(GetActiveWebContents())
+      ->ShowBubble();
+}
+
+void WalletButton::ShowApproveWalletBubble() {
+  qorai_wallet::QoraiWalletTabHelper::FromWebContents(GetActiveWebContents())
+      ->ShowApproveWalletBubble();
+}
+
+void WalletButton::CloseWalletBubble() {
+  qorai_wallet::QoraiWalletTabHelper::FromWebContents(GetActiveWebContents())
+      ->CloseBubble();
+}
+
+bool WalletButton::IsShowingBubble() {
+  return qorai_wallet::QoraiWalletTabHelper::FromWebContents(
+             GetActiveWebContents())
+      ->IsShowingBubble();
+}
+
+bool WalletButton::IsBubbleClosedForTesting() {
+  return qorai_wallet::QoraiWalletTabHelper::FromWebContents(
+             GetActiveWebContents())
+      ->IsBubbleClosedForTesting();
+}
+
+views::View* WalletButton::GetAsAnchorView() {
+  View* anchor_view = this;
+  if (!prefs_->GetBoolean(kShowWalletIconOnToolbar)) {
+    anchor_view = backup_anchor_view_;
+  }
+  return anchor_view;
+}
+
+BEGIN_METADATA(WalletButton)
+END_METADATA

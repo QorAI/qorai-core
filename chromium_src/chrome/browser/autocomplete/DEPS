@@ -1,0 +1,7 @@
+include_rules = [
+  "+qorai/components/ai_chat/content/browser",
+  "+qorai/components/ai_chat/core/browser",
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/commander/common/buildflags",
+  "+qorai/components/commander/browser",
+]

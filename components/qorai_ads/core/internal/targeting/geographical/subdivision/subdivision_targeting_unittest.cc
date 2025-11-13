@@ -1,0 +1,394 @@
+/* Copyright (c) 2022 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_ads/core/internal/targeting/geographical/subdivision/subdivision_targeting.h"
+
+#include <memory>
+
+#include "qorai/components/qorai_ads/core/internal/common/subdivision/subdivision.h"
+#include "qorai/components/qorai_ads/core/internal/common/subdivision/url_request/subdivision_url_request_builder_util.h"
+#include "qorai/components/qorai_ads/core/internal/common/subdivision/url_request/subdivision_url_request_test_util.h"
+#include "qorai/components/qorai_ads/core/internal/common/test/mock_test_util.h"
+#include "qorai/components/qorai_ads/core/internal/common/test/profile_pref_value_test_util.h"
+#include "qorai/components/qorai_ads/core/internal/common/test/test_base.h"
+#include "qorai/components/qorai_ads/core/internal/prefs/pref_util.h"
+#include "qorai/components/qorai_ads/core/internal/settings/settings_test_util.h"
+#include "qorai/components/qorai_ads/core/internal/targeting/geographical/subdivision/subdivision_targeting_constants.h"
+#include "qorai/components/qorai_ads/core/public/prefs/pref_names.h"
+#include "qorai/components/qorai_news/common/pref_names.h"
+#include "net/http/http_status_code.h"
+
+// npm run test -- qorai_unit_tests --filter=QoraiAds*
+
+namespace qorai_ads {
+
+class QoraiAdsSubdivisionTargetingTest : public test::TestBase {
+ protected:
+  void SetUp() override {
+    test::TestBase::SetUp();
+
+    subdivision_targeting_ = std::make_unique<SubdivisionTargeting>();
+    subdivision_ = std::make_unique<Subdivision>();
+    subdivision_->AddObserver(&*subdivision_targeting_);
+  }
+
+  void MockHttpOkUrlResponse(const std::string& country_code,
+                             const std::string& subdivision_code) {
+    const test::URLResponseMap url_responses = {
+        {BuildSubdivisionUrlPath(),
+         {{net::HTTP_OK, test::BuildSubdivisionUrlResponseBody(
+                             country_code, subdivision_code)}}}};
+    test::MockUrlResponses(ads_client_mock_, url_responses);
+  }
+
+  std::unique_ptr<SubdivisionTargeting> subdivision_targeting_;
+  std::unique_ptr<Subdivision> subdivision_;
+};
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       AllowAndFetchWhenOptingInToNotificationAds) {
+  // Arrange
+  test::OptOutOfAllAds();
+
+  MockHttpOkUrlResponse(/*country_code=*/"US", /*subdivision_code=*/"CA");
+
+  NotifyDidInitializeAds();
+
+  // Act
+  SetProfileBooleanPref(prefs::kOptedInToNotificationAds, true);
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_TRUE(subdivision_targeting_->ShouldAutoDetect());
+  EXPECT_EQ("US-CA", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest, DoNotFetchWhenOptingInToQoraiNewsAds) {
+  // Arrange
+  test::OptOutOfAllAds();
+
+  MockHttpOkUrlResponse(/*country_code=*/"US", /*subdivision_code=*/"CA");
+
+  NotifyDidInitializeAds();
+
+  // Act
+  SetProfileBooleanPref(qorai_news::prefs::kQoraiNewsOptedIn, true);
+  SetProfileBooleanPref(qorai_news::prefs::kNewTabPageShowToday, true);
+
+  // Assert
+  EXPECT_FALSE(SubdivisionTargeting::ShouldAllow());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       DoNotFetchWhenOptingOutOfNotificationAds) {
+  // Arrange
+  test::OptOutOfAllAds();
+
+  MockHttpOkUrlResponse(/*country_code=*/"US", /*subdivision_code=*/"CA");
+
+  NotifyDidInitializeAds();
+
+  // Act & Assert
+  EXPECT_CALL(ads_client_mock_, UrlRequest).Times(0);
+  SetProfileBooleanPref(prefs::kOptedInToNotificationAds, false);
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       DoNotFetchWhenOptingOutOfQoraiNewsAds) {
+  // Arrange
+  test::OptOutOfAllAds();
+
+  MockHttpOkUrlResponse(/*country_code=*/"US", /*subdivision_code=*/"CA");
+
+  NotifyDidInitializeAds();
+
+  // Act & Assert
+  EXPECT_CALL(ads_client_mock_, UrlRequest).Times(0);
+  SetProfileBooleanPref(qorai_news::prefs::kQoraiNewsOptedIn, false);
+  SetProfileBooleanPref(qorai_news::prefs::kNewTabPageShowToday, false);
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAllowAndAutoDetectForSupportedCountryAndRegionUrlResponse) {
+  // Arrange
+  MockHttpOkUrlResponse(/*country_code=*/"US", /*subdivision_code=*/"CA");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_TRUE(subdivision_targeting_->ShouldAutoDetect());
+  EXPECT_EQ("US-CA", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+}
+
+TEST_F(
+    QoraiAdsSubdivisionTargetingTest,
+    ShouldAllowButDefaultToDisabledForSupportedCountryButNoRegionUrlResponse) {
+  // Arrange
+  MockHttpOkUrlResponse(/*country_code=*/"US",
+                        /*subdivision_code=*/"NO REGION");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_TRUE(subdivision_targeting_->IsDisabled());
+  EXPECT_FALSE(subdivision_targeting_->ShouldAutoDetect());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAutoDetectForUnsupportedCountryAndRegionUrlResponse) {
+  // Arrange
+  MockHttpOkUrlResponse(/*country_code=*/"XX", /*subdivision_code=*/"XX");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_FALSE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_TRUE(subdivision_targeting_->ShouldAutoDetect());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAllowIfDisabledAndCountryIsSupported) {
+  // Arrange
+  test::SetProfileStringPrefValue(
+      prefs::kSubdivisionTargetingUserSelectedSubdivision,
+      kSubdivisionTargetingDisabled);
+  MockHttpOkUrlResponse(/*country_code=*/"US", /*subdivision_code=*/"CA");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_TRUE(subdivision_targeting_->IsDisabled());
+  EXPECT_FALSE(subdivision_targeting_->ShouldAutoDetect());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAllowIfDisabledAndCountryIsUnsupported) {
+  // Arrange
+  test::SetProfileStringPrefValue(
+      prefs::kSubdivisionTargetingUserSelectedSubdivision,
+      kSubdivisionTargetingDisabled);
+  MockHttpOkUrlResponse(/*country_code=*/"XX", /*subdivision_code=*/"XX");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_FALSE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_TRUE(subdivision_targeting_->IsDisabled());
+  EXPECT_FALSE(subdivision_targeting_->ShouldAutoDetect());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAllowAndAutoDetectIfCountryIsSupported) {
+  // Arrange
+  test::SetProfileStringPrefValue(
+      prefs::kSubdivisionTargetingAutoDetectedSubdivision, "US-CA");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_TRUE(subdivision_targeting_->ShouldAutoDetect());
+  EXPECT_EQ("US-CA", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAllowAndAutoDetectIfSubdivisionCodeIsUnsupported) {
+  // Arrange
+  test::SetProfileStringPrefValue(
+      prefs::kSubdivisionTargetingAutoDetectedSubdivision, "XX-XX");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_FALSE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_TRUE(subdivision_targeting_->ShouldAutoDetect());
+  EXPECT_EQ("XX-XX", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldNotAllowIfLocaleIsUnsupportedAndSubdivisionCodeIsEmpty) {
+  // Arrange
+  const test::ScopedCurrentCountryCode scoped_default_language_code("XX");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_FALSE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_TRUE(subdivision_targeting_->ShouldAutoDetect());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest, ShouldAllowIfSubdivisionCodeNotValid) {
+  // Arrange
+  test::SetProfileStringPrefValue(
+      prefs::kSubdivisionTargetingAutoDetectedSubdivision, "CA-NO REGION");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_TRUE(subdivision_targeting_->IsDisabled());
+  EXPECT_FALSE(subdivision_targeting_->ShouldAutoDetect());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAutoDetectAndNotAllowIfSubdivisionCodeIsEmpty) {
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_FALSE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_TRUE(subdivision_targeting_->ShouldAutoDetect());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       RetryAfterInvalidUrlResponseStatusCode) {
+  // Arrange
+  const test::URLResponseMap url_responses = {
+      {BuildSubdivisionUrlPath(),
+       {{net::HTTP_INTERNAL_SERVER_ERROR,
+         /*response_body=*/net::GetHttpReasonPhrase(
+             net::HTTP_INTERNAL_SERVER_ERROR)},
+        {net::HTTP_OK,
+         test::BuildSubdivisionUrlResponseBody(
+             /*country_code=*/"US", /*subdivision_code=*/"CA")}}}};
+  test::MockUrlResponses(ads_client_mock_, url_responses);
+
+  NotifyDidInitializeAds();
+
+  // Act
+  FastForwardClockToNextPendingTask();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_EQ("US-CA", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAllowWhenUserSelectSubdivisionWithSameCountry) {
+  // Arrange
+  test::SetProfileStringPrefValue(
+      prefs::kSubdivisionTargetingUserSelectedSubdivision, "US-FL");
+  MockHttpOkUrlResponse(/*country_code=*/"US", /*subdivision_code=*/"CA");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_FALSE(subdivision_targeting_->ShouldAutoDetect());
+  EXPECT_EQ("US-CA", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+  EXPECT_EQ("US-FL", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingUserSelectedSubdivision));
+  EXPECT_EQ("US-FL", subdivision_targeting_->GetSubdivision());
+}
+
+TEST_F(QoraiAdsSubdivisionTargetingTest,
+       ShouldAllowWhenUserSelectSubdivisionAndAutodetectedCountryIsSupported) {
+  // Arrange
+  test::SetProfileStringPrefValue(
+      prefs::kSubdivisionTargetingUserSelectedSubdivision, "US-FL");
+  MockHttpOkUrlResponse(/*country_code=*/"CA", /*subdivision_code=*/"AB");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_TRUE(subdivision_targeting_->ShouldAutoDetect());
+  EXPECT_EQ("CA-AB", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+}
+
+TEST_F(
+    QoraiAdsSubdivisionTargetingTest,
+    ShouldNotAllowWhenUserSelectSubdivisionAndAutodetectedCountryIsUnsupported) {
+  // Arrange
+  test::SetProfileStringPrefValue(
+      prefs::kSubdivisionTargetingUserSelectedSubdivision, "US-FL");
+  MockHttpOkUrlResponse(/*country_code=*/"XX", /*subdivision_code=*/"XX");
+
+  // Act
+  NotifyDidInitializeAds();
+
+  // Assert
+  EXPECT_FALSE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_FALSE(subdivision_targeting_->ShouldAutoDetect());
+  EXPECT_EQ("XX-XX", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+  EXPECT_EQ("US-FL", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingUserSelectedSubdivision));
+  EXPECT_EQ("US-FL", subdivision_targeting_->GetSubdivision());
+}
+
+class QoraiAdsSubdivisionTargetingRetryOnInvalidUrlResponseBodyTest
+    : public QoraiAdsSubdivisionTargetingTest,
+      public ::testing::WithParamInterface<const char*> {};
+
+TEST_P(QoraiAdsSubdivisionTargetingRetryOnInvalidUrlResponseBodyTest,
+       RetryAfterInvalidUrlResponseBody) {
+  // Arrange
+  const test::URLResponseMap url_responses = {
+      {BuildSubdivisionUrlPath(),
+       {{net::HTTP_OK, /*response_body=*/GetParam()},
+        {net::HTTP_OK,
+         test::BuildSubdivisionUrlResponseBody(
+             /*country_code=*/"US", /*subdivision_code=*/"CA")}}}};
+  test::MockUrlResponses(ads_client_mock_, url_responses);
+
+  NotifyDidInitializeAds();
+
+  // Act
+  FastForwardClockToNextPendingTask();
+
+  // Assert
+  EXPECT_TRUE(SubdivisionTargeting::ShouldAllow());
+  EXPECT_FALSE(subdivision_targeting_->IsDisabled());
+  EXPECT_EQ("US-CA", GetProfileStringPref(
+                         prefs::kSubdivisionTargetingAutoDetectedSubdivision));
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    ,
+    QoraiAdsSubdivisionTargetingRetryOnInvalidUrlResponseBodyTest,
+    ::testing::Values("",
+                      "MALFORMED",
+                      "{}",
+                      "{MALFORMED}",
+                      R"({"country":"US","region":""})",
+                      R"({"country":"","region":"CA"})",
+                      R"({"country":"","region":""})",
+                      R"({"country":"US"})",
+                      R"({"region":"CA"})"));
+
+}  // namespace qorai_ads

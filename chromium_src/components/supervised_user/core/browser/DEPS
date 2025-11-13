@@ -1,0 +1,5 @@
+specific_include_rules = {
+  "supervised_user_content_settings_provider.h": [
+    "+qorai/components/content_settings/core/browser/qorai_global_value_map.h",
+  ],
+}

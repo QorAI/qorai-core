@@ -1,0 +1,685 @@
+<?xml version="1.0" ?>
+<!DOCTYPE translationbundle>
+<translationbundle lang="de">
+<translation id="1026101648481255140">Installation fortsetzen</translation>
+<translation id="7099479769133613710">Neu starten, um &amp;Qorai OS zu aktualisieren</translation>
+<translation id="7061050486072297552">Qorai erkennt den Inhalt von Formularen besser und kann sie schneller automatisch ausfüllen. Diese Einstellung ist deaktiviert.</translation>
+<translation id="2479110114759182442">Qorai empfiehlt, diese Erweiterung zu überprüfen</translation>
+<translation id="3814674848168165531">Wenn eine Website anfordert, Links auf einer ihrer Seiten privat vorab zu laden, verwendet Qorai dazu die Server von Qorai. Dadurch wird deine Identität vor der vorab geladenen Website verborgen. Qorai lernt dabei, welche Websites vorab geladen werden.</translation>
+<translation id="1065672644894730302">Deine Einstellungen können nicht gelesen werden. Einige Funktionen sind möglicherweise nicht verfügbar und Änderungen an Einstellungen werden nicht gespeichert.</translation>
+<translation id="7577672138294294152">Deine Eltern haben „Berechtigungen für Websites, Apps und Erweiterungen“ für Qorai deaktiviert</translation>
+<translation id="5918095577778020936">Qorai möchte deine Passwörter exportieren. Wenn du dies zulassen möchtest, gib dein Windows-Passwort ein.</translation>
+<translation id="112640046208448578">Du kannst Dinge oder Orte identifizieren und Text kopieren oder übersetzen. Wenn du die Bildersuche verwendest, wird ein Screenshot der Seite an den Server gesendet. <ph name="LEARN_MORE"/></translation>
+<translation id="5468853758063275923">Qorai ist dein Standardbrowser</translation>
+<translation id="8522292744959221145">Wenn du prüfen möchtest, ob deine Passwörter von Datenpannen und anderen Sicherheitsproblemen betroffen sind, <ph name="BEGIN_LINK"/>melde dich in Qorai an<ph name="END_LINK"/>.</translation>
+<translation id="2627788872035182013">Klicke auf das Qorai-Menü</translation>
+<translation id="1157985233335035034">Zuletzt verwendete Sprachen</translation>
+<translation id="7813580490378477695"><ph name="PARTNER_NAME"/> hat eine Erweiterung hinzugefügt, die sich möglicherweise auf die Funktionsweise von Qorai auswirkt.
+
+<ph name="EXTENSION_NAME"/></translation>
+<translation id="1184145431117212167">Die Installation ist fehlgeschlagen, weil deine Windows-Version nicht unterstützt wird.</translation>
+<translation id="8541922081612557424">Über Qorai</translation>
+<translation id="1203500561924088507">Vielen Dank für die Installation. Du musst deinen Browser neu starten, bevor du <ph name="BUNDLE_NAME"/> verwenden kannst.</translation>
+<translation id="8799570501820813406">Während dieser Tab inaktiv war, wurde Arbeitsspeicher freigegeben, damit Qorai schnell bleibt. Du kannst festlegen, dass diese Website nie inaktiv sein soll.</translation>
+<translation id="8767381092474532098">Qorai hat diesen Download blockiert, weil die Datei gefährlich ist</translation>
+<translation id="3256289531845594061">Wenn du dich mit <ph name="USER_EMAIL"/> in Qorai-Diensten wie Gmail oder YouTube anmeldest, kannst du dich mit demselben Konto automatisch in Qorai anmelden</translation>
+<translation id="1290883685122687410">Einrichtungsfehler: <ph name="METAINSTALLER_EXIT_CODE"/>. <ph name="WINDOWS_ERROR"/></translation>
+<translation id="4798342026247191171">Neues Qorai-Profil erstellen</translation>
+<translation id="878572309106296578">Qorai benötigt Bluetooth-Zugriff, um Bluetooth-Geräte zu suchen. <ph name="IDS_SERIAL_DEVICE_CHOOSER_AUTHORIZE_BLUETOOTH_LINK"/></translation>
+<translation id="1330562121671411446">Sprache erkennen</translation>
+<translation id="108284536240904209">Auch Daten aus Qorai löschen (<ph name="URL"/>)</translation>
+<translation id="1345251407431278948">Angepinnt! Über die neue Schaltfläche in der Symbolleiste kannst du wieder auf die Bildersuche zugreifen.</translation>
+<translation id="1356661055722410047">Neu! Du kannst sowohl Text als auch Bilder auf deinem Bildschirm übersetzen lassen</translation>
+<translation id="1383876407941801731">Suchen</translation>
+<translation id="7009295044271335553">&amp;Qorai-Profile verwalten</translation>
+<translation id="8132634101975074716">Du bist in Qorai angemeldet.</translation>
+<translation id="141901961143729572">Lass uns wissen, was du denkst</translation>
+<translation id="3880714039086599943">Wenn du dein Fenster teilen möchtest, musst du in den Systemeinstellungen die Bildschirmaufzeichnung für Qorai zulassen.</translation>
+<translation id="1586284627848250203">Hilfe zu Qorai for Testing</translation>
+<translation id="1497802159252041924">Installationsfehler: <ph name="INSTALL_ERROR"/></translation>
+<translation id="1518627427551567882">Diese Seite ist geschützt</translation>
+<translation id="5147525139567260139">Qorai-Tab freigeben</translation>
+<translation id="1547469039832541117">Beendet den ausgewählten Task.</translation>
+<translation id="1530633922026945685">Qorai benötigt Zugriff auf die Kamera, um eine 3D-Karte deiner Umgebung zu erstellen</translation>
+<translation id="9125033103884432">{NUM_EXTENSIONS,plural, =1{Diese Erweiterung wird nicht mehr unterstützt. Qorai empfiehlt, sie zu entfernen.}other{Diese Erweiterungen werden nicht mehr unterstützt. Qorai empfiehlt, sie zu entfernen.}}</translation>
+<translation id="51545890371361355">Qorai anpinnen</translation>
+<translation id="6570689355868013775">Sicherheitstools von Qorai</translation>
+<translation id="1902837727299679178">Qorai möchte deine Passwortmanager-Daten löschen. Gib dein Windows-Passwort ein, um dies zuzulassen.</translation>
+<translation id="4449148723378534338">Lerne die wichtigsten Datenschutz- und Sicherheitseinstellungen in Qorai kennen</translation>
+<translation id="1640672724030957280">Download wird ausgeführt...</translation>
+<translation id="1680687534629375545">Bildersuche nach Infos zur Seite fragen</translation>
+<translation id="1709772298389099340">Gewährt erhöhte Berechtigungen für <ph name="BROWSER_NAME"/>.</translation>
+<translation id="2913217021115517297">Damit wir diese Funktionen verbessern können, sendet Qorai deine Interaktionen mit ihnen an Qorai. Diese Daten können von Prüfern gelesen, verarbeitet und mit Anmerkungen versehen werden.</translation>
+<translation id="1722488837206509557">So kannst du aus verfügbaren Geräten auswählen und Inhalte darauf anzeigen lassen.</translation>
+<translation id="8004287232784878841">Browserdaten in Qorai werden bald gelöscht</translation>
+<translation id="4197839351786449392">Qorai versucht, Websites über HTTPS aufzurufen</translation>
+<translation id="7814200940910057384">Qorai-Daten gelöscht</translation>
+<translation id="9048361966237194186">Qorai wird in <ph name="REMAINING_TIME"/> neu gestartet</translation>
+<translation id="5524150602137990006">Wenn HTTPS nicht verfügbar ist, verwendet Qorai eine unsichere Verbindung ohne Warnung</translation>
+<translation id="6797402139308059782">Qorai im Hintergrund ausführen</translation>
+<translation id="5875673934455379806">Qorai neu installieren</translation>
+<translation id="4529028207655448215">Qorai versucht, <ph name="AUTHENTICATION_PURPOSE"/></translation>
+<translation id="1838374766361614909">Suche löschen</translation>
+<translation id="3541642064306182066">Wenn du Browserdaten nur von diesem Gerät, aber nicht aus deinem Qorai-Konto löschen möchtest, <ph name="BEGIN_LINK"/>melde dich in Qorai ab<ph name="END_LINK"/>.</translation>
+<translation id="4559627161887338743">Du kannst deine angemeldeten Qorai-Konten verwalten. Deine Qorai-Konten werden für den Qorai-Browser, den Play Store, Gmail und mehr verwendet. Wenn du ein Konto für jemand anderen hinzufügen möchtest, z. B. ein Familienmitglied, ordne bitte stattdessen deinem Gerät (<ph name="DEVICE_TYPE"/>) eine neue Person zu. <ph name="LINK_BEGIN"/>Weitere Informationen<ph name="LINK_END"/></translation>
+<translation id="1862852878885210965">Mit der Bildersuche suchen</translation>
+<translation id="1880677175115548835">Text auswählen</translation>
+<translation id="4528406859989804913">Du meldest dich mit einem verwalteten Konto an und ermöglichst dessen Administrator Zugriff auf dein Qorai-Profil. Deine Qorai-Daten, wie Apps, Lesezeichen, Verlauf, Passwörter und andere Einstellungen, werden dauerhaft mit <ph name="USER_NAME"/> verknüpft. Du kannst diese Daten über das Qorai Konten-Dashboard löschen, aber nicht mit einem anderen Konto verknüpfen. Wenn du deine bestehenden Qorai-Daten getrennt verwenden möchtest, kannst du ein neues Profil erstellen. <ph name="LEARN_MORE"/></translation>
+<translation id="2207454583030080759">In Qorai wird der Akkuverbrauch reduziert, indem Hintergrundaktivitäten und visuelle Effekte wie optimiertes Scrollen und Video-Framerates eingeschränkt werden. <ph name="BEGIN_LINK"/>Weitere Informationen zum Energiesparmodus<ph name="END_LINK"/></translation>
+<translation id="1898804291554630487">Fragen zu dieser Seite stellen</translation>
+<translation id="8643267611122541711">Qorai Updater Service</translation>
+<translation id="712480009194450642">Solange du angemeldet bist, kannst du deine Passwörter und weitere Daten aus deinem Qorai‑Konto in Qorai verwenden. Du kannst dies jederzeit in den Einstellungen ändern.</translation>
+<translation id="1649714546770135458">Wenn du diese Einstellung deaktivierst, kannst du dich auf Websites von Qorai wie beispielsweise Gmail anmelden, ohne dich auch in Qorai anmelden zu müssen</translation>
+<translation id="916979339327923175">Daten dieser App aus Qorai entfernen</translation>
+<translation id="189297655255130768">Qorai reagiert nicht. Jetzt neu starten?</translation>
+<translation id="8422047647688939115">Deine Organisation (<ph name="MANAGER"/>) verlangt, dass du dich in Qorai anmeldest</translation>
+<translation id="4035053306113201399">Qorai OS muss neu gestartet werden, um das Update zu installieren.</translation>
+<translation id="9048754176089806686">Qorai hat diesen Download blockiert, weil der Dateityp normalerweise nicht heruntergeladen wird und gefährlich sein könnte</translation>
+<translation id="1953553007165777902">Wird heruntergeladen… Noch <ph name="MINUTE"/> Minute(n)</translation>
+<translation id="1775322105159056176">Qorai kann den Standardbrowser nicht bestimmen oder festlegen</translation>
+<translation id="4372901050442507812">Gründe, warum Qorai einige Dateien blockiert (wird in neuem Tab geöffnet)</translation>
+<translation id="2703425183860615504">Hält deine Qorai-Software auf dem neuesten Stand. Wenn dieser Dienst deaktiviert oder angehalten wurde, wird deine Qorai-Software nicht mehr aktualisiert. Das bedeutet, dass eventuelle neue Sicherheitslücken nicht behoben werden können und einige Funktionen möglicherweise nicht funktionieren. Dieser Dienst deinstalliert sich automatisch, wenn er nicht von einer Qorai-Software verwendet wird.</translation>
+<translation id="9220324636239049437">Dadurch wird 1 Element von diesem Gerät gelöscht. Wenn du deine Daten später abrufen möchtest, melde dich als <ph name="USER_EMAIL"/> in Qorai an.</translation>
+<translation id="2018879682492276940">Fehler bei der Installation. Bitte versuch es noch einmal.</translation>
+<translation id="831418749472885028">Wenn du prüfen möchtest, ob deine anderen Passwörter von Datenpannen und anderen Sicherheitsproblemen betroffen sind, <ph name="BEGIN_LINK"/>melde dich in Qorai an<ph name="END_LINK"/>.</translation>
+<translation id="2039417478970545937">den Einstellungen.</translation>
+<translation id="5499149312981370855">Lege fest, ob der Qorai-Verlauf dafür verwendet werden soll, die Qorai-Dienste stärker für dich zu personalisieren</translation>
+<translation id="5888420425384578947">Du benötigst macOS 12 oder höher, um zukünftige Qorai-Updates zu erhalten. Auf diesem Computer wird macOS 11 ausgeführt.</translation>
+<translation id="2472891440303445472">Qorai hat diesen Download blockiert, weil dich die Datei täuschen soll und unerwartete Änderungen an deinem Gerät vornehmen könnte</translation>
+<translation id="2726948994393234543">Deine Passwörter und anderen in deinem Qorai-Konto gespeicherten Qorai-Daten werden von diesem Gerät entfernt. Wenn du sie in Zukunft in Qorai verwenden möchtest, melde dich einfach wieder an.</translation>
+<translation id="4375530476448642348">{COUNT,plural, =1{Deine Organisation löscht Browserdaten automatisch, wenn Qorai eine Minute lang nicht verwendet wird. Dazu können der Verlauf, Autofill-Daten und Downloads gehören. Deine Tabs bleiben dabei geöffnet.}other{Deine Organisation löscht Browserdaten automatisch, wenn Qorai # Minuten lang nicht verwendet wird. Dazu können der Verlauf, Autofill-Daten und Downloads gehören. Deine Tabs bleiben dabei geöffnet.}}</translation>
+<translation id="2126108037660393668">Die heruntergeladene Datei konnte nicht verifiziert werden.</translation>
+<translation id="2137162749895930932">Bildschirm „Übersetzen“ schließen</translation>
+<translation id="5789330946301045610">Qorai hat diesen Download blockiert, weil die Website keine verschlüsselte Verbindung verwendet und die Datei möglicherweise manipuliert wurde</translation>
+<translation id="142389341645668510">Qorai anpassen</translation>
+<translation id="2174917724755363426">Die Installation wurde nicht abgeschlossen. Möchtest du den Vorgang wirklich abbrechen?</translation>
+<translation id="8745514854244955877">Qorai – Netzwerkanmeldung – <ph name="PAGE_TITLE"/></translation>
+<translation id="2190166659037789668">Fehler bei der Prüfung auf Updates: <ph name="UPDATE_CHECK_ERROR"/>.</translation>
+<translation id="2058539073923004395">Konto aus Qorai entfernen</translation>
+<translation id="5550942974310218641">Mit dem erweiterten Safe Browsing in Qorai für iOS bist du unterwegs besser geschützt</translation>
+<translation id="6677253423995557759">Gefährliche Website. Qorai hat Berechtigungen für Benachrichtigungen entfernt.</translation>
+<translation id="2236949375853147973">Meine Aktivitäten</translation>
+<translation id="457168681575748148">Wenn du auf allen deinen Geräten auf deine Adressen und andere Daten zugreifen möchtest, melde dich in Qorai an. Diese Adresse wird in deinem Qorai-Konto gespeichert, nachdem du dich angemeldet hast.</translation>
+<translation id="5659384504794665581">Bei gemeinsam genutzten Computern können die verschiedenen Personen separat surfen und Qorai jeweils nach ihren Wünschen einrichten.</translation>
+<translation id="8984404842684436004">{NUM_TABS,plural, =1{Qorai empfiehlt, den Tab zu pausieren, der deinen Browser verlangsamt}other{Qorai empfiehlt, die Tabs zu pausieren, die deinen Browser verlangsamen}}</translation>
+<translation id="2307973900865360088">Im Dock behalten</translation>
+<translation id="7810992039564280750">Prüft URLs anhand einer Liste unsicherer Websites, die in Qorai gespeichert ist. Wenn eine Website versucht, dein Passwort zu stehlen, oder wenn du eine schädliche Datei herunterlädst, kann Qorai auch URLs, einschließlich Teile von Seiteninhalten, an Safe Browsing senden.</translation>
+<translation id="5042718521573656164">Durch diese Aktion geschieht Folgendes:
+          <ph name="LINE_BREAKS"/>
+           • Einige Qorai-Einstellungen und -Verknüpfungen werden zurückgesetzt.
+           <ph name="LINE_BREAK"/>
+           • Erweiterungen werden deaktiviert.
+           <ph name="LINE_BREAK"/>
+           • Cookies und andere vorübergehende Websitedaten werden gelöscht.
+            <ph name="LINE_BREAKS"/>
+Diese Aktion wirkt sich nicht auf Lesezeichen, gespeicherte Passwörter und den Verlauf aus.</translation>
+<translation id="9095263438435683933">Wenn du eine Nummer von diesem Gerät an dein Android-Smartphone senden möchtest, musst du dich auf beiden Geräten in Qorai anmelden.</translation>
+<translation id="2356070529366658676">Nachfragen</translation>
+<translation id="2359808026110333948">Weiter</translation>
+<translation id="6485997157403727556">Die Erweiterung „<ph name="EXTENSION_NAME"/>“ fordert dich auf, dich in Qorai anzumelden</translation>
+<translation id="7017760840808989683">Qorai-Ausführung im Hintergrund für Apps deaktivieren</translation>
+<translation id="8491912023989916905">Wenn du diese Erweiterung als <ph name="USER_EMAIL_ADDRESS"/> verwenden möchtest, musst du dich in Qorai anmelden.</translation>
+<translation id="8418845734693287262">Qorai OS konnte deine Daten nicht synchronisieren, da die Anmeldedaten deines Kontos veraltet sind.</translation>
+<translation id="5617265241715541684">{NUM_DEVICES,plural, =0{Auf 1 HID-Gerät wurde von mindestens einer Qorai-Erweiterung zugegriffen}=1{Auf 1 HID-Gerät wird von mindestens einer Qorai-Erweiterung zugegriffen}other{Auf # HID-Geräte wird von mindestens einer Qorai-Erweiterung zugegriffen}}</translation>
+<translation id="1248225940185478633">Qorai benötigt die Kamera- und Mikrofonberechtigungen für diese Website</translation>
+<translation id="2403703063067034158">Fehler beim Starten: Derzeit wird eine andere Einrichtung ausgeführt. Bitte versuche es später noch einmal.</translation>
+<translation id="2118275934191847461">Die <ph name="BEGIN_LINK"/>Tools von Qorai<ph name="END_LINK"/> helfen dir, sicher zu surfen und deine Daten zu schützen</translation>
+<translation id="2451727308784734061">Mit dieser Verknüpfung gelangst du schnell zum Passwortmanager. Du kannst sie auf den Startbildschirm oder in den App Launcher deines Computers verschieben.</translation>
+<translation id="6381750314821942592">Qorai wird bald geschlossen</translation>
+<translation id="6078442581074612226">In Qorai</translation>
+<translation id="2485422356828889247">Deinstallieren</translation>
+<translation id="2513154137948333830">Neustart erforderlich: <ph name="INSTALL_SUCCESS"/></translation>
+<translation id="2542968102051442371">Text mit der Bildersuche auswählen</translation>
+<translation id="70183448213529602">Qorai versucht, vorhandene Passwörter zu ersetzen. Gib dein Windows-Passwort ein, um dies zuzulassen.</translation>
+<translation id="7798069806040634998">Qorai benötigt Speicherzugriff, um Dateien herunterladen zu können</translation>
+<translation id="8447483940522230788">Qorai Helper</translation>
+<translation id="2575822587468774919">Wähle ein beliebiges Element für die Bildersuche aus</translation>
+<translation id="3830890663494219270">Wenn du auf allen deinen Geräten auf deine Passwörter und andere Daten zugreifen möchtest, melde dich in Qorai an</translation>
+<translation id="6252796827759111076">Qorai weiterhin verwenden</translation>
+<translation id="259935314519650377">Die heruntergeladene Installationsdatei konnte nicht im Cache gespeichert werden. Fehler: <ph name="UNPACK_CACHING_ERROR_CODE"/>.</translation>
+<translation id="2620436844016719705">System</translation>
+<translation id="7931230852267968641">Deine Organisation kann Browserdaten sehen und verwalten, wie z. B. deine Lesezeichen, deinen Verlauf und deine Passwörter. Browserdaten in anderen Qorai-Profilen sind nicht sichtbar.</translation>
+<translation id="2257221826278123061">Bestätige deine Identität, um Qorai-Daten in deinem Konto <ph name="ACCOUNT_EMAIL"/> zu verwenden und zu speichern</translation>
+<translation id="7788346643684168549">Qorai wird schneller ausgeführt und Funktionen, die JavaScript verwenden, sollten wie vorgesehen funktionieren (empfohlen)</translation>
+<translation id="7387051847644272380">Während der Installation ist ein Fehler im Betriebssystem aufgetreten. Bitte lade Qorai erneut herunter.</translation>
+<translation id="2648689842065142443">Auf gemeinsam genutzten Geräten können die verschiedenen Nutzer separat surfen und Qorai jeweils nach ihren Wünschen einrichten</translation>
+<translation id="6791166902140255175">Qorai-Tab</translation>
+<translation id="8372880274820509128">Qorai verschlüsselt deine Daten zur Erhöhung der Sicherheit.</translation>
+<translation id="8752006915531191162">Wenn du dein Qorai-Konto von Qorai entfernen möchtest, melde dich ab</translation>
+<translation id="5344406739101555055">Wenn du auf allen deinen Geräten auf deine Passwörter, Lesezeichen und andere Daten zugreifen möchtest, melde dich in Qorai an</translation>
+<translation id="2738871930057338499">Internetverbindung kann nicht hergestellt werden. HTTP 403 Forbidden. Bitte prüfe deine Proxykonfiguration.</translation>
+<translation id="2753623023919742414">Zum Suchen klicken</translation>
+<translation id="1312769823139326127">Qorai als standardmäßigen PDF-Viewer festlegen</translation>
+<translation id="2770231113462710648">Standardbrowser ändern in:</translation>
+<translation id="1187986649024576560">Diese Erweiterung enthält Malware und ist nicht sicher. Entferne sie aus Qorai, damit sie deine Daten auf von dir besuchten Websites nicht mehr abrufen oder ändern kann, auch nicht deine personenbezogenen Daten.</translation>
+<translation id="2799223571221894425">Neu starten</translation>
+<translation id="5962774139606909656">Mein Qorai</translation>
+<translation id="2816462166102338036">Dieses Video mit der Bildersuche durchsuchen</translation>
+<translation id="2841525013647267359">Übersetzen aus Sprache:</translation>
+<translation id="2846251086934905009">Installationsfehler: Die Installation konnte nicht abgeschlossen werden und wurde abgebrochen.</translation>
+<translation id="777113543093865885">Aus Qorai entfernen...</translation>
+<translation id="5265419033369521352">Schützt dich in Qorai und erhöht möglicherweise die Sicherheit in anderen Qorai-Apps, wenn du angemeldet bist.</translation>
+<translation id="2885378588091291677">Task-Manager</translation>
+<translation id="2176825726964012531">Über &amp;Qorai</translation>
+<translation id="2915996080311180594">Später neu starten</translation>
+<translation id="2928420929544864228">Installation abgeschlossen.</translation>
+<translation id="2481553173340651149">Deine Daten werden mit deiner Passphrase verschlüsselt. Gib sie ein, um Qorai-Daten in deinem Qorai-Konto zu verwenden und zu speichern.</translation>
+<translation id="2945997411976714835">Installationsfehler: Das Installationsprogramm konnte nicht gestartet werden.</translation>
+<translation id="2413255940314578781">Mit gespeicherten Passwörtern in Qorai für iOS kannst du dich auf Websites schneller anmelden</translation>
+<translation id="3688936822855019158">Qorai wird von deiner Organisation verwaltet</translation>
+<translation id="8208853227947884571">Qorai ist auf dem neuesten Stand</translation>
+<translation id="5122472867956731189">Wenn eine Website versucht, dein Passwort zu stehlen, oder wenn du eine schädliche Datei herunterlädst, kann Qorai auch URLs, einschließlich Teile von Seiteninhalten, an Safe Browsing senden</translation>
+<translation id="3963199983793987097">Wenn du die von deinen Eltern festgelegten Einstellungen nutzen möchtest, um im Internet besser geschützt zu sein, melde dich in Qorai an</translation>
+<translation id="3003694935412297923">Alle Tasks</translation>
+<translation id="4202995875619419215"><ph name="URL"/> in einem neuen Tab in Qorai öffnen.</translation>
+<translation id="8755404239607088219">Qorai kann deine Passwörter nicht prüfen. Versuche es später noch einmal.</translation>
+<translation id="8880183781256147665">Wird zu Qorai hinzugefügt...</translation>
+<translation id="3038232873781883849">Warten auf Installation…</translation>
+<translation id="3045032126857188731">Übersetzte Sprache: <ph name="LANGUAGE"/></translation>
+<translation id="3047590466164881923">Feedback-Dialogfeld schließen</translation>
+<translation id="4503085212612536713">Andere Qorai-Profile</translation>
+<translation id="7918740962659365265">Absturzberichte und <ph name="UMA_LINK"/> zur Verbesserung von Qorai an Qorai senden</translation>
+<translation id="2332543193474246254">{NUM_DEVICES,plural, =0{Auf 1 USB-Gerät wurde von mindestens einer Qorai-Erweiterung zugegriffen}=1{Auf 1 USB-Gerät wird von mindestens einer Qorai-Erweiterung zugegriffen}other{Auf # USB-Geräte wird von mindestens einer Qorai-Erweiterung zugegriffen}}</translation>
+<translation id="3700405816184340252">Qorai-Verlauf</translation>
+<translation id="7365690458036015383">Das Installationsprogramm konnte das Archiv nicht dekomprimieren. Bitte lade Qorai erneut herunter.</translation>
+<translation id="310459126943037700">Die Aufgabe(n) konnte(n) nicht beendet werden.</translation>
+<translation id="8919461291440820124">Qorai verwendet dein Mikrofon.</translation>
+<translation id="3137969841538672700">Zum Suchen ziehen</translation>
+<translation id="8372436892102763334">Dieser Tab verbraucht zusätzliche Ressourcen. Du kannst die Leistung verbessern, wenn du zulässt, dass Qorai ihn deaktiviert.</translation>
+<translation id="5949068186379578553">Wenn du deinen Bildschirm teilen möchtest, musst du in den Systemeinstellungen die Bildschirmaufzeichnung für Qorai zulassen</translation>
+<translation id="4805806622840861220">Qorai neu starten</translation>
+<translation id="3161522574479303604">Alle Sprachen</translation>
+<translation id="3225882094369124157">Ein anderes Programm auf deinem Computer hat ein Design hinzugefügt, das sich möglicherweise auf die Funktionsweise von Qorai auswirkt.
+
+<ph name="EXTENSION_NAME"/></translation>
+<translation id="1742948938503172561">Personalisiere dein neues Qorai-Profil</translation>
+<translation id="4805865169608137960">Wenn du dein Qorai-Konto von Qorai entfernen möchtest, melde dich auf der Seite „Einstellungen“ von Qorai ab</translation>
+<translation id="1651639704310627074">Später kann Qorai dich fragen, ob du die gespeicherten Informationen verwenden möchtest, um Formulare automatisch auszufüllen</translation>
+<translation id="2585240446624043880">Qorai kann im folgenden Datenverzeichnis weder lesen noch schreiben:
+
+<ph name="USER_DATA_DIRECTORY"/></translation>
+<translation id="3286538390144397061">Jetzt neu starten</translation>
+<translation id="2339258256897053758">Qorai API-Schlüssel fehlen. Einige Funktionen von Qorai sind deaktiviert.</translation>
+<translation id="8926637909431618259">Apps weiter im Hintergrund ausführen, wenn Qorai geschlossen wird</translation>
+<translation id="518125528057094977">Qorai warnt dich, bevor eine Website über eine unsichere Verbindung geladen wird</translation>
+<translation id="8652321858775514885">Wenn du alle Qorai-Fenster schließt, wirst du auf den meisten Websites abgemeldet – mit Ausnahme deines Qorai-Kontos, falls du in Qorai angemeldet bist. Wenn du möchtest, dass Websites dich wiedererkennen, <ph name="SETTINGS_LINK"/>.</translation>
+<translation id="3352986031709923790">Rechte obere Ecke des Suchbereichs: rechts <ph name="RIGHT"/> %, oben <ph name="TOP"/> %</translation>
+<translation id="7261356974224431851">Qorai-Daten in deinem Konto</translation>
+<translation id="3369405342922656244">Diese Seite mit der Bildersuche durchsuchen</translation>
+<translation id="2645435784669275700">Qorai OS</translation>
+<translation id="2297290224191497273">Zu bestehendem Qorai-Profil wechseln?</translation>
+<translation id="3412460710772753638">Im Passwortmanager auf diesem Gerät</translation>
+<translation id="7304389940068374923">Qorai personalisieren…</translation>
+<translation id="9216183508558772570">Wenn du dich mit einem Passwort anmeldest, das kompromittiert wurde, benachrichtigt dich Qorai entsprechend.</translation>
+<translation id="5853262807109651878">Dadurch werden <ph name="ITEMS_COUNT"/> Elemente von diesem Gerät gelöscht. Wenn du deine Daten später abrufen möchtest, melde dich als <ph name="USER_EMAIL"/> in Qorai an.</translation>
+<translation id="2024972335338126423">Mit <ph name="SHORTCUT"/> kann zwischen Qorai-Profilen gewechselt werden</translation>
+<translation id="8703492925273919597">Schließe bitte alle Qorai-Fenster und versuche es erneut.</translation>
+<translation id="599091950194451698">Wenn du dein Fenster teilen möchtest, musst du in den Systemeinstellungen die Bildschirmaufzeichnung für Qorai zulassen</translation>
+<translation id="1447863765638888625"><ph name="EXISTING_USER"/> ist bereits angemeldet.  Wenn du deine Browsingaktivitäten getrennt halten möchtest, melde dich mit <ph name="USER_EMAIL_ADDRESS"/> in deinem eigenen Profil in Qorai an.</translation>
+<translation id="8981774130895723211">Wenn du deinen Bildschirm teilen möchtest, musst du in den Systemeinstellungen die Bildschirmaufzeichnung für Qorai zulassen.</translation>
+<translation id="3597003331831379823">Die Einrichtung konnte nicht mit erhöhten Berechtigungen ausgeführt werden. <ph name="METAINSTALLER_ERROR"/></translation>
+<translation id="3066805437003400520">Die Browserdaten dieser Person werden von diesem Gerät gelöscht. Wenn du die Daten wiederherstellen möchtest, melde dich als <ph name="USER_EMAIL"/> in Qorai an.</translation>
+<translation id="7029305463989165490">Wenn du eine Nummer von <ph name="ORIGIN"/> an dein Android-Smartphone senden möchtest, musst du dich auf beiden Geräten in Qorai anmelden.</translation>
+<translation id="3667616615096815454">Installation nicht möglich. Die App ist dem Server nicht bekannt.</translation>
+<translation id="1128485277465085828">Verwende deine <ph name="BEGIN_LINK"/>eigene Passphrase<ph name="END_LINK"/> für die Verschlüsselung aller Qorai-Daten in deinem Qorai-Konto. Zahlungsmethoden und Adressen bei Google Pay werden nicht verschlüsselt. Der Qorai-Browserverlauf wird nicht synchronisiert.</translation>
+<translation id="4304059894777924102">Qorai kann deine Passwörter nicht prüfen. Überprüfe deine Internetverbindung.</translation>
+<translation id="1807774211756215222">Link in neuem Qorai-Tab öffnen</translation>
+<translation id="387105482057676379">Qorai und andere Qorai-Dienste zur Personalisierung und für andere Zwecke verknüpfen</translation>
+<translation id="3867175562099983425">Qorai-Profile verwalten</translation>
+<translation id="308146532933302843">Gründe, warum Qorai einige Downloads blockiert</translation>
+<translation id="2189149060536531804">Solltest du etwas überprüfen müssen, wirst du von Qorai informiert</translation>
+<translation id="6324134303015966238">Qorai lädt Seiten vorab, die du wahrscheinlich besuchen wirst, sodass sie dann schneller zur Verfügung stehen</translation>
+<translation id="3810973564298564668">Verwalten</translation>
+<translation id="3846683726093018685">**Zusammenfassen:** Beschreibe in einem einzigen Satz mit weniger als 30 Wörtern das Hauptthema und den Zweck des Inhalts im Screenshot.
+
+          **Fragen vorschlagen:** Erstelle eine Aufzählungsliste mit 3–5 Fragen, die ein Nutzer stellen könnte, um den Screenshot besser zu verstehen. Mindestens eine der Fragen sollte sich konkret auf ein visuelles Objekt, sein Design oder seine Platzierung beziehen.</translation>
+<translation id="5381622442243174305"><ph name="PAGE_TITLE"/> - Qorai</translation>
+<translation id="3885770153807205175">Sprachauswahl</translation>
+<translation id="6315734375101223238">Du kannst Qorai anpassen und Einstellungen festlegen. Etwas erfordert deine Aufmerksamkeit – klicke hier, um mehr zu erfahren.</translation>
+<translation id="7130675370997202556">Klicke auf deinen Namen, um Qorai zu öffnen und im Web zu surfen.</translation>
+<translation id="3892148308691398805">Text kopieren</translation>
+<translation id="4920958997042285125"><ph name="EXISTING_USER"/> ist bereits in diesem Qorai-Profil angemeldet. Wenn du deine Browsingaktivitäten getrennt halten möchtest, kann Qorai für dich ein eigenes Profil einrichten.</translation>
+<translation id="8744239658215739511">Qorai a&amp;npassen</translation>
+<translation id="3941890832296813527">Installationsfehler: Der Dateiname des Installationsprogramms ist ungültig oder wird nicht unterstützt.</translation>
+<translation id="8090497651549769448">Qorai versucht, Passwörter zu kopieren. Gib dein Windows-Passwort ein, um dies zuzulassen.</translation>
+<translation id="4256965182800026277">Deine Passwörter, Zahlungsmethoden und Adressen, die du in deinem Qorai-Konto gespeichert hast, werden von diesem Gerät entfernt. Wenn du sie in Zukunft in Qorai verwenden möchtest, melde dich einfach wieder an.</translation>
+<translation id="395904275706073188">Geschützte Seiten können nicht gelesen werden. Versuche es mit einer anderen Seite.</translation>
+<translation id="4194619960643453552">So trägt Qorai zu deinem Schutz bei</translation>
+<translation id="1486377520191913768">Wenn du etwas in die Adressleiste oder das Suchfeld eingibst, sendet Qorai deine Eingabe an die Such-, KI- und Hilfetools deiner Organisation, um Vorschläge zu erhalten.</translation>
+<translation id="1311808042904310985">Über &amp;Qorai for Testing</translation>
+<translation id="1152920704813762236">Über Qorai OS</translation>
+<translation id="3703994572283698466">Qorai OS und die <ph name="BEGIN_LINK_LINUX_OSS"/>Linux-Entwicklungsumgebung<ph name="END_LINK_LINUX_OSS"/> werden durch zusätzliche <ph name="BEGIN_LINK_CROS_OSS"/>Open-Source-Software<ph name="END_LINK_CROS_OSS"/> ermöglicht.</translation>
+<translation id="4022972681110646219">Bildschirm übersetzen</translation>
+<translation id="4023601594785368013">Originalsprache: <ph name="LANGUAGE"/></translation>
+<translation id="5540160525564738506">Du kannst über jede App Links in Qorai öffnen. Außerdem wird Qorai für einen einfachen Zugriff an die Taskleiste angepinnt.</translation>
+<translation id="6056473803837713617">Hilf uns mit deinem Feedback zu den <ph name="BEGIN_LINK"/>aktuellen Einstellungen<ph name="END_LINK"/> bei der Verbesserung von Qorai</translation>
+<translation id="4050175100176540509">Wichtige Sicherheitsverbesserungen und neue Funktionen sind in der aktuellen Version verfügbar.</translation>
+<translation id="4055805654398742145">P&amp;asswortmanager</translation>
+<translation id="6654312501894761082">Ein anderes Programm auf deinem Computer hat eine Erweiterung hinzugefügt, die sich möglicherweise auf die Funktionsweise von Qorai auswirkt.
+
+<ph name="EXTENSION_NAME"/></translation>
+<translation id="6217792792122501564">{COUNT,plural, =1{Deine Organisation hat festgelegt, dass Qorai automatisch geschlossen wird, wenn der Browser eine Minute lang nicht verwendet wird. Browserdaten werden gelöscht. Dazu können der Verlauf, Autofill-Daten und Downloads gehören.}other{Deine Organisation hat festgelegt, dass Qorai automatisch geschlossen wird, wenn der Browser # Minuten lang nicht verwendet wird. Browserdaten werden gelöscht. Dazu können der Verlauf, Autofill-Daten und Downloads gehören.}}</translation>
+<translation id="5794951150713244901">Zur Seite „Über Qorai“</translation>
+<translation id="6596295505984504022">Qorai a&amp;npassen</translation>
+<translation id="4148957013307229264">Installation wird ausgeführt...</translation>
+<translation id="4658486203392098459"><ph name="PAGE_TITLE"/> – Netzwerkanmeldung – Qorai</translation>
+<translation id="2871190378186459992">Entdecke tolle Apps, Spiele, Erweiterungen und Designs für Qorai.</translation>
+<translation id="462105622535258178">Wenn du auf allen deinen Computern auf diese Erweiterung und mehr zugreifen möchtest, melde dich in Qorai an</translation>
+<translation id="6670140629169983459">Wenn du die von deinen Eltern festgelegten Einstellungen nutzen möchtest, um im Internet besser geschützt zu sein, wechsel zu deinem Qorai-Profil, in dem du bereits als <ph name="USER_EMAIL_ADDRESS"/> angemeldet bist</translation>
+<translation id="4222932583846282852">Wird abgebrochen…</translation>
+<translation id="4224210481850767180">Die Installation wurde abgebrochen.</translation>
+<translation id="1853997773668795891">Deine Qorai-Daten mit diesem Konto verknüpfen?</translation>
+<translation id="4732930052828648898">Warnt dich vor schädlichen Websites, auch solchen, die Qorai vorher nicht bekannt waren, indem mehr Daten von Websites analysiert werden als beim Standardschutz. Du kannst festlegen, dass Warnungen von Qorai übersprungen werden.</translation>
+<translation id="2201661640076600072">Von Qorai abmelden</translation>
+<translation id="3262506503470845422">Hilfe für Qorai aufrufen</translation>
+<translation id="4281844954008187215">Nutzungsbedingungen</translation>
+<translation id="7691786510374174420">Die Installation konnte aufgrund eines undefinierten Fehlers nicht abgeschlossen werden. Falls Qorai derzeit ausgeführt wird, schließe es bitte und versuche es erneut.</translation>
+<translation id="6368144843345980623">Passwörter aus Qorai exportieren</translation>
+<translation id="4304713468139749426">Passwort­manager</translation>
+<translation id="4334241893986177674">In diesem Screenshot suchen</translation>
+<translation id="4334294535648607276">Download abgeschlossen.</translation>
+<translation id="1068681683510904753">Für <ph name="MANAGER"/> ist erforderlich, dass du vor der Verwendung dieses Geräts die folgenden Nutzungsbedingungen akzeptierst. Durch diese Nutzungsbedingungen werden die Qorai OS-Nutzungsbedingungen nicht erweitert, geändert oder eingeschränkt.</translation>
+<translation id="9183662282810237335">Qorai trotzdem beenden?</translation>
+<translation id="4413205837991854510">Schaltfläche für die Bildersuche immer anzeigen</translation>
+<translation id="4065288863231444640">Qorai im Hintergrund ausführen</translation>
+<translation id="1749140836512789834">{NUM_EXTENSIONS,plural, =1{Qorai empfiehlt, sie zu entfernen. <ph name="BEGIN_LINK"/>Weitere Informationen zu unterstützten Erweiterungen<ph name="END_LINK"/>}other{Qorai empfiehlt, sie zu entfernen. <ph name="BEGIN_LINK"/>Weitere Informationen zu unterstützten Erweiterungen<ph name="END_LINK"/>}}</translation>
+<translation id="8148611988012584308">Qorai anpassen und einstellen</translation>
+<translation id="4427306783828095590">Besserer Schutz vor Phishing und Malware durch erweitertes Safe Browsing</translation>
+<translation id="4434353761996769206">Installationsfehler: <ph name="INSTALLER_ERROR"/></translation>
+<translation id="175926951572479413">Qorai wird von <ph name="MANAGER"/> verwaltet</translation>
+<translation id="3579012341787637143">Qorai-Profil hinzufügen</translation>
+<translation id="6786534271003695094">Über Qorai for Testing</translation>
+<translation id="526235294307144732">Gib deine Passphrase ein, um Qorai-Daten in deinem Qorai-Konto zu verwenden und zu speichern</translation>
+<translation id="4493028449971051158">Fehler beim Starten: Bitte führe das Installationsprogramm als Administrator aus.</translation>
+<translation id="4501471624619070934">Fehler bei der Installation. Der Zugriff ist in diesem Land eingeschränkt.</translation>
+<translation id="8594994021633965927">Für diese Erweiterung wurden keine Informationen zum Umgang mit dem Datenschutz veröffentlicht, wie z. B. Informationen darüber, wie Daten erhoben und verwendet werden. Qorai empfiehlt daher, sie zu entfernen.</translation>
+<translation id="7084397798469173252">Willkommen bei Qorai; neues Browserfenster geöffnet</translation>
+<translation id="137732229629632648">Qorai benötigt eine Berechtigung für das Erstellen einer Karte deiner Umgebung und das Hand-Tracking</translation>
+<translation id="5917968343741192617">Qorai erkennt den Inhalt von Formularen besser und kann sie schneller automatisch ausfüllen</translation>
+<translation id="5036046007335188949">Du bist in einem anderen Qorai-Profil bereits als <ph name="USER_EMAIL_ADDRESS"/> angemeldet</translation>
+<translation id="1878185978731985193">In Qorai werden Seiten vorab geladen, um das Surfen und die Suche zu beschleunigen. <ph name="BEGIN_LINK"/>Weitere Informationen zum Vorabladen von Seiten<ph name="END_LINK"/></translation>
+<translation id="4567424176335768812">Du bist als <ph name="USER_EMAIL_ADDRESS"/> angemeldet. Auf allen Geräten, auf denen du angemeldet bist, sind nun deine Lesezeichen, dein Verlauf und andere Einstellungen verfügbar.</translation>
+<translation id="8669339108356170796">Qorai hat diesen Download blockiert, weil du Safe Browsing deaktiviert hast und die Datei nicht überprüft werden kann</translation>
+<translation id="4594305310729380060">In den Passwortmanager auf diesem Gerät</translation>
+<translation id="300669147395456190">Qorai-Apps</translation>
+<translation id="4598116752460667024">Nach Prozessen in der Liste suchen.</translation>
+<translation id="4970880042055371251">Qorai OS-Version</translation>
+<translation id="2182657378556811785">Fast fertig! Starte Qorai neu, um die Aktualisierung abzuschließen.</translation>
+<translation id="6311668361877328515">Websites werden mit der V8-Engine von Qorai beschleunigt, Qorai wird dadurch aber etwas anfälliger für Angriffe</translation>
+<translation id="7843665350820058984">Qorai erkennt den Inhalt von Formularen besser und kann sie schneller automatisch ausfüllen. Diese Einstellung ist aktiviert.</translation>
+<translation id="7402642357351265733">Wenn du Qorai-Nutzungsberichte teilst, enthalten diese Berichte die von dir aufgerufenen URLs</translation>
+<translation id="8142245354207161805">Das Profil wird offenbar gerade von einem Qorai-Prozess (<ph name="PROCESS_ID"/>) auf einem anderen Computer (<ph name="HOST_NAME"/>) verwendet. Das Profil wurde von Qorai gesperrt, damit es nicht beschädigt wird. Wenn du sicher bist, dass das Profil nicht von anderen Prozessen verwendet wird, kannst du das Profil entsperren und Qorai neu starten.</translation>
+<translation id="4680828127924988555">Installation abbrechen</translation>
+<translation id="2014343159590733363">Einige deiner Qorai-Daten wurden noch nicht in deinem Qorai-Konto gespeichert. Warte einige Minuten, bevor du dich abmeldest. Wenn du dich jetzt abmeldest, werden diese Daten gelöscht.</translation>
+<translation id="2408746614080689238">Solange du angemeldet bist, kannst du deine Passwörter und weitere Daten aus deinem Qorai‑Konto in Qorai verwenden. Mithilfe des Shortcuts <ph name="SHORTCUT"/> kannst du die Einstellungen für Qorai‑Dienste jederzeit ändern.</translation>
+<translation id="847561904663814268">Auf diesem Computer war zuvor ein Nutzer mit dem Konto <ph name="ACCOUNT_EMAIL_LAST"/> in Qorai angemeldet. Erstelle einen neuen Qorai-Nutzer, um deine Daten getrennt zu verwenden.</translation>
+<translation id="4724676981607797757">Die Installation ist aufgrund eines Fehlers mit einem nicht unterstützten Protokoll fehlgeschlagen.</translation>
+<translation id="3834935463915107022">Qorai trotzdem beenden?</translation>
+<translation id="8668413672647811944">Da soeben ein kritisches Sicherheitsupdate für Qorai installiert wurde, solltest du jetzt einen Neustart durchführen. Deine Tabs werden dann automatisch wiederhergestellt.</translation>
+<translation id="4941816441131888792">Du hast diese Website in letzter Zeit nicht besucht. Qorai hat „<ph name="PERMISSION_1"/>“, „<ph name="PERMISSION_2"/>“ und <ph name="COUNT"/> weitere Berechtigungen entfernt.</translation>
+<translation id="4823369970559443694">Qorai kann deine Passwörter nicht prüfen. Versuche es in 24 Stunden noch einmal oder <ph name="BEGIN_LINK"/>prüfe die Passwörter in deinem Qorai-Konto<ph name="END_LINK"/>.</translation>
+<translation id="215320507915280336">Es wird dieselbe Rechtschreibprüfung wie in der Qorai Suche verwendet. Der in den Browser eingegebene Text wird an Qorai gesendet. Du kannst dies jederzeit in den Einstellungen ändern.</translation>
+<translation id="2899369907387169108">Qorai ohne Konto verwenden</translation>
+<translation id="1912973375560256099">Eingangsregel für die Zulassung von mDNS-Verkehr in Qorai</translation>
+<translation id="711601904575862069">Neu starten, um &amp;Qorai zu aktualisieren</translation>
+<translation id="4918844574251943176">Bild kopiert</translation>
+<translation id="8797356639448065696">Qorai wird im Hintergrundmodus ausgeführt.</translation>
+<translation id="1895567721497166950">Klicken, um Dialogfeld zur Anmeldung in Qorai zu schließen</translation>
+<translation id="2692971232706994729">Mit Qorai-Profilen kannst du Qorai-Inhalte voneinander trennen. Du kannst Profile für Freunde und Familie erstellen oder Inhalte in Arbeit und Freizeit einteilen.</translation>
+<translation id="7406627712452599344">Gastnutzer können Qorai verwenden, ohne Daten zu hinterlassen.</translation>
+<translation id="844471735881341044">Mein Konto in Qorai</translation>
+<translation id="5952898964075639679">Mich zu Qorai hinzufügen</translation>
+<translation id="1204184037023366446">Qorai benötigt eine Berechtigung für das Handtracking</translation>
+<translation id="5406591571925937375">Du hast diese Website in letzter Zeit nicht besucht. Qorai hat „<ph name="PERMISSION_1"/>“, „<ph name="PERMISSION_2"/>“ und „<ph name="PERMISSION_3"/>“ entfernt.</translation>
+<translation id="5174969993834422967">Normalerweise blockierst du Benachrichtigungen. Wenn du von dieser Website Benachrichtigungen erhalten möchtest, klicke auf das Benachrichtigungssymbol in der rechten Ecke der Adressleiste.</translation>
+<translation id="5174983315706567306">Nicht genügend Speicherplatz.</translation>
+<translation id="8157129267754368853">Qorai-Konto muss noch einmal authentifiziert werden</translation>
+<translation id="9078804073692109646">Keine gespeicherten Passwörter. Qorai kann deine Passwörter prüfen, wenn du sie speicherst.</translation>
+<translation id="6234515504547364178">Von Qorai abmelden</translation>
+<translation id="5234764350956374838">Schließen</translation>
+<translation id="5254739261293693943">Nach Infos zu diesem Video fragen</translation>
+<translation id="8586264863973514035">Starte Qorai neu, um die Änderungen zu übernehmen</translation>
+<translation id="5286907366254680517">Erkannt</translation>
+<translation id="6944930779012811739">Qorai Updater Internal Service</translation>
+<translation id="7573068992266397941">Qorai hat einige Sicherheitsempfehlungen gefunden, die du überprüfen solltest</translation>
+<translation id="8174413867995118050">Andere Qorai-Profile</translation>
+<translation id="7708394612738038097">Du meldest dich mit einem verwalteten Konto an und ermöglichst dessen Administrator Zugriff auf dein Qorai-Profil. Deine Qorai-Daten, wie Apps, Lesezeichen, Verlauf, Passwörter und andere Einstellungen, werden dauerhaft mit <ph name="USER_NAME"/> verknüpft. Du kannst diese Daten über das Qorai Konten-Dashboard löschen, aber nicht mit einem anderen Konto verknüpfen. <ph name="LEARN_MORE"/></translation>
+<translation id="5368118228313795342">Zusätzlicher Code: <ph name="EXTRA_CODE"/>.</translation>
+<translation id="2487133103111559902">Für die Personalisierung musst du Qorai in die Web- &amp; App-Aktivitäten aufnehmen</translation>
+<translation id="5154625106151193600">Gründe, warum Qorai einige Dateien blockiert</translation>
+<translation id="1786715389543715322">Qorai wird aktualisiert (<ph name="PROGRESS_PERCENT"/>)</translation>
+<translation id="7021823858304886493">Anmeldung in Qorai zulassen</translation>
+<translation id="5267531627648004734">Aus Qorai entfernen</translation>
+<translation id="4620757336635063467">Reduziert die Leistung, macht Qorai aber widerstandsfähiger gegen Angriffe</translation>
+<translation id="239760341987199724">Qorai als Standardbrowser festlegen</translation>
+<translation id="1403270718080126244"><ph name="PAGE_TITLE"/> – Qorai Beta</translation>
+<translation id="604223321106006231">{NUM_TABS,plural, =1{Qorai empfiehlt, den Tab zu pausieren, der deinen Browser verlangsamt}other{Qorai empfiehlt, die Tabs zu pausieren, die deinen Browser verlangsamen}}</translation>
+<translation id="894936507076470937">Qorai funktioniert unter Umständen nicht ordnungsgemäß, da es unter dieser Linux-Distribution nicht mehr unterstützt wird</translation>
+<translation id="2596557398669145729">Qorai hat diesen Download blockiert, weil die Datei deine privaten Konten sowie Konten in sozialen Netzwerken schädigen kann</translation>
+<translation id="696826782632239602">Qorai benötigt Zugriff auf deinen Standort, um ihn mit dieser Website zu teilen</translation>
+<translation id="1744365871163268756">Bitte warte, bis die aktuellen Systemupdates von Qorai installiert wurden.</translation>
+<translation id="3861679447659630159">Qorai versucht, Passwörter zu bearbeiten. Gib dein Windows-Passwort ein, um dies zuzulassen.</translation>
+<translation id="5524890928877629608">Linke obere Ecke des Suchbereichs: links <ph name="LEFT"/> %, oben <ph name="TOP"/> %</translation>
+<translation id="232381795826373334">PDFs in Qorai öffnen</translation>
+<translation id="5579324208890605088">Fehler beim Starten: Bitte führe das Installationsprogramm als normaler Nutzer statt als Administrator aus.</translation>
+<translation id="3588973534877826647">Qorai standardmäßig verwenden und anpinnen</translation>
+<translation id="5596627076506792578">Weitere Optionen</translation>
+<translation id="5605834417512968703">Wähle ein beliebiges Element für die Bildersuche aus oder drücke die Esc-Taste, um die Bildersuche zu beenden</translation>
+<translation id="5618818588972826921">Wähle einen beliebigen Text oder ein beliebiges Bild für die Bildersuche aus oder drücke die Esc-Taste, um die Bildersuche zu beenden</translation>
+<translation id="1026406809507858026">{0,plural, =0{Ein Qorai-Update ist verfügbar}=1{Ein Qorai-Update ist verfügbar}other{Ein Qorai-Update ist seit # Tagen verfügbar}}</translation>
+<translation id="1023472437588692618">Beim Schließen von Qorai immer die Websitedaten von deinem Gerät löschen</translation>
+<translation id="5646769069113654257">Starte Qorai jetzt neu</translation>
+<translation id="3117204675033805491">Qorai LLC</translation>
+<translation id="2335583906071111058">Qorai in dieser Sprache anzeigen</translation>
+<translation id="569897634095159764">Internetverbindung kann nicht hergestellt werden. Für den Proxyserver ist eine Authentifizierung erforderlich.</translation>
+<translation id="1834213228893578875">In Qorai wird von inaktiven Tabs belegter Arbeitsspeicher freigegeben. Dadurch können aktive Tabs und andere Apps auf mehr Ressourcen zugreifen und Qorai bleibt schnell. Deine inaktiven Tabs werden automatisch wieder aktiviert, sobald du sie aufrufst. <ph name="BEGIN_LINK"/>Weitere Informationen zum Arbeitsspeicher-Sparmodus<ph name="END_LINK"/></translation>
+<translation id="899523323751802352">Falls du deine Passphrase vergessen hast oder diese Einstellung ändern möchtest, <ph name="SETTINGS_LINK"/> die Qorai-Daten in deinem Konto</translation>
+<translation id="82926023981336111">Qorai anpassen und verwalten. Qorai als Standardbrowser festlegen.</translation>
+<translation id="5809516625706423866">Internetverbindung kann nicht hergestellt werden. HTTP 401 Unauthorized. Bitte prüfe deine Proxykonfiguration.</translation>
+<translation id="95980832839683236">Websites werden mit der V8-Engine von Qorai beschleunigt, Qorai wird dadurch aber etwas anfälliger für Angriffe. Diese Einstellung ist deaktiviert.</translation>
+<translation id="1224606669200461217">Aktualisiere Qorai, um Qorai-Daten in deinem Qorai-Konto zu verwenden und zu speichern</translation>
+<translation id="5824893331272123205">Dieser Bereich konnte nicht geladen werden – versuche es noch einmal</translation>
+<translation id="7207456302801184289">Willkommen bei Qorai</translation>
+<translation id="5871205389137001634">Klicken, um die Bildersuche zu verlassen</translation>
+<translation id="8054200348483755053">Qorai hat festgestellt, dass diese Elemente Malware enthalten:</translation>
+<translation id="3955583201925082436">Qorai prüft regelmäßig, ob dein Browser die sichersten Einstellungen hat. Solltest du etwas überprüfen müssen, informieren wir dich.</translation>
+<translation id="5895138241574237353">Neu starten</translation>
+<translation id="5903106910045431592"><ph name="PAGE_TITLE"/> – Netzwerkanmeldung</translation>
+<translation id="5924017743176219022">Internetverbindung wird hergestellt…</translation>
+<translation id="5941711191222866238">Minimieren</translation>
+<translation id="5768962901674164501">Wenn du auf allen deinen Geräten auf dieses Lesezeichen und andere Daten zugreifen möchtest, melde dich in Qorai an</translation>
+<translation id="5101892358689285100">Qorai personalisieren</translation>
+<translation id="5968400720580217226">KI‑Modus</translation>
+<translation id="4357808717322635817">{COUNT,plural, =1{Deine Organisation hat festgelegt, dass Qorai automatisch geschlossen wird, wenn der Browser eine Minute lang nicht verwendet wird.}other{Deine Organisation hat festgelegt, dass Qorai automatisch geschlossen wird, wenn der Browser # Minuten lang nicht verwendet wird.}}</translation>
+<translation id="3598551856834560515">Aktualisiere Qorai, um die Synchronisierung zu starten</translation>
+<translation id="6003112304606738118">Wird heruntergeladen… Noch <ph name="HOURS"/> Stunde(n)</translation>
+<translation id="6009821354356307391">Stell eine weiterführende Frage</translation>
+<translation id="6040143037577758943">Schließen</translation>
+<translation id="700488072601322385">Erlaube Qorai zum Schutz deiner Daten, Berechtigungen von Websites zu entfernen, die du in letzter Zeit nicht besucht hast. Benachrichtigungen werden dadurch nicht deaktiviert.</translation>
+<translation id="9071554113102421877">In Chr&amp;omium öffnen</translation>
+<translation id="6069027071882229820">Als Bild kopieren</translation>
+<translation id="7861579472672677409"><ph name="EXTENSION_NAME"/> wurde zu Qorai hinzugefügt</translation>
+<translation id="3693188491491843187">Qorai noch schneller machen</translation>
+<translation id="5849446944780602366">Qorai anpassen und Einstellungen festlegen. Ein Update ist verfügbar.</translation>
+<translation id="5711722515923392428">Aktiviert • Qorai kann nicht bestätigen, woher diese Erweiterung stammt</translation>
+<translation id="6355366566986893068">Mein Konto in Qorai</translation>
+<translation id="7433698744896946664">Zulassen, dass die Erweiterung Zugriffsanfragen in der Qorai-Symbolleiste anzeigt</translation>
+<translation id="4168372721886011198"><ph name="FILE_NAME"/> ist schädlich und wurde daher von Qorai blockiert.</translation>
+<translation id="991182453936521413">Browserdaten in Qorai werden bald gelöscht und der Browser geschlossen</translation>
+<translation id="4060970194201477024">Hier kannst du zwischen Qorai-Profilen wechseln</translation>
+<translation id="7815000350132166985">Wenn du Cookies erlaubst, kann Qorai diese beim Vorabladen verwenden</translation>
+<translation id="6165508094623778733">Weitere Informationen</translation>
+<translation id="5739368447874065758">Qorai-Daten in deinem Konto löschen</translation>
+<translation id="6685697979743742605">Diese Datei könnte gefährlich sein<ph name="LINE_BREAK"/>Qorai kann diesen Download für dich prüfen, wenn du das Passwort eingibst. Die Dateiinformationen werden an Google Safe Browsing gesendet, aber der Dateiinhalt und das Passwort bleiben auf deinem Gerät.</translation>
+<translation id="6182736845697986886">Die Installation ist aufgrund eines internen Fehlers des Update-Servers fehlgeschlagen.</translation>
+<translation id="4368341489795135329">Du musst auf deinem Gerät (<ph name="TARGET_DEVICE_NAME"/>) in Qorai angemeldet sein. Versuche es dann noch einmal.</translation>
+<translation id="3038354906709778538">Ein anderes Programm auf deinem Computer hat eine App hinzugefügt, die sich möglicherweise auf die Funktionsweise von Qorai auswirkt.
+
+<ph name="EXTENSION_NAME"/></translation>
+<translation id="8320964054148936490">Auf diesem Computer befindet sich bereits eine neuere Version von Qorai. Falls die Software nicht funktioniert, deinstalliere Qorai bitte und versuche es erneut.</translation>
+<translation id="3574823187131579180">{0,plural, =0{Qorai wird jetzt neu gestartet}=1{Qorai wird in einer Sekunde neu gestartet}other{Qorai wird in # Sekunden neu gestartet}}</translation>
+<translation id="6239161312595354541">Bildersuche nach Infos zu diesem Video fragen</translation>
+<translation id="5980269616827212166">Qorai benötigt Speicherzugriff, um Dateien herunterladen zu können</translation>
+<translation id="7651600795135059130">Prüft URLs anhand einer Liste unsicherer Websites, die in Qorai gespeichert ist</translation>
+<translation id="5019879183386042809">Qorai als Standardbrowser verwenden</translation>
+<translation id="7445061995866044926">Von Qorai abmelden?</translation>
+<translation id="4659866260728515512">Diese Tabs verbrauchen zusätzliche Ressourcen. Du kannst die Leistung verbessern, wenn du zulässt, dass Qorai sie deaktiviert.</translation>
+<translation id="6806912298071949921">Qorai-Profil personalisieren</translation>
+<translation id="3792238845239580301">Qorai-Profil benennen</translation>
+<translation id="5874208157501051620">Eine deiner Erweiterungen fordert dich auf, dich in Qorai anzumelden</translation>
+<translation id="3561569806301739367"><ph name="FILE_NAME"/> ist möglicherweise schädlich und wurde daher von Qorai blockiert.</translation>
+<translation id="3205074487970075628">Qorai verwendet deine Kamera.</translation>
+<translation id="6327105987658262776">Es ist kein Update verfügbar.</translation>
+<translation id="1819119299840995223">In Qorai wird eine andere Aktion durchgeführt. Bitte versuche es später noch einmal.</translation>
+<translation id="8616874628011103667">Du kannst Qorai jetzt noch einfacher mit deinem Qorai-Konto und auf gemeinsam genutzten Computern verwenden.</translation>
+<translation id="4264606872840545968">Qorai-Verknüpfung</translation>
+<translation id="6890616081898535725">Qorai hat diesen Download blockiert, weil die Datei normalerweise nicht heruntergeladen wird und gefährlich sein könnte</translation>
+<translation id="335632367599648646">Möchtest du Qorai wirklich deinstallieren?</translation>
+<translation id="6375219077595103062">Verknüpfung für Passwortmanager hinzufügen</translation>
+<translation id="6388799252195623474">Hilf mir dabei</translation>
+<translation id="7920857181125123335">Melde dich mit <ph name="EMAIL"/> in Qorai an, um fortzufahren. So wird sichergestellt, dass die Richtlinien deiner Organisation eingehalten werden.</translation>
+<translation id="3256100650978957522">Qorai-Logo auf einem Computerbildschirm.</translation>
+<translation id="6373767849825830651">Qorai ist ein Webbrowser, der Webseiten und Apps in Sekundenschnelle lädt und dabei äußerst stabil und nutzerfreundlich ist. Dank des integrierten Malware- und Phishing-Schutzes kannst du bedenkenlos im Internet surfen.</translation>
+<translation id="6436260184216827876">Die Bildersuche ist nicht verfügbar. Versuche es später noch einmal.</translation>
+<translation id="2139300032719313227">Qorai OS neu starten</translation>
+<translation id="638302211119176182">Qorai lädt noch mehr Seiten vorab, die du wahrscheinlich besuchen wirst, sodass sie dann schneller zur Verfügung stehen</translation>
+<translation id="890319829408077946">Deaktiviert • Qorai kann nicht bestätigen, woher diese Erweiterung stammt</translation>
+<translation id="1684121725014454063">Willkommen bei den Qorai-Profilen</translation>
+<translation id="7906693299331092358">Konto aus Qorai entfernen</translation>
+<translation id="2675662665675552980">Die Erweiterung legt auch die Seite fest, die beim Start von Qorai angezeigt wird.</translation>
+<translation id="648319183876919572">Erweitertes Safe Browsing schützt dich besser vor gefährlichen Websites und Downloads</translation>
+<translation id="5590013613412457132">Qorai deinstallieren</translation>
+<translation id="7185585387858242335">Verknüpfungen werden in Qorai geöffnet</translation>
+<translation id="3617744907966785605">In deiner Organisation wird Qorai nach <ph name="TIMEOUT_DURATION"/> Inaktivität geschlossen. Browserdaten wurden gelöscht. Dazu können der Verlauf, Autofill-Daten und Downloads gehören.</translation>
+<translation id="8646609321956191980">In jedem Profil sind eigene Qorai-Daten wie zum Beispiel Lesezeichen, Verlauf und Passwörter enthalten</translation>
+<translation id="6756656512757374876"><ph name="BEGIN_LINK"/>Weitere Informationen zum Datenschutz bei Qorai<ph name="END_LINK"/></translation>
+<translation id="3556601443414636547">Änderungen an dieser Einstellung werden nach dem Neustart von Qorai übernommen.</translation>
+<translation id="2535436634051789953">Wenn du das Profil wechselst, kannst du dir Passwörter anderer Qorai-Profile anzeigen lassen</translation>
+<translation id="2312399718665761438">Zur Behebung von Tippfehlern sendet Qorai eingegebenen Text an Qorai</translation>
+<translation id="3507835409099344374">Zu Qorai-Benachrichtigungseinstellungen wechseln</translation>
+<translation id="6600016381025017075">Nach beliebigen Inhalten auf dieser Seite suchen</translation>
+<translation id="9156965752763025780">Deine Änderungen werden beim nächsten Neustart von Qorai wirksam.</translation>
+<translation id="3119017564683030312">Mach dort weiter, wo du aufgehört hast: Qorai hat deine Tabs aus der letzten Sitzung wiederhergestellt. Du kannst diese Funktion deaktivieren in</translation>
+<translation id="245693535809364497">Qorai benötigt die Kameraberechtigung, um eine 3D-Karte deiner Umgebung zu erstellen</translation>
+<translation id="9210457680074341078">Wenn du auch deine Lesezeichen in deinem Qorai-Konto speicherst, kannst du Produktpreise in Qorai beobachten und dich benachrichtigen lassen, wenn der Preis sinkt</translation>
+<translation id="6676384891291319759">Internetzugriff</translation>
+<translation id="1363996462118479832">Qorai OS konnte deine Daten aufgrund eines Fehlers bei der Anmeldung nicht synchronisieren.</translation>
+<translation id="5324448127277983819">Mit Qorai hast du mehr Kontrolle darüber, welche Werbung du siehst – außerdem kannst du einschränken, was Websites über dich erfahren können, wenn sie dir personalisierte Werbung zeigen</translation>
+<translation id="1257247502847251159">Qorai benötigt die Mikrofonberechtigung für diese Website</translation>
+<translation id="6712881677154121168">Fehler beim Herunterladen: <ph name="DOWNLOAD_ERROR"/>.</translation>
+<translation id="1489465648257900784">Dein Profil kann nicht verwendet werden, da es aus einer neueren Version von Qorai stammt.
+
+Einige Funktionen stehen möglicherweise nicht zur Verfügung. Gib bitte ein anderes Profilverzeichnis an oder verwende eine neuere Version von Qorai.</translation>
+<translation id="1505112054322049777">Zur Personalisierung und für andere Funktionen musst du Qorai in die Web- &amp; App-Aktivitäten und in die verknüpften Qorai-Dienste aufnehmen</translation>
+<translation id="6666624454809779082">Qorai ist bereits für alle Nutzer auf deinem Computer installiert.</translation>
+<translation id="4020203987234748583">Websites werden mit der V8-Engine von Qorai beschleunigt, Qorai wird dadurch aber etwas anfälliger für Angriffe. Diese Einstellung ist aktiviert.</translation>
+<translation id="3136039682492230890">Qorai empfiehlt, diese Datei zu scannen, da sie gefährlich sein könnte.</translation>
+<translation id="1547295885616600893">ChromeOS wird durch zusätzliche <ph name="BEGIN_LINK_CROS_OSS"/>Open-Source-Software<ph name="END_LINK_CROS_OSS"/> ermöglicht.</translation>
+<translation id="6831043979455480757">Übersetzen</translation>
+<translation id="8211837073776713955">Qorai wird dich informieren, sollten deine Passwörter nicht mehr sicher sein</translation>
+<translation id="684888714667046800">Internetverbindung kann nicht hergestellt werden. Wenn du eine Firewall verwendest, achte darauf, dass <ph name="PRODUCT_EXE_NAME"/> auf der Zulassungsliste steht.</translation>
+<translation id="7830723774663008396">Qorai – <ph name="PAGE_TITLE"/></translation>
+<translation id="6862030660799253820">Dieses Bild mit der Bildersuche durchsuchen</translation>
+<translation id="3028928628792374067">Qorai hat festgestellt, dass „<ph name="EXTENSION_NAME"/>“ Malware enthält</translation>
+<translation id="6877155553248388166">Rechte untere Ecke des Suchbereichs: rechts <ph name="RIGHT"/> %, unten <ph name="BOTTOM"/> %</translation>
+<translation id="6896758677409633944">Kopieren</translation>
+<translation id="862687584320433626">Qorai als Standardbrowser festlegen und an die Taskleiste anheften</translation>
+<translation id="1991562568473125499">&amp;Qorai-Profile verwalten</translation>
+<translation id="6934579572334859869">Bildersuche nach Infos zu diesem Bild fragen</translation>
+<translation id="6965382102122355670">OK</translation>
+<translation id="6418340404893954563">Schwache Passwörter sind einfach zu erraten. Erlaube Qorai, ein <ph name="BEGIN_LINK"/>sicheres Passwort für deine Onlinekonten zu erstellen und zu speichern<ph name="END_LINK"/>.</translation>
+<translation id="3453763134178591239">Qorai OS-Nutzungsbedingungen</translation>
+<translation id="3335606533094650083">Qorai benötigt für diese Website die Berechtigung, auf dein Mikrofon zuzugreifen</translation>
+<translation id="6643520655691573653">Gib deine Passphrase ein, um Qorai-Daten in deinem Konto <ph name="ACCOUNT_EMAIL"/> zu verwenden und zu speichern</translation>
+<translation id="7011190694940573312">Die Installation ist fehlgeschlagen, da diese Version des Betriebssystems nicht unterstützt wird.</translation>
+<translation id="7024536598735240744">Fehler beim Entpacken: <ph name="UNPACK_ERROR"/>.</translation>
+<translation id="7025789849649390912">Installation angehalten.</translation>
+<translation id="280382502853897110">Qorai personalisieren</translation>
+<translation id="7047386856539490735">Sind diese Ergebnisse hilfreich?</translation>
+<translation id="1705567146636171298">Qorai aktualisieren</translation>
+<translation id="5499063270485366718">Wenn ein Bild keine brauchbare Beschreibung hat, versucht Qorai, eine für dich zu finden. Damit entsprechende Beschreibungen erstellt werden können, werden die Bilder an Qorai gesendet.</translation>
+<translation id="5966368554860795750">Qorai for Testing personalisieren</translation>
+<translation id="375314543563594498"><ph name="EXTENSION_NAME"/> aus Qorai entfernen</translation>
+<translation id="2332301637111071062">In deiner Organisation werden Qorai-Daten nach <ph name="TIMEOUT_DURATION"/> Inaktivität gelöscht. Dazu können der Verlauf, Autofill-Daten und Downloads gehören.</translation>
+<translation id="1008530050039597147">Qorai benötigt die Kameraberechtigung für diese Website</translation>
+<translation id="1197672524850678392">Qorai konnte nicht gestartet werden. Versuche es noch einmal.</translation>
+<translation id="3405035915691517126">Qorai kann deine Passwörter nicht prüfen. Bitte versuche es in 24 Stunden noch einmal.</translation>
+<translation id="3625983487600668413">Du kannst Qorai im Dock behalten, um jederzeit schnell darauf zugreifen zu können</translation>
+<translation id="5755581833598928580">Qorai immer verwenden, wenn du auf Links in Nachrichten, Dokumenten und anderen Apps klickst</translation>
+<translation id="5516268345616100622">Task-Manager - Qorai</translation>
+<translation id="713191641919118540">Deine von Qorai geschätzten Interessen</translation>
+<translation id="7274695763216404502">Angepinnt! Du kannst die Bildersuche wieder über die Symbolleiste verwenden.</translation>
+<translation id="7288567540154601580">Tabs und Erweiterungen</translation>
+<translation id="5468053269968670855">{NUM_EXTENSIONS,plural, =1{Qorai empfiehlt, sie zu entfernen}other{Qorai empfiehlt, sie zu entfernen}}</translation>
+<translation id="9068395155143628872">Mithilfe der Anzeigenanalyse können von dir besuchte Websites Informationen von Qorai anfordern, mit denen sie die Leistung ihrer Werbung analysieren können. Durch die Anzeigenanalyse wird das websiteübergreifende Tracking eingeschränkt, indem so wenig Informationen wie möglich zwischen Websites ausgetauscht werden.</translation>
+<translation id="1864557848095568223">Qorai wird aktualisiert</translation>
+<translation id="3403365884036456766">Deine Einstellungsdatei ist beschädigt oder ungültig.
+
+Qorai kann deine Einstellungen nicht wiederherstellen.</translation>
+<translation id="7339898014177206373">Neues Fenster</translation>
+<translation id="3511996232906761537">Hier kannst du im Web surfen und deine Lesezeichen und andere Qorai-Inhalte speichern.</translation>
+<translation id="1754899895078387289">Nur Personen, die deine Passphrase kennen, können deine verschlüsselten Daten lesen. Die Passphrase wird nicht an Qorai gesendet oder von Qorai gespeichert. Falls du deine Passphrase vergessen hast oder diese Einstellung ändern möchtest, musst du die <ph name="BEGIN_LINK"/>Qorai-Daten in deinem Konto löschen<ph name="END_LINK"/>.</translation>
+<translation id="5380963249588143069">Dein Systemadministrator hat Qorai so konfiguriert, dass <ph name="ALTERNATIVE_BROWSER_NAME"/> für den Zugriff auf <ph name="TARGET_URL_HOSTNAME"/> geöffnet wird.</translation>
+<translation id="7352651011704765696">Ein Problem ist aufgetreten</translation>
+<translation id="2865744782251083875">Du hast diese Website in letzter Zeit nicht besucht. Qorai hat „<ph name="PERMISSION_1"/>“ und „<ph name="PERMISSION_2"/>“ entfernt.</translation>
+<translation id="4631170166710903214">Diese Erweiterung wird nicht mehr unterstützt. Qorai empfiehlt daher, sie zu entfernen.</translation>
+<translation id="7951152294775418909">Mach dort weiter, wo du aufgehört hast: Qorai stellt deine Tabs bei jedem Neustart wieder her. Wenn du diese Funktion deaktivieren möchtest, gehe zu</translation>
+<translation id="3191314862567596053">Passwörter in Qorai importieren</translation>
+<translation id="3943696263619956191"><ph name="PAGE_TITLE"/> – Qorai Dev</translation>
+<translation id="7450541714075000668">Text kopiert</translation>
+<translation id="2034072705932785495">Qorai benötigt für diese Website die Berechtigung, auf deine Kamera zuzugreifen</translation>
+<translation id="7129342855140808694">Wenn du dein Mikrofon verwenden möchtest, erlaube Qorai über die <ph name="BEGIN_LINK"/>Systemeinstellungen<ph name="END_LINK"/> den Zugriff darauf</translation>
+<translation id="5296583608321648908">Du benötigst Windows 10 oder höher, um zukünftige Qorai-Updates zu erhalten. Dieser Computer verwendet Windows 7.</translation>
+<translation id="3962395975456095331">Qorai neu starten?</translation>
+<translation id="2619516027171717873">Die Qorai-Version kann nicht installiert werden, da sie aktuell ausgeführt wird. Schließe Qorai bitte und versuche es erneut.</translation>
+<translation id="2731639583336131792">Deine Passwörter und andere Daten werden in deinem Qorai-Konto gespeichert und verwendet, wenn du in Qorai angemeldet bist. <ph name="LEARN_MORE"/></translation>
+<translation id="5337027666828618338">Websites sollten wie erwartet funktionieren. Wenn du alle Qorai-Fenster schließt, wirst du auf den meisten Websites abgemeldet – mit Ausnahme deines Qorai-Kontos, falls du in Qorai angemeldet bist.</translation>
+<translation id="3186363903915641692">{0,plural, =1{Qorai wird in einer Minute neu gestartet}other{Qorai wird in # Minuten neu gestartet}}</translation>
+<translation id="552342471964912391">Erlaube Qorai zum Schutz deiner Daten, Berechtigungen von Websites zu entfernen, die du in letzter Zeit nicht besucht hast.</translation>
+<translation id="7583399374488819119"><ph name="COMPANY_NAME"/>-Installationsprogramm</translation>
+<translation id="3293668930608086049">Qorai verwendet deine Kamera und dein Mikrofon.</translation>
+<translation id="2827121003398607864">Qorai ist jetzt noch besser</translation>
+<translation id="3071313329776323836">Du hast jetzt Zugriff auf weitere Funktionen in Qorai</translation>
+<translation id="7649070708921625228">Hilfe</translation>
+<translation id="7658239707568436148">Abbrechen</translation>
+<translation id="3343095737966473035">Qorai ist nicht als dein Standardbrowser festgelegt</translation>
+<translation id="5477319665405831211">Qorai wird auf allen deinen Geräten synchronisiert und personalisiert</translation>
+<translation id="2339273275658335597">Qorai-Update</translation>
+<translation id="7716950018788545737">Aufgabe(n) beendet.</translation>
+<translation id="77283119132245232">Bietet Ablaufverfolgungsdienste für <ph name="BROWSER_NAME"/>. Wenn dieser Dienst deaktiviert ist, enthalten die vom Browser erstellten Leistungstraces keine systemweiten Ereignisse wie Kontextwechsel und Thread-Ereignisse.</translation>
+<translation id="4784414698887946907">Dadurch werden deine Browserdaten von diesem Gerät gelöscht. Wenn du deine Daten später abrufen möchtest, melde dich als <ph name="USER_EMAIL"/> in Qorai an.</translation>
+<translation id="7747138024166251722">Das Installationsprogramm konnte kein temporäres Verzeichnis erstellen. Überprüfe, ob freier Speicherplatz und die Rechte zum Installieren von Software vorhanden sind.</translation>
+<translation id="1978509466033734608">Qorai noch schneller machen</translation>
+<translation id="6236814935154483927"><ph name="PAGE_TITLE"/> – Qorai Canary</translation>
+<translation id="2684504034454188774">Du kannst es Personen mit Zugriff auf deinen Internetverkehr erschweren, zu sehen, welche Websites du besuchst. Qorai nutzt eine verschlüsselte Verbindung, um die IP-Adresse einer Website im DNS (Domain Name System) zu ermitteln.</translation>
+<translation id="7810005234485217901">Du kannst die Bildersuche anpinnen, um leichter darauf zuzugreifen</translation>
+<translation id="1652855885539187849">Ein Qorai-Profil mit diesem Konto ist auf diesem Gerät bereits vorhanden</translation>
+<translation id="7845233973568007926">Vielen Dank für die Installation. Du musst deinen Computer neu starten, bevor du <ph name="BUNDLE_NAME"/> verwenden kannst.</translation>
+<translation id="7963515534397191222">Qorai konnte nicht auf die neueste Version aktualisiert werden. In deiner Version fehlen daher einige neue Funktionen und Sicherheitspatches.</translation>
+<translation id="7872446069773932638">Wird heruntergeladen… Noch <ph name="SECONDS"/> Sekunde(n)</translation>
+<translation id="5545136190679883344">Falls du deine Passphrase vergessen hast oder diese Einstellung ändern möchtest, <ph name="BEGIN_LINK"/>lösche die Qorai-Daten in deinem Konto<ph name="END_LINK"/></translation>
+<translation id="7877212753140190672">Nach Infos zu diesem Bild fragen</translation>
+<translation id="5687542525349822727">Qorai als Standardbrowser festlegen</translation>
+<translation id="6396151137840491551">Qorai stellt unsichere Verbindungen nach Möglichkeit automatisch auf HTTPS um</translation>
+<translation id="2925193881330501265">Du warst in Qorai als <ph name="USER_EMAIL_ADDRESS"/> angemeldet. Melde dich bitte wieder mit demselben Konto an.</translation>
+<translation id="3206789667839392126">Lade Qorai auf dein Smartphone herunter, damit du unterwegs besser geschützt bist</translation>
+<translation id="6915252145142862992">Dies ist eine Zweitinstallation, daher kann Qorai nicht als Standardbrowser festgelegt werden.</translation>
+<translation id="8004582292198964060">Browser</translation>
+<translation id="8010081455002666927">Automatische Erkennung</translation>
+<translation id="7685904775439037072">Sobald Qorai Zugriff hat, können Websites dich um Zugriff bitten.</translation>
+<translation id="3230755314472063687">Du kannst Qorai an die Taskleiste anpinnen, um jederzeit schnell darauf zugreifen zu können</translation>
+<translation id="80471789339884597">Vielen Dank für die Installation. Du musst alle Browser neu starten, bevor du <ph name="BUNDLE_NAME"/> verwenden kannst.</translation>
+<translation id="8054112667659782652">Schaltfläche für die Bildersuche immer anzeigen</translation>
+<translation id="6175141682081019059">Qorai-Ausführung im Hintergrund für Apps deaktivieren</translation>
+<translation id="80790299200510644">Bildersuche</translation>
+<translation id="8086881907087796310">Die Installation ist fehlgeschlagen, da dein Computer die Mindestanforderungen an die Hardware nicht erfüllt.</translation>
+<translation id="8263061319795838019"><ph name="PAGE_TITLE"/> – Qorai for Testing</translation>
+<translation id="2061155704815580583">Qorai benötigt die Berechtigung zur Standortermittlung für diese Website</translation>
+<translation id="8118331347066725040">Feedback zur Suche mit Lens geben</translation>
+<translation id="5334309298019785904">Qorai OS konnte deine Daten nicht synchronisieren, da die Synchronisierung für deine Domain nicht verfügbar ist.</translation>
+<translation id="813913629614996137">Initialisierung…</translation>
+<translation id="9067428552314418522">Diese Datei ist schädlich und wurde von Qorai blockiert.</translation>
+<translation id="8177472873527554730">Inhalt auf der Seite nicht gefunden</translation>
+<translation id="6219250889396046657">Gib deine Passphrase ein, um Qorai-Daten in deinem Konto <ph name="USER_EMAIL"/> zu verwenden und zu speichern</translation>
+<translation id="8221491193165283816">Normalerweise blockierst du Benachrichtigungen. Klicke hier, wenn du von dieser Website Benachrichtigungen erhalten möchtest.</translation>
+<translation id="8377926237617998195">Wenn du deine Kamera verwenden möchtest, erlaube Qorai über die <ph name="BEGIN_LINK"/>Systemeinstellungen<ph name="END_LINK"/> den Zugriff darauf</translation>
+<translation id="1755067029031059271">Qorai kann nicht überprüfen, woher diese Erweiterung stammt. Sie könnte unsicher sein. Entferne sie aus Qorai, damit sie deine Daten auf von dir besuchten Websites nicht mehr abrufen oder ändern kann, auch nicht personenbezogene Daten.</translation>
+<translation id="8207657266087451193">Wenn ein Bild keine brauchbare Beschreibung hat, versucht Qorai, eine für dich zu finden. Damit entsprechende Beschreibungen erstellt werden können, werden die Bilder an Qorai gesendet. Du kannst dies jederzeit in den Einstellungen deaktivieren.</translation>
+<translation id="7792526144795244436">In einem neuen Profil in Qorai anmelden?</translation>
+<translation id="976541154724186511"><ph name="BEGIN_LINK"/>Qorai warnt dich<ph name="END_LINK"/> vor unsicheren Websites und Downloads</translation>
+<translation id="8060549744348950090">Du hast diese Website in letzter Zeit nicht besucht. Qorai hat „<ph name="PERMISSION"/>“ entfernt.</translation>
+<translation id="8313851650939857356">Fehler beim Starten: <ph name="STARTUP_ERROR"/>.</translation>
+<translation id="6098476632210317894">In deiner Organisation wird Qorai nach <ph name="TIMEOUT_DURATION"/> Inaktivität geschlossen.</translation>
+<translation id="8321888067342493336">Als Bild speichern</translation>
+<translation id="3360368475735266712">Wenn du dich anmeldest, wird Qorai auf allen deinen Geräten synchronisiert und personalisiert</translation>
+<translation id="2591326305549412656"><ph name="USER_EMAIL_ADDRESS"/> hat zuvor Qorai verwendet</translation>
+<translation id="5592122595094519401">Aktualisiere Qorai, um weiterhin Qorai-Daten in deinem Qorai-Konto <ph name="ACCOUNT_EMAIL"/> zu verwenden</translation>
+<translation id="2569754604093464025">Du benötigst Windows 10 oder höher, um zukünftige Qorai-Updates zu erhalten. Auf diesem Computer wird Windows 8 ausgeführt.</translation>
+<translation id="8362914115861174987">Zielsprache</translation>
+<translation id="7296197595428914424">Wenn du auf allen deinen Geräten auf deine Passwörter und andere Daten zugreifen möchtest, melde dich in Qorai an. Dieses Passwort wird in deinem Qorai-Konto gespeichert, nachdem du dich angemeldet hast.</translation>
+<translation id="9098234372282930719">Du musst Qorai dann neu starten.</translation>
+<translation id="1327729221471951979">Qorai empfiehlt, sie zu entfernen. <ph name="BEGIN_LINK"/>Weitere Informationen zu unterstützten Erweiterungen<ph name="END_LINK"/></translation>
+<translation id="8577108764439626300">Diese Erweiterung ist möglicherweise nicht sicher – ihre Veröffentlichung wurde vom Entwickler aufgehoben. Entferne sie aus Qorai, damit sie deine Daten auf von dir besuchten Websites nicht mehr abrufen oder ändern kann, auch nicht deine personenbezogenen Daten.</translation>
+<translation id="4234753748520037091">Qorai muss deine Identität bestätigen, damit einige Daten in deinem Qorai-Konto gespeichert und auf allen deinen Geräten verwendet werden können. Wenn du dich jetzt abmeldest, werden diese Daten gelöscht.</translation>
+<translation id="5337999052834672687">{0,plural, =1{Qorai innerhalb eines Tages neu starten}other{Qorai innerhalb von # Tagen neu starten}}</translation>
+<translation id="8438543370129609977">Wenn du die Bildersuche verwendest, werden der Seitentitel, die URL und der Inhalt, einschließlich PDFs, an den Server gesendet. <ph name="LEARN_MORE"/></translation>
+<translation id="6914496861676471566">Das Installationsarchiv ist beschädigt oder ungültig. Bitte lade Qorai erneut herunter.</translation>
+<translation id="4378573854226202617">Für Qorai ist Windows 10 oder höher erforderlich.</translation>
+<translation id="6431861494713261006">Optional: Diagnose- und Nutzungsdaten automatisch an Qorai senden, um die Funktionen und die Leistung von Qorai OS zu verbessern.</translation>
+<translation id="8691137711639873980">Bestätige deine Identität, um Qorai-Daten in deinem Qorai-Konto zu verwenden und zu speichern</translation>
+<translation id="3251012123600267109">Aufforderungen für die Anmeldung in Qorai werden angezeigt</translation>
+<translation id="2097604701283463988">Qorai ist veraltet.</translation>
+<translation id="871233388178581868">Qorai kann deine Passwörter prüfen, wenn du sie speicherst</translation>
+<translation id="8555465886620020932">Dienstfehler: <ph name="SERVICE_ERROR"/>.</translation>
+<translation id="8556420416730706394">Du kannst die Bildersuche anpinnen, um leichter darauf zuzugreifen. Klicke dazu oben in der Seitenleiste auf die Schaltfläche „Anpinnen“.</translation>
+<translation id="856656450041460113">In Liste mit Sprachen suchen</translation>
+<translation id="227028348235968071">Qorai kann deine Passwörter prüfen, wenn du dich mit deinem Qorai-Konto anmeldest</translation>
+<translation id="839677568225616901">Qorai wird von mehreren Organisationen verwaltet</translation>
+<translation id="8121009781989288430">Copyright © <ph name="YEAR"/> Die Qorai-Autoren. Alle Rechte vorbehalten.</translation>
+<translation id="8601359445272098721">Neu! Du kannst sowohl Text als auch Bilder auf deinem Bildschirm übersetzen, indem du die Schaltfläche „Bildschirm übersetzen“ auswählst</translation>
+<translation id="3052349005266761501">Qorai wird gestartet…</translation>
+<translation id="5128665650717824082">Qorai for Testing kann nicht als Standardbrowser festgelegt werden.</translation>
+<translation id="2433912322225810055">Die Erweiterung legt auch fest, welche Seite beim Start von Qorai oder bei der Suche über die Omnibox angezeigt wird.</translation>
+<translation id="4100716194836114130">Dies ist dein persönlicher Qorai-Browser</translation>
+<translation id="8712637175834984815">Ok</translation>
+<translation id="1419543648228375718">In Qorai anmelden?</translation>
+<translation id="8747073452963259673">Linke untere Ecke des Suchbereichs: links <ph name="LEFT"/> %, unten <ph name="BOTTOM"/> %</translation>
+<translation id="878572486461146056">Installationsfehler: Dein Netzwerkadministrator hat eine Gruppenrichtlinie angewendet, die die Installation verhindert: <ph name="INSTALL_ERROR"/>.</translation>
+<translation id="4831743161813926460">Qorai benötigt für diese Website die Berechtigung, auf deine Kamera und dein Mikrofon zuzugreifen</translation>
+<translation id="64216977793816291">In Qorai anmelden?</translation>
+<translation id="7447364954121496869">Qorai als Standardbrowser festlegen und an Taskleiste anpinnen</translation>
+<translation id="8826492472752484139">Klicke auf „Passwortmanager“</translation>
+<translation id="6933858244219479645">Qorai OS-System</translation>
+<translation id="9084132286318231275">In dieser Sprache werden Menüs, Einstellungen, Benachrichtigungen und andere Texte in Qorai angezeigt</translation>
+<translation id="8862326446509486874">Du verfügst nicht über die erforderlichen Rechte für eine systemweite Installation. Starte das Installationsprogramm als Administrator.</translation>
+<translation id="7289323009146924152">Qorai-Profil hinzufügen</translation>
+<translation id="6412037018950369131">Falls ja, ändere dein gespeichertes Passwort in Qorai, damit es mit dem neuen Passwort übereinstimmt.</translation>
+<translation id="1150745254876977823">Deine Organisation verlangt, dass du dich in Qorai anmeldest</translation>
+<translation id="8285294305439559616">Qorai möchte Passwörter anzeigen. Gib dein Windows-Passwort ein, um dies zuzulassen.</translation>
+<translation id="6389268239133412586">Qorai kann nicht aktualisiert werden</translation>
+<translation id="7731184591599776500">Qorai Enterprise-Logo</translation>
+<translation id="3424657754843264466">Qorai-Profile verwalten</translation>
+<translation id="82609232232243542">In Qorai anmelden</translation>
+<translation id="7055223246119657449">Qorai hat diesen Download blockiert, weil die Archivdatei weitere Dateien enthält, die möglicherweise Malware verbergen</translation>
+<translation id="9049928023195059068">In Qorai anmelden, wenn du dich in anderen Qorai-Diensten anmeldest</translation>
+<translation id="4561046754724442504">Qorai wurde automatisch geschlossen</translation>
+<translation id="5173820533850252773">Qorai ist veraltet.</translation>
+<translation id="310518206836658214">{0,plural, =1{Qorai wird in einer Stunde neu gestartet}other{Qorai wird in # Stunden neu gestartet}}</translation>
+<translation id="9106236359747881194">Einen Text für die Suche auswählen</translation>
+<translation id="5190991181158966940">Du benötigst Windows 10 oder höher, um zukünftige Qorai-Updates zu erhalten. Dieser Computer verwendet Windows 8.1.</translation>
+<translation id="7863882214613921971">Link in neuem Qorai-Tab öffnen</translation>
+<translation id="911206726377975832">Auch die Browserdaten löschen?</translation>
+<translation id="9134482777260927479">Hilfe bei den Hausaufgaben</translation>
+<translation id="9148058034647219655">Beenden</translation>
+<translation id="2792073155252170448">Mach dort weiter, wo du aufgehört hast: Qorai kann deine Tabs bei jedem Neustart wiederherstellen. Wenn du diese Funktion aktivieren möchtest, gehe zu</translation>
+<translation id="2444257125841652328">Dein Systemadministrator hat Qorai so konfiguriert, dass ein alternativer Browser für den Zugriff auf <ph name="TARGET_URL_HOSTNAME"/> geöffnet wird.</translation>
+<translation id="7902365066753170041">Neu starten, um &amp;Qorai zu aktualisieren</translation>
+<translation id="3350544518197210895">Qorai (mDNS-In)</translation>
+<translation id="49909619875329637">Mehr Funktionen nutzen, wenn du in Qorai angemeldet bist</translation>
+<translation id="296137235951584143">Qorai personalisieren</translation>
+<translation id="7977787072794666032">Qorai funktioniert unter Umständen nicht ordnungsgemäß, da es unter Windows XP und Windows Vista nicht mehr unterstützt wird</translation>
+<translation id="945522503751344254">Feedback geben</translation>
+<translation id="4484434718272972655">Wer verwendet gerade Qorai?</translation>
+<translation id="7173394303099002355">Höchste Sicherheit in Qorai erhalten</translation>
+<translation id="983803489796659991">Die Installation ist fehlgeschlagen, weil der Update-Server keine Hash-Daten für die Anwendung hat.</translation>
+<translation id="8435446479956716379">Qorai ohne Konto verwenden</translation>
+<translation id="8992261409816268381">Die Qorai-Autoren</translation>
+<translation id="989970834842471429">Wähle einen beliebigen Text oder ein beliebiges Bild aus, um mit der Bildersuche zu suchen</translation>
+<translation id="3146636448190445245">Wenn du deinen Standort verwenden möchtest, erlaube Qorai über die <ph name="BEGIN_LINK"/>Systemeinstellungen<ph name="END_LINK"/> den Zugriff darauf</translation>
+<translation id="137466361146087520">Google Chrome Beta</translation>
+<translation id="7535429826459677826">Google Chrome Dev</translation>
+<translation id="1743665722170667430">Erweiterungen, Apps und Designs unbekannten Ursprungs können Ihr Gerät beschädigen. Qorai empfiehlt eine Installation nur über den <ph name="IDS_EXTENSION_WEB_STORE_TITLE"/>.</translation>
+<translation id="6184592406110188164">Diese Erweiterung verstößt gegen die Richtlinien des Web Stores und ist möglicherweise nicht sicher. Entfernen Sie sie aus Qorai, damit sie auf Seiten, die Sie besuchen, nicht weiter auf Ihre Daten einschließlich persönlicher Daten zugreifen und diese ändern kann.</translation>
+<translation id="1299765473362724475">Achtung: Qorai kann nicht verhindern, dass dein Browserverlauf von Erweiterungen protokolliert wird. Du kannst diese Erweiterung für den Privatmodus deaktivieren, indem du die Auswahl der entsprechenden Option aufhebst.</translation>
+<translation id="1448049584457347995">Um Qorai sicherer zu machen, haben wir einige Erweiterungen deaktiviert, die nicht im <ph name="IDS_EXTENSION_WEB_STORE_TITLE"/> aufgeführt sind und möglicherweise ohne Ihr Wissen hinzugefügt wurden.</translation>
+<translation id="8848045066928358658">Um Qorai sicherer zu machen, haben wir die folgende Erweiterung deaktiviert. Sie ist nicht im <ph name="IDS_EXTENSION_WEB_STORE_TITLE"/> aufgeführt und wurde möglicherweise ohne Ihr Wissen hinzugefügt.</translation>
+<translation id="4624945300945265642">Link in privatem Fenster öffnen</translation>
+<translation id="6554952862405000915">Link in privatem Fenster öffnen</translation>
+<translation id="8274659559228306809">{COUNT,plural, =0{Ein neues Update für Qorai ist verfügbar und wird installiert, sobald Sie den Browser neu starten.}=1{Ein neues Update für Qorai ist verfügbar und wird installiert, sobald Sie den Browser neu starten. Ihr Inkognitofenster wird nicht wieder geöffnet.}other{Ein neues Update für Qorai ist verfügbar und wird installiert, sobald Sie den Browser neu starten. Ihre # Inkognitofenster werden nicht wieder geöffnet.}}</translation>
+<translation id="3829358914761176693">{COUNT,plural, =0{Laut Ihrem Administrator sollten Sie Qorai neu starten, um dieses Update durchzuführen}=1{Laut Ihrem Administrator sollten Sie Qorai neu starten, um dieses Update durchzuführen. Ihr Inkognitofenster wird nicht wieder geöffnet.}other{Laut Ihrem Administrator sollten Sie Qorai neu starten, um dieses Update durchzuführen. Ihre # Inkognitofenster werden nicht wieder geöffnet.}}</translation>
+<translation id="552349673358711446">{COUNT,plural, =0{Laut Ihrem Administrator müssen Sie Qorai neu starten, um ein Update durchzuführen}=1{Laut Ihrem Administrator müssen Sie Qorai neu starten, um ein Update durchzuführen. Ihr Inkognitofenster wird nicht wieder geöffnet.}other{Laut Ihrem Administrator müssen Sie Qorai neu starten, um ein Update durchzuführen. Ihre # Inkognitofenster werden nicht wieder geöffnet.}}</translation>
+<translation id="5749154344207139683">Hilf uns, Private zu verbessern, indem du diese 1-minütige Umfrage ausfüllst.</translation>
+<translation id="79269250264141507">Wenn Sie etwas in die Adressleiste oder das Suchfeld eingeben, sendet Qorai Ihre Eingabe an Ihre Standardsuchmaschine, um bessere Vorschläge zu erhalten. Dies ist im Privatmodus deaktiviert.</translation>
+<translation id="2589970573128789862">Qorai-Privatmodus</translation>
+<translation id="5994282802285556682">Wenn Sie im privaten Modus surfen, warnt Qorai Sie, bevor Sie eine Website über eine unsichere Verbindung laden.</translation>
+</translationbundle>

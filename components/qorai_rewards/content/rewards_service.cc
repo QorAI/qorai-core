@@ -1,0 +1,24 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_rewards/content/rewards_service.h"
+
+#include "qorai/components/qorai_rewards/content/rewards_service_observer.h"
+
+namespace qorai_rewards {
+
+RewardsService::RewardsService() = default;
+
+RewardsService::~RewardsService() = default;
+
+void RewardsService::AddObserver(RewardsServiceObserver* observer) {
+  observers_.AddObserver(observer);
+}
+
+void RewardsService::RemoveObserver(RewardsServiceObserver* observer) {
+  observers_.RemoveObserver(observer);
+}
+
+}  // namespace qorai_rewards

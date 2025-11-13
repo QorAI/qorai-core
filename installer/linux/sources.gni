@@ -1,0 +1,37 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+common_packaging_files_sources = [
+  "//qorai/LICENSE",
+  "//qorai/chromium_src/chrome/app/resources/manpage.1.in",
+  "//qorai/chromium_src/chrome/installer/linux/common/qorai-browser/chromium-browser.appdata.xml",
+  "//qorai/chromium_src/chrome/installer/linux/common/qorai-browser/chromium-browser.info",
+  "//qorai/installer/linux/common/qorai_installer.include",
+]
+
+common_packaging_files_excluded_sources = [
+  "//chrome/app/resources/manpage.1.in",
+  "common/appdata.xml.template",
+  "common/chromium-browser.info",
+]
+
+qorai_packaging_files_executables = [
+  "$root_out_dir/qorai",
+  "$root_out_dir/qorai_sandbox",
+]
+
+excluded_packaging_files_executables = [
+  "$root_out_dir/chrome",
+  "$root_out_dir/chrome_sandbox",
+]
+
+qorai_installer_deps = [
+  "//qorai/build/linux:copy_exe",
+  "//qorai/build/linux:copy_sandbox",
+]
+
+strip_chrome_binary_deps = [ "//qorai/build/linux:copy_exe" ]
+
+strip_chrome_sandbox_deps = [ "//qorai/build/linux:copy_sandbox" ]

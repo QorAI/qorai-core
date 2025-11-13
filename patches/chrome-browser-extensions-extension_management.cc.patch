@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/extensions/extension_management.cc b/chrome/browser/extensions/extension_management.cc
+index fd38c92b7493bdd20681c4a6e0a497def90d4e6f..5490ed6b69df2c12462986d734738ea61a4c4ab4 100644
+--- a/chrome/browser/extensions/extension_management.cc
++++ b/chrome/browser/extensions/extension_management.cc
+@@ -1142,6 +1142,7 @@ ExtensionManagementFactory::BuildServiceInstanceForBrowserContext(
+     content::BrowserContext* context) const {
+   TRACE_EVENT0("browser,startup",
+                "ExtensionManagementFactory::BuildServiceInstanceFor");
++  QORAI_EXTENSION_MANAGEMENT_FACTORY_BUILD_SERVICE_INSTANCE_FOR
+   return std::make_unique<ExtensionManagement>(
+       Profile::FromBrowserContext(context));
+ }

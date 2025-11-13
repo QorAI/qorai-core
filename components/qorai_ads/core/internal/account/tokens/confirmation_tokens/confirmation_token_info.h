@@ -1,0 +1,29 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_ACCOUNT_TOKENS_CONFIRMATION_TOKENS_CONFIRMATION_TOKEN_INFO_H_
+#define QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_ACCOUNT_TOKENS_CONFIRMATION_TOKENS_CONFIRMATION_TOKEN_INFO_H_
+
+#include <string>
+#include <vector>
+
+#include "qorai/components/qorai_ads/core/internal/common/challenge_bypass_ristretto/public_key.h"
+#include "qorai/components/qorai_ads/core/internal/common/challenge_bypass_ristretto/unblinded_token.h"
+
+namespace qorai_ads {
+
+struct ConfirmationTokenInfo final {
+  bool operator==(const ConfirmationTokenInfo&) const = default;
+
+  cbr::UnblindedToken unblinded_token;
+  cbr::PublicKey public_key;
+  std::string signature_base64;
+};
+
+using ConfirmationTokenList = std::vector<ConfirmationTokenInfo>;
+
+}  // namespace qorai_ads
+
+#endif  // QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_ACCOUNT_TOKENS_CONFIRMATION_TOKENS_CONFIRMATION_TOKEN_INFO_H_

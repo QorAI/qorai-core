@@ -1,0 +1,27 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+#include "qorai/ios/browser/qorai_shields/qorai_shields_settings_service_factory_bridge.h"
+
+#include "base/apple/foundation_util.h"
+#include "qorai/components/qorai_shields/core/browser/qorai_shields_settings_service.h"
+#include "qorai/components/qorai_shields/ios/browser/qorai_shields_settings_bridge.h"
+#include "qorai/components/qorai_shields/ios/browser/qorai_shields_settings_bridge_impl.h"
+#include "qorai/ios/browser/qorai_shields/qorai_shields_settings_service_factory.h"
+#include "ios/chrome/browser/shared/model/profile/profile_ios.h"
+
+@implementation QoraiShieldsSettingsServiceFactoryBridge
+
++ (nullable id)serviceForProfile:(ProfileIOS*)profile {
+  auto* service =
+      qorai_shields::QoraiShieldsSettingsServiceFactory::GetForProfile(profile);
+  if (!service) {
+    return nil;
+  }
+  return [[QoraiShieldsSettingsBridgeImpl alloc]
+      initWithQoraiShieldsSettings:service];
+}
+
+@end

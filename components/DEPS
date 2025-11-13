@@ -1,0 +1,70 @@
+include_rules = [
+  # Do not add chrome/ or qorai/ as an allowed include.
+
+  # Individual components must explicitly declare their dependencies
+  # on other components. Cycles in the dependency graph within
+  # components/ are not allowed.
+  "-components",
+
+  # TODO(bridiver) - narrow this down
+  "+net",
+  "+mojo/public",
+  "+ui/base",
+
+  # Components that wish to use the content API or IPC must explicitly declare
+  # these dependencies; see /components/README.
+  "-ipc",
+
+  # In most cases you want l10n_util - see comments in the source
+  "-qorai/components/l10n",
+
+  # This is equivalent to chrome/test/base
+  "-qorai/test/base",
+
+  # This should only be used in qorai equivalents to chrome/* directories. Use
+  # `base::DIR_SRC_TEST_DATA_ROOT` instead
+  "-qorai/components/constants/qorai_paths.h",
+]
+
+specific_include_rules = {
+  # IMPORTANT: Do not add new browser tests that depend on //chrome or
+  # //qorai/browser/ to //qorai/components.
+  #
+  # This is an exclusion list for browser tests written before proper dependency
+  # checking was implemented. These tests should be migrated out of
+  # //qorai/components into //qorai/browser eventually.
+  "android_page_appearing_browsertest\.cc": [
+    "+qorai/browser",
+    "+chrome",
+  ],
+  "qorai_content_settings_agent_impl_browsertest\.cc": [
+    "+chrome",
+    "+content",
+  ],
+  "qorai_wayback_machine_browsertest\.cc": [
+    "+qorai/browser",
+    "+chrome",
+  ],
+  "de_amp_browsertest\.cc": [
+    "+chrome",
+    "+content",
+  ],
+  "perf_predictor_tab_helper_browsertest\.cc": [
+    "+qorai/browser",
+    "+chrome",
+  ],
+  "webcompat_exceptions_unittest\.cc": [
+    "+chrome",
+    "+content",
+    "!qorai/components/constants/qorai_paths.h",
+  ],
+  ".*test.*\.cc": [
+    "!qorai/components/l10n/common/test/scoped_default_locale.h",
+  ],
+  # qorai_paths.h overrides
+  ".*browsertest.*\.cc": [
+    # browser tests that are still in components can use qorai_paths because
+    # they belong in qorai/browser
+    "+qorai/components/constants/qorai_paths.h",
+  ],
+}

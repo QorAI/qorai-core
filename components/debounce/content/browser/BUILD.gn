@@ -1,0 +1,24 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+
+source_set("browser") {
+  sources = [
+    "debounce_navigation_throttle.cc",
+    "debounce_navigation_throttle.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/debounce/core/browser",
+    "//components/user_prefs",
+    "//content/public/browser",
+    "//third_party/re2",
+    "//ui/base",
+    "//url",
+  ]
+}

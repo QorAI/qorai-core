@@ -1,0 +1,21 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_tab_search_extras_grdp =
+    "$root_gen_dir/qorai/browser/resources/tab_search/qorai_extras.grdp"
+
+qorai_tab_search_static_files = [
+  "qorai/tab_organizer_illustration.svg",
+  # SVG and other static files
+]
+
+# Here we could also define any .ts in relevant variables
+# e.g. qorai_tab_search_web_component_files and qorai_tab_search_non_web_component_files
+# when we have the need for them.
+
+qorai_tab_search_extra_grdp_files = [ qorai_tab_search_extras_grdp ]
+
+qorai_tab_search_extra_grdp_deps =
+    [ "//qorai/browser/resources/tab_search:static_files" ]

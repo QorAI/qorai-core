@@ -1,0 +1,57 @@
+/* Copyright (c) 2024 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+/* #css_wrapper_metadata_start
+ * #type=style-lit
+ * #css_wrapper_metadata_end */
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: var(--qora-spacing-xl);
+  min-height: 82px;
+  padding: 0 var(--qora-spacing-2xl);
+}
+
+.circle {
+  align-items: center;
+  background-color: var(--qora-color-container-background);
+  border: 1px solid var(--qora-color-divider-subtle);
+  border-radius: 50%;
+  display: flex;
+  flex: none;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.title-and-description {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  padding: var(--qora-spacing-l) 0px;
+}
+
+.title {
+  color: var(--qora-color-text-primary);
+  font: var(--qora-font-default-semibold);
+}
+
+:host([signed-in]) .title {
+  font: var(--qora-font-large-semibold);
+}
+
+.description {
+  color: var(--qora-color-text-secondary);
+  font: var(--qora-font-small-regular);
+}
+
+:host([signed-in]) .description {
+  font: var(--qora-font-default-regular);
+}
+
+qora-button {
+  flex: none;
+}

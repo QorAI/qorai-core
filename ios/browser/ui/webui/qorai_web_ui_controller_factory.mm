@@ -1,0 +1,143 @@
+// Copyright (c) 2023 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+#include "qorai/ios/browser/ui/webui/qorai_web_ui_controller_factory.h"
+
+#include <memory>
+
+#include "base/feature_list.h"
+#include "base/memory/ptr_util.h"
+#include "base/no_destructor.h"
+#include "qorai/components/qorai_account/features.h"
+#include "qorai/components/constants/pref_names.h"
+#include "qorai/components/constants/url_constants.h"
+#include "qorai/components/constants/webui_url_constants.h"
+#include "qorai/ios/browser/qorai_wallet/features.h"
+#include "qorai/ios/browser/ui/webui/ads/ads_internals_ui.h"
+#include "qorai/ios/browser/ui/webui/ai_chat/ai_chat_ui.h"
+#include "qorai/ios/browser/ui/webui/ai_chat/ai_chat_untrusted_conversation_ui.h"
+#include "qorai/ios/browser/ui/webui/ai_chat/features.h"
+#include "qorai/ios/browser/ui/webui/qorai_account/qorai_account_ui_ios.h"
+#include "qorai/ios/browser/ui/webui/qorai_wallet/line_chart_ui.h"
+#include "qorai/ios/browser/ui/webui/qorai_wallet/market_ui.h"
+#include "qorai/ios/browser/ui/webui/qorai_wallet/nft_ui.h"
+#include "qorai/ios/browser/ui/webui/qorai_wallet/wallet_page_ui.h"
+#include "qorai/ios/browser/ui/webui/skus/skus_internals_ui.h"
+#include "build/build_config.h"
+#include "components/prefs/pref_service.h"
+#include "ios/chrome/browser/shared/model/url/chrome_url_constants.h"
+#include "ios/components/webui/web_ui_url_constants.h"
+#include "url/gurl.h"
+
+using web::WebUIIOS;
+using web::WebUIIOSController;
+
+namespace qorai {
+
+// A function for creating a new WebUIIOS.
+using WebUIIOSFactoryFunction =
+    std::unique_ptr<WebUIIOSController> (*)(WebUIIOS* web_ui, const GURL& url);
+
+// Template for defining WebUIIOSFactoryFunction.
+template <class T>
+std::unique_ptr<WebUIIOSController> NewWebUIIOS(WebUIIOS* web_ui,
+                                                const GURL& url) {
+  return std::make_unique<T>(web_ui, url);
+}
+
+WebUIIOSFactoryFunction GetUntrustedWebUIIOSFactoryFunction(const GURL& url) {
+  DCHECK(url.SchemeIs(kChromeUIUntrustedScheme));
+  const std::string_view url_host = url.host_piece();
+
+  if (url_host == kAIChatUntrustedConversationUIHost &&
+      ai_chat::features::IsAIChatWebUIEnabled()) {
+    return &NewWebUIIOS<AIChatUntrustedConversationUI>;
+  }
+
+  if (base::FeatureList::IsEnabled(
+          qorai_wallet::features::kQoraiWalletWebUIIOS)) {
+    if (url_host == kUntrustedNftHost) {
+      return &NewWebUIIOS<nft::UntrustedNftUI>;
+    } else if (url_host == kUntrustedMarketHost) {
+      return &NewWebUIIOS<market::UntrustedMarketUI>;
+    } else if (url_host == kUntrustedLineChartHost) {
+      return &NewWebUIIOS<line_chart::UntrustedLineChartUI>;
+    }
+  }
+
+  return nullptr;
+}
+
+// Returns a function that can be used to create the right type of WebUIIOS for
+// a tab, based on its URL. Returns nullptr if the URL doesn't have WebUIIOS
+// associated with it.
+WebUIIOSFactoryFunction GetWebUIIOSFactoryFunction(const GURL& url) {
+  if (!url.SchemeIs(kChromeUIScheme) &&
+      !url.SchemeIs(kChromeUIUntrustedScheme)) {
+    return nullptr;
+  }
+
+  if (url.SchemeIs(kChromeUIUntrustedScheme)) {
+    return GetUntrustedWebUIIOSFactoryFunction(url);
+  }
+
+  const std::string url_host = url.host();
+
+  if (url_host == kAdsInternalsHost) {
+    return &NewWebUIIOS<AdsInternalsUI>;
+  } else if (url_host == kQoraiAccountHost &&
+             qorai_account::features::IsQoraiAccountEnabled()) {
+    return &NewWebUIIOS<QoraiAccountUIIOS>;
+  } else if (url_host == kSkusInternalsHost) {
+    return &NewWebUIIOS<SkusInternalsUI>;
+  } else if (url_host == kAIChatUIHost &&
+             ai_chat::features::IsAIChatWebUIEnabled()) {
+    return &NewWebUIIOS<AIChatUI>;
+  } else if (url_host == kWalletPageHost &&
+             base::FeatureList::IsEnabled(
+                 qorai_wallet::features::kQoraiWalletWebUIIOS)) {
+    return &NewWebUIIOS<WalletPageUI>;
+  }
+  return nullptr;
+}
+
+}  // namespace qorai
+
+NSInteger QoraiWebUIControllerFactory::GetErrorCodeForWebUIURL(
+    const GURL& url) const {
+  if (url.host() == kChromeUIDinoHost) {
+    return NSURLErrorNotConnectedToInternet;
+  }
+
+  if (qorai::GetWebUIIOSFactoryFunction(url)) {
+    return 0;
+  }
+
+  return ChromeWebUIIOSControllerFactory::GetErrorCodeForWebUIURL(url);
+}
+
+std::unique_ptr<WebUIIOSController>
+QoraiWebUIControllerFactory::CreateWebUIIOSControllerForURL(
+    WebUIIOS* web_ui,
+    const GURL& url) const {
+  qorai::WebUIIOSFactoryFunction function =
+      qorai::GetWebUIIOSFactoryFunction(url);
+  if (!function) {
+    return ChromeWebUIIOSControllerFactory::CreateWebUIIOSControllerForURL(
+        web_ui, url);
+  }
+
+  return (*function)(web_ui, url);
+}
+
+// static
+QoraiWebUIControllerFactory* QoraiWebUIControllerFactory::GetInstance() {
+  static base::NoDestructor<QoraiWebUIControllerFactory> instance;
+  return instance.get();
+}
+
+QoraiWebUIControllerFactory::QoraiWebUIControllerFactory() = default;
+
+QoraiWebUIControllerFactory::~QoraiWebUIControllerFactory() = default;

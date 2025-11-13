@@ -1,0 +1,36 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//build/config/features.gni")
+import("//build/config/ui.gni")
+import("//ui/base/ui_features.gni")
+
+assert(is_win || is_linux || is_mac)
+
+source_set("qorai_tooltips") {
+  sources = [
+    "qorai_tooltip_label_button.cc",
+    "qorai_tooltip_label_button.h",
+    "qorai_tooltip_popup.cc",
+    "qorai_tooltip_popup.h",
+    "qorai_tooltip_popup_handler.cc",
+    "qorai_tooltip_view.cc",
+    "qorai_tooltip_view.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/app/vector_icons",
+    "//qorai/browser/ui/qorai_tooltips",
+    "//ui/accessibility",
+    "//ui/base",
+    "//ui/compositor",
+    "//ui/display",
+    "//ui/gfx",
+    "//ui/native_theme",
+    "//ui/views",
+  ]
+}

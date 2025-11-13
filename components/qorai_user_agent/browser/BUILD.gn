@@ -1,0 +1,39 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+
+static_library("browser") {
+  sources = [
+    "qorai_user_agent_component_installer.cc",
+    "qorai_user_agent_component_installer.h",
+    "qorai_user_agent_exceptions.cc",
+    "qorai_user_agent_exceptions.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_component_updater/browser:public",
+    "//qorai/components/qorai_user_agent/common",
+    "//components/component_updater",
+    "//crypto",
+    "//net",
+    "//url",
+  ]
+}
+
+if (!is_ios) {
+  source_set("unit_tests") {
+    testonly = true
+    sources = [ "qorai_user_agent_exceptions_unittest.cc" ]
+
+    deps = [
+      "//qorai/components/qorai_user_agent/browser",
+      "//qorai/components/qorai_user_agent/common",
+      "//content/test:test_support",
+      "//testing/gtest",
+    ]
+  }
+}

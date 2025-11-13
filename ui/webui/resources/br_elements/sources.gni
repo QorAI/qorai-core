@@ -1,0 +1,16 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_br_elements_ts_files = [
+  "br_toolbar/br_toolbar_search_field.ts",
+  "br_toolbar/br_toolbar_search_field.html.ts",
+]
+
+qorai_br_elements_css_files = [ "br_toolbar/br_toolbar_search_field.css" ]
+
+qorai_br_elements_ts_definitions = []
+
+qorai_br_elements_preprocess_extra_deps =
+    [ "//qorai/ui/webui/resources/br_elements:preprocess" ]

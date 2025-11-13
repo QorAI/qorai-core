@@ -1,0 +1,28 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+source_set("policy") {
+  sources = [
+    "qorai_simple_policy_map_ios.h",
+    "configuration_policy_handler_list_factory_impl.mm",
+  ]
+  deps = [
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wallet/common:pref_names",
+    "//qorai/components/constants",
+    "//qorai/components/p3a",
+    "//qorai/components/playlist/core/common",
+    "//components/policy/core/browser",
+    "//ios/chrome/browser/policy/model",
+  ]
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/components/qorai_vpn/common" ]
+  }
+}

@@ -1,0 +1,39 @@
+caption: Disable QorAI VPN
+default: null
+desc: |-
+  Disable QorAI VPN in QorAI.
+
+  Allows users to use QorAI VPN to block trackers and encrypt every connection to the Web, on every app, even outside the QorAI browser.
+
+            If this policy is set to true, QorAI VPN will always be disabled.
+
+            If this policy is set to false, QorAI VPN will always be enabled.
+
+            If you set this policy, users cannot change or override it.
+
+            If this policy is left unset, QorAI VPN will be enabled by default.
+example_value: true
+features:
+  can_be_mandatory: true
+  can_be_recommended: false
+  dynamic_refresh: false
+  per_profile: true
+items:
+- caption: Enable QorAI VPN
+  value: false
+- caption: Disable QorAI VPN
+  value: true
+- caption: Allow the user to decide
+  value: null
+owners:
+- shong@qoranet.com
+- clifton@qoranet.com
+schema:
+  type: boolean
+supported_on:
+- ios:139-
+- chrome.*:112-
+future_on:
+- android
+tags: []
+type: main

@@ -1,0 +1,28 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/ios/rules.gni")
+import("//ios/build/config.gni")
+
+source_set("application_context") {
+  sources = [
+    "qorai_application_context_impl.h",
+    "qorai_application_context_impl.mm",
+  ]
+  deps = [
+    "//base",
+    "//qorai/components/qorai_component_updater/browser",
+    "//qorai/components/qorai_sync:network_time_helper",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/debounce/core/browser",
+    "//qorai/components/https_upgrade_exceptions/browser",
+    "//qorai/components/url_sanitizer/core/browser",
+    "//qorai/ios/browser/qorai_wallet",
+    "//components/application_locale_storage",
+    "//ios/chrome/browser/application_context/model",
+    "//ios/chrome/browser/shared/model/application_context",
+    "//net",
+  ]
+}

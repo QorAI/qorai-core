@@ -1,0 +1,99 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//extensions/buildflags/buildflags.gni")
+
+source_set("public") {
+  sources = [
+    "qorai_on_demand_updater.h",
+    "dat_file_util.h",
+    "features.h",
+    "switches.h",
+  ]
+
+  public_deps = [
+    "//base",
+    "//components/component_updater",
+  ]
+}
+
+component("browser") {
+  defines = [ "IS_QORAI_COMPONENT_UPDATER_IMPL" ]
+
+  # DO NOT ADD NEW TARGETS TO THIS LIST
+  # All components should have their own InstallerPolicy and be
+  # registered in RegisterComponentsForUpdate
+  visibility = [
+    "//qorai/browser/ephemeral_storage:browser_tests",
+    "//qorai/browser/extensions:component_loader",
+    "//qorai/browser/extensions:test_support",
+    "//qorai/browser/farbling:browser_tests",
+    "//qorai/browser/net:unit_tests",
+    "//qorai/browser/permissions:browser_tests",
+    "//qorai/browser/tor/test:browser_tests",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_component_updater/browser:test_support",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/qorai_shields/content/test:test_support",
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/debounce/core/browser",
+    "//qorai/components/https_upgrade_exceptions/browser",
+    "//qorai/components/request_otr/browser",
+    "//qorai/components/tor",
+    "//qorai/components/url_sanitizer/core/browser",
+    "//qorai/components/webcompat/content/browser",
+    "//qorai/ios/app",
+    "//qorai/ios/browser/application_context",
+    "//qorai/test:*",
+    "//chrome/browser",
+  ]
+
+  sources = [
+    "qorai_component.cc",
+    "qorai_component.h",
+    "qorai_component_installer.cc",
+    "qorai_component_installer.h",
+    "qorai_component_updater_delegate.cc",
+    "qorai_component_updater_delegate.h",
+    "qorai_on_demand_updater.cc",
+    "qorai_on_demand_updater.h",
+    "dat_file_util.cc",
+    "dat_file_util.h",
+    "features.cc",
+    "features.h",
+    "local_data_files_observer.cc",
+    "local_data_files_observer.h",
+    "local_data_files_service.cc",
+    "local_data_files_service.h",
+    "switches.h",
+  ]
+
+  deps = [
+    "//base",
+    "//components/component_updater",
+    "//components/crx_file",
+    "//components/prefs",
+    "//components/update_client",
+    "//crypto",
+  ]
+
+  configs += [ "//build/config/compiler:wexit_time_destructors" ]
+}
+
+source_set("test_support") {
+  testonly = true
+
+  sources = [
+    "mock_on_demand_updater.cc",
+    "mock_on_demand_updater.h",
+  ]
+
+  deps = [
+    ":browser",
+    "//base",
+    "//components/component_updater",
+    "//testing/gmock",
+  ]
+}

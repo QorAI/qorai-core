@@ -1,0 +1,15 @@
+diff --git a/chrome/chrome_proxy/chrome_proxy_main_win.cc b/chrome/chrome_proxy/chrome_proxy_main_win.cc
+index 96b9fa00f3f053348cdef2f5c87ba959d1053768..cd38a21c5a8ac18248a8e2ca95221aab703cdbd8 100644
+--- a/chrome/chrome_proxy/chrome_proxy_main_win.cc
++++ b/chrome/chrome_proxy/chrome_proxy_main_win.cc
+@@ -14,7 +14,10 @@
+ namespace {
+ 
+ constexpr base::FilePath::CharType kChromeExecutable[] =
++    FILE_PATH_LITERAL("qorai.exe");
++#if 0
+     FILE_PATH_LITERAL("chrome.exe");
++#endif
+ 
+ constexpr base::FilePath::CharType kChromeProxyExecutable[] =
+     FILE_PATH_LITERAL("chrome_proxy.exe");

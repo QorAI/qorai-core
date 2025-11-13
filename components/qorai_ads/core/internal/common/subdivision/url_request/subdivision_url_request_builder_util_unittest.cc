@@ -1,0 +1,19 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_ads/core/internal/common/subdivision/url_request/subdivision_url_request_builder_util.h"
+
+#include "testing/gtest/include/gtest/gtest.h"
+
+// npm run test -- qorai_unit_tests --filter=QoraiAds*
+
+namespace qorai_ads {
+
+TEST(QoraiAdsSubdivisionUrlRequestBuilderUtilTest, GetPath) {
+  // Act & Assert
+  EXPECT_EQ("/v1/getstate", BuildSubdivisionUrlPath());
+}
+
+}  // namespace qorai_ads

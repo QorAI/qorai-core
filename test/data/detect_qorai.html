@@ -1,0 +1,11 @@
+<script>
+  var qorai_detected = false;
+  navigator.qorai.isQorai().then((response) => {
+    if (response === true) {
+      qorai_detected = true;
+    }
+  });
+  function getQoraiDetected() {
+    return qorai_detected;
+  }
+</script>

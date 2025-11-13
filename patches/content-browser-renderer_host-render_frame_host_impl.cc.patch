@@ -1,0 +1,36 @@
+diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
+index 59c9498a6d42b3fcc3920043a20988f72f7dab5e..132ac124708bdba75aa52d50b779e3344a44d4e0 100644
+--- a/content/browser/renderer_host/render_frame_host_impl.cc
++++ b/content/browser/renderer_host/render_frame_host_impl.cc
+@@ -5281,6 +5281,7 @@ net::IsolationInfo RenderFrameHostImpl::ComputeIsolationInfoInternal(
+     candidate_site_for_cookies = net::SiteForCookies(top_frame_site);
+   }
+ 
++  QORAI_RENDER_FRAME_HOST_IMPL_COMPUTE_ISOLATION_INFO_INTERNAL
+   std::optional<base::UnguessableToken> nonce =
+       ComputeNonce(is_credentialless, fenced_frame_nonce_for_navigation);
+   return net::IsolationInfo::Create(
+@@ -5292,6 +5293,7 @@ net::IsolationInfo RenderFrameHostImpl::ComputeIsolationInfoInternal(
+ std::optional<base::UnguessableToken> RenderFrameHostImpl::ComputeNonce(
+     bool is_credentialless,
+     std::optional<base::UnguessableToken> fenced_frame_nonce_for_navigation) {
++  QORAI_RENDER_FRAME_HOST_IMPL_COMPUTE_NONCE
+   // If it's a credentialless frame tree, use its nonce even if it's within a
+   // fenced frame tree to maintain the guarantee that a credentialless frame
+   // tree has a unique nonce.
+@@ -5349,6 +5351,7 @@ bool RenderFrameHostImpl::IsThirdPartyStoragePartitioningEnabled(
+   if (rfs_document_data_for_storage_key && unpartitioned_key_allowed &&
+       rfs_document_data_for_storage_key->runtime_feature_state_read_context()
+           .IsThirdPartyStoragePartitioningUserBypassEnabled()) {
++    QORAI_RENDER_FRAME_HOST_IMPL_IS_THIRD_PARTY_STORAGE_PARTITIONING_ENABLED_CHECK_IF_CAN_BE_DISABLED
+     return false;
+   }
+ 
+@@ -9911,6 +9914,7 @@ void RenderFrameHostImpl::CreateNewWindow(
+         dom_storage_context, params->session_storage_namespace_id);
+   }
+ 
++  QORAI_RENDER_FRAME_HOST_IMPL_CREATE_NEW_WINDOW
+   if (IsCredentialless() || IsNestedWithinFencedFrame() ||
+       CoopSuppressOpener(/*opener=*/this)) {
+     params->opener_suppressed = true;

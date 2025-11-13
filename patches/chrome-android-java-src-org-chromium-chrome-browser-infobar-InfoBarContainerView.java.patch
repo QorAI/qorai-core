@@ -1,0 +1,20 @@
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/infobar/InfoBarContainerView.java b/chrome/android/java/src/org/chromium/chrome/browser/infobar/InfoBarContainerView.java
+index d6f628c85406f22a3b739b839a6a8aa37733c803..fb5f1161c85d769c6091153f739814fa4f48ffc7 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/infobar/InfoBarContainerView.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/infobar/InfoBarContainerView.java
+@@ -86,6 +86,7 @@ public class InfoBarContainerView extends SwipableOverlayView
+      * @param isTablet Whether this view is displayed on tablet or not.
+      * @deprecated Please use the constructor with the EdgeToEdgeSupplier.
+      */
++    /*
+     @Deprecated
+     InfoBarContainerView(
+             Context context,
+@@ -94,6 +95,7 @@ public class InfoBarContainerView extends SwipableOverlayView
+             boolean isTablet) {
+         this(context, containerViewObserver, browserControlsStateProvider, null, isTablet);
+     }
++     */
+ 
+     /**
+      * @param context The {@link Context} that this view is attached to.

@@ -1,0 +1,70 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+import("//testing/test.gni")
+
+source_set("browser_tests") {
+  testonly = true
+
+  sources = [ "creator_detection_browsertest.cc" ]
+
+  deps = [
+    "//base/test:test_support",
+    "//qorai/browser/qorai_rewards",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_rewards/core:features",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui",
+    "//chrome/test:test_support",
+    "//chrome/test:test_support_ui",
+    "//components/prefs",
+    "//content/test:test_support",
+  ]
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+  # TODO(https://github.com/qorai/qorai-browser/issues/41833): Update these
+  # tests to run on Android as well.
+  if (!is_android) {
+    sources += [
+      "rewards_flag_browsertest.cc",
+      "rewards_notification_browsertest.cc",
+      "rewards_ofac_browsertest.cc",
+      "rewards_p3a_browsertest.cc",
+      "rewards_page_browsertest.cc",
+      "rewards_policy_browsertest.cc",
+      "util/rewards_browsertest_context_helper.cc",
+      "util/rewards_browsertest_context_helper.h",
+      "util/rewards_browsertest_context_util.cc",
+      "util/rewards_browsertest_context_util.h",
+      "util/rewards_browsertest_contribution.cc",
+      "util/rewards_browsertest_contribution.h",
+      "util/rewards_browsertest_network_util.cc",
+      "util/rewards_browsertest_network_util.h",
+      "util/rewards_browsertest_response.cc",
+      "util/rewards_browsertest_response.h",
+      "util/rewards_browsertest_util.cc",
+      "util/rewards_browsertest_util.h",
+    ]
+
+    deps += [
+      "//qorai/app:command_ids",
+      "//qorai/browser",
+      "//qorai/browser/qorai_ads",
+      "//qorai/browser/qorai_rewards:util",
+      "//qorai/components/qorai_rewards/content",
+      "//qorai/components/qorai_rewards/core/buildflags",
+      "//qorai/components/qorai_rewards/core/engine",
+      "//qorai/components/qorai_rewards/core/engine:publishers_proto",
+      "//qorai/components/qorai_rewards/core/mojom:engine",
+      "//qorai/components/l10n/common:test_support",
+      "//qorai/components/ntp_background_images/common",
+      "//chrome/browser/ui/browser_window",
+      "//components/policy/core/browser",
+      "//components/policy/core/common:test_support",
+      "//components/user_prefs",
+    ]
+  }
+}

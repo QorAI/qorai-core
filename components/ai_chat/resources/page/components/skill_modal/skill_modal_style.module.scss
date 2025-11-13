@@ -1,0 +1,68 @@
+/* Copyright (c) 2025 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+.dropdown {
+  qora-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--qora-spacing-m);
+    padding: var(--qora-spacing-m);
+  }
+}
+
+.description {
+  font: var(--qora-font-default-regular);
+  color: var(--qora-color-text-secondary);
+  margin-bottom: var(--qora-spacing-xl);
+}
+
+.optionLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--qora-spacing-m);
+}
+
+.gradientIcon {
+  --qora-icon-color: var(--qora-gradient-icons-active);
+  --qora-icon-size: 20px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--qora-spacing-m);
+  margin-top: var(--qora-spacing-2xl);
+}
+
+.footerAlignRight {
+  justify-content: flex-end;
+}
+
+.deleteButton {
+  --qora-button-color: var(--qora-color-systemfeedback-error-text);
+  flex: 0;
+}
+
+.rightButtons {
+  display: flex;
+  gap: var(--qora-spacing-m);
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--qora-spacing-xl);
+  margin-bottom: var(--qora-spacing-xl);
+}
+
+[slot='label'] {
+  font-weight: 600;
+}
+
+[slot='errors'] {
+  color: var(--qora-color-systemfeedback-error-icon);
+}

@@ -1,0 +1,39 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_SIDE_PANEL_SIDE_PANEL_COORDINATOR_H_
+#define QORAI_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_SIDE_PANEL_SIDE_PANEL_COORDINATOR_H_
+
+// Moved all header includes of upstream side_panel_coordinator.h to apply
+// final define only to side_panel_coordinator.h as the final keyword is very
+// commonly used from many places.
+#include "base/memory/raw_ptr.h"
+#include "base/observer_list.h"
+#include "base/scoped_multi_source_observation.h"
+#include "base/scoped_observation_traits.h"
+#include "base/time/time.h"
+#include "chrome/browser/ui/tabs/tab_strip_model_observer.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_entry.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_registry.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_ui.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_util.h"
+#include "ui/views/view_observer.h"
+
+#define CreateHeader                      \
+  CreateHeader_UnUsed() {                 \
+    return nullptr;                       \
+  }                                       \
+  friend class QoraiSidePanelCoordinator; \
+  virtual std::unique_ptr<views::View> CreateHeader
+
+#define NotifyPinnedContainerOfActiveStateChange \
+  virtual NotifyPinnedContainerOfActiveStateChange
+
+#include <chrome/browser/ui/views/side_panel/side_panel_coordinator.h>  // IWYU pragma: export
+
+#undef NotifyPinnedContainerOfActiveStateChange
+#undef CreateHeader
+
+#endif  // QORAI_CHROMIUM_SRC_CHROME_BROWSER_UI_VIEWS_SIDE_PANEL_SIDE_PANEL_COORDINATOR_H_

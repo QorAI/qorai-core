@@ -1,0 +1,28 @@
+diff --git a/chrome/common/BUILD.gn b/chrome/common/BUILD.gn
+index b3ef65f7ee99977b359e018b93e755666c1a6698..f5e13d62f9a9880ef8685469bdb98d0b8cef8ec8 100644
+--- a/chrome/common/BUILD.gn
++++ b/chrome/common/BUILD.gn
+@@ -96,6 +96,7 @@ source_set("channel_info") {
+   } else if (is_posix) {
+     sources += [ "channel_info_posix.cc" ]
+   }
++  public_deps += [ "//qorai/common:channel_info" ]
+ }
+ 
+ source_set("ini_parser") {
+@@ -277,6 +278,7 @@ static_library("common_lib") {
+     public_deps += [ "//components/cdm/common" ]
+   }
+ 
++  import("//qorai/common/sources.gni") sources += qorai_chrome_common_sources deps += qorai_chrome_common_deps public_deps += qorai_chrome_common_public_deps
+   if (enable_extensions_core) {
+     public_deps += [
+       "//chrome/common/extensions",
+@@ -478,6 +480,7 @@ static_library("non_code_constants") {
+   if (is_win) {
+     sources += [ "chrome_icon_resources_win.h" ]
+   }
++  configs += [ "//qorai/common:constants_configs" ]
+ }
+ 
+ component("chrome_features") {

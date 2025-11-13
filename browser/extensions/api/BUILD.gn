@@ -1,0 +1,21 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/common/extensions/api/api_sources.gni")
+import("//tools/json_schema_compiler/json_schema_api.gni")
+
+function_registration("generated_api_registration") {
+  sources = qorai_extensions_api_schema_sources
+  impl_dir = "//qorai/browser/extensions/api/"
+  bundle_name = "Qorai"
+  root_namespace = qorai_extensions_api_root_namespace
+
+  deps = [
+    "//qorai/components/qorai_ads/core/mojom",
+    "//qorai/components/qorai_rewards/core/mojom",
+    "//extensions/browser",
+    "//extensions/common",
+  ]
+}

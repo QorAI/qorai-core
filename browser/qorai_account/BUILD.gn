@@ -1,0 +1,46 @@
+# Copyright (c) 2025 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+static_library("qorai_account") {
+  sources = [
+    "qorai_account_navigation_throttle.cc",
+    "qorai_account_navigation_throttle.h",
+    "qorai_account_service_factory.cc",
+    "qorai_account_service_factory.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_account",
+    "//qorai/components/qorai_account:features",
+    "//qorai/components/constants",
+    "//chrome/browser/profiles:profile",
+    "//content/public/browser",
+    "//content/public/common",
+    "//net",
+    "//ui/base",
+    "//url",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [ "qorai_account_navigation_throttle_unittest.cc" ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/browser/qorai_account",
+    "//qorai/components/qorai_account:features",
+    "//chrome/test:test_support",
+    "//content/public/browser",
+    "//content/test:test_support",
+    "//net",
+    "//testing/gtest",
+    "//ui/base",
+    "//url",
+  ]
+}

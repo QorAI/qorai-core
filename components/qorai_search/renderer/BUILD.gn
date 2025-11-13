@@ -1,0 +1,26 @@
+source_set("renderer") {
+  sources = [
+    "qorai_search_default_js_handler.cc",
+    "qorai_search_default_js_handler.h",
+    "qorai_search_fallback_js_handler.cc",
+    "qorai_search_fallback_js_handler.h",
+    "qorai_search_render_frame_observer.cc",
+    "qorai_search_render_frame_observer.h",
+    "qorai_search_service_worker_holder.cc",
+    "qorai_search_service_worker_holder.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_search/common",
+    "//qorai/components/qorai_search/common:mojom",
+    "//content/public/renderer",
+    "//gin",
+    "//mojo/public/cpp/bindings",
+    "//net",
+    "//third_party/blink/public:blink",
+    "//third_party/blink/public/common",
+    "//third_party/blink/public/strings",
+    "//v8",
+  ]
+}

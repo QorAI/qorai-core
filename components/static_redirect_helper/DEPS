@@ -1,0 +1,6 @@
+include_rules = [
+  "+qorai/components/constants",
+  "+qorai/components/geolocation",
+  "+qorai/components/safebrowsing",
+  "+extensions/common",
+]

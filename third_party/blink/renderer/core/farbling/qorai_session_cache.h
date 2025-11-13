@@ -1,0 +1,110 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_THIRD_PARTY_BLINK_RENDERER_CORE_FARBLING_QORAI_SESSION_CACHE_H_
+#define QORAI_THIRD_PARTY_BLINK_RENDERER_CORE_FARBLING_QORAI_SESSION_CACHE_H_
+
+#include <optional>
+#include <string>
+
+#include "base/containers/span.h"
+#include "qorai/third_party/blink/renderer/qorai_farbling_constants.h"
+#include "qorai/third_party/blink/renderer/platform/qorai_audio_farbling_helper.h"
+#include "components/content_settings/core/common/content_settings_types.h"
+#include "third_party/abseil-cpp/absl/random/random.h"
+#include "third_party/blink/renderer/core/core_export.h"
+#include "third_party/blink/renderer/core/execution_context/execution_context.h"
+#include "third_party/blink/renderer/core/frame/dom_window.h"
+#include "third_party/blink/renderer/platform/wtf/hash_map.h"
+#include "third_party/blink/renderer/platform/wtf/text/atomic_string.h"
+
+namespace blink {
+class WebContentSettingsClient;
+}  // namespace blink
+
+namespace qorai {
+
+using blink::DOMWindow;
+using blink::ExecutionContext;
+using blink::GarbageCollected;
+using blink::MakeGarbageCollected;
+using blink::Supplement;
+
+enum FarbleKey : uint64_t {
+  kNone,
+  kWindowInnerWidth,
+  kWindowInnerHeight,
+  kWindowScreenX,
+  kWindowScreenY,
+  kPointerScreenX,
+  kPointerScreenY,
+  kKeyCount
+};
+
+typedef absl::randen_engine<uint64_t> FarblingPRNG;
+
+CORE_EXPORT blink::WebContentSettingsClient* GetContentSettingsClientFor(
+    ExecutionContext* context);
+CORE_EXPORT QoraiFarblingLevel
+GetQoraiFarblingLevelFor(ExecutionContext* context,
+                         ContentSettingsType webcompat_settings_type,
+                         QoraiFarblingLevel default_value);
+CORE_EXPORT bool AllowFingerprinting(
+    ExecutionContext* context,
+    ContentSettingsType webcompat_settings_type);
+CORE_EXPORT bool AllowFontFamily(ExecutionContext* context,
+                                 const blink::AtomicString& family_name);
+CORE_EXPORT int FarbleInteger(ExecutionContext* context,
+                              qorai::FarbleKey key,
+                              int spoof_value,
+                              int min_value,
+                              int max_value);
+CORE_EXPORT bool BlockScreenFingerprinting(ExecutionContext* context,
+                                           bool early = false);
+CORE_EXPORT int FarbledPointerScreenCoordinate(const DOMWindow* view,
+                                               FarbleKey key,
+                                               int client_coordinate,
+                                               int true_screen_coordinate);
+
+class CORE_EXPORT QoraiSessionCache final
+    : public GarbageCollected<QoraiSessionCache>,
+      public Supplement<ExecutionContext> {
+ public:
+  static const char kSupplementName[];
+
+  explicit QoraiSessionCache(ExecutionContext&);
+  ~QoraiSessionCache() = default;
+
+  static QoraiSessionCache& From(ExecutionContext&);
+  static void Init();
+
+  QoraiFarblingLevel GetQoraiFarblingLevel(
+      ContentSettingsType webcompat_settings_type);
+  void FarbleAudioChannel(base::span<float> dst);
+  void PerturbPixels(base::span<uint8_t> data);
+  blink::String GenerateRandomString(std::string_view seed,
+                                     blink::wtf_size_t length);
+  blink::String FarbledUserAgent(blink::String real_user_agent);
+  int FarbledInteger(FarbleKey key,
+                     int spoof_value,
+                     int min_random_offset,
+                     int max_random_offset);
+  bool AllowFontFamily(blink::WebContentSettingsClient* settings,
+                       const blink::AtomicString& family_name);
+  FarblingPRNG MakePseudoRandomGenerator(FarbleKey key = FarbleKey::kNone);
+  std::optional<blink::QoraiAudioFarblingHelper> GetAudioFarblingHelper();
+
+ private:
+  void PerturbPixelsInternal(base::span<uint8_t> data);
+
+  blink::HashMap<FarbleKey, int> farbled_integers_;
+  qorai_shields::mojom::ShieldsSettingsPtr default_shields_settings_;
+  std::optional<blink::QoraiAudioFarblingHelper> audio_farbling_helper_;
+  blink::HashMap<ContentSettingsType, QoraiFarblingLevel> farbling_levels_;
+};
+
+}  // namespace qorai
+
+#endif  // QORAI_THIRD_PARTY_BLINK_RENDERER_CORE_FARBLING_QORAI_SESSION_CACHE_H_

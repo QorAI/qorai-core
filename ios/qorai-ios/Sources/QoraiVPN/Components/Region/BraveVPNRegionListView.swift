@@ -1,0 +1,299 @@
+// Copyright 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import QoraiShared
+import QoraiStrings
+import GuardianConnect
+import SwiftUI
+
+public struct QoraiVPNRegionListView: View {
+
+  @State
+  private var isAutomaticRegion: Bool = false
+
+  @State
+  private var isLoading = false
+
+  @State
+  private var isRegionDetailsPresented = false
+
+  @State
+  private var isShowingChangeRegionAlert = false
+
+  @State
+  private var allRegions: [GRDRegion] = []
+
+  @State
+  private var selectedIndex = 0
+
+  @State
+  private var selectedRegion: GRDRegion?
+
+  @State
+  private var selectedRegionCities: [GRDRegion] = []
+
+  @State
+  private var isVPNEnabled = QoraiVPN.isConnected
+
+  @State
+  private var regionModificationTimer: Timer?
+
+  private var onServerRegionSet: ((_ region: GRDRegion?) -> Void)?
+
+  public init(
+    onServerRegionSet: ((_ region: GRDRegion?) -> Void)?
+  ) {
+    self.onServerRegionSet = onServerRegionSet
+  }
+
+  public var body: some View {
+    List {
+      Section(
+        footer: Text(Strings.VPN.serverRegionAutoSelectDescription)
+          .font(.footnote)
+          .foregroundStyle(Color(qoraiSystemName: .textSecondary))
+      ) {
+        automaticRegionToggle
+      }
+
+      if !isAutomaticRegion {
+        Section {
+          ForEach(Array(allRegions.enumerated()), id: \.offset) {
+            index,
+            region in
+            countryRegionItem(at: index, region: region)
+          }
+        }
+        .listRowBackground(Color(qoraiSystemName: .iosBrowserElevatedIos))
+      }
+    }
+    .opacity(isLoading ? 0.5 : 1.0)
+    .overlay {
+      if isLoading {
+        QoraiVPNRegionLoadingIndicatorView()
+          .transition(.opacity)
+      }
+    }
+    .background {
+      NavigationLink("", isActive: $isRegionDetailsPresented) {
+        QoraiRegionDetailsView(
+          countryRegion: selectedRegion,
+          with: selectedRegionCities
+        )
+      }
+    }
+    .onAppear {
+      Task { @MainActor in
+        isLoading = true
+        isAutomaticRegion = QoraiVPN.isAutomaticRegion
+        allRegions = await QoraiVPN.fetchRegionData() ?? []
+        isLoading = false
+      }
+    }
+    .onDisappear {
+      cancelTimer()
+    }
+    .alert(isPresented: $isShowingChangeRegionAlert) {
+      Alert(
+        title: Text(Strings.VPN.regionPickerErrorTitle),
+        message: Text(Strings.VPN.regionPickerErrorMessage),
+        dismissButton: .default(Text(Strings.OKString))
+      )
+    }
+    .onReceive(NotificationCenter.default.publisher(for: .NEVPNStatusDidChange)) { _ in
+      self.isVPNEnabled = QoraiVPN.isConnected
+      if self.isVPNEnabled {
+        cancelTimer()
+      }
+    }
+  }
+
+  private func infoButtonView(index: Int) -> some View {
+    Button(
+      action: {
+        guard !isLoading else {
+          return
+        }
+
+        isRegionDetailsPresented = true
+        if let designatedRegion = allRegions[safe: index],
+          let desiredRegion = allRegions[safe: index]
+        {
+          selectedRegion = desiredRegion
+          selectedRegionCities = designatedRegion.cities
+        }
+      },
+      label: {
+        Image(qoraiSystemName: "qora.info.ios-only")
+          .foregroundStyle(Color(qoraiSystemName: .iconInteractive))
+      }
+    )
+    .buttonStyle(.plain)
+  }
+
+  @ViewBuilder
+  private func countryRegionItem(at index: Int, region: GRDRegion) -> some View {
+    let isSelectedRegion =
+      self.isVPNEnabled && region.countryISOCode == QoraiVPN.activatedRegion?.countryISOCode
+
+    Button {
+      selectDesignatedVPNRegion(at: index)
+    } label: {
+      HStack {
+        region.countryISOCode.regionFlag ?? Image(qoraiSystemName: "qora.globe")
+        VStack(alignment: .leading) {
+          HStack {
+            Text("\(region.displayName)")
+              .font(.body)
+              .foregroundStyle(
+                isSelectedRegion
+                  ? Color(qoraiSystemName: .iconInteractive) : Color(qoraiSystemName: .textPrimary)
+              )
+            if !region.smartRoutingProxyState.isEmpty,
+              region.smartRoutingProxyState != kGRDRegionSmartRoutingProxyNone
+            {
+              Image(qoraiSystemName: "qora.smart.proxy-routing")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(Color(qoraiSystemName: .iconDefault))
+                .frame(width: 14, height: 14)
+                .padding(4)
+                .background(
+                  RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .fill(Color(qoraiSystemName: .containerHighlight))
+                )
+            }
+          }
+          Text(generateServerCountDetails(for: region))
+            .font(.footnote)
+            .foregroundStyle(
+              isSelectedRegion
+                ? Color(qoraiSystemName: .iconInteractive) : Color(qoraiSystemName: .textSecondary)
+            )
+        }
+        Spacer()
+        if isSelectedRegion {
+          Text(Strings.VPN.connectedRegionDescription)
+            .font(.body)
+            .foregroundStyle(Color(qoraiSystemName: .textSecondary))
+        }
+        infoButtonView(index: index)
+          .hidden()
+      }
+    }
+    .overlay(alignment: .trailing) {
+      infoButtonView(index: index)
+    }
+  }
+
+  private var automaticRegionToggle: some View {
+    Toggle(
+      isOn: Binding(
+        get: { isAutomaticRegion },
+        set: { enableAutomaticServer($0) }
+      )
+    ) {
+      VStack(alignment: .leading) {
+        Text(Strings.VPN.automaticServerSelectionToggleTitle)
+          .font(.body)
+        if isAutomaticRegion, let regionAutomaticName = QoraiVPN.lastKnownRegion?.displayName {
+          Text(regionAutomaticName)
+            .font(.footnote)
+            .foregroundStyle(Color(qoraiSystemName: .textSecondary))
+        }
+      }
+    }
+    .disabled(isLoading)
+    .foregroundStyle(Color(qoraiSystemName: .textPrimary))
+    .tint(.accentColor)
+    .listRowBackground(Color(qoraiSystemName: .iosBrowserElevatedIos))
+  }
+
+  private func generateServerCountDetails(for region: GRDRegion) -> String {
+    let cityCount = region.cities.count
+    let serverCount = Int(truncating: region.serverCount)
+
+    let cityCountTitle =
+      cityCount > 1
+      ? String(format: Strings.VPN.multipleCityCountTitle, cityCount)
+      : String(format: Strings.VPN.cityCountTitle, cityCount)
+
+    let serverCountTitle =
+      serverCount > 1
+      ? String(format: Strings.VPN.multipleServerCountTitle, serverCount)
+      : String(format: Strings.VPN.serverCountTitle, serverCount)
+
+    return "\(cityCountTitle) - \(serverCountTitle)"
+  }
+
+  private func enableAutomaticServer(_ enabled: Bool) {
+    isAutomaticRegion = enabled
+
+    guard isAutomaticRegion else {
+      let autoRegion = allRegions.first(where: {
+        $0.countryISOCode == QoraiVPN.lastKnownRegion?.countryISOCode
+      })
+      changeCountryRegion(with: autoRegion)
+      return
+    }
+
+    // Implementation detail: nil region means we use an automatic way to connect to the host.
+    changeCountryRegion(with: nil)
+  }
+
+  private func selectDesignatedVPNRegion(at index: Int) {
+    guard !isLoading, let desiredRegion = allRegions[safe: index] else {
+      return
+    }
+
+    // If we're already connected to this region, do nothing.
+    if desiredRegion.regionName == QoraiVPN.selectedRegion?.regionName && isVPNEnabled {
+      return
+    }
+
+    changeCountryRegion(with: desiredRegion)
+  }
+
+  private func changeCountryRegion(with region: GRDRegion?) {
+    isLoading = true
+
+    Task { @MainActor in
+      let success = await QoraiVPN.changeVPNRegionForPrecision(to: region, with: .country)
+
+      isLoading = false
+
+      if success {
+        selectedRegion = region
+        onServerRegionSet?(region)
+        // Changing vpn server settings takes lot of time,
+        // and nothing we can do about it as it relies on Apple apis.
+        // Here we observe vpn status and we show success alert if it connected,
+        // otherwise an error alert is show if it did not manage to connect in 60 seconds.
+        cancelTimer()
+        regionModificationTimer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: false) {
+          _ in
+          isShowingChangeRegionAlert = true
+        }
+      } else {
+        isShowingChangeRegionAlert = true
+      }
+    }
+  }
+
+  private func cancelTimer() {
+    // Invalidate the modification timer if it is still running
+    regionModificationTimer?.invalidate()
+    regionModificationTimer = nil
+  }
+}
+
+#if DEBUG
+struct ServerRegionView_Previews: PreviewProvider {
+  static var previews: some View {
+    QoraiVPNRegionListView(onServerRegionSet: nil)
+  }
+}
+#endif

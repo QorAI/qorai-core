@@ -1,0 +1,31 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//extensions/buildflags/buildflags.gni")
+
+assert(enable_extensions)
+
+qorai_chrome_common_extensions_public = [
+  "//qorai/common/extensions/qorai_extensions_api_provider.h",
+  "//qorai/common/extensions/qorai_extensions_client.h",
+]
+
+qorai_chrome_common_extensions_sources = [
+  "//qorai/common/extensions/qorai_extensions_api_provider.cc",
+  "//qorai/common/extensions/qorai_extensions_client.cc",
+]
+
+qorai_chrome_common_extensions_deps = [
+  "//qorai/components/https_upgrade_exceptions/browser",
+  "//qorai/components/skus/common",
+  "//components/component_updater",
+  "//extensions/common:common_constants",
+]
+
+qorai_chrome_common_extensions_public_deps = [
+  "api",
+  "//qorai/common/extensions/api",
+  "//qorai/common/extensions/api:extensions_features",
+]

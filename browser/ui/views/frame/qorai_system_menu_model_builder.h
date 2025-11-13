@@ -1,0 +1,24 @@
+/* Copyright (c) 2024 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_BROWSER_UI_VIEWS_FRAME_QORAI_SYSTEM_MENU_MODEL_BUILDER_H_
+#define QORAI_BROWSER_UI_VIEWS_FRAME_QORAI_SYSTEM_MENU_MODEL_BUILDER_H_
+
+#include "chrome/browser/ui/views/frame/system_menu_model_builder.h"
+
+// This class can be used to update toolbar/frame context menus.
+class QoraiSystemMenuModelBuilder : public SystemMenuModelBuilder {
+ public:
+  using SystemMenuModelBuilder::SystemMenuModelBuilder;
+  virtual ~QoraiSystemMenuModelBuilder();
+
+ private:
+  // SystemMenuModelBuilder
+  void BuildSystemMenuForBrowserWindow(ui::SimpleMenuModel* model) override;
+
+  void InsertQoraiSystemMenuForBrowserWindow(ui::SimpleMenuModel* model);
+};
+
+#endif  // QORAI_BROWSER_UI_VIEWS_FRAME_QORAI_SYSTEM_MENU_MODEL_BUILDER_H_

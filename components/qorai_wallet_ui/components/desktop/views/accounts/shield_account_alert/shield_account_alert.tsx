@@ -1,0 +1,108 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import * as React from 'react'
+import Button from '@qorai/qora/react/button'
+import Icon from '@qorai/qora/react/icon'
+
+// Types
+import { QoraiWallet } from '../../../../../constants/types'
+
+// Safe Selectors
+import {
+  useSafeUISelector, //
+} from '../../../../../common/hooks/use-safe-selector'
+import { UISelectors } from '../../../../../common/selectors'
+
+// Components
+import {
+  ShieldZCashAccountModal, //
+} from '../../../popup-modals/shield_zcash_account/shield_zcash_account'
+
+// Utils
+import { getLocale } from '../../../../../../common/locale'
+
+// Styled Components
+import { Wrapper, Alert } from './shield_account_alert.style'
+import { Row, Column, Text } from '../../../../shared/style'
+
+export interface Props {
+  account: QoraiWallet.AccountInfo
+}
+
+export function ShieldAccountAlert(props: Props) {
+  const { account } = props
+
+  // State
+  const [showShieldAccountModal, setShowShieldAccountModal] =
+    React.useState<boolean>(false)
+
+  // Safe Selectors
+  const isPanel = useSafeUISelector(UISelectors.isPanel)
+  const isMobile = useSafeUISelector(UISelectors.isMobile)
+  const isMobileOrPanel = isPanel || isMobile
+
+  return (
+    <>
+      <Wrapper>
+        <Alert type='info'>
+          <Row justifyContent='space-between'>
+            <Column alignItems='flex-start'>
+              <Text
+                textColor='info'
+                isBold={true}
+                textSize='16px'
+              >
+                {getLocale('qoraiWalletShieldAccount')}
+              </Text>
+              {getLocale('qoraiWalletShieldAccountAlertDescription')}
+            </Column>
+            {!isMobileOrPanel && (
+              <div>
+                <Button
+                  onClick={() => {
+                    setShowShieldAccountModal(true)
+                  }}
+                >
+                  <Icon
+                    name='shield-done'
+                    slot='icon-before'
+                  />
+                  {getLocale('qoraiWalletShieldAccount')}
+                </Button>
+              </div>
+            )}
+          </Row>
+          {isMobileOrPanel && (
+            <div slot='actions'>
+              <Button
+                size='small'
+                onClick={() => {
+                  setShowShieldAccountModal(true)
+                }}
+              >
+                <Icon
+                  name='shield-done'
+                  slot='icon-before'
+                />
+                {getLocale('qoraiWalletShieldAccount')}
+              </Button>
+            </div>
+          )}
+        </Alert>
+      </Wrapper>
+      {showShieldAccountModal && (
+        <ShieldZCashAccountModal
+          account={account}
+          onClose={() => {
+            setShowShieldAccountModal(false)
+          }}
+        />
+      )}
+    </>
+  )
+}
+
+export default ShieldAccountAlert

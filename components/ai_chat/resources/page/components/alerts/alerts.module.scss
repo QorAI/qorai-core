@@ -1,0 +1,49 @@
+.alert {
+  qora-alert {
+    width: 100%;
+    qora-button {
+      flex-grow: 0;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.info {
+  display: flex;
+  gap: 8px;
+  color: var(--qora-color-text-secondary);
+  padding-top: 16px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.infoIcon {
+  --qora-icon-size: 16px;
+}
+
+.infoText {
+  font: var(--qora-font-small-regular);
+
+  qora-button {
+    padding-left: 5px;
+  }
+}
+
+.link {
+  font: var(--qora-font-small-regular);
+  text-decoration: underline;
+  color: var(--qora-color-text-tertiary);
+  border: none;
+  background: none;
+  cursor: pointer;
+  &:hover {
+    color: var(--qora-color-text-primary);
+  }
+}

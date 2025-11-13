@@ -1,0 +1,258 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# you can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/browser/shell_integrations/buildflags/buildflags.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/containers/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+
+# Provide our file list to chromium's settings page build
+# Since our components start in a different path, we'll do the first step (move them to
+# the generated preprocessed path via preprocess_if_expr, but let chromium handle the rest of the
+# webui build pipeline.
+qorai_settings_preprocess_deps =
+    [ "//qorai/browser/resources/settings:preprocess" ]
+
+qorai_settings_web_component_files = [
+  "ad_block_only_mode_page/ad_block_only_mode_alert.ts",
+  "ad_block_only_mode_page/ad_block_only_mode_page.ts",
+  "qorai_appearance_page/bookmark_bar.ts",
+  "qorai_appearance_page/sidebar.ts",
+  "qorai_appearance_page/tabs.ts",
+  "qorai_appearance_page/toolbar.ts",
+  "qorai_clear_browsing_data_dialog/qorai_clear_browsing_data_on_exit_page.ts",
+  "qorai_content_page/content.ts",
+  "qorai_content_page/content_page_index.ts",
+  "qorai_content_page/playlist.ts",
+  "qorai_data_collection_page/qorai_data_collection_page.ts",
+  "qorai_default_extensions_page/qorai_default_extensions_page.ts",
+  "qorai_default_extensions_page/qorai_extensions_manifest_v2_subpage.ts",
+  "qorai_new_tab_page/qorai_new_tab_page.ts",
+  "qorai_origin_page/qorai_origin_page.ts",
+  "qorai_origin_page/origin_toggle_button.ts",
+  "qorai_privacy_page/qorai_personalization_options.ts",
+  "qorai_search_engines_page/qorai_search_engines_page.ts",
+  "qorai_search_engines_page/normal_search_engine_list_dialog.ts",
+  "qorai_search_engines_page/private_search_engine_list_dialog.ts",
+  "qorai_sync_page/qorai_sync_code_dialog.ts",
+  "qorai_sync_page/qorai_sync_configure.ts",
+  "qorai_sync_page/qorai_sync_delete_account_dialog.ts",
+  "qorai_sync_page/qorai_sync_page_index.ts",
+  "qorai_sync_page/qorai_sync_manage_devices_page.ts",
+  "qorai_sync_page/qorai_sync_setup.ts",
+  "qorai_sync_page/qorai_sync_subpage.ts",
+  "qorai_system_page/qorai_system_page_index.ts",
+  "qorai_qora_assistant_page/qorai_qora_assistant_page.ts",
+  "qorai_qora_assistant_page/qorai_qora_assistant_page_index.ts",
+  "qorai_qora_assistant_page/customization_subpage.ts",
+  "qorai_qora_assistant_page/memory_section.ts",
+  "qorai_qora_assistant_page/model_list_section.ts",
+  "qorai_qora_assistant_page/model_config_ui.ts",
+  "qorai_qora_assistant_page/personalization.ts",
+  "qorai_survey_panelist_page/qorai_survey_panelist_page.ts",
+  "qorai_wallet_page/add_wallet_network_dialog.ts",
+  "qorai_wallet_page/qorai_wallet_page.ts",
+  "qorai_wallet_page/wallet_networks_list.ts",
+  "qorai_wallet_page/wallet_networks_subpage.ts",
+  "qorai_wallet_page/wallet_page_index.ts",
+  "qorai_default_extensions_page/qorai_extensions_page_index.ts",
+  "qorai_web3_domains_page/qorai_web3_domains_page.ts",
+  "default_qorai_shields_page/qorai_adblock_subpage.ts",
+  "default_qorai_shields_page/components/qorai_adblock_editor.ts",
+  "default_qorai_shields_page/components/qorai_adblock_scriptlet_editor.ts",
+  "default_qorai_shields_page/components/qorai_adblock_scriptlet_list.ts",
+  "default_qorai_shields_page/components/qorai_adblock_subscribe_dropdown.ts",
+  "default_qorai_shields_page/default_qorai_shields_page.ts",
+  "default_qorai_shields_page/shields_page_index.ts",
+  "getting_started_page/getting_started.ts",
+  "getting_started_page/getting_started_page_index.ts",
+  "site_settings/site_settings_autoplay.ts",
+  "site_settings/site_settings_qorai_ai.ts",
+  "site_settings/site_settings_localhost.ts",
+  "site_settings/site_settings_google.ts",
+  "site_settings/site_settings_shields.ts",
+  "site_settings/site_settings_cardano.ts",
+  "site_settings/site_settings_ethereum.ts",
+  "site_settings/site_settings_solana.ts",
+  "social_blocking_page/social_blocking_page.ts",
+  "ui/searchable_drop_down_cros.ts",
+]
+
+qorai_settings_ts_files = [
+  "ad_block_only_mode_page/ad_block_only_mode_mixin.ts",
+  "br/a11y_page.ts",
+  "br/a11y_page_index.ts",
+  "br/all_sites.ts",
+  "br/about_page.ts",
+  "br/autofill_page.ts",
+  "br/appearance_page.ts",
+  "br/appearance_page_index.ts",
+  "br/basic_page.ts",
+  "br/clear_browsing_data_dialog.ts",
+  "br/config.ts",
+  "br/cookies_page.ts",
+  "br/default_browser_page.ts",
+  "br/edit_dictionary_page.ts",
+  "br/import_data_dialog.ts",
+  "br/index.ts",
+  "br/memory_page.ts",
+  "br/on_startup_page.ts",
+  "br/page_visibility.ts",
+  "br/passwords_section.ts",
+  "br/payments_section.ts",
+  "br/people_page.ts",
+  "br/performance_page.ts",
+  "br/personalization_options.ts",
+  "br/printing_page.ts",
+  "br/privacy_page.ts",
+  "br/privacy_page_index.ts",
+  "br/reset_profile_dialog.ts",
+  "br/safety_check.ts",
+  "br/safety_check_passwords_child.ts",
+  "br/safety_hub_page.ts",
+  "br/search_page.ts",
+  "br/search_page_index.ts",
+  "br/security_page.ts",
+  "br/settings_basic_page.ts",
+  "br/settings_manage_profile.ts",
+  "br/settings_main.ts",
+  "br/settings_menu.ts",
+  "br/settings_section.ts",
+  "br/settings_subpage.ts",
+  "br/settings_ui.ts",
+  "br/site_details.ts",
+  "br/site_list_entry.ts",
+  "br/site_list.ts",
+  "br/system_page.ts",
+  "br/add_site_dialog.ts",
+  "br/site_settings_page.ts",
+  "br/sync_account_control.ts",
+  "br/sync_controls.ts",
+  "qorai_clear_browsing_data_dialog/qorai_clear_browsing_data_dialog_behavior.ts",
+  "qorai_clear_browsing_data_dialog/qorai_clear_browsing_data_dialog_proxy.ts",
+  "qorai_autofill_page/qorai_autofill_page.ts",
+  "qorai_add_site_dialog/qorai_add_site_dialog.ts",
+  "qorai_data_collection_page/qorai_data_collection_browser_proxy.ts",
+  "qorai_default_extensions_page/qorai_default_extensions_browser_proxy.ts",
+  "qorai_new_tab_page/qorai_new_tab_browser_proxy.ts",
+  "qorai_qora_assistant_page/qorai_qora_assistant_browser_proxy.ts",
+  "qorai_privacy_page/qorai_privacy_page_browser_proxy.ts",
+  "qorai_reset_page/qorai_reset_profile_dialog_behavior.ts",
+  "qorai_routes.ts",
+  "qorai_search_engines_page/qorai_search_engines_page_browser_proxy.ts",
+  "qorai_sync_page/qorai_sync_browser_proxy.ts",
+  "qorai_wallet_page/qorai_wallet_browser_proxy.ts",
+  "qorai_web3_domains_page/qorai_web3_domains_browser_proxy.ts",
+  "default_qorai_shields_page/qorai_adblock_browser_proxy.ts",
+  "default_qorai_shields_page/default_qorai_shields_browser_proxy.ts",
+  "email_aliases_page/email_aliases_page.ts",
+  "getting_started_page/qorai_account_browser_proxy.ts",
+  "getting_started_page/qorai_account_row.html.ts",
+  "getting_started_page/qorai_account_row.ts",
+  "shortcuts_page/shortcuts_page.ts",
+]
+
+qorai_settings_local_css_files =
+    [ "getting_started_page/qorai_account_row.css" ]
+
+if (enable_qorai_vpn_wireguard) {
+  qorai_settings_web_component_files +=
+      [ "qorai_system_page/qorai_vpn_page.ts" ]
+  qorai_settings_ts_files += [ "qorai_system_page/qorai_vpn_browser_proxy.ts" ]
+}
+
+if (enable_pin_shortcut) {
+  qorai_settings_web_component_files +=
+      [ "pin_shortcut_page/pin_shortcut_page.ts" ]
+  qorai_settings_ts_files +=
+      [ "pin_shortcut_page/pin_shortcut_page_browser_proxy.ts" ]
+}
+
+if (enable_tor) {
+  qorai_settings_web_component_files += [
+    "qorai_tor_page/qorai_tor_bridges_dialog.ts",
+    "qorai_tor_page/qorai_tor_snowflake_install_failed_dialog.ts",
+    "qorai_tor_page/qorai_tor_subpage.ts",
+  ]
+  qorai_settings_ts_files += [ "qorai_tor_page/qorai_tor_browser_proxy.ts" ]
+}
+
+qorai_settings_ts_definitions =
+    [ "//qorai/components/definitions/chrome_qorai_theme.d.ts" ]
+
+qorai_settings_ts_extra_deps =
+    [ "//qorai/browser/resources/settings:preprocess" ]
+
+qorai_settings_mojo_files = [
+  "$root_gen_dir/qorai/components/ai_chat/core/common/mojom/settings_helper.mojom-webui.ts",
+  "$root_gen_dir/qorai/components/ai_chat/core/common/mojom/ai_chat.mojom-webui.ts",
+  "$root_gen_dir/qorai/components/ai_chat/core/common/mojom/bookmarks.mojom-webui.ts",
+
+  # ai_chat.mojom depends on these mojom files, even though they aren't used directly on settings
+  "$root_gen_dir/qorai/components/ai_chat/core/common/mojom/common.mojom-webui.ts",
+  "$root_gen_dir/qorai/components/ai_chat/core/common/mojom/customization_settings.mojom-webui.ts",
+  "$root_gen_dir/qorai/components/ai_chat/core/common/mojom/tab_tracker.mojom-webui.ts",
+  "$root_gen_dir/qorai/components/ai_chat/core/common/mojom/untrusted_frame.mojom-webui.ts",
+
+  "$root_gen_dir/qorai/components/qorai_account/mojom/qorai_account_settings_handler.mojom-webui.ts",
+  "$root_gen_dir/qorai/components/qorai_origin/common/mojom/qorai_origin_settings.mojom-webui.ts",
+
+  # Add generated strings as mojo files. Currently, this is the only way to
+  # include them in build_webui() target.
+  "$root_gen_dir/qorai/grit/qorai_generated_resources_webui_strings.ts",
+  "$root_gen_dir/components/grit/qorai_components_webui_strings.ts",
+]
+
+qorai_settings_mojo_files_deps = [
+  "//qorai/components/ai_chat/core/common/mojom:mojom_ts__generator",
+  "//qorai/components/qorai_account/mojom:mojom_ts__generator",
+  "//qorai/components/qorai_origin/common/mojom:mojom_ts__generator",
+
+  # Add generated strings to the build_webui() via mojo_files_deps.
+  "//qorai/app:qorai_generated_resources_grit",
+  "//qorai/components/resources:strings",
+]
+
+qorai_settings_ts_deps = [
+  "//third_party/lit/v3_0:build_ts",
+  "//ui/webui/resources/mojo:build_ts",
+]
+
+if (enable_containers) {
+  qorai_settings_ts_files +=
+      [ "qorai_content_page/containers_browser_proxy.ts" ]
+  qorai_settings_ts_files += [
+    "qorai_content_page/background_colors.ts",
+    "qorai_content_page/containers_background_chip.html.ts",
+    "qorai_content_page/containers_background_chip.ts",
+    "qorai_content_page/containers_icon.html.ts",
+    "qorai_content_page/containers_icon.ts",
+    "qorai_content_page/containers.html.ts",
+    "qorai_content_page/containers.ts",
+  ]
+  qorai_settings_local_css_files += [
+    "qorai_content_page/containers_background_chip.css",
+    "qorai_content_page/containers.css",
+    "qorai_content_page/containers_icon.css",
+  ]
+  qorai_settings_mojo_files_deps +=
+      [ "//qorai/components/containers/core/mojom:mojom_ts__generator" ]
+  qorai_settings_mojo_files += [ "$root_gen_dir/qorai/components/containers/core/mojom/containers.mojom-webui.ts" ]
+}
+
+if (enable_speedreader) {
+  qorai_settings_web_component_files += [ "qorai_content_page/speedreader.ts" ]
+}
+
+# Generate the list for inclusion via preprocess and exclusion for chromium's preprocess
+qorai_settings_local_ts_files =
+    qorai_settings_web_component_files + qorai_settings_ts_files
+
+qorai_settings_local_html_files = []
+foreach(component_file, qorai_settings_web_component_files) {
+  qorai_settings_local_html_files +=
+      [ string_replace(component_file, ".ts", ".html") ]
+}

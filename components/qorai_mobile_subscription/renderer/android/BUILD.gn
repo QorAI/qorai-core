@@ -1,0 +1,78 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+assert(is_android)
+
+source_set("android") {
+  sources = [
+    "subscription_render_frame_observer.cc",
+    "subscription_render_frame_observer.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/ai_chat/core/common/mojom",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/skus/renderer",
+    "//qorai/gin:converter_specializations",
+    "//content/public/renderer",
+    "//gin",
+    "//mojo/public/cpp/bindings",
+    "//third_party/blink/public:blink",
+    "//third_party/blink/public/common",
+    "//third_party/blink/public/strings",
+    "//v8",
+  ]
+
+  if (enable_qorai_vpn) {
+    deps += [
+      "//qorai/components/qorai_vpn/common",
+      "//qorai/components/qorai_vpn/common/mojom",
+    ]
+  }
+}
+
+source_set("browser_tests") {
+  testonly = true
+
+  sources = [ "subscription_render_frame_observer_browsertest.cc" ]
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+  deps = [
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/qorai_mobile_subscription/renderer/android",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/skus/common",
+    "//chrome/common",
+    "//content/public/common",
+    "//content/test:test_support",
+    "//url",
+  ]
+
+  if (enable_qorai_vpn) {
+    deps += [
+      "//qorai/components/qorai_vpn/common",
+      "//qorai/components/qorai_vpn/common/mojom",
+    ]
+  }
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [ "subscription_render_frame_observer_unittest.cc" ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_mobile_subscription/renderer/android",
+    "//content/public/renderer",
+    "//testing/gtest",
+    "//v8",
+  ]
+}

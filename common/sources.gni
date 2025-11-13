@@ -1,0 +1,48 @@
+# Copyright (c) 2023 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_chrome_common_sources = [
+  "//qorai/common/qorai_channel_info.cc",
+  "//qorai/common/qorai_channel_info.h",
+  "//qorai/common/pref_names.h",
+  "//qorai/common/resource_bundle_helper.cc",
+  "//qorai/common/resource_bundle_helper.h",
+]
+
+qorai_chrome_common_deps = [
+  "//base",
+  "//qorai/common:mojo_bindings",
+  "//components/version_info:channel",
+  "//extensions/buildflags",
+  "//services/service_manager",
+  "//ui/base",
+]
+
+qorai_chrome_common_public_deps = [ "//qorai/components/constants" ]
+
+if (is_android) {
+  qorai_chrome_common_deps += [ "//components/user_data_importer/common" ]
+}
+
+if (!is_android && !is_ios) {
+  qorai_chrome_common_deps += [ "//qorai/common/importer" ]
+}
+
+if (!is_ios) {
+  qorai_chrome_common_sources += [
+    "//qorai/common/qorai_content_client.cc",
+    "//qorai/common/qorai_content_client.h",
+  ]
+
+  qorai_chrome_common_deps += [
+    "//qorai/components/resources",
+    "//qorai/components/resources:static_resources_grit",
+    "//chrome/common:channel_info",
+    "//chrome/common:constants",
+    "//components/resources",
+    "//content/public/common",
+    "//third_party/widevine/cdm:buildflags",
+  ]
+}

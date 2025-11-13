@@ -1,0 +1,20 @@
+diff --git a/base/BUILD.gn b/base/BUILD.gn
+index 931a8e3e0362b6de6f9dee5b1cc8e0fcd41e4e78..94e21191ee0c44afdb87ef26a84ec1e4d380ea7a 100644
+--- a/base/BUILD.gn
++++ b/base/BUILD.gn
+@@ -4670,6 +4670,7 @@ if (is_android) {
+       "android/java/src/org/chromium/base/UserDataHost.java",
+       "android/java/src/org/chromium/base/ValueChangedCallback.java",
+     ]
++    sources += qorai_java_base_sources
+ 
+     resources_package = "org.chromium.base"
+ 
+@@ -5289,6 +5290,7 @@ if (is_android) {
+       "android/java/src/org/chromium/base/shared_preferences/SharedPreferencesManager.java",
+       "android/java/src/org/chromium/base/shared_preferences/StrictPreferenceKeyChecker.java",
+     ]
++    sources += qorai_base_shared_preferences_java_sources
+   }
+ 
+   android_library("flagged_apis_java") {

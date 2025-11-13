@@ -1,0 +1,10 @@
+include_rules = [
+  "+components/grit/qorai_components_resources.h",
+  "+components/grit/qorai_components_strings.h",
+  "+components/keyed_service/core",
+  "+components/os_crypt/sync/os_crypt.h",
+  "+components/prefs",
+  "+services/network/public/cpp",
+  "+services/network/public/mojom",
+  "+services/network/test",
+]

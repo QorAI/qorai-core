@@ -1,0 +1,29 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("qorai_account") {
+  sources = [
+    "qorai_account_authentication_bridge.h",
+    "qorai_account_authentication_bridge_impl.h",
+    "qorai_account_authentication_bridge_impl.mm",
+    "qorai_account_service_factory_ios.h",
+    "qorai_account_service_factory_ios.mm",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_account",
+    "//qorai/components/qorai_account:features",
+    "//qorai/components/qorai_account/mojom",
+    "//qorai/ios/browser/api/profile",
+    "//ios/chrome/browser/shared/model/profile",
+    "//ios/chrome/browser/shared/model/profile:profile_keyed_service_factory",
+    "//ios/web/public",
+    "//mojo/public/cpp/bindings",
+    "//services/network/public/cpp",
+  ]
+
+  frameworks = [ "Foundation.framework" ]
+}

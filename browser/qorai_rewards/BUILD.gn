@@ -1,0 +1,77 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+import("//extensions/buildflags/buildflags.gni")
+import("//testing/test.gni")
+
+source_set("qorai_rewards") {
+  sources = [
+    "creator_detection_script_injector.h",
+    "rewards_service_factory.h",
+    "rewards_tab_helper.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_rewards/content",
+    "//qorai/components/script_injector/common/mojom",
+    "//chrome/browser/profiles",
+    "//components/keyed_service/content",
+    "//components/sessions",
+    "//content/public/browser",
+  ]
+}
+
+source_set("qorai_rewards_impl") {
+  sources = [
+    "creator_detection_script_injector.cc",
+    "rewards_prefs_util.cc",
+    "rewards_prefs_util.h",
+    "rewards_service_factory.cc",
+    "rewards_tab_helper.cc",
+  ]
+
+  public_deps = [ ":qorai_rewards" ]
+
+  deps = [
+    ":util",
+    "//base",
+    "//qorai/browser/qorai_wallet",
+    "//qorai/components/qorai_rewards/content",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_rewards/core:features",
+    "//qorai/components/qorai_rewards/resources/creator_detection:creator_detection_generated_grit",
+    "//chrome/browser/bitmap_fetcher",
+    "//chrome/browser/favicon",
+    "//chrome/browser/profiles",
+    "//chrome/browser/ui",
+    "//components/keyed_service/content",
+    "//components/prefs",
+    "//components/sessions",
+    "//extensions/buildflags",
+  ]
+
+  if (enable_extensions) {
+    sources += [
+      "extension_rewards_service_observer.cc",
+      "extension_rewards_service_observer.h",
+    ]
+
+    deps += [ "//extensions/browser" ]
+  }
+}
+
+source_set("util") {
+  sources = [
+    "rewards_util.cc",
+    "rewards_util.h",
+  ]
+
+  deps = [
+    "//qorai/components/qorai_rewards/core",
+    "//chrome/browser/profiles:profile",
+    "//components/prefs",
+  ]
+}

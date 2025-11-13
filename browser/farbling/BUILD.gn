@@ -1,0 +1,61 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+if (!is_android) {
+  source_set("browser_tests") {
+    testonly = true
+    defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+    sources = [
+      "qorai_dark_mode_fingerprint_protection_browsertest.cc",
+      "qorai_enumeratedevices_farbling_browsertest.cc",
+      "qorai_farbling_browsertest.cc",
+      "qorai_font_whitelist_browsertest.cc",
+      "qorai_navigator_devicememory_farbling_browsertest.cc",
+      "qorai_navigator_hardwareconcurrency_farbling_browsertest.cc",
+      "qorai_navigator_keyboard_api_browsertest.cc",
+      "qorai_navigator_languages_farbling_browsertest.cc",
+      "qorai_navigator_plugins_farbling_browsertest.cc",
+      "qorai_navigator_usb_farbling_browsertest.cc",
+      "qorai_navigator_useragent_farbling_browsertest.cc",
+      "qorai_offscreencanvas_farbling_browsertest.cc",
+      "qorai_screen_farbling_browsertest.cc",
+      "qorai_speech_synthesis_farbling_browsertest.cc",
+      "qorai_webaudio_farbling_browsertest.cc",
+      "qorai_webgl_farbling_browsertest.cc",
+    ]
+
+    deps = [
+      "//base",
+      "//qorai/browser",
+      "//qorai/browser/extensions:test_support",
+      "//qorai/common",
+      "//qorai/components/qorai_component_updater/browser",
+      "//qorai/components/qorai_shields/content/browser",
+      "//qorai/components/qorai_shields/content/browser:test_support",
+      "//qorai/components/qorai_shields/core/browser",
+      "//qorai/components/qorai_shields/core/common",
+      "//qorai/components/constants",
+      "//qorai/components/webcompat/core/common",
+      "//qorai/third_party/blink/renderer",
+      "//chrome/browser",
+      "//chrome/browser/content_settings:content_settings_factory",
+      "//chrome/browser/ui",
+      "//chrome/browser/usb",
+      "//chrome/common",
+      "//chrome/test:test_support",
+      "//chrome/test:test_support_ui",
+      "//components/content_settings/renderer",
+      "//components/embedder_support:user_agent",
+      "//components/language/core/browser",
+      "//components/permissions",
+      "//components/prefs",
+      "//content/public/browser",
+      "//content/test:test_support",
+      "//ui/color:test_support",
+      "//ui/native_theme:test_support",
+    ]
+  }
+}

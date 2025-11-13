@@ -1,0 +1,34 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+qorai_browser_new_tab_sources = []
+qorai_browser_new_tab_deps = []
+
+if (!is_android) {
+  qorai_browser_new_tab_sources += [
+    "//qorai/browser/new_tab/new_tab_shows_navigation_throttle.cc",
+    "//qorai/browser/new_tab/new_tab_shows_navigation_throttle.h",
+    "//qorai/browser/new_tab/new_tab_shows_options.cc",
+    "//qorai/browser/new_tab/new_tab_shows_options.h",
+  ]
+
+  if (is_win) {
+    qorai_browser_new_tab_sources += [
+      "//qorai/browser/new_tab/background_color_tab_helper.cc",
+      "//qorai/browser/new_tab/background_color_tab_helper.h",
+    ]
+  }
+
+  qorai_browser_new_tab_deps += [
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/components/constants",
+    "//chrome/common",
+    "//components/prefs",
+    "//content/public/browser",
+    "//ui/base",
+    "//url",
+  ]
+}

@@ -1,0 +1,8 @@
+browser_api_certificate_public_headers = [
+  "//qorai/ios/browser/api/certificate/qorai_certificate.h",
+  "//qorai/ios/browser/api/certificate/models/qorai_certificate_enums.h",
+  "//qorai/ios/browser/api/certificate/models/qorai_certificate_fingerprint.h",
+  "//qorai/ios/browser/api/certificate/models/qorai_certificate_public_key_info.h",
+  "//qorai/ios/browser/api/certificate/models/qorai_certificate_rdns_sequence.h",
+  "//qorai/ios/browser/api/certificate/models/qorai_certificate_signature.h",
+]

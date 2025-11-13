@@ -1,0 +1,137 @@
+<style include="cr-shared-style settings-shared">
+  .list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid var(--qora-color-divider-subtle);
+    border-radius: var(--qora-radius-m);
+  }
+
+  .model {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--qora-spacing-l) var(--qora-spacing-xl);
+    border-bottom: 1px solid var(--qora-color-divider-subtle);
+  }
+
+  .model:last-of-type {
+    border-bottom: none;
+  }
+
+  .list-container {
+    padding: 0 var(--qora-spacing-xl) var(--qora-spacing-xl) var(--qora-spacing-xl);
+  }
+
+  .action-box {
+    padding: var(--qora-spacing-xl);
+  }
+
+  .label-secondary {
+    font: var(--qora-font-default-regular);
+    color: var(--qora-color-text-secondary);
+  }
+
+  .header {
+    padding: var(--qora-spacing-2xl);
+  }
+
+  .main-header {
+    font: var(--qora-font-heading-h4);
+  }
+
+  cr-icon-button.size-20 {
+    --iron-icon-width: 20px;
+  }
+</style>
+
+<settings-section
+  id="leoModels"
+  page-title="$i18n{qoraiQoraAssistantByomLabel}">
+
+<div class="settings-box header">
+  <div class="flex">
+    <div class="main-header">$i18n{qoraiQoraAssistantYourModelsTitle}</div>
+    <div class="label secondary">
+      <p>$i18n{qoraiQoraAssistantYourModelsDesc1}</p>
+      <p>$i18nRaw{qoraiQoraAssistantYourModelsDesc2}</p>
+    </div>
+  </div>
+</div>
+
+<div class="list-container">
+  <template
+    is="dom-if"
+    if="[[!hasCustomModels_(customModelsList_)]]"
+  >
+    <div class="alert-container">
+      <qora-alert
+        type="info"
+        has-actions="false"
+      >
+        $i18n{qoraiQoraAssistantModelListEmptyLabel}
+      </qora-alert>
+    </div>
+  </template>
+
+  <template
+    is="dom-if"
+    if="[[hasCustomModels_(customModelsList_)]]"
+  >
+    <div class="list">
+      <template
+        is="dom-repeat"
+        items="[[customModelsList_]]"
+      >
+        <div class="model">
+          <div class="model-info">
+            <div class="label">[[item.displayName]]</div>
+            <div class="label-secondary">
+              [[item.options.customModelOptions.modelRequestName]]
+            </div>
+          </div>
+          <div class="model-actions">
+            <cr-icon-button
+              on-click="handleEdit_"
+              class="size-20"
+              iron-icon="edit-pencil"
+            ></cr-icon-button>
+            <cr-icon-button
+              on-click="handleDelete_"
+              class="size-20"
+              iron-icon="trash"
+            ></cr-icon-button>
+          </div>
+        </div>
+      </template>
+    </div>
+  </template>
+</div>
+
+<div class="action-box">
+  <template
+    is="dom-if"
+    if="[[!showModelConfig_]]"
+  >
+    <qora-button
+      on-click="handleAddNewModel_"
+      class="action-button"
+      >$i18n{qoraiQoraAssistantAddNewModelButtonLabel}</qora-button
+    >
+  </template>
+</div>
+
+<template
+  is="dom-if"
+  if="[[showModelConfig_]]"
+  restamp
+>
+  <model-config-ui
+    id="model-config-ui"
+    model-item="[[getEditingModel_(isEditingModelIndex_, customModelsList_)]]"
+    on-save="onModelConfigSave_"
+    on-close="onModelConfigClose_"
+  ></model-config-ui>
+</template>
+
+</settings-section>

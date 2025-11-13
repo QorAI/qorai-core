@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/ui/views/frame/browser_view.cc b/chrome/browser/ui/views/frame/browser_view.cc
+index 09d102ec8a6c4c4263a9759ef4afae619fb98848..a0a46a2335818b9dd5a6d023c512e2d2cbe0fcf3 100644
+--- a/chrome/browser/ui/views/frame/browser_view.cc
++++ b/chrome/browser/ui/views/frame/browser_view.cc
+@@ -720,6 +720,7 @@ bool ConvertedHitTest(views::View* src, views::View* dst, gfx::Point* point) {
+   DCHECK(src);
+   DCHECK(dst);
+   DCHECK(point);
++  QORAI_BROWSER_VIEW_LAYOUT_CONVERTED_HIT_TEST
+   views::View::ConvertPointToTarget(src, dst, point);
+   return dst->HitTestPoint(*point);
+ }

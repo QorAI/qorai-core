@@ -1,0 +1,335 @@
+<style include="cr-shared-style settings-shared">
+  .primary-title {
+    font: var(--qora-font-heading-h3);
+    color: var(--qora-color-text-primary);
+    margin-bottom: var(--qora-spacing-2xl);
+  }
+
+  .container {
+    width: 100%;
+    padding: 16px 0;
+  }
+
+  .input-container {
+    margin-bottom: var(--qora-spacing-l);
+  }
+
+  .custom-label {
+    font: var(--qora-font-small-semibold);
+    color: var(--qora-color-text-primary);
+    margin-bottom: var(--qora-spacing-s);
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+  }
+
+  .label-text {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .required::after {
+    content: '*';
+    margin: 0 2px;
+    color: var(--qora-color-systemfeedback-error-icon);
+  }
+
+  .tooltip-content {
+    width: 340px;
+  }
+
+  .note {
+    color: var(--qora-color-text-tertiary);
+    font: var(--qora-font-small-regular);
+    margin-bottom: 5px;
+  }
+
+  .inline-note {
+    color: var(--qora-color-text-tertiary);
+    font: var(--qora-font-small-regular);
+  }
+
+  .actions-container qora-button:first-of-type {
+    margin-right: 5px;
+  }
+  
+  .unsafe-endpoint-label {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--qora-spacing-s);
+  }
+</style>
+
+<!-- warning message against potentially unsafe endpoints -->
+<template is="dom-if" if="[[shouldShowUnsafeEndpointModal]]">
+  <cr-dialog show-close-button show-on-attach>
+    <div slot="title">
+      <span class="dialog-title">
+        $i18n{qoraiQoraAssistantEndpointValidAsPrivateIp_Title}
+      </span>
+    </div>
+    <div slot="body">
+      <p>$i18n{qoraiQoraAssistantEndpointValidAsPrivateIp_Body}</p>
+      <p>$i18n{qoraiQoraAssistantEndpointValidAsPrivateIp_Instructions}</p>
+    </div>
+  </cr-dialog>
+</template>
+
+<div class="settings-box">
+  <div class="container">
+    <div>
+      <template
+        is="dom-if"
+        if="[[!isEditing_]]"
+      >
+        <div class="primary-title">$i18n{qoraiQoraAssistantAddModelLabel}</div>
+      </template>
+      <template
+        is="dom-if"
+        if="[[isEditing_]]"
+      >
+        <div class="primary-title">$i18n{qoraiQoraAssistantEditModelLabel}</div>
+      </template>
+    </div>
+    <div class="input-container">
+      <div class="custom-label">
+        <div class="label-text">
+          <span class="required">$i18n{qoraiQoraAssistantInputModelLabel}</span>
+          <qora-tooltip mode="default">
+            <div
+              slot="content"
+              class="tooltip-content"
+            >
+              $i18n{qoraiQoraAssistantInputModelLabelTooltipInfo}
+            </div>
+            <qora-button
+              size="small"
+              kind="plain-faint"
+              fab
+            >
+              <qora-icon name="info-outline"></qora-icon>
+            </qora-button>
+          </qora-tooltip>
+        </div>
+      </div>
+      <qora-input
+        required
+        auto-validate
+        type="text"
+        value="[[label]]"
+        on-change="onModelLabelChange_"
+      ></qora-input>
+    </div>
+    <div class="input-container">
+      <div class="custom-label">
+        <div class="label-text">
+          <span class="required"
+            >$i18n{qoraiQoraAssistantInputModelRequestName}</span
+          >
+          <qora-tooltip mode="default">
+            <div
+              slot="content"
+              class="tooltip-content"
+            >
+              $i18n{qoraiQoraAssistantInputModelRequestNameTooltipInfo}
+            </div>
+            <qora-button
+              size="small"
+              kind="plain-faint"
+              fab
+            >
+              <qora-icon name="info-outline"></qora-icon>
+            </qora-button>
+          </qora-tooltip>
+        </div>
+      </div>
+      <qora-input
+        required
+        auto-validate
+        type="text"
+        value="[[modelRequestName]]"
+        on-change="onModelRequestNameChange_"
+      ></qora-input>
+    </div>
+    <div class="input-container">
+      <div class="custom-label">
+        <div class="label-text">
+          <span class="required"
+            >$i18n{qoraiQoraAssistantInputModelServerEndpoint}</span
+          >
+          <qora-tooltip mode="default">
+            <div
+              slot="content"
+              class="tooltip-content"
+            >
+              $i18n{qoraiQoraAssistantInputModelServerEndpointTooltipInfo}
+            </div>
+            <qora-button
+              size="small"
+              kind="plain-faint"
+              fab
+            >
+              <qora-icon name="info-outline"></qora-icon>
+            </qora-button>
+          </qora-tooltip>
+        </div>
+      </div>
+      <qora-input
+        id="endpointInput"
+        required
+        type="url"
+        value="[[endpointUrl]]"
+        on-change="onModelServerEndpointChange_"
+        show-errors="[[isUrlInvalid]]"
+      >
+        <div slot="errors">[[invalidUrlErrorMessage]]</div>  
+        <div slot="extra" class="inline-note">
+          $i18n{qoraiQoraAssistantProxyNote}
+        </div>
+      </qora-input>
+      <template is="dom-if" if="[[shouldShowUnsafeEndpointLabel]]">
+        <div class="unsafe-endpoint-label">
+          <qora-label mode="loud" color="red">
+            <qora-icon name="lock-open" slot="icon-before"></qora-icon> 
+            $i18n{qoraiQoraAssistantEndpointPotentiallyUnsafeError}
+          </qora-label>
+        </div>
+      </template>
+    </div>
+
+    <div class="input-container">
+      <div class="custom-label">
+        <div class="label-text">
+          <span>$i18n{qoraiQoraAssistantInputContextSizeLabel}</span>
+          <qora-tooltip mode="default">
+            <div
+              slot="content"
+              class="tooltip-content"
+            >
+              $i18n{qoraiQoraAssistantInputContextSizeTooltipInfo}
+            </div>
+            <qora-button
+              size="small"
+              kind="plain-faint"
+              fab
+            >
+              <qora-icon name="info-outline"></qora-icon>
+            </qora-button>
+          </qora-tooltip>
+        </div>
+      </div>
+      <qora-input
+        auto-validate
+        type="number"
+        value="[[contextSize]]"
+        placeholder="$i18n{qoraiQoraAssistantInputDefaultContextSize}"
+        on-change="onContextSizeChange_"
+      ></qora-input>
+    </div>
+    <div class="input-container">
+      <div class="custom-label">
+        <div class="label-text">
+          <span>$i18n{qoraiQoraAssistantInputModelApiKey}</span>
+          <qora-tooltip mode="default">
+            <div
+              slot="content"
+              class="tooltip-content"
+            >
+              $i18n{qoraiQoraAssistantInputModelApiKeyTooltipInfo}
+            </div>
+            <qora-button
+              size="small"
+              kind="plain-faint"
+              fab
+            >
+              <qora-icon name="info-outline"></qora-icon>
+            </qora-button>
+          </qora-tooltip>
+        </div>
+      </div>
+      <qora-input
+        auto-validate
+        type="text"
+        value="[[apiKey]]"
+        on-change="onModelApiKeyChange_"
+      >
+      </qora-input>
+    </div>
+
+    <div class="input-container">
+      <div class="custom-label">
+        <div class="label-text">
+          <span>$i18n{qoraiQoraAssistantModelSystemPromptTitle}</span>
+          <qora-tooltip mode="default">
+            <div
+              slot="content"
+              class="tooltip-content"
+            >
+              $i18n{qoraiQoraAssistantModelSystemPromptDesc}
+            </div>
+            <qora-button
+              size="small"
+              kind="plain-faint"
+              fab
+            >
+              <qora-icon name="info-outline"></qora-icon>
+            </qora-button>
+          </qora-tooltip>
+        </div>
+      </div>
+      <qora-textarea
+        value="[[modelSystemPrompt]]"
+        rows="4"
+        placeholder="$i18n{qoraiQoraAssistantModelSystemPromptPlaceholder}"
+        on-change="onModelSystemPromptChange_"
+        on-input="constructTokenEstimateString_"
+      >
+        <div slot="extra" class="inline-note">
+          [[promptTokensEstimateString]]
+        </div>
+      </qora-textarea>
+    </div>
+    <div class="input-container">
+      <div class="custom-label">
+        <div class="label-text">
+          <span>$i18n{qoraiQoraAssistantInputModelVisionSupport}</span>
+          <qora-tooltip mode="default">
+            <div
+              slot="content"
+              class="tooltip-content"
+            >
+              $i18n{qoraiQoraAssistantInputModelVisionSupportTooltipInfo}
+            </div>
+            <qora-button
+              size="small"
+              kind="plain-faint"
+              fab
+            >
+              <qora-icon name="info-outline"></qora-icon>
+            </qora-button>
+          </qora-tooltip>
+        </div>
+      </div>
+      <qora-toggle
+          checked="{{hasVisionSupport}}"
+          on-change="onVisionSupportChanged_">
+      </qora-toggle>
+    </div>
+
+    <div class="actions-container">
+      <qora-button
+        disabled="[[!saveEnabled_(label, modelRequestName, endpointUrl)]]"
+        on-click="handleClick_"
+      >
+        [[buttonLabel_]]
+      </qora-button>
+      <qora-button
+        kind="plain-faint"
+        on-click="handleCloseClick_"
+      >
+        $i18n{qoraiQoraAssistantCloseButtonLabel}
+      </qora-button>
+    </div>
+  </div>
+</div>

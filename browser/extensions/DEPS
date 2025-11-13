@@ -1,0 +1,13 @@
+include_rules = [
+  "+qorai/components/qorai_extension/grit",
+  "+qorai/components/update_client/buildflags.h",
+]
+
+specific_include_rules = {
+  "qorai_component_loader\.cc": [
+    "+qorai/components/qorai_component_updater/browser/qorai_component_installer.h",
+  ],
+  "qorai_base_local_data_files_browsertest\.h": [
+    "+qorai/components/qorai_component_updater/browser/local_data_files_observer.h",
+  ],
+}

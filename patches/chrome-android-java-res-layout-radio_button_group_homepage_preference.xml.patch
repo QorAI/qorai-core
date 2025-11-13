@@ -1,0 +1,12 @@
+diff --git a/chrome/android/java/res/layout/radio_button_group_homepage_preference.xml b/chrome/android/java/res/layout/radio_button_group_homepage_preference.xml
+index 763a1c681f813a7cd67fe64532f2763d4583f25b..cb84d2b0a88642fb2dc192683a29c70b7267eaaf 100644
+--- a/chrome/android/java/res/layout/radio_button_group_homepage_preference.xml
++++ b/chrome/android/java/res/layout/radio_button_group_homepage_preference.xml
+@@ -37,6 +37,7 @@ found in the LICENSE file.
+         android:layout_height="wrap_content"
+         app:primaryText="@string/options_homepage_chrome_homepage"
+         app:backgroundStyle="none" />
++    <include layout="@layout/qorai_homepage_mobile_bookmarks_button" />
+ 
+     <org.chromium.components.browser_ui.widget.RadioButtonWithEditText
+         android:id="@+id/radio_button_uri_edit"

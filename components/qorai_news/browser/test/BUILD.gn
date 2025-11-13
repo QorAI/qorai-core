@@ -1,0 +1,66 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+import("//testing/test.gni")
+
+source_set("qorai_news_unit_tests") {
+  testonly = true
+  sources = [
+    "//qorai/components/qorai_news/browser/background_history_querier_unittest.cc",
+    "//qorai/components/qorai_news/browser/qorai_news_p3a_unittest.cc",
+    "//qorai/components/qorai_news/browser/qorai_news_pref_manager_unittest.cc",
+    "//qorai/components/qorai_news/browser/channels_controller_unittest.cc",
+    "//qorai/components/qorai_news/browser/combined_feed_parsing_unittest.cc",
+    "//qorai/components/qorai_news/browser/direct_feed_controller_unittest.cc",
+    "//qorai/components/qorai_news/browser/direct_feed_fetcher_unittest.cc",
+    "//qorai/components/qorai_news/browser/feed_building_unittest.cc",
+    "//qorai/components/qorai_news/browser/feed_generation_info_unittest.cc",
+    "//qorai/components/qorai_news/browser/feed_sampling_unittest.cc",
+    "//qorai/components/qorai_news/browser/html_parsing_unittest.cc",
+    "//qorai/components/qorai_news/browser/initialization_promise_unittest.cc",
+    "//qorai/components/qorai_news/browser/peeking_card_unittest.cc",
+    "//qorai/components/qorai_news/browser/publishers_controller_unittest.cc",
+    "//qorai/components/qorai_news/browser/publishers_parsing_unittest.cc",
+    "//qorai/components/qorai_news/browser/suggestions_controller_unittest.cc",
+    "//qorai/components/qorai_news/browser/topics_fetcher_unittest.cc",
+  ]
+
+  deps = [
+    ":qorai_news_unit_tests_support",
+    "//base/test:test_support",
+    "//qorai/components/api_request_helper",
+    "//qorai/components/qorai_news/browser",
+    "//qorai/components/qorai_news/browser:rust_lib",
+    "//qorai/components/qorai_news/browser:unit_tests",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_news/common:mojom",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/l10n/common:test_support",
+    "//qorai/components/time_period_storage",
+    "//components/history/core/browser",
+    "//components/prefs",
+    "//components/prefs:test_support",
+    "//components/sync_preferences:test_support",
+    "//content/test:test_support",
+    "//net:test_support",
+    "//services/data_decoder/public/cpp:test_support",
+    "//services/network:test_support",
+    "//testing/gmock",
+    "//testing/gtest",
+    "//url",
+  ]
+}
+
+source_set("qorai_news_unit_tests_support") {
+  testonly = true
+
+  sources = [ "wait_for_callback.h" ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+  ]
+}

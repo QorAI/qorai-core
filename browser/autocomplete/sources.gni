@@ -1,0 +1,18 @@
+# Copyright (c) 2021 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import("//extensions/buildflags/buildflags.gni")
+
+qorai_browser_autocomplete_sources = [
+  "//qorai/browser/autocomplete/qorai_autocomplete_scheme_classifier.cc",
+  "//qorai/browser/autocomplete/qorai_autocomplete_scheme_classifier.h",
+]
+
+qorai_browser_autocomplete_deps = [
+  "//base",
+  "//qorai/common",
+  "//qorai/components/omnibox/buildflags",
+  "//chrome/browser/profiles:profile",
+]

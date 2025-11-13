@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/url_sanitizer/core/browser",
+  "+qorai/components/url_sanitizer/ios/browser",
+]

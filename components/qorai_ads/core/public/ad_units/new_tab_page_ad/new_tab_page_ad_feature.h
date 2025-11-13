@@ -1,0 +1,40 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_ADS_CORE_PUBLIC_AD_UNITS_NEW_TAB_PAGE_AD_NEW_TAB_PAGE_AD_FEATURE_H_
+#define QORAI_COMPONENTS_QORAI_ADS_CORE_PUBLIC_AD_UNITS_NEW_TAB_PAGE_AD_NEW_TAB_PAGE_AD_FEATURE_H_
+
+#include "base/feature_list.h"
+#include "base/metrics/field_trial_params.h"
+
+namespace base {
+class TimeDelta;
+}  // namespace base
+
+namespace qorai_ads {
+
+BASE_DECLARE_FEATURE(kNewTabPageAdFeature);
+
+// Set to `true` to support frequency capping; otherwise, no capping.
+inline constexpr base::FeatureParam<bool>
+    kShouldFrequencyCapNewTabPageAdsForNonRewards{
+        &kNewTabPageAdFeature, "should_frequency_cap_for_non_rewards", true};
+
+// Set to 0 to never cap.
+inline constexpr base::FeatureParam<size_t> kMaximumNewTabPageAdsPerHour{
+    &kNewTabPageAdFeature, "maximum_ads_per_hour", 4};
+
+// Set to 0 to never cap.
+inline constexpr base::FeatureParam<size_t> kMaximumNewTabPageAdsPerDay{
+    &kNewTabPageAdFeature, "maximum_ads_per_day", 20};
+
+// Set to 0 to never cap.
+inline constexpr base::FeatureParam<base::TimeDelta>
+    kNewTabPageAdMinimumWaitTime{&kNewTabPageAdFeature, "minimum_wait_time",
+                                 base::Minutes(1)};
+
+}  // namespace qorai_ads
+
+#endif  // QORAI_COMPONENTS_QORAI_ADS_CORE_PUBLIC_AD_UNITS_NEW_TAB_PAGE_AD_NEW_TAB_PAGE_AD_FEATURE_H_

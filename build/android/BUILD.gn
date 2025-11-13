@@ -1,0 +1,241 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/android/qorai_xml_preprocessor.gni")
+import("//qorai/build/config.gni")
+import("//build/config/android/rules.gni")
+import("//third_party/jni_zero/jni_zero.gni")
+import("//tools/grit/grit_rule.gni")
+
+_apksigner = "$android_sdk_build_tools/apksigner"
+_jarsigner = "//third_party/jdk/current/bin/jarsigner"
+_zipalign = "$android_sdk_build_tools/zipalign"
+
+action("sign_app_convert_aab_to_apk") {
+  script = "//qorai/build/android/aab_to_apk.py"
+
+  deps = [ ":sign_app" ]
+
+  target_aab_path = "$root_out_dir/apks/MonochromePublic64.aab"
+  output_apk_path = "$root_out_dir/apks/Qoraiarm64Universal.apk"
+  output_path = "$root_out_dir/apks/"
+  bundletool =
+      "//third_party/android_build_tools/bundletool/cipd/bundletool.jar"
+
+  outputs = [ output_apk_path ]
+
+  args = [
+    "--bundletool=" + rebase_path(bundletool, root_out_dir),
+    "--target-aab-path=" + rebase_path(target_aab_path, root_out_dir),
+    "--output-apk-path=" + rebase_path(output_apk_path, root_out_dir),
+    "--output-path=" + rebase_path(output_path, root_out_dir),
+    "--key-path=" + rebase_path("$qorai_android_keystore_path", root_out_dir),
+    "--key-passwd=$qorai_android_keystore_password",
+    "--prvt-key-passwd=$qorai_android_key_password",
+    "--key-name=$qorai_android_keystore_name",
+    "--zipalign-path=" + rebase_path(_zipalign, root_out_dir),
+    "--apksigner-path=" + rebase_path(_apksigner, root_out_dir),
+    "--jarsigner-path=" + rebase_path(_jarsigner, root_out_dir),
+  ]
+}
+
+action("sign_app") {
+  script = "//qorai/build/android/sign_apk.py"
+
+  deps = [
+    # Make sure we have a copy prior to signing.
+    ":qorai",
+    "//qorai:create_symbols_dist",
+  ]
+
+  if (target_cpu == "arm64" || target_cpu == "x64") {
+    if (target_android_output_format == "aab") {
+      target_sign_app_path = "$root_out_dir/apks/MonochromePublic64.aab"
+    } else {
+      if (defined(android_app_secondary_abi)) {
+        target_sign_app_path = "$root_out_dir/apks/MonochromePublic.apk"
+      } else {
+        target_sign_app_path = "$root_out_dir/apks/MonochromePublic64.apk"
+      }
+    }
+  } else {
+    if (target_android_base == "mono") {
+      if (target_android_output_format == "aab") {
+        target_sign_app_path = "$root_out_dir/apks/MonochromePublic.aab"
+      } else {
+        target_sign_app_path = "$root_out_dir/apks/MonochromePublic.apk"
+      }
+    } else {
+      if (target_android_output_format == "aab") {
+        target_sign_app_path = "$root_out_dir/apks/ChromeModernPublic.aab"
+      } else {
+        target_sign_app_path = "$root_out_dir/apks/ChromePublic.apk"
+      }
+    }
+  }
+
+  outputs = [ "$qorai_android_output-sign-result" ]
+  args = [
+    "--zipalign-path=" + rebase_path(_zipalign, root_out_dir),
+    "--apksigner-path=" + rebase_path(_apksigner, root_out_dir),
+    "--jarsigner-path=" + rebase_path(_jarsigner, root_out_dir),
+    "--unsigned-apk-paths",
+    rebase_path(target_sign_app_path, root_out_dir),
+
+    # Sign the final output file as well as there is no garantee that copy will happen after the sign.
+    # Ideally we should combine `qorai`, `sign_app` and `sign_app_convert_aab_to_apk` into one action and do what we need in the script depending on the flags.
+    rebase_path(qorai_android_output, root_out_dir),
+    "--key-path=$qorai_android_keystore_path",
+    "--key-passwd=$qorai_android_keystore_password",
+    "--prvt-key-passwd=$qorai_android_key_password",
+    "--key-name=$qorai_android_keystore_name",
+  ]
+
+  # Add PKCS11 arguments if both provider and alias are defined
+  if (qorai_android_pkcs11_provider != "" && qorai_android_pkcs11_alias != "") {
+    args += [
+      "--pkcs11-provider=" + qorai_android_pkcs11_provider,
+      "--pkcs11-alias=" + qorai_android_pkcs11_alias,
+    ]
+  }
+}
+
+copy("qorai") {
+  visibility = [ "*" ]
+  deps = []
+  sources = []
+  if (target_cpu == "arm64" || target_cpu == "x64") {
+    if (target_android_output_format == "aab") {
+      deps += [ "//chrome/android:monochrome_64_public_bundle" ]
+      sources += [ "$root_out_dir/apks/MonochromePublic64.aab" ]
+    } else {
+      if (defined(android_app_secondary_abi)) {
+        deps += [ "//chrome/android:monochrome_64_32_public_apk" ]
+        sources += [ "$root_out_dir/apks/MonochromePublic.apk" ]
+      } else {
+        deps += [ "//chrome/android:monochrome_64_public_apk" ]
+        sources += [ "$root_out_dir/apks/MonochromePublic64.apk" ]
+      }
+    }
+  } else {
+    if (target_android_base == "mono") {
+      if (target_android_output_format == "aab") {
+        deps += [ "//chrome/android:monochrome_public_bundle" ]
+        sources += [ "$root_out_dir/apks/MonochromePublic.aab" ]
+      } else {
+        deps += [ "//chrome/android:monochrome_public_apk" ]
+        sources += [ "$root_out_dir/apks/MonochromePublic.apk" ]
+      }
+    } else {
+      deps += [ "//chrome/android:chrome_public_apk" ]
+      sources += [ "$root_out_dir/apks/ChromePublic.apk" ]
+    }
+  }
+  outputs = [ qorai_android_output ]
+}
+
+java_strings_grd("android_qorai_strings_grd") {
+  grd_file = "//qorai/browser/ui/android/strings/android_qorai_strings.grd"
+  outputs = [
+    "values/android_qorai_strings.xml",
+    "values-af/android_qorai_strings.xml",
+    "values-am/android_qorai_strings.xml",
+    "values-ar/android_qorai_strings.xml",
+    "values-as/android_qorai_strings.xml",
+    "values-az/android_qorai_strings.xml",
+    "values-be/android_qorai_strings.xml",
+    "values-bg/android_qorai_strings.xml",
+    "values-bn/android_qorai_strings.xml",
+    "values-bs/android_qorai_strings.xml",
+    "values-ca/android_qorai_strings.xml",
+    "values-cs/android_qorai_strings.xml",
+    "values-da/android_qorai_strings.xml",
+    "values-de/android_qorai_strings.xml",
+    "values-el/android_qorai_strings.xml",
+    "values-en-rGB/android_qorai_strings.xml",
+    "values-es/android_qorai_strings.xml",
+    "values-es-rUS/android_qorai_strings.xml",
+    "values-et/android_qorai_strings.xml",
+    "values-eu/android_qorai_strings.xml",
+    "values-fa/android_qorai_strings.xml",
+    "values-fi/android_qorai_strings.xml",
+    "values-fr/android_qorai_strings.xml",
+    "values-fr-rCA/android_qorai_strings.xml",
+    "values-gl/android_qorai_strings.xml",
+    "values-gu/android_qorai_strings.xml",
+    "values-hi/android_qorai_strings.xml",
+    "values-hr/android_qorai_strings.xml",
+    "values-hu/android_qorai_strings.xml",
+    "values-hy/android_qorai_strings.xml",
+    "values-in/android_qorai_strings.xml",
+    "values-is/android_qorai_strings.xml",
+    "values-it/android_qorai_strings.xml",
+    "values-iw/android_qorai_strings.xml",
+    "values-ja/android_qorai_strings.xml",
+    "values-ka/android_qorai_strings.xml",
+    "values-kk/android_qorai_strings.xml",
+    "values-km/android_qorai_strings.xml",
+    "values-kn/android_qorai_strings.xml",
+    "values-ko/android_qorai_strings.xml",
+    "values-ky/android_qorai_strings.xml",
+    "values-lo/android_qorai_strings.xml",
+    "values-lt/android_qorai_strings.xml",
+    "values-lv/android_qorai_strings.xml",
+    "values-mk/android_qorai_strings.xml",
+    "values-ml/android_qorai_strings.xml",
+    "values-mn/android_qorai_strings.xml",
+    "values-mr/android_qorai_strings.xml",
+    "values-ms/android_qorai_strings.xml",
+    "values-my/android_qorai_strings.xml",
+    "values-nb/android_qorai_strings.xml",
+    "values-ne/android_qorai_strings.xml",
+    "values-nl/android_qorai_strings.xml",
+    "values-or/android_qorai_strings.xml",
+    "values-pa/android_qorai_strings.xml",
+    "values-pl/android_qorai_strings.xml",
+    "values-pt-rBR/android_qorai_strings.xml",
+    "values-pt-rPT/android_qorai_strings.xml",
+    "values-ro/android_qorai_strings.xml",
+    "values-ru/android_qorai_strings.xml",
+    "values-si/android_qorai_strings.xml",
+    "values-sk/android_qorai_strings.xml",
+    "values-sl/android_qorai_strings.xml",
+    "values-sq/android_qorai_strings.xml",
+    "values-sr/android_qorai_strings.xml",
+    "values-sv/android_qorai_strings.xml",
+    "values-sw/android_qorai_strings.xml",
+    "values-ta/android_qorai_strings.xml",
+    "values-te/android_qorai_strings.xml",
+    "values-th/android_qorai_strings.xml",
+    "values-tl/android_qorai_strings.xml",
+    "values-tr/android_qorai_strings.xml",
+    "values-uk/android_qorai_strings.xml",
+    "values-ur/android_qorai_strings.xml",
+    "values-uz/android_qorai_strings.xml",
+    "values-vi/android_qorai_strings.xml",
+    "values-zh-rCN/android_qorai_strings.xml",
+    "values-zh-rHK/android_qorai_strings.xml",
+    "values-zh-rTW/android_qorai_strings.xml",
+    "values-zu/android_qorai_strings.xml",
+  ]
+}
+
+generate_jni("jni_headers") {
+  sources = [
+    "//qorai/android/java/org/chromium/chrome/browser/qoraiqora/QoraiQoraSettingsLauncherHelper.java",
+    "//qorai/android/java/org/chromium/chrome/browser/crypto_wallet/util/WalletDataFilesInstallerUtil.java",
+    "//qorai/android/java/org/chromium/chrome/browser/day_zero/DayZeroHelper.java",
+    "//qorai/android/java/org/chromium/chrome/browser/informers/QoraiSyncAccountDeletedInformer.java",
+    "//qorai/android/java/org/chromium/chrome/browser/notifications/channels/QoraiSiteChannelsManagerBridge.java",
+    "//qorai/android/java/org/chromium/chrome/browser/preferences/QoraiPrefServiceBridge.java",
+    "//qorai/android/java/org/chromium/chrome/browser/signin/QoraiSigninManager.java",
+    "//qorai/android/java/org/chromium/chrome/browser/util/TabUtils.java",
+  ]
+
+  public_deps = [
+    "//qorai/android/java/org/chromium/chrome/browser/search_engines:jni_headers",
+    "//chrome/android:chrome_jni_headers",
+  ]
+}

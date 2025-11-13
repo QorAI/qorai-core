@@ -1,0 +1,21 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_content_browser_sources =
+    [ "//qorai/content/browser/devtools/adblock_devtools_instrumentation.cc" ]
+
+if (is_android) {
+  qorai_content_browser_sources += [
+    "//qorai/content/browser/screen_orientation/qorai_screen_orientation_delegate_android.cc",
+    "//qorai/content/browser/screen_orientation/qorai_screen_orientation_delegate_android.h",
+  ]
+}
+
+qorai_content_browser_deps = [
+  "//qorai/components/ai_chat/core/common/buildflags",
+  "//qorai/components/qorai_service_keys",
+  "//qorai/components/qorai_shields/core/common:mojom",
+  "//qorai/components/speech_to_text",
+]

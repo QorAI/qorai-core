@@ -1,0 +1,12 @@
+diff --git a/ui/views/view.h b/ui/views/view.h
+index 7f70b4f6062e369e2198fc12ff507786283a13c7..61f8884efb8327058400ab5c1bb00446e6fe3d26 100644
+--- a/ui/views/view.h
++++ b/ui/views/view.h
+@@ -343,6 +343,7 @@ class VIEWS_EXPORT View : public ui::LayerDelegate,
+     FRIEND_TEST_ALL_PREFIXES(WebViewUnitTest, CrashedOverlayView);
+ 
+     OwnedByClientPassKey() = default;
++    QORAI_VIEW_OWNED_BY_CLIENT_PASS_KEY
+   };
+ 
+   using PassKey = base::NonCopyablePassKey<View>;

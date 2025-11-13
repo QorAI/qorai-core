@@ -1,0 +1,61 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_ads/core/internal/serving/targeting/user_model/latent_interest/latent_interest_segments.h"
+
+#include <memory>
+
+#include "base/test/mock_callback.h"
+#include "qorai/components/qorai_ads/core/internal/common/test/test_base.h"
+#include "qorai/components/qorai_ads/core/internal/serving/targeting/user_model/latent_interest/latent_interest_user_model_info.h"
+#include "qorai/components/qorai_ads/core/internal/targeting/targeting_test_helper.h"
+
+// npm run test -- qorai_unit_tests --filter=QoraiAds*
+
+namespace qorai_ads {
+
+class QoraiAdsLatentInterestSegmentsTest : public test::TestBase {
+ protected:
+  void SetUp() override {
+    test::TestBase::SetUp();
+
+    targeting_helper_ =
+        std::make_unique<test::TargetingHelper>(task_environment_);
+  }
+
+  std::unique_ptr<test::TargetingHelper> targeting_helper_;
+};
+
+TEST_F(QoraiAdsLatentInterestSegmentsTest, BuildLatentInterestSegments) {
+  // Arrange
+  targeting_helper_->MockLatentInterest();
+
+  // Act & Assert
+  base::MockCallback<BuildSegmentsCallback> callback;
+  EXPECT_CALL(callback,
+              Run(test::TargetingHelper::LatentInterestExpectation().segments));
+  BuildLatentInterestSegments(callback.Get());
+}
+
+TEST_F(QoraiAdsLatentInterestSegmentsTest,
+       BuildLatentInterestSegmentsIfNoTargeting) {
+  // Act & Assert
+  base::MockCallback<BuildSegmentsCallback> callback;
+  EXPECT_CALL(callback, Run(/*segments=*/::testing::IsEmpty()));
+  BuildLatentInterestSegments(callback.Get());
+}
+
+TEST_F(QoraiAdsLatentInterestSegmentsTest,
+       DoNotBuildLatentInterestSegmentsIfFeatureIsDisabled) {
+  // Arrange
+  targeting_helper_->MockLatentInterest();
+
+  // Act & Assert
+  base::MockCallback<BuildSegmentsCallback> callback;
+  EXPECT_CALL(callback, Run(/*segments=*/::testing::IsEmpty()));
+  BuildLatentInterestSegments(callback.Get());
+}
+
+}  // namespace qorai_ads

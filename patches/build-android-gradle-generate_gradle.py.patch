@@ -1,0 +1,11 @@
+diff --git a/build/android/gradle/generate_gradle.py b/build/android/gradle/generate_gradle.py
+index 5e1eec5fd80984a25681550633829d494a5fa517..665bc9a50a4fed1cd9b5d07dfb36a1565698f40c 100755
+--- a/build/android/gradle/generate_gradle.py
++++ b/build/android/gradle/generate_gradle.py
+@@ -913,5 +913,6 @@ def main():
+         '+/main/docs/android_studio.md')
+ 
+ 
++from qorai_chromium_utils import inline_chromium_src_override; inline_chromium_src_override(globals(), locals())
+ if __name__ == '__main__':
+   main()

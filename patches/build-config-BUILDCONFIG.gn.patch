@@ -1,0 +1,12 @@
+diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
+index 24a1d143954ae05ae0b79b0994b76ef9218fb848..096641740fe50eb322b9c4e2f2d87c52025eaf99 100644
+--- a/build/config/BUILDCONFIG.gn
++++ b/build/config/BUILDCONFIG.gn
+@@ -346,6 +346,7 @@ is_posix = !is_win && !is_fuchsia
+ 
+ # Holds all configs used for running the compiler.
+ default_compiler_configs = [
++  "//qorai/build:compiler",
+   "//build/config/compiler/pgo:default_pgo_flags",
+   "//build/config/compiler:afdo",
+   "//build/config/compiler:afdo_optimize_size",

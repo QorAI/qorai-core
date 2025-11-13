@@ -1,0 +1,9 @@
+include_rules = [
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/qorai_news/common",
+  "+qorai/components/qorai_rewards/core",
+  "+qorai/components/qorai_vpn/common",
+  "+qorai/components/qorai_wallet/common",
+  "+qorai/components/constants",
+  "+qorai/components/playlist/core/common",
+]

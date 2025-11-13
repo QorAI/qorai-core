@@ -1,0 +1,4 @@
+#include "qorai/browser/qorai_vpn/win/qorai_vpn_wireguard_service/status_tray/resources/resources_en.rc"
+
+1 TYPELIB "qorai/components/qorai_vpn/common/wireguard/win/qorai_wireguard_manager_idl.tlb"
+

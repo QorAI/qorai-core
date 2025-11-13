@@ -1,0 +1,12 @@
+diff --git a/components/update_client/BUILD.gn b/components/update_client/BUILD.gn
+index a0f35874277a25cb7d091dafa54730915962439d..fb179a65da5712323ea1df316a5653706db55f1b 100644
+--- a/components/update_client/BUILD.gn
++++ b/components/update_client/BUILD.gn
+@@ -199,6 +199,7 @@ static_library("update_client") {
+       "background_downloader_win.h",
+     ]
+   }
++  sources += qorai_components_update_client_sources deps += qorai_components_update_client_deps public_deps = qorai_components_update_client_public_deps
+ }
+ 
+ if (is_mac) {

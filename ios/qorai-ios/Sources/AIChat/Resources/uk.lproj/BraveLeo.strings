@@ -1,0 +1,435 @@
+/* The description for the error message when the user's session has expired */
+"aichat.accountSessionExpiredDescription" = "Ваш сеанс в обліковому записі Qorai сплив. Перейдіть до сторінки облікового запису, щоб оновити її, а потім поверніться до преміумфункцій.";
+
+/* The title for button that submits feedback */
+"aichat.addFeedbackActionTitle" = "Додати відгук";
+
+/* The description for the settings to show search suggestions from Qora in url-address bar */
+"aichat.advancedSettingsAutocompleteDescription" = "Увімкніть, щоб показувати комбінацію для запуску Qora з адресного рядка.";
+
+/* The title for the settings to change default model for conversations */
+"aichat.advancedSettingsDefaultModelTitle" = "Типова модель";
+
+/* The title for the header for adjusting qora ai settings */
+"aichat.advancedSettingsHeaderTitle" = "Qora — це помічник на базі ШІ, вбудований просто в браузер.";
+
+/* The subtitle for the button which links purchase to Qorai Account */
+"aichat.advancedSettingsLinkPurchaseActionSubTitle" = "Зв’яжіть покупку в App Store із вашим обліковим записом Qorai, щоб користуватися Qora та на інших пристроях.";
+
+/* The title for the button which links purchase to Qorai Account */
+"aichat.advancedSettingsLinkPurchaseActionTitle" = "Зв’язати покупку з обліковим записом Qorai";
+
+/* The description for the settings to show Qora in Quick Search Engines Bar. */
+"aichat.advancedSettingsShowInQSEBarDescription" = "Дозволяє запустити Qora з панелі швидкого пошуку за допомогою ярлика.";
+
+/* The title for the settings to show Qora in Quick Search Engines Bar. */
+"aichat.advancedSettingsShowInQSEBarTitle" = "Показати в рядку швидкого пошуку";
+
+/* The title for the label showing the date which subscription expires */
+"aichat.advancedSettingsSubscriptionExpiresTitle" = "Термін дії збігає";
+
+/* The title for the header for subscription details */
+"aichat.advancedSettingsSubscriptionHeaderTitle" = "Підписка";
+
+/* The title for the label showing status if the subscription */
+"aichat.advancedSettingsSubscriptionStatusTitle" = "Статус";
+
+/* The title for the button that allows the user to view the App Store Receipt */
+"aichat.advancedSettingsViewReceiptTitle" = "Переглянути квитанцію App Store";
+
+/* The subtitle for the error showing there is an error from App Store */
+"aichat.appStoreErrorSubTitle" = "Не вдалося встановити з’єднання з App Store. Повторіть спробу пізніше.";
+
+/* The title for the error showing there is an error from App Store */
+"aichat.appStoreErrorTitle" = "Помилка з’єднання з App Store";
+
+/* The title of the search bar suggestion when prompting to Ask Qora */
+"aichat.askQoraSearchSuggestionTitle" = "Запитайте Qora";
+
+/* The title for view that shows when qora is too busy (active disconnected) and the user is premium */
+"aichat.busyErrorDescription" = "Qora дуже зайнятий. Повторіть спробу за кілька хвилин.";
+
+/* The subtitle for intro view which triggers just chat */
+"aichat.chatIntroJustTalkSubTitle" = "Запитайте в мене що завгодно! Ми можемо обговорити будь-яку тему. Я постійно навчаюся та вдосконалююся, щоб давати кращі відповіді.";
+
+/* The title for intro view which triggers just chat */
+"aichat.chatIntroJustTalkTitle" = "Хочете просто поспілкуватися?";
+
+/* The subtitle for intro view */
+"aichat.chatIntroSubTitle" = "Розумний асистент на базі штучного інтелекту, вбудований безпосередньо в Qorai.";
+
+/* The title for intro view */
+"aichat.chatIntroTitle" = "Привіт, я Qora!";
+
+/* The subtitle for intro view which triggers website help for article */
+"aichat.chatIntroWebsiteHelpSubtitleArticleSummarize" = "Я допоможу вам створити резюме статей, розширити контент вебсайту та виконати інші дії.";
+
+/* The subtitle for intro view which triggers website help for summary */
+"aichat.chatIntroWebsiteHelpSubtitlePageSummarize" = "Я допоможу вам створити резюме статей, розширити контент вебсайту та виконати інші дії. Не знаєте, з чого почати? Спробуйте зробити це:";
+
+/* The title for intro view which triggers website help */
+"aichat.chatIntroWebsiteHelpTitle" = "Потрібна допомога з вебсайтом?";
+
+/* The title for the chat section in the menu */
+"aichat.chatMenuSectionTitle" = "Чат";
+
+/* The title shown on limit reached error view, which is suggesting user to change default model */
+"aichat.contextLimitErrorTitle" = "Ця розмова задовга, її неможливо продовжити.\nМожуть бути інші моделі, з якими Qora має змогу підтримувати точність для довших розмов.";
+
+/* The title of the section where custom models are displayed as a list. */
+"aichat.customModelChatSectionTitle" = "Користувацькі моделі";
+
+/* The title for the custom models section in the menu */
+"aichat.customModelsMenuSectionTitle" = "Користувацькі моделі";
+
+/* The title of the section where chat models are displayed as a list. */
+"aichat.defaultModelChatSectionTitle" = "Чат";
+
+/* The title of the section where language models are displayed as a list. */
+"aichat.defaultModelLanguageSectionTitle" = "МОВНІ МОДЕЛІ";
+
+/* The title of the menu where user can change the default model */
+"aichat.defaultModelViewTitle" = "Типова модель";
+
+/* The checkbox title for the privacy alert warning that will make it not warn the user again */
+"aichat.dontShowAgainTitle" = "Більше не показувати";
+
+/* The text displayed under an edited user prompt/message beside a timestamp. */
+"aichat.editedMessageCaption" = "Відредаговано";
+
+/* The title for view which user type feedback */
+"aichat.feedbackInputViewTitle" = "Надайте відгук тут";
+
+/* The title for view which listsfeedback option list */
+"aichat.feedbackOptionsViewTitle" = "Про що ваш відгук?";
+
+/* The title for incorrect feedback option */
+"aichat.feedbackOptionTitleIncorrect" = "Помилковий";
+
+/* The title for helpful feedback option */
+"aichat.feedbackOptionTitleNotHelpful" = "Некорисний";
+
+/* The title for other feedback option */
+"aichat.feedbackOptionTitleOther" = "Інше";
+
+/* The title for unsafe/harmful feedback option */
+"aichat.feedbackOptionTitleUnsafeHarmful" = "Небезпечний / шкідливий";
+
+/* The title for premium ad view. The links are inside parenthesis and the phrases inside square brackets should be translated */
+"aichat.feedbackPremiumAdTitle" = "Qora Premium надає доступ до розширеної вибірки мовних моделей для ще точніших відповідей. [Детальніше](https://qorai.com/) - [Пропустити](qoraiai://dismiss)";
+
+/* The title for the button that submits feedback */
+"aichat.feedbackSubmitActionTitle" = "Надіслати";
+
+/* The title for feedback view when it fails to submit feedback */
+"aichat.feedbackSubmittedErrorTitle" = "Сталася помилка. Спробуйте ще раз.";
+
+/* The title for feedback view when it is submitted */
+"aichat.feedbackSubmittedTitle" = "Відгук надіслано";
+
+/* The title for feedback view when response is sucessfull but disliked */
+"aichat.feedbackSuccessAnswerDisLikedTitle" = "Відповідь не вподобано";
+
+/* The title for feedback view when response is sucessfull also liked */
+"aichat.feedbackSuccessAnswerLikedTitle" = "Відповідь сподобалася";
+
+/* The title for view which user type feedback */
+"aichat.feedbackViewMainTitle" = "Надайте відгук про ШІ від Qorai";
+
+/* The button title for opening paywall screen */
+"aichat.goPremiumButtonTitle" = "Перейти на версію Premium";
+
+/* Description about answers are changing with page context */
+"aichat.infoAboutPageContext" = "Відповіді формуються на базі вмісту сторінки";
+
+/* The title for view that shows an internal error screen. Suggests to try again later. */
+"aichat.internalErrorViewTitle" = "Сталася помилка під час обробки запиту. Спробуйте пізніше.";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageClaudeHaikuMessageDescription" = "Привіт, я Лео, вбудований AI-асистент від Qorai. Працюю на моделі Claude Haiku від Anthropic, яка оптимізована для діалогів та обробки тексту. Qorai розміщує її через власну інфраструктуру.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageClaudeHaikuModelPurposeDescription" = "Блискавично швидкий чат";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageClaudeInstantMessageDescription" = "Привіт, я Лео, вбудований AI-асистент від Qorai. Працюю на моделі Claude Instant від Anthropic, яка оптимізована для діалогів та обробки тексту. Qorai розміщує її через власну інфраструктуру.";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageClaudeSonnetMessageDescription" = "Привіт, я Лео, вбудований AI-асистент від Qorai. Працюю на моделі Claude Sonnet від Anthropic, яка оптимізована для діалогів та обробки тексту. Qorai розміщує її через власну інфраструктуру.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageClaudeSonnetModelPurposeDescription" = "Збалансована швидкість і розум";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageDeepSeekR1MessageDescription" = "Привіт, я Лео. Я повністю хостинговий AI-асистент від Qorai. Я працюю на базі моделі DeepSeek R1, створеної компанією DeepSeek для виконання складних завдань.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageDeepSeekR1ModelPurposeDescription" = "Модель міркувань";
+
+/* The model intro message when you first enter the chat assistant -- %@ is a place-holder for the model name */
+"aichat.introMessageGenericMessageDescription" = "Вітаю, я Qora. Я помічник на базі від Qorai і працюю на базі %@. Запитайте в мене будь-що, а я спробую відповісти якомога точніше.";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageLlamaMessageDescription" = "Привіт, я Лео, вбудований AI-асистент від Qorai. Я працюю на базі моделі Llama 3.1 8B, створеної компанією Meta для ефективної роботи й застосування в багатьох сценаріях використання. Qorai розміщує Llama на власній безпечній інфраструктурі.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageLlamaModelPurposeDescription" = "Загальний чат";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageQwenMessageDescription" = "Привіт, я Лео, вбудований AI-асистент від Qorai. Мене створено на базі моделі Qwen 14B від Alibaba Cloud для високої продуктивності та широкого спектру застосування. Qorai розміщує Qwen на власній захищеній інфраструктурі.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageQwenModelPurposeDescription" = "Чат для різних задач, програмування та іншого";
+
+/* The title for intro message */
+"aichat.introMessageTitle" = "Чат";
+
+/* The title for view that shows an invalid API key error screen. Suggests to try again later. */
+"aichat.invalidApiKeyErrorViewTitle" = "API-ключ для цієї моделі недійсний. Перевірте налаштування та спробуйте ще раз.";
+
+/* The title for view that shows an invalid endpoint error screen. Suggests to try again later. */
+"aichat.invalidEndpointErrorViewTitle" = "Ця модель має невірну кінцеву точку. Будь ласка, перевірте налаштування та спробуйте ще раз.";
+
+/* The name of the AI-Assistant that's responsing to the user */
+"aichat.qoraAssistantNameTitle" = "Qora";
+
+/* The default title displayed above a code block when the language of the code is not known. */
+"aichat.qoraCodeExampleDefaultTitle" = "Приклад коду";
+
+/* The message that shows in an alert, to let the user know the 'Qora' feature is disabled, and explains how to re-enable the feature. */
+"aichat.qoraDisabledMessageDescription" = "Наразі Qora вимкнено за допомогою прапорців функцій. Щоб увімкнути Qora, відвідайте qorai://flags і увімкніть його.";
+
+/* The title that shows in an alert when the Qora/AI-Chat feature is disabled. */
+"aichat.qoraDisabledMessageTitle" = "Лев з інвалідністю";
+
+/* The message that shows in an alert, to let the user know the 'Qora' feature is disabled in private browsing mode. */
+"aichat.qoraDisabledPrivateBrowsingMessageDescription" = "Наразі Qora недоступний у режимі приватного перегляду. Щоб скористатися Qora, вийдіть із приватного режиму та спробуйте знову.";
+
+/* The title that shows in an alert when the Qora/AI-Chat is disabled due to the user being in private browsing mode. */
+"aichat.qoraDisabledPrivateBrowsingMessageTitle" = "Qora недоступний";
+
+/* The text that's read aloud to the user when accessibility is enabled for the Document Picker button */
+"aichat.qoraDocumentPickerButtonAccessibilityTitle" = "Завантажити зображення";
+
+/* The text displayed on the loading screen when searching for a user query */
+"aichat.qoraImprovedAnswerQoraiSearch" = "Покращений пошук відповідей на";
+
+/* The text displayed on the loading screen when searching for a user query */
+"aichat.qoraImprovingAnswerQoraiSearch" = "Покращуємо відповіді у Пошуку Qorai…";
+
+/* The title of the advanced settings view */
+"aichat.qoraNavigationTitle" = "ШІ Qora";
+
+/* The title to display when the user taps on the information icon on the page context view. Qorai Qora is the name of the product and should not be translated. */
+"aichat.qoraPageContextInfoDescriptionTitle" = "Увімкніть, щоб ставити запитання про цю сторінку. Її контент буде передано до Qorai Qora разом із вашими повідомленнями.";
+
+/* The accessibility text to read out loud when the user taps on the info icon on the page context view */
+"aichat.qoraPageContextInfoIconAccessibilityTitle" = "Інформація про контекст сторінки";
+
+/* The text that's read aloud to the user when accessibility is enabled for the Slash Tools button */
+"aichat.qoraSlashToolsButtonAccessibilityTitle" = "Інструменти Slash";
+
+/* The text that's displayed when the user selects an invalid slash tools option */
+"aichat.qoraSlashToolsOptionNull" = "Немає";
+
+/* The text that's displayed when the user selects an invalid slash tools option */
+"aichat.qoraSlashToolsOptionUnknown" = "Невідомо";
+
+/* The title to display when the duration of the subscription is unknown */
+"aichat.qoraSubscriptionUnknownDateTitle" = "Н/Д";
+
+/* The button title for managing subscriptions */
+"aichat.manageSubscriptionsButtonTitle" = "Керувати підписками";
+
+/* The description for alert needed to have microphone permission */
+"aichat.microphonePermissionAlertDescription" = "Щоб користуватися анонімним голосовим уведенням, надайте програмі Qorai дозвіл на доступ до мікрофона в меню «Системні налаштування iOS».";
+
+/* The description for alert needed to have microphone permission */
+"aichat.microphonePermissionAlertTitle" = "Потрібен доступ до мікрофона";
+
+/* Title showing monthly subscription */
+"aichat.monthlySubscriptionTitle" = "Щомісячна підписка";
+
+/* The title for view that shows network - connection error and suggesting to try again */
+"aichat.networkErrorViewTitle" = "Під час підключення до Qora сталася помилка мережі, перевірте підключення й повторіть спробу.";
+
+/* The title for button that starts a new chat */
+"aichat.newChatActionTitle" = "Новий чат";
+
+/* The text which will be used to indicate period of payments like 10 / month */
+"aichat.paywallMonthlyPriceDividend" = "місяць";
+
+/* Title indicating monthly subscription */
+"aichat.paywallMontlySubscriptionTitle" = "Щомісяця";
+
+/* The title for dismiss button when premium upsell when paywall is triggered */
+"aichat.paywallPremiumUpsellDismissAction" = "Можливо, пізніше";
+
+/* The title for button when premium upsell when paywall is triggered */
+"aichat.paywallPremiumUpsellPrimaryAction" = "Передплатити";
+
+/* The title for premium upsell when paywall is triggered */
+"aichat.paywallPremiumUpsellTitle" = "Розкрийте всі можливості Qora з Premium:";
+
+/* The title of the button for action triggering purchase */
+"aichat.paywallPurchaseActionIntroOfferTitle" = "Спробувати 7 днів безплатно";
+
+/* The title of the button for action triggering purchase */
+"aichat.paywallPurchaseActionTitle" = "Передплатити зараз";
+
+/* The text displayed on the bottom of paywall screen which indicates subscriptions are auto renewable. */
+"aichat.paywallPurchaseDeepNote" = "Усі передплати поновлюються автоматично, але їх можна будь-коли скасувати до наступного поновлення.";
+
+/* The error description when in app purcahse is erroneous. */
+"aichat.paywallPurchaseErrorDescription" = "Не вдалося здійснити покупку. Спробуйте ще раз або перевірте свої платіжні реквізити, вказані в мережі Apple, та повторіть спробу.";
+
+/* The subtitle for premium upseel when rate limit is shown after sending a message */
+"aichat.paywallRateLimitSubTitle" = "Передплатіть Premium і отримуйте відповіді частіше або спробуйте пізніше.";
+
+/* The title for premium upseel when rate limit is shown after sending a message */
+"aichat.paywallRateLimitTitle" = "Досягнуто ліміту частоти відповідей";
+
+/* The subtitle accuracy entry in paywall upsell screen */
+"aichat.paywallUpsellAccuracyTopicSubTitle" = "Отримуйте точніші відповіді для детальнішого обговорення.";
+
+/* The title accuracy entry in paywall upsell screen */
+"aichat.paywallUpsellAccuracyTopicTitle" = "Будьте в темі";
+
+/* The subtitle chat length entry in paywall upsell screen */
+"aichat.paywallUpsellChatLengthTopicSubTitle" = "Отримайте більшу частоту відповідей для довших розмов.";
+
+/* The title chat length entry in paywall upsell screen */
+"aichat.paywallUpsellChatLengthTopicTitle" = "Спілкуйтеся в чаті довше";
+
+/* The subtitle creativity entry in paywall upsell screen */
+"aichat.paywallUpsellCreativityTopicSubTitle" = "Отримайте доступ до моделей, які краще підходять для творчих завдань і створення контенту.";
+
+/* The title creativity entry in paywall upsell screen */
+"aichat.paywallUpsellCreativityTopicTitle" = "Розкрийте свій творчий потенціал";
+
+/* The subtitle model type entry in paywall upsell screen */
+"aichat.paywallUpsellModelTypeTopicSubTitle" = "Пріоритетний доступ до потужних моделей із різними навичками.";
+
+/* The title model type entry in paywall upsell screen */
+"aichat.paywallUpsellModelTypeTopicTitle" = "Досліджуйте різні ШІ-моделі";
+
+/* The title for paywall view */
+"aichat.paywallViewTitle" = "Qora Premium";
+
+/* The text which will be used to indicate period of payments like 150 / year */
+"aichat.paywallYearlyPriceDividend" = "рік";
+
+/* The description indicating how valuable the yearly subscription is, compared to purchasing monthly */
+"aichat.paywallYearlySubscriptionDescription" = "НАЙКРАЩЕ ЗНАЧЕННЯ";
+
+/* Title indicating yearly subscription */
+"aichat.paywallYearlySubscriptionTitle" = "Один рік";
+
+/* The title of the badge where a model which can be used limited */
+"aichat.premiumModelStatusTitle" = "Преміум";
+
+/* Title shown next to Qora in navigation bar when user has premium subcription */
+"aichat.premiumNavigationBarBadgeTitle" = "Преміум";
+
+/* Title showing premium subscription - not determined monthly por yearly */
+"aichat.premiumSubscriptionTitle" = "Передплата Premium";
+
+/* The text for placeholder on textfield for entering questions for AI, after the user has asked initial question */
+"aichat.promptFollowUpPlaceHolderDescription" = "Задати додаткове запитання";
+
+/* The text for placeholder on textfield for entering questions for AI */
+"aichat.promptPlaceHolderDescription" = "Чим я можу допомогти?";
+
+/* The title of action for quick menu which displaying advanced settings */
+"aichat.quickMenuAdvancedSettingsActionTitle" = "Розширені налаштування";
+
+/* The title of action for quick menu which presents payment screen for premium */
+"aichat.quickMenuGoPremiumActionTitle" = "Перейти на версію Premium";
+
+/* The title of action for quick menu which display subscription management view */
+"aichat.quickMenuManageSubscriptionActionTitle" = "Керувати підписками";
+
+/* The title for error when rating a response is not success */
+"aichat.rateAnswerActionErrorText" = "Помилка оцінки відповіді";
+
+/* The message for privacy warning alert when rating a response */
+"aichat.rateAnswerFeedbackPrivacyWarningMessage" = "Оцінка відповіді надсилає Qorai інформацію про розмову, модель, мову, версію та підписку для покращення Лео.\n[Докладніше](%@)";
+
+/* The title for privacy warning alert when rating a response */
+"aichat.rateAnswerFeedbackPrivacyWarningTitle" = "Оцінка відповіді";
+
+/* The title for button that refreshes user credentials */
+"aichat.refreshCredentialsActionTitle" = "Оновити";
+
+/* The title for the button where it triggers reset qora data */
+"aichat.resetQoraDataActionTitle" = "Скинути налаштування й вилучити дані Qora";
+
+/* The title of a button that will reset data for qora */
+"aichat.resetQoraDataAlertButtonTitle" = "Скинути";
+
+/* The description for the error whre qora data reset */
+"aichat.resetQoraDataErrorDescription" = "Дійсно скинути й вилучити дані Qora?";
+
+/* The title for the error whre qora data reset */
+"aichat.resetQoraDataErrorTitle" = "Скинути дані Qora";
+
+/* The title for copying response to clipboard action */
+"aichat.responseContextMenuCopyTitle" = "Скопіювати";
+
+/* The title for disliking response to clipboard action */
+"aichat.responseContextMenuDislikeAnswerTitle" = "Відповідь не подобається";
+
+/* The title for editing AI response action from context menu */
+"aichat.responseContextMenuEditAnswerTitle" = "Редагувати відповідь";
+
+/* The title for editing user prompt action from context menu */
+"aichat.responseContextMenuEditPromptTitle" = "Редагувати запит";
+
+/* The title for liking response to clipboard action */
+"aichat.responseContextMenuLikeAnswerTitle" = "Відповідь подобається";
+
+/* The title for regenerating response action from context menu */
+"aichat.responseContextMenuRegenerateTitle" = "Згенерувати ще";
+
+/* The button title for restoring ai-app purchse for Qora. */
+"aichat.restorePaywallButtonTitle" = "Відновити";
+
+/* The title for button for re-try */
+"aichat.retryActionTitle" = "Спробувати знову";
+
+/* The title for view that shows a service overloaded error screen. Suggests to try again later. */
+"aichat.serviceOverloadedErrorViewTitle" = "Сервер зараз перевантажений. Повторіть спробу пізніше.";
+
+/* The description indicating voice inputs from user is not store or shared and these inpurs are totally private. */
+"aichat.speechRecognizerDisclaimer" = "Qorai не зберігає та не передає іншим сторонам дані ваших голосових пошуків.";
+
+/* Title showing the user has no subscription. */
+"aichat.subscriptionNoneTitle" = "Немає";
+
+/* The title for the button to generate suggestions */
+"aichat.suggestionsGenerationButtonTitle" = "Запропонувати запитання…";
+
+/* The title for button that start summarizing page */
+"aichat.summarizePageActionTitle" = "Створити огляд цієї сторінки";
+
+/* The title for expressing acknowledgement for the terms and conditions of Qorai AI */
+"aichat.termsConditionsApproveActionTitle" = "Я розумію";
+
+/* The description terms and conditions for AI chat usage. The links are inside parenthesis %@ will be replaced with urls */
+"aichat.termsConditionsDescription" = "Qorai Qora — приватний розумний асистент на базі ШІ для комфортної роботи в мережі. Qora доступний безкоштовно, але з обмеженнями. Преміум-версія Qorai Qora відкриває більше моделей, підвищені ліміти та ранній доступ до нових функцій. Основна модель час від часу оновлюється. Подробиці дивись у **[Довідковому центрі] Qorai (%1$@)** \n\nЗа замовчуванням, коли ви ставите Qora запитання про сайт або сторінку, яку переглядаєте, її вміст або виділений текст, а також пошуковий запит надсилаються на сервери Qorai, щоб Qora міг дати відповідь. У деяких випадках Qora може надсилати запити, створені на основі вашого вводу, у Пошук Qorai і використовувати результати пошуку для кращої відповіді. Qorai не гарантує точність відповідей, і вони можуть містити неточну, оманливу або хибну інформацію. Не надсилайте Qorai Qora конфіденційні або приватні дані та обережно ставтеся до відповідей щодо здоров’я, фінансів, безпеки тощо. Ви можете змінити параметри Qora у Налаштуваннях у будь-який час. Перейдіть у Налаштування > Qora.\n\nQora не збирає ідентифікатори, такі як ваша IP-адреса, які можна прив’язати до вас. Ми не навчаємо наші моделі на основі ваших даних, включно з пошуковими запитами або відповідями Qorai Qora. Жодні персональні дані не зберігаються на наших серверах і не утримуються Qorai. Перегляньте **[Політику конфіденційності](%2$@)** для докладнішої інформації.";
+
+/* The title terms and conditions for AI chat usage */
+"aichat.termsConditionsTitle" = "Приватно спілкуйтеся з Qorai Qora";
+
+/* The title of the badge where a model which can be used unlimited */
+"aichat.unlimitedModelStatusTitle" = "Необмежено";
+
+/* The accessibility description when pressing the microphone button to access voice entry. */
+"aichat.voiceInputButtonTitle" = "Голосове введення";
+
+/* Title showing yearly subscription - annual */
+"aichat.yearlySubscriptionTitle" = "Щорічна передплата";
+
+/* The word 'You' as in 'Me', 'Myself', 'I' (the user). */
+"aichat.youMessageTitle" = "Ви";
+

@@ -1,0 +1,4 @@
+include_rules = [
+  "+components/download",
+  "+qorai/components/qorai_shields/content/browser",
+]

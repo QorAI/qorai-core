@@ -1,0 +1,75 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//mojo/public/tools/bindings/mojom.gni")
+
+static_library("common") {
+  sources = [
+    "qorai_shield_constants.h",
+    "qorai_shield_utils.cc",
+    "qorai_shield_utils.h",
+    "qorai_shields_settings_values.h",
+    "features.cc",
+    "features.h",
+    "pref_names.h",
+  ]
+
+  if (!is_android) {
+    sources += [ "qorai_shield_localized_strings.h" ]
+  }
+
+  public_deps = [ "//qorai/components/resources:strings" ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_shields/core/common:mojom",
+    "//qorai/components/qorai_shields/core/common:mojom_shared__generator",
+    "//qorai/components/webcompat/core/common",
+    "//components/content_settings/core/common",
+    "//net",
+    "//ui/base",
+    "//url",
+  ]
+}
+
+mojom_component("mojom") {
+  output_prefix = "qorai_shields_mojom"
+  macro_prefix = "QORAI_SHIELDS_MOJOM"
+
+  generate_java = true
+  sources = [
+    "qorai_shields.mojom",
+    "qorai_shields_panel.mojom",
+    "filter_list.mojom",
+    "shields_settings.mojom",
+  ]
+
+  deps = [
+    "//components/content_settings/core/common:content_settings_types",
+    "//components/content_settings/core/common:mojo_bindings",
+  ]
+
+  public_deps = [
+    "//mojo/public/mojom/base",
+    "//ui/gfx/geometry/mojom",
+    "//url/mojom:url_mojom_gurl",
+  ]
+
+  export_class_attribute_blink = "BLINK_PLATFORM_EXPORT"
+  export_define_blink = "BLINK_PLATFORM_IMPLEMENTATION=1"
+  export_header_blink = "third_party/blink/public/platform/web_common.h"
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [ "qorai_shields_settings_values_unittest.cc" ]
+
+  deps = [
+    ":common",
+    "//base",
+    "//testing/gtest",
+  ]
+}

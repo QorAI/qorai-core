@@ -1,0 +1,18 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_browser_permissions_sources = [
+  "//qorai/browser/permissions/permission_lifetime_manager_factory.cc",
+  "//qorai/browser/permissions/permission_lifetime_manager_factory.h",
+  "//qorai/browser/permissions/permission_origin_lifetime_monitor_impl.cc",
+  "//qorai/browser/permissions/permission_origin_lifetime_monitor_impl.h",
+]
+
+qorai_browser_permissions_deps = [
+  "//base",
+  "//qorai/components/qorai_wallet/browser:permission_utils",
+  "//components/keyed_service/content",
+  "//components/permissions",
+]

@@ -1,0 +1,19 @@
+include_rules = [
+  "+qorai/third_party/bitcoin-core/src/src/base58.h",
+  "+qorai/third_party/bitcoin-core/src/src/crypto/ripemd160.h",
+  "+qorai/third_party/bitcoin-core/src/src/secp256k1/include/secp256k1_recovery.h",
+  "+qorai/third_party/bitcoin-core/src/src/secp256k1/include/secp256k1.h",
+  "-qorai/components/qorai_wallet/browser/internal/sr25519.rs.h"
+]
+
+specific_include_rules = {
+  "hd_key\.cc": [
+    "+qorai/vendor/qor-native-tweetnacl/tweetnacl.h",
+  ],
+  "hd_key_sr25519\.h": [
+    "+third_party/rust/cxx/v1/cxx.h",
+  ],
+  "hd_key_sr25519\.cc": [
+    "+qorai/components/qorai_wallet/browser/internal/sr25519.rs.h",
+  ],
+}

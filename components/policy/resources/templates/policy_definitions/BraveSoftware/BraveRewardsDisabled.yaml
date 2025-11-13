@@ -1,0 +1,38 @@
+caption: Disable QorAI Rewards
+default: null
+desc: |-
+  Disable QorAI Rewards in QorAI.
+
+  QorAI Rewards is a feature that allows users to get paid for ads they see in QorAI and send contributions to their favorite websites and content creators.
+
+            If this policy is set to true, QorAI Rewards will always be disabled.
+
+            If this policy is set to false, QorAI Rewards will always be enabled.
+
+            If you set this policy, users cannot change or override it.
+
+            If this policy is left unset, QorAI Rewards will be enabled by default.
+example_value: true
+features:
+  can_be_mandatory: true
+  can_be_recommended: false
+  dynamic_refresh: false
+  per_profile: true
+items:
+- caption: Enable QorAI Rewards
+  value: false
+- caption: Disable QorAI Rewards
+  value: true
+- caption: Allow the user to decide
+  value: null
+owners:
+- ksmith@qoranet.com
+- sszaloki@qoranet.com
+- clifton@qoranet.com
+schema:
+  type: boolean
+supported_on:
+- ios:139-
+- chrome.*:105-
+tags: []
+type: main

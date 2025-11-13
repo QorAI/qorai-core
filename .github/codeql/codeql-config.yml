@@ -1,0 +1,2 @@
+paths-ignore:
+  - components/qorai_wallet/resources/solana_web3_script.js

@@ -1,0 +1,11 @@
+include_rules = [
+  "+qorai/app",
+  "+qorai/browser",
+  "+qorai/common",
+  "+chrome/browser",
+  "+chrome/common",
+  "+chrome/test",
+  "+content/public/common",
+  "+content/public/test",
+  "+ui/compositor",
+]

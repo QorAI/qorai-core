@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/search_engines",
+  "+components/search_engines",
+]

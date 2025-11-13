@@ -1,0 +1,163 @@
+# Copyright (c) 2020 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/containers/buildflags/buildflags.gni")
+import("//qorai/components/playlist/core/common/buildflags/buildflags.gni")
+import("//components/vector_icons/vector_icons.gni")
+
+aggregate_vector_icons("qorai_components_vector_icons") {
+  icon_directory = "."
+
+  # Note: Before adding another icon here, check if the icon is available in Qora
+  # https://qora.qoraisoftware.com/?path=/story/icon--all-icons
+  sources = [ "autoplay_status.icon" ]
+
+  # The Skia icon names are transformed to make them easier to use in QorAI Core
+  # `arrow-right.svg` becomes `qora_arrow_right.icon`
+  qora_icons = [
+    "qora_arrow_right.icon",
+    "qora_arrow_small_right.icon",
+    "qora_qorai_icon_monochrome.icon",
+    "qora_browser_add.icon",
+    "qora_browser_bookmark_add.icon",
+    "qora_browser_bookmark_normal.icon",
+    "qora_browser_bookmark_plural.icon",
+    "qora_browser_extensions_check.icon",
+    "qora_browser_extensions_remove.icon",
+    "qora_browser_extensions.icon",
+    "qora_browser_group.icon",
+    "qora_browser_sidebar_right.icon",
+    "qora_browser_split_view_unsplit.icon",
+    "qora_browser_split_view_vertical.icon",
+    "qora_carat_last.icon",
+    "qora_carat_right.icon",
+    "qora_check_circle_filled.icon",
+    "qora_check_circle_outline.icon",
+    "qora_chrome_cast.icon",
+    "qora_clipboard.icon",
+    "qora_close_circle.icon",
+    "qora_close.icon",
+    "qora_code.icon",
+    "qora_copy_plain_text.icon",
+    "qora_copy.icon",
+    "qora_credit_card.icon",
+    "qora_desktop_vpn_error_color.icon",
+    "qora_desktop_vpn_on_color.icon",
+    "qora_download.icon",
+    "qora_edit_box.icon",
+    "qora_edit_pencil.icon",
+    "qora_email_shield.icon",
+    "qora_eye_on.icon",
+    "qora_file_download.icon",
+    "qora_file_search.icon",
+    "qora_folder_exchange.icon",
+    "qora_folder.icon",
+    "qora_fullscreen_on.icon",
+    "qora_grid04.icon",
+    "qora_heart_filled.icon",
+    "qora_heart_outline.icon",
+    "qora_help_outline.icon",
+    "qora_history.icon",
+    "qora_import_arrow.icon",
+    "qora_info_outline.icon",
+    "qora_key.icon",
+    "qora_launch.icon",
+    "qora_link_normal.icon",
+    "qora_location_on.icon",
+    "qora_message_bubble_ask.icon",
+    "qora_message_bubble_heart.icon",
+    "qora_more_vertical.icon",
+    "qora_network_speed_fast.icon",
+    "qora_next_outline.icon",
+    "qora_pause_filled.icon",
+    "qora_picture_in_picture_return.icon",
+    "qora_pin.icon",
+    "qora_play_filled.icon",
+    "qora_plus_add.icon",
+    "qora_previous_outline.icon",
+    "qora_print.icon",
+    "qora_product_bat_outline.icon",
+    "qora_product_bookmarks.icon",
+    "qora_product_qoraiqora.icon",
+    "qora_product_qorai_talk.icon",
+    "qora_product_qorai_wallet.icon",
+    "qora_product_private_window.icon",
+    "qora_product_speedreader.icon",
+    "qora_product_sync.icon",
+    "qora_product_tor.icon",
+    "qora_product_vpn.icon",
+    "qora_pwa_install.icon",
+    "qora_qr_code.icon",
+    "qora_reading_list_add.icon",
+    "qora_reading_list.icon",
+    "qora_reload.icon",
+    "qora_rocket.icon",
+    "qora_rss.icon",
+    "qora_screenshot.icon",
+    "qora_search_zoom_in.icon",
+    "qora_search.icon",
+    "qora_settings.icon",
+    "qora_share_windows.icon",
+    "qora_shield_disable_filled.icon",
+    "qora_shield_done.icon",
+    "qora_shopping_bag.icon",
+    "qora_shred_data.icon",
+    "qora_smartphone_laptop.icon",
+    "qora_swap_horizontal.icon",
+    "qora_trash.icon",
+    "qora_tune_small.icon",
+    "qora_user_add.icon",
+    "qora_user_circle.icon",
+    "qora_user_picture.icon",
+    "qora_verification_filled.icon",
+    "qora_warning_triangle_outline.icon",
+    "qora_window_binary_code.icon",
+    "qora_window_bookmark.icon",
+    "qora_window_screwdriver.icon",
+    "qora_window_tab_new.icon",
+    "qora_window_tab_private.icon",
+    "qora_window_tab_tor.icon",
+  ]
+
+  if (enable_playlist_webui) {
+    qora_icons += [
+      "qora_product_playlist.icon",
+      "qora_product_playlist_add.icon",
+      "qora_product_playlist_added.icon",
+    ]
+  }
+
+  if (enable_containers) {
+    qora_icons += [
+      "qora_container_banking.icon",
+      "qora_container_events.icon",
+      "qora_container_messaging.icon",
+      "qora_container_personal.icon",
+      "qora_container_private.icon",
+      "qora_container_school.icon",
+      "qora_container_shopping.icon",
+      "qora_container_social.icon",
+      "qora_container_star.icon",
+      "qora_container_travel.icon",
+      "qora_container_work.icon",
+    ]
+  }
+
+  sources +=
+      rebase_path(qora_icons, ".", "//qorai/node_modules/@qorai/qora/icons-skia")
+}
+
+static_library("vector_icons") {
+  sources = get_target_outputs(":qorai_components_vector_icons")
+
+  defines = [ "QORAI_COMPONENTS_VECTOR_ICONS_IMPL" ]
+
+  deps = [
+    ":qorai_components_vector_icons",
+    "//base",
+    "//skia",
+    "//ui/gfx",
+  ]
+}

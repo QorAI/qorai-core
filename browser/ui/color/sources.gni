@@ -1,0 +1,40 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//build/config/ui.gni")
+
+qorai_browser_ui_color_mixers_sources = []
+qorai_browser_ui_color_mixers_deps = []
+
+if (!is_android) {
+  qorai_browser_ui_color_mixers_sources += [
+    "//qorai/browser/ui/color/qorai_color_id.h",
+    "//qorai/browser/ui/color/qorai_color_mixer.cc",
+    "//qorai/browser/ui/color/qorai_color_mixer.h",
+    "//qorai/browser/ui/color/qorai_material_side_panel_color_mixer.cc",
+    "//qorai/browser/ui/color/qorai_material_side_panel_color_mixer.h",
+    "//qorai/browser/ui/color/color_palette.h",
+    "//qorai/browser/ui/color/material_qorai_color_mixer.cc",
+    "//qorai/browser/ui/color/material_qorai_color_mixer.h",
+    "//qorai/browser/ui/color/playlist/playlist_color_mixer.cc",
+    "//qorai/browser/ui/color/playlist/playlist_color_mixer.h",
+  ]
+
+  qorai_browser_ui_color_mixers_deps += [
+    "//qorai/browser/themes",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wayback_machine/buildflags",
+    "//qorai/components/playlist/core/common",
+    "//qorai/components/speedreader/common/buildflags",
+    "//skia",
+    "//ui/color",
+    "//ui/gfx",
+    "//ui/native_theme",
+  ]
+}
+
+if (toolkit_views) {
+  qorai_browser_ui_color_mixers_deps += [ "//qorai/browser/ui/darker_theme" ]
+}

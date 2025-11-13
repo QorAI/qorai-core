@@ -1,0 +1,9 @@
+diff --git a/front_end/panels/network/NetworkItemView.ts b/front_end/panels/network/NetworkItemView.ts
+index f8286389735e62920717960bd4b91c318b43fe5d..67db763d20d37f19a1c49ab98952ac819d57987c 100644
+--- a/front_end/panels/network/NetworkItemView.ts
++++ b/front_end/panels/network/NetworkItemView.ts
+@@ -360,3 +360,4 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
+     return this.#headersViewComponent;
+   }
+ }
++import { PatchNetworkItemView } from './NetworkItemView.patch.js'; (NetworkItemView as any) = PatchNetworkItemView(NetworkItemView);

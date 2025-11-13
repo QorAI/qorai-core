@@ -1,0 +1,18 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/browser/updater/buildflags.gni")
+import("//chrome/browser/buildflags.gni")
+
+qorai_chrome_updater_scheduler_deps = []
+
+if (enable_updater && is_mac) {
+  qorai_chrome_updater_scheduler_deps +=
+      [ "//qorai/browser/updater:buildflags" ]
+  if (enable_omaha4) {
+    qorai_chrome_updater_scheduler_deps +=
+        [ "//qorai/browser/updater:features" ]
+  }
+}

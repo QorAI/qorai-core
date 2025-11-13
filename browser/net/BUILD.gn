@@ -1,0 +1,102 @@
+# Copyright (c) 2017 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//build/config/features.gni")
+
+source_set("browser_tests") {
+  testonly = true
+
+  sources = [
+    "qorai_accept_header_browsertest.cc",
+    "qorai_network_delegate_browsertest.cc",
+    "qorai_network_delegate_hsts_fingerprinting_browsertest.cc",
+    "qorai_service_key_network_delegate_helper_browsertest.cc",
+    "qorai_site_hacks_network_delegate_helper_browsertest.cc",
+    "qorai_system_request_handler_browsertest.cc",
+    "qorai_user_agent_network_delegate_helper_browsertest.cc",
+  ]
+  deps = [
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/qorai_user_agent/browser",
+    "//qorai/components/qorai_user_agent/common",
+    "//qorai/components/geolocation",
+    "//qorai/components/global_privacy_control",
+    "//qorai/components/query_filter",
+    "//qorai/components/static_redirect_helper",
+    "//qorai/components/tor/buildflags",
+    "//chrome/browser",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui",
+    "//chrome/browser/ui:browser_navigator_params_headers",
+    "//chrome/test:test_support",
+    "//components/content_settings/core/browser",
+    "//components/content_settings/core/browser:cookie_settings",
+    "//components/prefs",
+    "//services/network/public/cpp",
+  ]
+  if (!is_android) {
+    deps += [ "//chrome/test:test_support_ui" ]
+  }
+  if (is_android) {
+    deps += [
+      "//chrome/test:test_support_ui_android",
+      "//net:test_support",
+      "//net/traffic_annotation:test_support",
+    ]
+  }
+  if (enable_tor) {
+    deps += [
+      "//qorai/browser/tor",
+      "//qorai/components/tor",
+    ]
+  }
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [
+    "qorai_ad_block_tp_network_delegate_helper_unittest.cc",
+    "qorai_block_safebrowsing_urls_unittest.cc",
+    "qorai_common_static_redirect_network_delegate_helper_unittest.cc",
+    "qorai_network_delegate_base_unittest.cc",
+    "qorai_site_hacks_network_delegate_helper_unittest.cc",
+    "qorai_static_redirect_network_delegate_helper_unittest.cc",
+    "qorai_system_request_handler_unittest.cc",
+    "qorai_user_agent_network_delegate_helper_unittest.cc",
+    "search_ads_header_network_delegate_helper_unittest.cc",
+  ]
+
+  deps = [
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_ads/core/browser/service:test_support",
+    "//qorai/components/qorai_component_updater/browser",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_rewards/core:features",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/qorai_shields/content/test:test_support",
+    "//qorai/components/qorai_user_agent/browser",
+    "//qorai/components/qorai_user_agent/common",
+    "//qorai/components/geolocation",
+    "//qorai/components/l10n/common:test_support",
+    "//qorai/components/query_filter",
+    "//qorai/components/static_redirect_helper",
+    "//chrome/browser/prefs",
+    "//chrome/test:test_support",
+    "//components/sync_preferences:test_support",
+    "//content/test:test_support",
+    "//net",
+    "//net:test_support",
+    "//services/network:network_service",
+    "//testing/gmock",
+    "//testing/gtest",
+    "//third_party/abseil-cpp:absl",
+  ]
+}

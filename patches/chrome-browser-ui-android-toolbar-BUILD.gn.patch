@@ -1,0 +1,20 @@
+diff --git a/chrome/browser/ui/android/toolbar/BUILD.gn b/chrome/browser/ui/android/toolbar/BUILD.gn
+index a5b85033389c74d6275caabc710be877f0fadd56..be20682f230ebdceff6e517b9f945b2a5053fa5f 100644
+--- a/chrome/browser/ui/android/toolbar/BUILD.gn
++++ b/chrome/browser/ui/android/toolbar/BUILD.gn
+@@ -141,6 +141,7 @@ android_library("java") {
+     "java/src/org/chromium/chrome/browser/toolbar/top/tab_strip/StripVisibilityState.java",
+     "java/src/org/chromium/chrome/browser/toolbar/top/tab_strip/TabStripTransitionCoordinator.java",
+   ]
++  sources += qorai_browser_ui_android_toolbar_sources
+ 
+   deps = [
+     ":java_resources",
+@@ -386,6 +387,7 @@ android_resources("java_resources") {
+     "//chrome/browser/ui/android/theme:java_resources",
+     "//components/browser_ui/styles/android:java_resources",
+   ]
++  deps += [ "//qorai/browser/ui/android/toolbar:java_resources" ]
+ }
+ 
+ robolectric_library("junit") {

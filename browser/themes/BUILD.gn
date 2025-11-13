@@ -1,0 +1,36 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("themes") {
+  sources = [ "qorai_dark_mode_utils.h" ]
+
+  deps = [
+    "//base",
+    "//qorai/components/constants",
+  ]
+
+  if (is_android) {
+    sources += [ "qorai_dark_mode_utils_android.cc" ]
+  } else {
+    sources += [
+      "qorai_dark_mode_utils_internal.cc",
+      "qorai_dark_mode_utils_internal.h",
+    ]
+
+    if (is_linux) {
+      sources += [ "qorai_dark_mode_utils_linux.cc" ]
+    }
+
+    if (is_mac) {
+      sources += [ "qorai_dark_mode_utils_mac.mm" ]
+    }
+
+    if (is_win) {
+      sources += [ "qorai_dark_mode_utils_win.cc" ]
+    }
+
+    deps += [ "//ui/native_theme" ]
+  }
+}

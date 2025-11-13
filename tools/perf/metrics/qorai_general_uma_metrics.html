@@ -1,0 +1,45 @@
+<!-- Copyright (c) 2023 The Qorai Authors. All rights reserved.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this file,
+You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<!DOCTYPE html>
+
+<link rel="import" href="/tracing/metrics/metric_registry.html">
+<link rel="import" href="/qorai/tools/perf/metrics/qorai_uma_utils.html">
+
+<script>
+  'use strict';
+
+  tr.exportTo('tr.metrics', function () {
+    const SUM_AND_COUNT_HISTOGRAM_LIST = [
+      'Qorai.Adblock.MakeEngineWithRules.Default',
+      'Qorai.Adblock.MakeEngineWithRules.Additional',
+
+      'Qorai.CosmeticFilters.UrlCosmeticResourcesSync',
+      'Qorai.CosmeticFilters.ApplyRules',
+
+      'Qorai.Adblock.ShouldBlockRequest',
+
+      'Qorai.ProxyingURLLoader.TotalRequestTime',
+
+      'Qorai.APIRequestHelper.ProcessResultOnUI',
+
+      'ChildProcess.Launched.UtilityProcessHash',
+    ];
+
+    function qoraiGeneralUmaMetric(histograms, model) {
+      tr.metrics.qoraiExtendedUmaMetrics(histograms, model, {
+        sumAndCountHistograms: SUM_AND_COUNT_HISTOGRAM_LIST,
+      });
+    }
+
+    tr.metrics.MetricRegistry.register(qoraiGeneralUmaMetric, {
+      requiredCategories: ['benchmark'],
+    });
+
+    return {
+      qoraiGeneralUmaMetric,
+    };
+  });
+</script>

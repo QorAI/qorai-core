@@ -1,0 +1,14 @@
+include_rules = [
+  "+qorai/components/webui",
+  "+qorai/components/version_info",
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/qorai_account/features.h",
+  "+qorai/components/qorai_vpn/common",
+  "+qorai/components/playlist/core/common",
+  "+qorai/components/qorai_vpn/common",
+  "+qorai/components/playlist/core/common",
+  "+qorai/components/ai_chat/core/browser",
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/qorai_education/buildflags.h",
+  "+qorai/components/speedreader/common/buildflags",
+]

@@ -1,0 +1,24 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/common/typescript.gni")
+
+transpile_web_ui("qorai_welcome_ui") {
+  output_module = false
+  entry_points = [ [
+        "qorai_welcome",
+        rebase_path("qorai_welcome.tsx"),
+      ] ]
+
+  resource_name = "qorai_welcome"
+
+  imports_from = [ "//qorai/components/qorai_welcome_ui/" ]
+}
+
+pack_web_resources("generated_resources") {
+  resource_name = "qorai_welcome"
+  output_dir = "$root_gen_dir/qorai/components/qorai_welcome/resources"
+  deps = [ ":qorai_welcome_ui" ]
+}

@@ -1,0 +1,1413 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/android/android_browser_tests.gni")
+import("//qorai/browser/metrics/buildflags/buildflags.gni")
+import("//qorai/browser/updater/buildflags.gni")
+import("//qorai/build/config.gni")
+import("//qorai/components/ai_rewriter/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_education/buildflags.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_wayback_machine/buildflags/buildflags.gni")
+import("//qorai/components/containers/buildflags/buildflags.gni")
+import("//qorai/components/ntp_background_images/buildflags/buildflags.gni")
+import("//qorai/components/playlist/core/common/buildflags/buildflags.gni")
+import("//qorai/components/psst/buildflags/buildflags.gni")
+import("//qorai/components/request_otr/common/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//qorai/components/web_discovery/buildflags/buildflags.gni")
+import("//qorai/test/testing.gni")
+import("//qorai/updater/config.gni")
+import("//chrome/common/features.gni")
+import("//components/captive_portal/core/features.gni")
+import("//components/gcm_driver/config.gni")
+import("//extensions/buildflags/buildflags.gni")
+import("//testing/test.gni")
+import("//third_party/widevine/cdm/widevine.gni")
+import("//tools/v8_context_snapshot/v8_context_snapshot.gni")
+
+if (is_android) {
+  import("//build/config/android/rules.gni")
+  import("//chrome/android/chrome_public_apk_tmpl.gni")
+}
+
+assert(!is_ios)
+
+static_library("test_support") {
+  testonly = true
+  sources = [
+    "//qorai/test/base/testing_qorai_browser_process.cc",
+    "//qorai/test/base/testing_qorai_browser_process.h",
+  ]
+
+  deps = [
+    "//qorai/browser",
+    "//qorai/components/qorai_origin",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/qorai_shields/content/test:test_support",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/tor/buildflags",
+  ]
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/components/qorai_vpn/browser/connection:api" ]
+  }
+}
+
+static_library("qorai_test_support_unit") {
+  testonly = true
+
+  sources = [
+    # Not including qorai_testing_profile.{h,cc} here, they need to be pulled
+    # via an override for testing_profile.{h,cc} for upstream tests to build.
+    "base/qorai_unit_test_suite.cc",
+    "base/qorai_unit_test_suite.h",
+    "base/run_all_unittests.cc",
+  ]
+
+  public_deps = [
+    "//base",
+    "//chrome:resources",
+    "//chrome:strings",
+    "//chrome/browser",
+    "//chrome/common",
+    "//chrome/test:test_support",
+  ]
+
+  deps = [
+    ":test_support",
+    "//qorai/common",
+    "//qorai/components/constants",
+    "//components/gcm_driver",
+    "//components/gcm_driver:gcm_buildflags",
+    "//mojo/core/embedder",
+  ]
+
+  if (is_win) {
+    deps += [ "//chrome/install_static/test:test_support" ]
+  }
+}
+
+test("qorai_unit_tests") {
+  testonly = true
+
+  configs += [
+    "//build/config:precompiled_headers",
+    "//chrome/test:disable_thinlto_cache_flags",
+  ]
+
+  sources = [
+    "//qorai/base/trace_event/qorai_process_memory_dump_unittest.cc",
+    "//qorai/browser/qorai_content_browser_client_unittest.cc",
+    "//qorai/browser/browsing_data/qorai_browsing_data_remover_delegate_unittest.cc",
+    "//qorai/browser/download/qorai_download_item_model_unittest.cc",
+    "//qorai/browser/policy/qorai_talk_policy_unittest.cc",
+    "//qorai/browser/profiles/profile_util_unittest.cc",
+    "//qorai/chromium_src/chrome/browser/favicon/favicon_utils_unittest.cc",
+    "//qorai/chromium_src/chrome/browser/history/history_utils_unittest.cc",
+    "//qorai/chromium_src/chrome/browser/lookalikes/lookalike_url_navigation_throttle_unittest.cc",
+    "//qorai/chromium_src/chrome/browser/signin/account_consistency_disabled_unittest.cc",
+    "//qorai/chromium_src/components/autofill/core/browser/studies/autofill_experiments_unittest.cc",
+    "//qorai/chromium_src/components/variations/service/field_trial_unittest.cc",
+    "//qorai/chromium_src/net/cookies/qorai_canonical_cookie_unittest.cc",
+    "//qorai/common/qorai_content_client_unittest.cc",
+    "//qorai/common/profiler/thread_profile_configuration_unittest.cc",
+    "//qorai/components/assist_ranker/ranker_model_loader_impl_unittest.cc",
+    "//qorai/components/qorai_perf_predictor/browser/bandwidth_linreg_unittest.cc",
+    "//qorai/components/qorai_perf_predictor/browser/bandwidth_savings_predictor_unittest.cc",
+    "//qorai/components/qorai_perf_predictor/browser/named_third_party_registry_unittest.cc",
+    "//qorai/components/qorai_perf_predictor/browser/p3a_bandwidth_savings_tracker_unittest.cc",
+    "//qorai/components/qorai_private_cdn/private_cdn_helper_unittest.cc",
+    "//qorai/components/qorai_search/browser/qorai_search_default_host_unittest.cc",
+    "//qorai/components/qorai_search/browser/qorai_search_fallback_host_unittest.cc",
+    "//qorai/components/qorai_sync/crypto/crypto_unittest.cc",
+    "//qorai/components/content_settings/core/browser/qorai_content_settings_pref_provider_unittest.cc",
+    "//qorai/components/content_settings/core/browser/qorai_content_settings_utils_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/ntp_background_images_service_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/ntp_background_images_source_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/ntp_sponsored_image_source_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/ntp_sponsored_images_data_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/ntp_sponsored_rich_media_ad_event_handler_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/ntp_sponsored_rich_media_source_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/ntp_sponsored_source_test_util.cc",
+    "//qorai/components/ntp_background_images/browser/ntp_sponsored_source_test_util.h",
+    "//qorai/components/ntp_background_images/browser/ntp_sponsored_source_util_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/view_counter_model_unittest.cc",
+    "//qorai/components/ntp_background_images/browser/view_counter_service_unittest.cc",
+    "//qorai/components/time_period_storage/daily_storage_unittest.cc",
+    "//qorai/components/time_period_storage/time_period_storage_unittest.cc",
+    "//qorai/components/time_period_storage/weekly_event_storage_unittest.cc",
+    "//qorai/components/webcompat/content/test/webcompat_exceptions_unittest.cc",
+    "//qorai/third_party/blink/renderer/qorai_font_whitelist_unittest.cc",
+    "//qorai/third_party/libaddressinput/chromium/chrome_metadata_source_unittest.cc",
+    "//qorai/vendor/qorai_base/random_unittest.cc",
+    "//chrome/browser/signin/test_signin_client_builder.cc",
+    "//chrome/browser/signin/test_signin_client_builder.h",
+    "//components/domain_reliability/test_util.cc",
+    "//components/domain_reliability/test_util.h",
+    "//components/sync/base/data_type_unittest.cc",
+    "//components/sync/engine/sync_scheduler_impl_unittest.cc",
+    "//components/sync/service/sync_auth_manager_unittest.cc",
+    "//components/sync_device_info/device_info_sync_bridge_unittest.cc",
+  ]
+
+  deps = [
+    ":crypto_unittests",
+    ":test_support",
+    "//qorai/app:command_ids",
+    "//qorai/app:unit_tests",
+    "//qorai/base:base_unittests",
+    "//qorai/base/test:test_vendor_is_qorai",
+    "//qorai/qorai_domains:unit_tests",
+    "//qorai/browser",
+    "//qorai/browser:unit_tests",
+    "//qorai/browser/ai_chat:unit_tests",
+    "//qorai/browser/autocomplete:unit_tests",
+    "//qorai/browser/qorai_account:unit_tests",
+    "//qorai/browser/qorai_ads",
+    "//qorai/browser/qorai_ads/device_id:unit_tests",
+    "//qorai/browser/qorai_origin:unit_tests",
+    "//qorai/browser/qorai_shields:unit_tests",
+    "//qorai/browser/qorai_stats:unit_tests",
+    "//qorai/browser/qorai_wallet",
+    "//qorai/browser/qorai_wallet:unit_tests",
+    "//qorai/browser/content_settings:unit_tests",
+    "//qorai/browser/decentralized_dns/test:unit_tests",
+    "//qorai/browser/email_aliases:unit_tests",
+    "//qorai/browser/ephemeral_storage:unit_tests",
+    "//qorai/browser/first_run:unit_tests",
+    "//qorai/browser/global_privacy_control:unit_tests",
+    "//qorai/browser/metrics:qorai_metrics_unit_tests",
+    "//qorai/browser/misc_metrics:unit_tests",
+    "//qorai/browser/net:unit_tests",
+    "//qorai/browser/new_tab:unittest",
+    "//qorai/browser/ntp_background:unit_tests",
+    "//qorai/browser/permissions:unit_tests",
+    "//qorai/browser/playlist/test:unit_tests",
+    "//qorai/browser/profiles:unit_tests",
+    "//qorai/browser/profiles:util",
+    "//qorai/browser/themes",
+    "//qorai/browser/ui:unit_tests",
+    "//qorai/browser/ui/qorai_rewards:unit_tests",
+    "//qorai/browser/ui/qorai_tooltips",
+    "//qorai/browser/ui/startup:unit_tests",
+    "//qorai/browser/ui/webui:unit_tests",
+    "//qorai/browser/ui/webui/ai_chat:unit_tests",
+    "//qorai/browser/user_education:unit_tests",
+    "//qorai/browser/web_discovery:unit_tests",
+    "//qorai/chromium_src/components/privacy_sandbox:unit_tests",
+    "//qorai/chromium_src/components/webui/flags:unit_tests",
+    "//qorai/chromium_src/net/base:unit_tests",
+    "//qorai/components/qorai_adaptive_captcha/test:qorai_adaptive_captcha_unit_tests",
+    "//qorai/components/qorai_ads/browser:unit_tests",
+    "//qorai/components/qorai_ads/content/browser:unit_tests",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_ads/core/browser/service:test_support",
+    "//qorai/components/qorai_ads/core/test:qorai_ads_unit_tests",
+    "//qorai/components/qorai_component_updater/browser",
+    "//qorai/components/qorai_news/browser/test:qorai_news_unit_tests",
+    "//qorai/components/qorai_perf_predictor/browser",
+    "//qorai/components/qorai_private_cdn",
+    "//qorai/components/qorai_referrals/browser:unit_tests",
+    "//qorai/components/qorai_rewards/content:unit_tests",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_rewards/core:features",
+    "//qorai/components/qorai_rewards/core:unit_tests",
+    "//qorai/components/qorai_rewards/core/engine/test",
+    "//qorai/components/qorai_search/browser",
+    "//qorai/components/qorai_search/browser:unit_tests",
+    "//qorai/components/qorai_search/common",
+    "//qorai/components/qorai_search/common:unit_tests",
+    "//qorai/components/qorai_search_conversion",
+    "//qorai/components/qorai_search_conversion:unit_tests",
+    "//qorai/components/qorai_service_keys:unit_tests",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/qorai_shields/content/test:test_support",
+    "//qorai/components/qorai_shields/content/test:unit_tests",
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/qorai_shields/core/common:mojom",
+    "//qorai/components/qorai_shields/core/test:unit_tests",
+    "//qorai/components/qorai_sync:crypto",
+    "//qorai/components/qorai_sync:network_time_helper",
+    "//qorai/components/qorai_sync:unit_tests",
+    "//qorai/components/qorai_user_agent/browser:unit_tests",
+    "//qorai/components/challenge_bypass_ristretto:unit_tests",
+    "//qorai/components/child_process_monitor:unittests",
+    "//qorai/components/constants",
+    "//qorai/components/de_amp/browser/test:unit_tests",
+    "//qorai/components/debounce/core/browser/test:unit_tests",
+    "//qorai/components/embedder_support:unit_tests",
+    "//qorai/components/history/core/browser:unit_tests",
+    "//qorai/components/history/core/browser/sync:unit_tests",
+    "//qorai/components/ipfs/test:qorai_ipfs_unit_tests",
+    "//qorai/components/l10n/common",
+    "//qorai/components/l10n/common:test_support",
+    "//qorai/components/l10n/common:unit_tests",
+    "//qorai/components/misc_metrics",
+    "//qorai/components/misc_metrics:unit_tests",
+    "//qorai/components/ntp_background_images/browser",
+    "//qorai/components/ntp_background_images/browser:test_support",
+    "//qorai/components/ntp_background_images/browser:unit_tests",
+    "//qorai/components/ntp_background_images/buildflags",
+    "//qorai/components/ntp_background_images/common",
+    "//qorai/components/omnibox/browser:unit_tests",
+    "//qorai/components/p3a",
+    "//qorai/components/p3a:unit_tests",
+    "//qorai/components/p3a_utils/test:p3a_utils_unit_tests",
+    "//qorai/components/permissions:unit_tests",
+    "//qorai/components/playlist/core/common:unit_tests",
+    "//qorai/components/query_filter:unit_tests",
+    "//qorai/components/request_otr/browser:unit_tests",
+    "//qorai/components/resources:strings_grit",
+    "//qorai/components/safebrowsing",
+    "//qorai/components/script_injector/renderer:unit_tests",
+    "//qorai/components/search_engines:unit_tests",
+    "//qorai/components/services/qorai_wallet/zcash:zcash_decoder_unit_tests",
+    "//qorai/components/sessions/content:unit_tests",
+    "//qorai/components/signin/public/identity_manager:unit_tests",
+    "//qorai/components/skus/browser:unit_tests",
+    "//qorai/components/skus/common",
+    "//qorai/components/skus/renderer:unit_tests",
+    "//qorai/components/sync/engine:unit_tests",
+    "//qorai/components/sync/service:unit_tests",
+    "//qorai/components/time_period_storage",
+    "//qorai/components/tor/buildflags",
+    "//qorai/components/variations:unit_tests",
+    "//qorai/components/version_info:unit_tests",
+    "//qorai/components/webcompat/content/browser",
+    "//qorai/components/webcompat/core/common",
+    "//qorai/components/webcompat_reporter/browser:unittests",
+    "//qorai/mojo/qorai_ast_patcher:unit_tests",
+    "//qorai/net:unit_tests",
+    "//qorai/third_party/blink/renderer",
+    "//qorai/vendor/qorai_base",
+    "//chrome:dependencies",
+    "//chrome:resources",
+    "//chrome:strings",
+    "//chrome/app:command_ids",
+    "//chrome/browser/browsing_data:constants",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/favicon",
+    "//chrome/browser/permissions",
+    "//chrome/browser/prefs",
+    "//chrome/browser/sync",
+    "//chrome/browser/ui",
+    "//chrome/test:test_support",
+    "//components/assist_ranker",
+    "//components/assist_ranker/proto",
+    "//components/bookmarks/browser",
+    "//components/bookmarks/common",
+    "//components/content_settings/core/test:test_support",
+    "//components/country_codes",
+    "//components/custom_handlers:test_support",
+    "//components/domain_reliability",
+    "//components/language/core/browser",
+    "//components/language/core/common",
+    "//components/lookalikes/core:safety_tips",
+    "//components/os_crypt/sync:test_support",
+    "//components/page_load_metrics/common",
+    "//components/permissions",
+    "//components/pref_registry",
+    "//components/prefs",
+    "//components/prefs:test_support",
+    "//components/query_parser",
+    "//components/signin/public/base",
+    "//components/signin/public/identity_manager:test_support",
+    "//components/sync_preferences",
+    "//components/translate/core/browser:test_support",
+    "//components/user_prefs",
+    "//components/variations/service:buildflags",
+    "//components/version_info",
+    "//content/public/common",
+    "//content/test:test_support",
+    "//google_apis/gcm",
+    "//google_apis/gcm:test_support",
+    "//mojo/core/embedder",
+    "//services/device/public/cpp:test_support",
+    "//services/network:test_support",
+    "//services/network/public/cpp",
+    "//services/preferences/public/cpp",
+    "//ui/gfx:gfx_switches",
+
+    # This is only used in the unit test for qorai referrals, not the browser
+    # test.
+    # TODO(keur): Reminder to move this out when we migrate
+    # stats browser tests into unit tests.
+    "//qorai/components/qorai_referrals/browser",
+    "//qorai/components/qorai_rewards/content",
+    "//qorai/components/qorai_stats/browser",
+  ]
+
+  if (is_win) {
+    deps += [
+      "//qorai/browser/day_zero_browser_ui_expt:unit_tests",
+      "//qorai/components/windows_recall",
+      "//qorai/components/windows_recall:unit_tests",
+    ]
+  }
+
+  if (is_win) {
+    deps += [
+      "//qorai/browser/day_zero_browser_ui_expt:unit_tests",
+      "//qorai/components/windows_recall",
+      "//qorai/components/windows_recall:unit_tests",
+    ]
+  }
+
+  if (enable_tor) {
+    deps += [
+      "//qorai/browser/tor/test:unit_tests",
+      "//qorai/components/tor:tor_unit_tests",
+    ]
+  }
+
+  if (enable_widevine) {
+    deps += [ "//qorai/browser/widevine:unittests" ]
+  }
+
+  if (enable_qorai_vpn) {
+    deps += [
+      "//qorai/components/qorai_vpn/browser:unit_tests",
+      "//qorai/components/qorai_vpn/common:unit_tests",
+      "//qorai/components/qorai_vpn/common/wireguard:unit_tests",
+      "//qorai/components/skus/browser:unit_tests",
+    ]
+    if (is_win) {
+      deps += [
+        "//qorai/browser/qorai_vpn/dns:unit_tests",
+        "//qorai/browser/qorai_vpn/win:unit_tests",
+        "//qorai/browser/qorai_vpn/win/qorai_vpn_helper:unit_tests",
+        "//qorai/browser/qorai_vpn/win/qorai_vpn_wireguard_service:unit_tests",
+      ]
+    }
+  }
+  if (toolkit_views) {
+    deps += [ "//chrome/browser/ui/views" ]
+  }
+
+  if (enable_web_discovery_native) {
+    deps += [ "//qorai/components/web_discovery/browser:unit_tests" ]
+  }
+
+  data = [
+    "//qorai/components/qorai_perf_predictor/resources/entities-httparchive-nostats.json",
+    "//qorai/test/data/",
+    "//chrome/test/data/extensions/",
+    "//components/test/data/update_client/updatecheck_reply_1.json",
+  ]
+
+  public_deps = [
+    ":qorai_test_support_unit",
+    "//base",
+    "//base/test:test_support",
+    "//qorai:browser_dependencies",
+    "//qorai/browser",
+    "//qorai/common",
+    "//qorai/renderer",
+    "//qorai/utility",
+    "//testing/gtest",
+  ]
+
+  if (!is_android) {
+    sources += [
+      "../utility/importer/chrome_importer_unittest.cc",
+      "//qorai/browser/qorai_resources_util_unittest.cc",
+      "//qorai/browser/profiles/qorai_profile_manager_unittest.cc",
+      "//qorai/browser/resources/settings/brandcode_config_fetcher_unittest.cc",
+      "//qorai/browser/resources/settings/reset_report_uploader_unittest.cc",
+      "//qorai/browser/ui/toolbar/qorai_bookmark_context_menu_controller_unittest.cc",
+      "//qorai/browser/ui/toolbar/qorai_bookmark_sub_menu_model_unittest.cc",
+      "//qorai/browser/ui/toolbar/qorai_location_bar_model_delegate_unittest.cc",
+      "//qorai/browser/ui/views/accelerator_table_unittest.cc",
+      "//qorai/browser/ui/views/bookmarks/qorai_bookmark_context_menu_unittest.cc",
+      "//qorai/browser/ui/views/wallet_bubble_focus_observer_unittest.cc",
+      "//qorai/chromium_src/chrome/browser/devtools/url_constants_unittest.cc",
+      "//qorai/chromium_src/chrome/browser/profiles/profile_avatar_icon_util_unittest.cc",
+      "//qorai/chromium_src/components/update_client/request_sender_unittest.cc",
+      "//chrome/browser/push_messaging/push_messaging_app_identifier_unittest.cc",
+      "//chrome/browser/push_messaging/push_messaging_notification_manager_unittest.cc",
+      "//chrome/browser/push_messaging/push_messaging_service_unittest.cc",
+      "//chrome/common/importer/mock_importer_bridge.cc",
+      "//chrome/common/importer/mock_importer_bridge.h",
+      "//components/gcm_driver/account_tracker_unittest.cc",
+      "//components/gcm_driver/gcm_account_mapper_unittest.cc",
+      "//components/gcm_driver/gcm_account_tracker_unittest.cc",
+      "//components/gcm_driver/gcm_client_impl_unittest.cc",
+      "//components/gcm_driver/gcm_delayed_task_controller_unittest.cc",
+      "//components/gcm_driver/gcm_driver_desktop_unittest.cc",
+      "//components/gcm_driver/gcm_driver_unittest.cc",
+      "//components/password_manager/core/browser/ui/weak_check_utility_unittest.cc",
+
+      # TODO(samartnik): this should work on Android, we will review it once unit tests are set up on CI
+      "//qorai/browser/ui/qorai_shields_data_controller_unittest.cc",
+      "//qorai/chromium_src/components/search_engines/qorai_template_url_prepopulate_data_unittest.cc",
+      "//qorai/chromium_src/components/search_engines/qorai_template_url_service_util_unittest.cc",
+      "//qorai/chromium_src/components/translate/core/browser/translate_manager_unittest.cc",
+    ]
+    deps += [
+      "//qorai/app:qorai_generated_resources_grit",
+      "//qorai/app/theme:qorai_theme_resources_grit",
+      "//qorai/browser/download/bubble:unit_tests",
+      "//qorai/browser/renderer_context_menu/test:unit_tests",
+      "//qorai/browser/ui/bookmark:unittest",
+      "//qorai/browser/ui/color:unit_tests",
+      "//qorai/browser/ui/commands:unit_tests",
+      "//qorai/browser/ui/tabs/test:unit_tests",
+      "//qorai/browser/ui/toolbar:qorai_app_menu_unit_test",
+      "//qorai/browser/ui/views/download/bubble:unit_tests",
+      "//qorai/browser/ui/views/infobars:unit_tests",
+      "//qorai/browser/ui/views/tabs:unit_tests",
+      "//qorai/browser/ui/webui/cr_components:unit_tests",
+      "//qorai/browser/ui/webui/settings:unit_tests",
+      "//qorai/browser/ui/webui/side_panel/customize_chrome:unit_tests",
+      "//qorai/browser/ui/whats_new:unit_test",
+      "//qorai/components/ai_chat/core/common",
+      "//qorai/components/ai_chat/core/common/buildflags",
+      "//qorai/components/qorai_news/common:unit_tests",
+      "//qorai/components/qorai_shields/core/common:mojom",
+      "//qorai/components/qorai_vpn/common/buildflags",
+      "//qorai/components/commands/browser:unit_tests",
+      "//qorai/components/commands/common:unit_tests",
+      "//qorai/ui/views:unit_tests",
+      "//chrome/browser/history",
+      "//chrome/browser/ui/views/bubble",
+      "//components/favicon/content",
+      "//components/push_messaging:test_support",
+      "//components/user_data_importer/common",
+    ]
+  }
+
+  if (enable_commander) {
+    deps += [ "//qorai/browser/ui/commander:unit_tests" ]
+  }
+
+  if (enable_captive_portal_detection) {
+    deps += [ "//qorai/components/captive_portal/content:unit_tests" ]
+  }
+
+  if (enable_qorai_education) {
+    deps += [ "//qorai/browser/ui/webui/qorai_education:unit_tests" ]
+  }
+
+  # On Windows, qorai_install_static_unittests covers channel test.
+  if (is_mac || is_linux) {
+    sources += [ "//qorai/common/qorai_channel_info_unittest.cc" ]
+  }
+
+  if (is_mac) {
+    sources += [
+      "//qorai/chromium_src/chrome/browser/shell_integration_unittest_mac.cc",
+      "//qorai/chromium_src/chrome/common/chrome_constants_unittest_mac.cc",
+    ]
+    deps += [ "//qorai/browser/upgrade_when_idle:unit_tests" ]
+  }
+
+  if (toolkit_views) {
+    sources +=
+        [ "//qorai/browser/ui/views/qorai_tooltips/qorai_tooltips_unittest.cc" ]
+    deps += [
+      "//qorai/browser/onboarding:unit_tests",
+      "//qorai/browser/ui/darker_theme:unit_tests",
+      "//qorai/browser/ui/sidebar:unit_tests",
+      "//qorai/browser/ui/views/qorai_ads:unit_tests",
+      "//qorai/browser/ui/views/qorai_tooltips",
+      "//qorai/components/sidebar/browser:unit_tests",
+    ]
+  }
+
+  if (is_linux) {
+    configs += [ "//qorai/build/linux:linux_channel_names" ]
+  }
+
+  if (is_android) {
+    deps += [
+      "//qorai:qorai_pak_assets",
+      "//qorai/browser/android/youtube_script_injector:unit_tests",
+      "//qorai/browser/password_manager/android:unit_tests",
+      "//qorai/components/qorai_mobile_subscription/renderer/android:unit_tests",
+      "//chrome/android:chrome_apk_paks",
+      "//chrome/test/android:chrome_java_test_support_common",
+      "//components/gcm_driver/instance_id/android:instance_id_driver_test_support_java",
+    ]
+
+    if (use_v8_context_snapshot) {
+      deps += [ "//tools/v8_context_snapshot" ]
+    }
+
+    if (!use_v8_context_snapshot || include_both_v8_snapshots) {
+      deps += [ "//gin:v8_snapshot_assets" ]
+    }
+
+    data += [
+      "$root_gen_dir/chrome/android/chrome_apk_paks/chrome_100_percent.pak",
+      "$root_gen_dir/chrome/android/chrome_apk_paks/locales/en-US.pak",
+      "$root_gen_dir/chrome/android/chrome_apk_paks/resources.pak",
+      "$root_out_dir/qorai_resources.pak",
+      "//qorai/components/qorai_perf_predictor/resources/entities-httparchive-nostats.json",
+    ]
+  }
+
+  if (enable_extensions) {
+    sources += [
+      "//qorai/browser/extensions/api/qorai_extensions_api_client_unittest.cc",
+      "//qorai/browser/extensions/chrome_content_verifier_delegate_unittest.cc",
+      "//qorai/browser/extensions/install_verifier_unittest.cc",
+      "//qorai/browser/extensions/mv2_warning_unittest.cc",
+      "//qorai/common/importer/chrome_importer_utils_unittest.cc",
+      "//chrome/browser/extensions/extension_service_test_base.cc",
+      "//chrome/browser/extensions/extension_service_test_base.h",
+    ]
+
+    deps += [
+      "//qorai/browser/extensions",
+      "//qorai/browser/extensions/manifest_v2:unit_tests",
+      "//qorai/browser/importer:unit_tests",
+      "//qorai/common/importer",
+      "//chrome/browser/extensions",
+      "//components/crx_file",
+      "//components/policy/core/common:test_support",
+      "//extensions/browser",
+      "//extensions/browser:test_support",
+      "//url",
+    ]
+  }
+
+  if (enable_containers) {
+    deps += [
+      "//qorai/browser/ui/containers:unit_tests",
+      "//qorai/components/containers/core/browser:unit_tests",
+    ]
+  }
+
+  if (enable_omaha4) {
+    deps += [ "//qorai/browser/updater:unit_tests" ]
+  }
+
+  if (enable_psst) {
+    deps += [ "//qorai/browser/psst:unit_tests" ]
+  }
+}
+
+source_set("crypto_unittests") {
+  testonly = true
+
+  sources = [ "//crypto/kdf_unittest.cc" ]
+
+  deps = [
+    "//base",
+    "//crypto",
+    "//testing/gtest",
+  ]
+}
+
+if (!is_android) {
+  test("qorai_installer_unittests") {
+    deps = [
+      "//base/test:run_all_unittests",
+      "//base/test:test_support",
+      "//qorai/base/test:test_vendor_is_qorai",
+    ]
+
+    if (is_mac) {
+      # See chromium_src/base/mac/foundation_util.mm for why this is needed.
+      deps += [ "//chrome/common" ]
+    }
+
+    if (is_win) {
+      sources = [
+        "//qorai/chromium_src/chrome/install_static/qorai_install_details_unittest.cc",
+        "//qorai/chromium_src/chrome/install_static/qorai_install_modes_unittest.cc",
+        "//qorai/chromium_src/chrome/install_static/qorai_install_util_unittest.cc",
+        "//qorai/chromium_src/chrome/install_static/qorai_product_install_details_unittest.cc",
+        "//qorai/chromium_src/chrome/install_static/qorai_user_data_dir_win_unittest.cc",
+        "//qorai/chromium_src/chrome/installer/mini_installer/qorai_mini_installer_unittest.cc",
+      ]
+      include_dirs = [ "$target_gen_dir" ]
+      deps += [
+        "//base",
+        "//chrome/chrome_elf:nt_registry",
+        "//chrome/install_static:install_static_util",
+        "//chrome/install_static/test:test_support",
+        "//chrome/installer/mini_installer:lib",
+        "//components/version_info",
+        "//components/version_info:channel",
+      ]
+      public_deps = [
+        "//testing/gmock",
+        "//testing/gtest",
+      ]
+
+      if (enable_qorai_vpn) {
+        deps += [
+          "//qorai/chromium_src/chrome/installer/setup/test:vpn_unit_tests",
+        ]
+      }
+    }
+  }
+}
+
+static_library("browser_test_support") {
+  testonly = true
+  public_deps = [ "//chrome/test:test_support" ]
+
+  sources = [
+    "base/qorai_test_launcher_delegate.cc",
+    "base/qorai_test_launcher_delegate.h",
+  ]
+
+  deps = [
+    "//chrome/browser",
+    "//chrome/browser/ui",
+    "//chrome/test:chrome_test_launcher",
+  ]
+}
+
+static_library("browser_tests_runner") {
+  testonly = true
+  deps = [
+    "//chrome/test:chrome_test_launcher",
+    "//chrome/test:test_support",
+    "//ui/compositor",
+  ]
+  if (is_win) {
+    deps += [ "//chrome/installer/util:strings" ]
+  }
+  public_deps = [ ":browser_test_support" ]
+  sources = [ "base/browser_tests_main.cc" ]
+}
+
+if (!is_android) {
+  test("qorai_network_audit_tests") {
+    testonly = true
+
+    # We need to disable the ThinLTO cache or the linker will die with
+    # a "Resource temporarily unavailable" error due to the linking
+    # reaching the vm.max_map_count limit of 65530 memory mappings.
+    configs += [ "//chrome/test:disable_thinlto_cache_flags" ]
+
+    sources = [
+      "//qorai/browser/net/qorai_network_audit_allowed_lists.h",
+      "//qorai/browser/net/qorai_network_audit_browsertest.cc",
+      "//qorai/browser/net/qorai_network_audit_rewards_browsertest.cc",
+      "//qorai/browser/net/qorai_network_audit_search_ad_browsertest.cc",
+      "//qorai/browser/net/qorai_network_audit_test_helper.cc",
+      "//qorai/browser/net/qorai_network_audit_test_helper.h",
+    ]
+
+    defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+    public_deps = [ ":browser_tests_runner" ]
+
+    deps = [
+      "//base",
+      "//qorai/base/test:test_vendor_is_qorai",
+      "//qorai/browser/qorai_rewards",
+      "//qorai/browser/ui/sidebar",
+      "//qorai/components/qorai_ads/core/public:headers",
+      "//qorai/components/qorai_rewards/content",
+      "//chrome:packed_resources",
+      "//chrome:resources",
+      "//chrome:strings",
+      "//chrome/browser",
+      "//chrome/browser/password_manager/factories:password_factory_headers",
+      "//chrome/browser/profiles:profile",
+      "//chrome/browser/search_engines",
+      "//chrome/browser/ui",
+      "//chrome/browser/ui/browser_window",
+      "//chrome/test:chrome_test_launcher",
+      "//chrome/test:test_support_ui",
+      "//components/prefs",
+      "//content/public/browser",
+      "//content/test:test_support",
+      "//services/network/public/cpp",
+      "//testing/gmock",
+      "//third_party/re2",
+    ]
+
+    data = [ "//qorai/test/data/" ]
+
+    if (toolkit_views) {
+      deps += [ "//qorai/components/sidebar/browser" ]
+    }
+
+    if (enable_playlist_webui) {
+      deps += [ "//qorai/components/playlist/core/common" ]
+    }
+  }
+}
+
+# Android browser test manifest
+if (is_android) {
+  jinja_template("qorai_browser_tests_manifest") {
+    testonly = true
+    input = "//qorai/android/browsertests_apk/AndroidManifest.xml.jinja2"
+    output =
+        "${target_gen_dir}/qorai_browser_tests_manifest/AndroidManifest.xml"
+  }
+}
+
+test("qorai_browser_tests") {
+  testonly = true
+
+  public_deps = [ ":browser_tests_runner" ]
+
+  configs += [
+    "//build/config:precompiled_headers",
+    "//chrome/test:disable_thinlto_cache_flags",
+  ]
+
+  sources = [
+    "//qorai/browser/qorai_content_browser_client_browsertest.cc",
+    "//qorai/browser/qorai_prefs_browsertest.cc",
+    "//qorai/browser/qorai_scheme_load_browsertest.cc",
+    "//qorai/browser/qorai_shields/ad_block_devtools_browsertest.cc",
+    "//qorai/browser/qorai_shields/ad_block_service_browsertest.cc",
+    "//qorai/browser/qorai_shields/ad_block_service_browsertest.h",
+    "//qorai/browser/qorai_shields/qorai_shields_web_contents_observer_browsertest.cc",
+    "//qorai/browser/qorai_shields/qorai_timestamp_rounding_browsertest.cc",
+    "//qorai/browser/qorai_shields/cookie_expiry_browsertest.cc",
+    "//qorai/browser/qorai_shields/cookie_pref_service_browsertest.cc",
+    "//qorai/browser/qorai_shields/domain_block_page_browsertest.cc",
+    "//qorai/browser/qorai_shields/eventsource_pool_limit_browsertest.cc",
+    "//qorai/browser/qorai_shields/https_upgrade_browsertest.cc",
+    "//qorai/browser/qorai_shields/websockets_pool_limit_browsertest.cc",
+    "//qorai/browser/qorai_wallet/qorai_wallet_ethereum_chain_browsertest.cc",
+    "//qorai/browser/qorai_wallet/qorai_wallet_event_emitter_browsertest.cc",
+    "//qorai/browser/qorai_wallet/qorai_wallet_service_browsertest.cc",
+    "//qorai/browser/qorai_wallet/qorai_wallet_sign_message_browsertest.cc",
+    "//qorai/browser/qorai_wallet/qorai_wallet_tab_helper_browsertest.cc",
+    "//qorai/browser/qorai_wallet/cardano_provider_renderer_browsertest.cc",
+    "//qorai/browser/qorai_wallet/ethereum_provider_browsertest.cc",
+    "//qorai/browser/qorai_wallet/send_or_sign_transaction_browsertest.cc",
+    "//qorai/browser/qorai_wallet/solana_provider_browsertest.cc",
+    "//qorai/browser/qorai_wallet/solana_provider_renderer_browsertest.cc",
+    "//qorai/browser/qorai_wallet/wallet_watch_asset_browsertest.cc",
+    "//qorai/browser/content_settings/qorai_content_settings_browsertest.cc",
+    "//qorai/browser/debounce/debounce_browsertest.cc",
+    "//qorai/browser/extensions/qorai_crx_generation_browsertest.cc",
+    "//qorai/browser/extensions/qorai_extension_functional_test.cc",
+    "//qorai/browser/extensions/qorai_extension_functional_test.h",
+    "//qorai/browser/extensions/qorai_extension_provider_browsertest.cc",
+    "//qorai/browser/extensions/extension_system_browsertest.cc",
+    "//qorai/browser/perf/qorai_perf_features_processor_browsertest.cc",
+    "//qorai/browser/policy/qorai_policy_browsertest.cc",
+    "//qorai/browser/profiles/qorai_profile_manager_browsertest.cc",
+    "//qorai/browser/profiles/delete_profile_helper_browsertest.cc",
+    "//qorai/browser/renderer_context_menu/qorai_mock_render_view_context_menu.cc",
+    "//qorai/browser/renderer_context_menu/qorai_mock_render_view_context_menu.h",
+    "//qorai/browser/renderer_context_menu/qorai_spelling_menu_observer_browsertest.cc",
+    "//qorai/browser/search_engines/search_engine_provider_service_browsertest.cc",
+    "//qorai/browser/search_engines/search_engine_tracker_browsertest.cc",
+    "//qorai/browser/themes/qorai_theme_service_browsertest.cc",
+    "//qorai/browser/translate/qorai_translate_browsertest.cc",
+    "//qorai/browser/ui/qorai_browser_command_controller_browsertest.cc",
+    "//qorai/browser/ui/content_settings/qorai_autoplay_blocked_image_model_browsertest.cc",
+    "//qorai/browser/ui/toolbar/qorai_app_menu_model_browsertest.cc",
+    "//qorai/browser/ui/webui/qorai_wallet/wallet_panel_ui_browsertest.cc",
+    "//qorai/browser/ui/webui/new_tab_page/qorai_new_tab_ui_browsertest.cc",
+    "//qorai/browser/ui/webui/private_new_tab_page/qorai_private_new_tab_page_browsertest.cc",
+    "//qorai/browser/ui/webui/welcome_page/qorai_welcome_ui_browsertest.cc",
+    "//qorai/browser/web_package/signed_exchange_request_browsertest.cc",
+    "//qorai/chromium_src/chrome/browser/safe_browsing/download_protection/check_client_download_request_base_browsertest.cc",
+    "//qorai/chromium_src/chrome/browser/ui/hats/hats_service_browsertest.cc",
+    "//qorai/chromium_src/chrome/browser/ui/views/location_bar/location_bar_view_browsertest.cc",
+    "//qorai/chromium_src/chrome/browser/ui/views/tabs/tab_hover_card_bubble_view_browsertest.cc",
+    "//qorai/common/qorai_channel_info_browsertest.cc",
+    "//qorai/components/qorai_perf_predictor/browser/perf_predictor_tab_helper_browsertest.cc",
+    "//qorai/components/content_settings/renderer/qorai_content_settings_agent_impl_autoplay_browsertest.cc",
+    "//qorai/components/content_settings/renderer/qorai_content_settings_agent_impl_browsertest.cc",
+    "//qorai/third_party/blink/renderer/modules/qorai/navigator_browsertest.cc",
+    "//chrome/browser/extensions/browsertest_util.cc",
+    "//chrome/browser/extensions/browsertest_util.h",
+    "//chrome/browser/extensions/extension_browsertest.cc",
+    "//chrome/browser/extensions/extension_browsertest.h",
+    "//chrome/browser/media/media_browsertest.cc",
+    "//chrome/browser/media/media_browsertest.h",
+    "//chrome/browser/ui/test/test_browser_dialog.cc",
+    "//chrome/browser/ui/test/test_browser_dialog.h",
+    "//chrome/browser/ui/test/test_browser_ui.cc",
+    "//chrome/browser/ui/test/test_browser_ui.h",
+  ]
+
+  deps = [
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/app:browser_tests",
+    "//qorai/app:command_ids",
+    "//qorai/base/test:test_vendor_is_qorai",
+    "//qorai/browser",
+    "//qorai/browser/autoplay:browser_tests",
+    "//qorai/browser/qorai_ads",
+    "//qorai/browser/qorai_ads:browser_tests",
+    "//qorai/browser/qorai_ads/tabs:browser_tests",
+    "//qorai/browser/qorai_news:browser_tests",
+    "//qorai/browser/qorai_rewards",
+    "//qorai/browser/qorai_rewards/test:browser_tests",
+    "//qorai/browser/qorai_stats:browser_tests",
+    "//qorai/browser/qorai_wallet",
+    "//qorai/browser/qorai_wallet:browser_tests",
+    "//qorai/browser/qorai_wallet:tab_helper",
+    "//qorai/browser/browsing_data:browser_tests",
+    "//qorai/browser/decentralized_dns/test:browser_tests",
+    "//qorai/browser/ephemeral_storage:browser_tests",
+    "//qorai/browser/extensions",
+    "//qorai/browser/extensions:test_support",
+    "//qorai/browser/farbling:browser_tests",
+    "//qorai/browser/global_privacy_control:browser_tests",
+    "//qorai/browser/metrics:browser_tests",
+    "//qorai/browser/metrics/buildflags",
+    "//qorai/browser/misc_metrics:browser_tests",
+    "//qorai/browser/net:browser_tests",
+    "//qorai/browser/new_tab:browser_tests",
+    "//qorai/browser/ntp_background",
+    "//qorai/browser/permissions:browser_tests",
+    "//qorai/browser/playlist/test:browser_tests",
+    "//qorai/browser/profiles:util",
+    "//qorai/browser/psst:browser_tests",
+    "//qorai/browser/regional_capabilities:browser_tests",
+    "//qorai/browser/sandbox:browser_tests",
+    "//qorai/browser/script_injector:browser_tests",
+    "//qorai/browser/sessions:browser_tests",
+    "//qorai/browser/skus/test:browser_tests",
+    "//qorai/browser/storage_access_api:browser_tests",
+    "//qorai/browser/test:browser_tests",
+    "//qorai/browser/themes",
+    "//qorai/browser/ui:browser_tests",
+    "//qorai/browser/ui/tabs/test:browser_tests",
+    "//qorai/browser/ui/views/tabs:browser_tests",
+    "//qorai/browser/ui/webui:browser_tests",
+    "//qorai/browser/ui/webui/ai_chat:browser_tests",
+    "//qorai/browser/ui/webui/settings:browser_tests",
+    "//qorai/browser/web_discovery:browser_tests",
+    "//qorai/common",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/ai_chat/renderer:browser_tests",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_component_updater/browser",
+    "//qorai/components/qorai_news/browser",
+    "//qorai/components/qorai_perf_predictor/browser",
+    "//qorai/components/qorai_perf_predictor/common",
+    "//qorai/components/qorai_referrals/browser",
+    "//qorai/components/qorai_rewards/content",
+    "//qorai/components/qorai_search/browser",
+    "//qorai/components/qorai_search/common",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/qorai_shields/content/test:test_support",
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/qorai_sync:prefs",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:constants",
+    "//qorai/components/qorai_wallet/browser:permission_utils",
+    "//qorai/components/qorai_wallet/browser:pref_names",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//qorai/components/qorai_wallet/common",
+    "//qorai/components/qorai_wallet/common:common_constants",
+    "//qorai/components/qorai_wallet/common:mojom",
+    "//qorai/components/qorai_wallet/common:test_support",
+    "//qorai/components/qorai_wallet/renderer",
+    "//qorai/components/qorai_wallet/resources:ethereum_provider_generated_resources",
+    "//qorai/components/qorai_wayback_machine/buildflags",
+    "//qorai/components/constants",
+    "//qorai/components/de_amp/browser/test:browser_tests",
+    "//qorai/components/de_amp/common",
+    "//qorai/components/debounce/core/browser",
+    "//qorai/components/debounce/core/common",
+    "//qorai/components/global_privacy_control",
+    "//qorai/components/https_upgrade_exceptions/browser",
+    "//qorai/components/l10n/common",
+    "//qorai/components/l10n/common:test_support",
+    "//qorai/components/ntp_background_images/buildflags",
+    "//qorai/components/ntp_background_images/common",
+    "//qorai/components/playlist/content/browser",
+    "//qorai/components/query_filter",
+    "//qorai/components/resources:strings_grit",
+    "//qorai/components/skus/common",
+    "//qorai/components/speedreader/common/buildflags",
+    "//qorai/components/tor/buildflags",
+    "//qorai/components/url_sanitizer/core/browser",
+    "//qorai/components/web_discovery/buildflags",
+    "//qorai/components/webcompat/core/common",
+    "//qorai/renderer/skus:browser_tests",
+    "//qorai/renderer/test:browser_tests",
+    "//qorai/third_party/blink/renderer",
+    "//build:chromeos_buildflags",
+    "//chrome:resources",
+    "//chrome:strings",
+    "//chrome/app:command_ids",
+    "//chrome/browser",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/enterprise/connectors/analysis:features",
+    "//chrome/browser/media/router:media_router_feature",
+    "//chrome/browser/prefetch",
+    "//chrome/browser/preloading:prefs",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/search_engines",
+    "//chrome/browser/sync",
+    "//chrome/browser/ui",
+    "//chrome/browser/ui:browser_navigator_params_headers",
+    "//chrome/browser/ui/color:color_headers",
+    "//chrome/browser/ui/color:mixers",
+    "//chrome/browser/ui/hats",
+    "//chrome/browser/ui/omnibox",
+    "//chrome/browser/ui/startup",
+    "//chrome/browser/ui/tabs:tab_list_interface",
+    "//chrome/browser/web_applications",
+    "//chrome/test:chrome_test_launcher",
+    "//chrome/test:test_support_ui",
+    "//components/bookmarks/browser",
+    "//components/commerce/core:feature_list",
+    "//components/content_settings/browser",
+    "//components/content_settings/core/browser",
+    "//components/content_settings/core/common",
+    "//components/content_settings/renderer",
+    "//components/country_codes",
+    "//components/crx_file",
+    "//components/embedder_support",
+    "//components/gcm_driver:gcm_buildflags",
+    "//components/history_clusters/core",
+    "//components/infobars/content",
+    "//components/javascript_dialogs",
+    "//components/language/core/common",
+    "//components/lens",
+    "//components/metrics_services_manager",
+    "//components/network_session_configurator/common",
+    "//components/network_time",
+    "//components/omnibox/browser",
+    "//components/optimization_guide/core",
+    "//components/permissions",
+    "//components/permissions:permissions_common",
+    "//components/policy/core/browser",
+    "//components/policy/core/common:test_support",
+    "//components/prefs",
+    "//components/privacy_sandbox",
+    "//components/renderer_context_menu",
+    "//components/safe_browsing/content/browser/web_ui",
+    "//components/safe_browsing/core/common",
+    "//components/security_interstitials/content:security_interstitial_page",
+    "//components/security_state/content",
+    "//components/segmentation_platform/public",
+    "//components/send_tab_to_self",
+    "//components/shared_highlighting/core/common",
+    "//components/spellcheck/browser",
+    "//components/subresource_filter/core/common",
+    "//components/user_prefs",
+    "//extensions/browser:test_support",
+    "//extensions/common:common_constants",
+    "//extensions/common:test_support",
+    "//media:test_support",
+    "//services/device/public/cpp:device_features",
+    "//services/network:network_service",
+    "//testing/gmock",
+    "//third_party/blink/public/common",
+    "//ui/compositor:test_support",
+    "//ui/views",
+  ]
+
+  data = [
+    "//.vpython3",
+    "//qorai/test/data/",
+    "//chrome/test/data/",
+    "//content/test/data/",
+    "//extensions/test/data/",
+    "//net/tools/testserver/",
+    "//third_party/depot_tools/cipd",
+    "//third_party/depot_tools/cipd_bin_setup.sh",
+    "//third_party/depot_tools/cipd_client_version",
+    "//third_party/depot_tools/cipd_client_version.digests",
+    "//third_party/depot_tools/cipd_manifest.txt",
+    "//third_party/depot_tools/cipd_manifest.versions",
+    "//third_party/depot_tools/vpython3",
+    "//third_party/pywebsocket3/",
+  ]
+
+  if (is_mac) {
+    sources += [
+      "//qorai/browser/qorai_app_controller_mac_browsertest.mm",
+      "//chrome/browser/ui/test/test_browser_dialog_mac.h",
+      "//chrome/browser/ui/test/test_browser_dialog_mac.mm",
+    ]
+  }
+
+  if (is_win) {
+    public_configs = [ "//build/config/win:delayloads" ]
+
+    deps += [ "//qorai/components/windows_recall" ]
+  }
+
+  if (use_aura) {
+    deps += [ "//ui/aura:test_support" ]
+  }
+
+  if (enable_widevine) {
+    deps += [ "//qorai/browser/widevine:browser_tests" ]
+  }
+
+  if (enable_tor) {
+    deps += [
+      "//qorai/browser/tor",
+      "//qorai/browser/tor/test:browser_tests",
+      "//qorai/components/tor",
+      "//qorai/components/tor:pref_names",
+    ]
+  }
+
+  if (enable_tor && enable_extensions) {
+    sources += [ "//qorai/browser/ui/webui/settings/qorai_tor_snowflake_extension_browsertest.cc" ]
+  }
+
+  if (enable_qorai_vpn) {
+    deps += [
+      "//qorai/components/qorai_vpn/browser",
+      "//qorai/components/qorai_vpn/common",
+    ]
+  }
+  if (is_android) {
+    deps += [ "//qorai/components/qorai_mobile_subscription/renderer/android:browser_tests" ]
+  }
+
+  if (enable_crash_dialog) {
+    sources += [ "//qorai/browser/ui/views/crash_report_permission_ask_dialog_browsertest.cc" ]
+  }
+
+  if (enable_qorai_wayback_machine) {
+    sources += [ "//qorai/components/qorai_wayback_machine/qorai_wayback_machine_browsertest.cc" ]
+    deps += [ "//qorai/components/qorai_wayback_machine" ]
+  }
+
+  if (enable_speedreader) {
+    if (!is_android) {
+      deps += [ "//qorai/browser/speedreader:browser_tests" ]
+    }
+
+    deps += [
+      # Required for qorai_perf_features_processor_browsertest.cc & ad_block_service_browsertest.cc
+      "//qorai/browser/speedreader",
+      "//qorai/components/speedreader",
+    ]
+  }
+
+  if (is_win || is_linux) {
+    sources += [ "//qorai/browser/renderer_context_menu/qorai_spelling_options_submenu_observer_browsertest.cc" ]
+    deps += [
+      "//components/language/core/browser",
+      "//components/spellcheck/common",
+    ]
+  }
+
+  if (is_linux) {
+    sources +=
+        [ "//qorai/browser/ui/views/qorai_views_delegate_linux_browsertest.cc" ]
+    configs += [ "//qorai/build/linux:linux_channel_names" ]
+    deps += [ "//chrome/app/theme:chrome_unscaled_resources_grit" ]
+  }
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+  if (toolkit_views) {
+    sources += [
+      "//qorai/browser/ui/views/bookmarks/bookmark_bar_browsertest.cc",
+      "//qorai/browser/ui/views/qorai_actions/qorai_actions_container_browsertest.cc",
+      "//qorai/browser/ui/views/frame/qorai_non_client_hit_test_helper_browsertest.cc",
+      "//qorai/browser/ui/views/frame/qorai_tabs_search_button_browsertest.cc",
+      "//qorai/browser/ui/views/omnibox/qorai_omnibox_view_views_browsertest.cc",
+      "//qorai/browser/ui/views/omnibox/omnibox_autocomplete_browsertest.cc",
+      "//qorai/browser/ui/views/profiles/qorai_profile_menu_view_browsertest.cc",
+      "//qorai/browser/ui/views/tabs/qorai_tab_context_menu_contents_browsertest.cc",
+      "//qorai/browser/ui/views/toolbar/qorai_app_menu_browsertest.cc",
+      "//qorai/browser/ui/views/toolbar/qorai_toolbar_view_browsertest.cc",
+      "//qorai/browser/ui/views/toolbar/wallet_button_browsertest.cc",
+    ]
+    deps += [
+      "//qorai/browser/ui/darker_theme:browser_tests",
+      "//qorai/browser/ui/sidebar:browser_tests",
+      "//qorai/browser/ui/tabs:tab_model",
+      "//qorai/browser/ui/views/qorai_ads:browser_tests",
+      "//qorai/browser/ui/views/frame:browser_tests",
+      "//qorai/browser/ui/views/frame/vertical_tabs:browser_tests",
+      "//qorai/browser/ui/views/location_bar:browser_tests",
+      "//qorai/browser/ui/views/page_info:browser_tests",
+      "//qorai/browser/ui/views/permissions:browser_tests",
+      "//qorai/browser/ui/views/split_view:browser_tests",
+      "//qorai/browser/ui/views/tabs:browser_tests",
+      "//qorai/components/sidebar/browser",
+      "//qorai/test/views/snapshot",
+      "//chrome/browser/ui/views/bubble",
+    ]
+
+    if (enable_qorai_vpn) {
+      sources += [ "//qorai/browser/ui/views/toolbar/qorai_vpn_panel_controller_browsertest.cc" ]
+    }
+  }
+
+  if (!is_android) {
+    sources += [
+      "//qorai/browser/qorai_autofill_browsertest.cc",
+      "//qorai/browser/qorai_resources_browsertest.cc",
+      "//qorai/browser/qorai_shields/ad_block_custom_resources_browsertest.cc",
+      "//qorai/browser/qorai_shields/ad_block_only_mode_browsertest.cc",
+      "//qorai/browser/ssl/certificate_transparency_browsertest.cc",
+      "//qorai/browser/ui/views/toolbar/wallet_button_notification_source_browsertest.cc",
+    ]
+    deps += [
+      "//qorai/app/theme:qorai_theme_resources_grit",
+      "//qorai/app/theme:qorai_unscaled_resources_grit",
+      "//qorai/browser/ai_chat:browser_tests",
+      "//qorai/browser/banners:browser_tests",
+      "//qorai/browser/qorai_ads/creatives/search_result_ad:browser_tests",
+      "//qorai/browser/qorai_search:browser_tests",
+      "//qorai/browser/password_manager:browser_tests",
+      "//qorai/browser/sharing_hub:browser_tests",
+      "//qorai/browser/sync:browser_tests",
+      "//qorai/browser/ui/geolocation:browser_tests",
+      "//qorai/browser/ui/tabs:tab_strip",
+      "//qorai/browser/ui/toolbar:qorai_app_menu_browser_tests",
+      "//qorai/browser/ui/webui/side_panel/customize_chrome:browser_tests",
+      "//qorai/browser/ui/webui/tab_search:browser_tests",
+      "//qorai/browser/ui/whats_new:browser_test",
+      "//qorai/browser/url_sanitizer:browser_tests",
+      "//qorai/components/qorai_wallet/browser:test_support",
+      "//chrome:packed_resources",
+      "//chrome/browser/apps/app_service",
+      "//chrome/browser/apps/app_service:constants",
+      "//chrome/browser/themes",
+      "//chrome/browser/ui/webui/side_panel/bookmarks:mojo_bindings",
+      "//components/autofill/content/browser",
+      "//components/autofill/core/browser",
+    ]
+
+    if (enable_ai_rewriter) {
+      deps += [ "//qorai/browser/ui/ai_rewriter:browsertest" ]
+    }
+  }
+
+  if (enable_commander) {
+    deps += [ "//qorai/browser/ui/commander:browser_tests" ]
+  }
+
+  if (enable_request_otr) {
+    if (!is_android) {
+      deps += [ "//qorai/browser/request_otr:browser_tests" ]
+    }
+  }
+
+  if (enable_custom_background) {
+    deps += [ "//qorai/browser/ntp_background:browser_tests" ]
+  }
+
+  # API tests and extension deps
+  if (enable_extensions) {
+    sources += [
+      "//qorai/browser/extensions/extension_urls_browsertest.cc",
+      "//qorai/browser/ui/webui/settings/qorai_extensions_manifest_v2_browsertest.cc",
+      "//chrome/browser/extensions/extension_apitest.cc",
+      "//chrome/browser/extensions/extension_apitest.h",
+    ]
+    deps += [
+      "//qorai/browser/extensions/api/identity/test:browsertests",
+      "//qorai/browser/extensions/manifest_v2",
+      "//qorai/browser/importer:browser_tests",
+    ]
+  }
+
+  if (enable_qorai_education) {
+    deps += [ "//qorai/browser/ui/webui/qorai_education:browser_tests" ]
+  }
+
+  if (is_android) {
+    use_default_launcher = false
+
+    android_manifest =
+        "${target_gen_dir}/qorai_browser_tests_manifest/AndroidManifest.xml"
+    android_manifest_dep = ":qorai_browser_tests_manifest"
+
+    data += [
+      "$root_out_dir/qorai_resources.pak",
+      "$root_gen_dir/chrome/android/chrome_apk_paks/chrome_100_percent.pak",
+      "$root_gen_dir/chrome/android/chrome_apk_paks/locales/en-US.pak",
+      "$root_gen_dir/chrome/android/chrome_apk_paks/resources.pak",
+      "$root_gen_dir/components/components_resources.pak",
+      "$root_gen_dir/components/dev_ui_components_resources.pak",
+      "//qorai/components/qorai_perf_predictor/resources/entities-httparchive-nostats.json",
+    ]
+
+    # android only tests
+    deps += [ "//qorai/browser/android/youtube_script_injector:browser_tests" ]
+    deps -= android_test_exception_deps
+    deps += android_only_test_deps
+    sources -= android_test_exception_sources
+    sources += android_only_test_sources
+  }
+}
+
+# All in this section is for running instrumentation java tests
+if (is_android) {
+  qorai_public_test_manifest_package = "com.qorai.browser.tests"
+
+  qorai_public_test_apk_manifest =
+      "$root_gen_dir/qorai_public_test_apk_manifest/AndroidManifest.xml"
+
+  jinja_template("qorai_public_test_apk_manifest") {
+    input = "//qorai/android/javatests/AndroidManifest.xml"
+    includes = [ "//chrome/android/java/AndroidManifest.xml" ]
+    output = qorai_public_test_apk_manifest
+    variables = default_chrome_public_jinja_variables
+    variables += [
+      "manifest_package=$qorai_public_test_manifest_package",
+      "min_sdk_version=19",
+    ]
+  }
+
+  chrome_public_test_apk_tmpl("qorai_java_unit_tests") {
+    apk_name = "QoraiPublicTest"
+    android_manifest = qorai_public_test_apk_manifest
+    android_manifest_dep = ":qorai_public_test_apk_manifest"
+    manifest_package = qorai_public_test_manifest_package
+    if (!is_java_debug) {
+      proguard_enabled = true
+      proguard_configs = [
+        "//qorai/android/java/proguard.flags",
+        "//qorai/android/java/apk_for_test.flags",
+      ]
+    }
+
+    sources = [
+      "//qorai/android/javatests/org/chromium/chrome/browser/QoraiSafetyNetThreatsPrioritiesTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/BytecodeTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/qorai_wallet/QoraiWalletUtilsTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/homepage/settings/QoraiHomepageSettingsTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/language/settings/QoraiLanguageSettingsTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/origin/settings/QoraiOriginPreferencesTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/privacy/settings/QoraiPrivacySettingsTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/safe_browsing/settings/QoraiSafeBrowsingSettingsFragmentTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/settings/QoraiMainSettingsFragmentTest.java",
+      "//qorai/android/javatests/org/chromium/chrome/browser/sync/QoraiManageSyncSettingsTest.java",
+    ]
+
+    deps = [
+      "//base:base_java",
+      "//base:base_java_test_support",
+      "//base:base_shared_preferences_java",
+      "//qorai/android/javatests:qorai_test_java_org.chromium.chrome.browser.download",
+      "//qorai/android/javatests:qorai_test_java_org.chromium.chrome.browser.password_manager",
+      "//qorai/android/javatests:qorai_test_java_org.chromium.chrome.browser.site_settings",
+      "//qorai/android/javatests:qorai_test_java_org.chromium.chrome.browser.widget.quickactionsearchandbookmark",
+      "//qorai/components/qorai_wallet/common:mojom_java",
+      "//qorai/components/safe_browsing/android:qorai_safe_browsing_java",
+      "//cc:cc_java",
+      "//chrome/browser/android/browserservices/intents:java",
+      "//chrome/browser/android/lifecycle:java",
+      "//chrome/browser/back_press/android:java",
+      "//chrome/browser/bookmarks/android:java",
+      "//chrome/browser/browser_controls/android:java",
+      "//chrome/browser/commerce/price_tracking/android:java",
+      "//chrome/browser/contextmenu:java",
+      "//chrome/browser/data_sharing:data_sharing_public_java",
+      "//chrome/browser/feed/android:java",
+      "//chrome/browser/flags:java",
+      "//chrome/browser/fullscreen/android:java",
+      "//chrome/browser/hub:java",
+      "//chrome/browser/keyboard_accessory/android/java",
+      "//chrome/browser/language/android:java",
+      "//chrome/browser/password_manager/android:java",
+      "//chrome/browser/prefetch/android:java",
+      "//chrome/browser/profiles/android:java",
+      "//chrome/browser/safe_browsing/android:java",
+      "//chrome/browser/safety_check/android:java",
+      "//chrome/browser/search_engines/android:java",
+      "//chrome/browser/settings:test_support_java",
+      "//chrome/browser/sync/android:java",
+      "//chrome/browser/tab:java",
+      "//chrome/browser/tab_ui/android:java",
+      "//chrome/browser/tabmodel:java",
+      "//chrome/browser/ui/android/appmenu:java",
+      "//chrome/browser/ui/android/desktop_windowing:java",
+      "//chrome/browser/ui/android/extensions:java",
+      "//chrome/browser/ui/android/layouts:java",
+      "//chrome/browser/ui/android/logo:java",
+      "//chrome/browser/ui/android/multiwindow:java",
+      "//chrome/browser/ui/android/native_page:java",
+      "//chrome/browser/ui/android/omnibox:java",
+      "//chrome/browser/ui/android/theme:java",
+      "//chrome/browser/ui/android/toolbar:java",
+      "//chrome/browser/ui/messages/android:java",
+      "//chrome/browser/user_education:java",
+      "//chrome/test:test_support_java",
+      "//chrome/test/android:chrome_java_integration_test_support",
+      "//chrome/test/android:chrome_java_test_support_common",
+      "//components/bookmarks/common/android:bookmarks_java",
+      "//components/browser_ui/accessibility/android:lib_java",
+      "//components/browser_ui/bottomsheet/android:java",
+      "//components/browser_ui/bottomsheet/android:manager_java",
+      "//components/browser_ui/desktop_windowing/android:java",
+      "//components/browser_ui/media/android:java",
+      "//components/browser_ui/settings/android:java",
+      "//components/browser_ui/site_settings/android:java",
+      "//components/browser_ui/util/android:java",
+      "//components/browser_ui/widget/android:java",
+      "//components/commerce/core/android:core_java",
+      "//components/embedder_support/android:browser_context_java",
+      "//components/embedder_support/android:context_menu_java",
+      "//components/external_intents/android:java",
+      "//components/externalauth/android:java",
+      "//components/favicon/android:java",
+      "//components/feature_engagement/public:public_java",
+      "//components/image_fetcher:java",
+      "//components/offline_items_collection/core:core_java",
+      "//components/omnibox/browser:browser_java",
+      "//components/password_manager/core/browser:password_manager_java_enums",
+      "//components/permissions/android:java",
+      "//components/prefs/android:java",
+      "//components/search_engines/android:java",
+      "//components/signin/public/android:java",
+      "//components/sync/android:sync_java",
+      "//components/variations/android:variations_java",
+      "//content/public/android:content_full_java",
+      "//third_party/androidx:androidx_annotation_annotation_java",
+      "//third_party/androidx:androidx_appcompat_appcompat_java",
+      "//third_party/androidx:androidx_fragment_fragment_java",
+      "//third_party/androidx:androidx_lifecycle_lifecycle_common_java",
+      "//third_party/androidx:androidx_preference_preference_java",
+      "//third_party/androidx:androidx_recyclerview_recyclerview_java",
+      "//third_party/androidx:androidx_test_runner_java",
+      "//third_party/junit",
+      "//third_party/mockito:mockito_java",
+      "//ui/android:ui_no_recycler_view_java",
+      "//ui/edge_to_edge:java",
+      "//url:gurl_java",
+      "//url/mojom:url_mojom_gurl_java",
+    ]
+  }
+
+  robolectric_binary("qorai_junit_tests") {
+    # Needed by androidx.test.core.app.ActivityScenario
+    android_manifest = "//chrome/android/junit/AndroidManifest.xml"
+    package_name = "qorai.junit.tests"
+
+    shared_libraries = [
+      "//chrome/android/junit:libchrome_junit_tests($robolectric_toolchain)",
+    ]
+
+    # Should not have any deps native targets since junit tests are java-only.
+    assert_no_deps = [
+      "//content",
+      "//mojo/public/mojom/base",
+    ]
+
+    deps = [
+      "//qorai/android/junit:qorai_junit_tests_org.chromium.chrome.browser.crypto_wallet",
+      "//qorai/android/junit:qorai_junit_tests_org.chromium.chrome.browser.homepage",
+      "//qorai/android/junit:qorai_junit_tests_org.chromium.chrome.browser.tabbed_mode",
+      "//qorai/android/junit:qorai_junit_tests_org.chromium.chrome.browser.toolbar",
+      "//qorai/android/junit:qorai_junit_tests_org.chromium.chrome.browser.vpn",
+      "//qorai/browser/customize_menu/android:junit",
+      "//qorai/components/minidump_uploader:junit",
+    ]
+  }
+}  # if (is_android) {

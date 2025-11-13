@@ -1,0 +1,16 @@
+include_rules = [
+  "+qorai/components/qorai_ads/core/browser",
+  "+qorai/components/qorai_ads/core/mojom",
+  "+qorai/components/qorai_ads/core/public",
+  "+qorai/components/qorai_news/common",
+  "+qorai/components/qorai_rewards/core",
+  "+qorai/components/ntp_background_images/browser",
+  "+qorai/components/ntp_background_images/common",
+]
+
+specific_include_rules = {
+  "qorai_ads\.mm": [
+    "+qorai/components/l10n/common/locale_util.h",
+    "!qorai/components/l10n/common/prefs.h",
+  ],
+}

@@ -1,0 +1,9 @@
+include_rules = [
+  "+qorai/components/ai_chat/core/common/buildflags",
+  "+qorai/components/qorai_shields/core/common",
+  "+qorai/content/browser/screen_orientation",
+  "+content/public/browser",
+  "+content/public/common",
+  "+services/network/public/mojom/cookie_manager.mojom.h",
+  "+third_party/blink/public/common/storage_key",
+]

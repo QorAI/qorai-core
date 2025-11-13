@@ -1,0 +1,30 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+qorai_browser_webcompat_reporter_sources = [
+  "//qorai/browser/webcompat_reporter/webcompat_reporter_service_delegate.cc",
+  "//qorai/browser/webcompat_reporter/webcompat_reporter_service_delegate.h",
+  "//qorai/browser/webcompat_reporter/webcompat_reporter_service_factory.cc",
+  "//qorai/browser/webcompat_reporter/webcompat_reporter_service_factory.h",
+]
+
+qorai_browser_webcompat_reporter_deps = [
+  "//base",
+  "//qorai/browser:browser_process",
+  "//qorai/common",
+  "//qorai/components/webcompat_reporter/browser",
+  "//qorai/components/webcompat_reporter/common",
+  "//qorai/components/webcompat_reporter/common:mojom",
+  "//components/keyed_service/content",
+  "//mojo/public/cpp/bindings",
+]
+
+if (is_android) {
+  qorai_browser_webcompat_reporter_sources += [ "//qorai/browser/webcompat_reporter/android/webcompat_report_service_factory_android.cc" ]
+  qorai_browser_webcompat_reporter_deps += [
+    "//qorai/browser/android:android_browser_process",
+    "//qorai/build/android:jni_headers",
+  ]
+}

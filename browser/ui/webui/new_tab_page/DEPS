@@ -1,0 +1,7 @@
+include_rules = [
+  "+qorai/components/qorai_ads/core/browser/service",
+  "+qorai/components/qorai_new_tab/resources",
+  "+qorai/components/qorai_perf_predictor/common",
+  "+qorai/components/ntp_background_images/common",
+  "+qorai/components/time_period_storage",
+]

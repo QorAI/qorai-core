@@ -1,0 +1,72 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_ads/core/internal/user_attention/user_activity/user_activity_scoring_util.h"
+
+#include "base/test/scoped_feature_list.h"
+#include "qorai/components/qorai_ads/core/internal/common/test/test_base.h"
+#include "qorai/components/qorai_ads/core/internal/user_attention/user_activity/user_activity_feature.h"
+#include "qorai/components/qorai_ads/core/internal/user_attention/user_activity/user_activity_manager.h"
+
+// npm run test -- qorai_unit_tests --filter=QoraiAds*
+
+namespace qorai_ads {
+
+class QoraiAdsUserActivityScoringUtilTest : public test::TestBase {
+ protected:
+  void SetUp() override {
+    test::TestBase::SetUp();
+
+    scoped_feature_list_.InitAndEnableFeatureWithParameters(
+        kUserActivityFeature, {{"triggers", "0D=1.0;08=1.0"},
+                               {"time_window", "1h"},
+                               {"threshold", "2.0"}});
+  }
+
+  base::test::ScopedFeatureList scoped_feature_list_;
+};
+
+TEST_F(QoraiAdsUserActivityScoringUtilTest, WasUserActive) {
+  // Arrange
+  UserActivityManager::GetInstance().RecordEvent(
+      UserActivityEventType::kOpenedNewTab);
+
+  UserActivityManager::GetInstance().RecordEvent(
+      UserActivityEventType::kClosedTab);
+
+  // Act & Assert
+  EXPECT_TRUE(WasUserActive());
+}
+
+TEST_F(QoraiAdsUserActivityScoringUtilTest, WasUserInactive) {
+  // Act & Assert
+  EXPECT_FALSE(WasUserActive());
+}
+
+TEST_F(QoraiAdsUserActivityScoringUtilTest, WasUserInactiveIfBelowThreshold) {
+  // Arrange
+  UserActivityManager::GetInstance().RecordEvent(
+      UserActivityEventType::kOpenedNewTab);
+
+  // Act & Assert
+  EXPECT_FALSE(WasUserActive());
+}
+
+TEST_F(QoraiAdsUserActivityScoringUtilTest,
+       WasUserInactiveAfterTimeWindowHasElapsed) {
+  // Arrange
+  UserActivityManager::GetInstance().RecordEvent(
+      UserActivityEventType::kOpenedNewTab);
+
+  UserActivityManager::GetInstance().RecordEvent(
+      UserActivityEventType::kClosedTab);
+
+  AdvanceClockBy(kUserActivityTimeWindow.Get() + base::Milliseconds(1));
+
+  // Act & Assert
+  EXPECT_FALSE(WasUserActive());
+}
+
+}  // namespace qorai_ads

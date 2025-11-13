@@ -1,0 +1,12 @@
+diff --git a/chrome/common/extensions/BUILD.gn b/chrome/common/extensions/BUILD.gn
+index dd8546232ca6da4065e4050cbd61975965d0bbe4..d922a6c72a0441e43eac17927074512f770a0fed 100644
+--- a/chrome/common/extensions/BUILD.gn
++++ b/chrome/common/extensions/BUILD.gn
+@@ -118,6 +118,7 @@ source_set("extensions") {
+ 
+     sources += [ "api/file_system_provider_capabilities/file_system_provider_capabilities_handler.cc" ]
+   }
++  import("//qorai/common/extensions/sources.gni") public += qorai_chrome_common_extensions_public sources += qorai_chrome_common_extensions_sources deps += qorai_chrome_common_extensions_deps public_deps += qorai_chrome_common_extensions_public_deps
+ }
+ 
+ # TODO(zturner): Enable this on Windows. See

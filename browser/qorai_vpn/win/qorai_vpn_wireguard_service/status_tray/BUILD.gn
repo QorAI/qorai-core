@@ -1,0 +1,52 @@
+# Copyright (c) 2023 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/toolchain/gcc_toolchain.gni")
+
+source_set("status_tray") {
+  sources = [
+    "qorai_vpn_tray_command_ids.h",
+    "status_tray_runner.cc",
+    "status_tray_runner.h",
+  ]
+  public_deps = [ "status_icon" ]
+  deps = [
+    "ras",
+    "resources",
+    "status_icon:utils",
+    "wireguard",
+    "//base",
+    "//qorai/browser/qorai_vpn/win:wireguard_utils",
+    "//qorai/components/qorai_vpn/common",
+    "//qorai/components/qorai_vpn/common/mojom",
+    "//qorai/components/qorai_vpn/common/win",
+    "//qorai/components/qorai_vpn/common/win/ras",
+    "//qorai/components/resources:strings_grit",
+    "//chrome/common:channel_info",
+    "//components/version_info:channel",
+    "//ui/base",
+    "//ui/menus",
+    "//ui/native_theme",
+  ]
+  if (!enable_resource_allowlist_generation) {
+    deps += [ "//chrome:packed_resources" ]
+  }
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [ "status_tray_runner_unittest.cc" ]
+  deps = [
+    ":status_tray",
+    "//base/test:test_support",
+    "//qorai/browser/qorai_vpn/win:wireguard_utils",
+    "//qorai/components/constants",
+    "//qorai/components/resources:strings_grit",
+    "//testing/gtest",
+    "//ui/menus",
+    "//ui/native_theme",
+  ]
+}

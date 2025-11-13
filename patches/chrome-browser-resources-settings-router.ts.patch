@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/resources/settings/router.ts b/chrome/browser/resources/settings/router.ts
+index 09b29e00e7c1a6e5338ea19f84607b81cdd37c35..38349a8e287cb4ed0ca94e7414403fb7ecbc462f 100644
+--- a/chrome/browser/resources/settings/router.ts
++++ b/chrome/browser/resources/settings/router.ts
+@@ -121,6 +121,7 @@ export interface SettingsRoutes {
+   IMPORT_DATA: Route;
+   SIGN_OUT: Route;
+   // </if>
++  GET_STARTED: Route; ORIGIN: Route; SHIELDS: Route; SOCIAL_BLOCKING: Route; EXTENSIONS: Route; EXTENSIONS_V2: Route; QORAI_SYNC: Route; QORAI_SYNC_SETUP: Route; QORAI_WALLET: Route; QORAI_WEB3: Route; QORAI_NEW_TAB: Route; THEMES: Route; SITE_SETTINGS_AUTOPLAY: Route; SITE_SETTINGS_GOOGLE_SIGN_IN: Route; SITE_SETTINGS_LOCALHOST_ACCESS: Route; SITE_SETTINGS_QORAI_OPEN_AI_CHAT: Route; SITE_SETTINGS_ETHEREUM: Route; SITE_SETTINGS_SOLANA: Route; SITE_SETTINGS_CARDANO: Route; SITE_SETTINGS_SHIELDS_STATUS: Route; SHIELDS_ADBLOCK: Route; SHORTCUTS: Route; QORAI_WALLET_NETWORKS: Route; QORAI_QORA_ASSISTANT: Route; QORAI_QORA_CUSTOMIZATION: Route; QORAI_CONTENT: Route; QORAI_SURVEY_PANELIST: Route; DEFAULT_SEARCH: Route; PRIVATE_SEARCH: Route; EMAIL_ALIASES: Route;
+ }
+ 
+ /** Class for navigable routes. */

@@ -1,0 +1,12 @@
+diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
+index d8cb01c138cf37e078037bf80380b093740d2f9c..d8a4b2717a00638e8697f3c006d99a7ae75538fb 100644
+--- a/net/cookies/canonical_cookie.cc
++++ b/net/cookies/canonical_cookie.cc
+@@ -325,6 +325,7 @@ base::Time CanonicalCookie::ValidateAndAdjustExpiryDate(
+     // * network_handler.cc::MakeCookieFromProtocolValues
+     fixed_creation_date = base::Time::Now();
+   }
++  QORAI_CANONICAL_COOKIE_VALIDATE_AND_ADJUST_EXPIRY_DATE
+   base::Time maximum_expiry_date;
+   if (!cookie_util::IsTimeLimitedInsecureCookiesEnabled() ||
+       scheme == net::CookieSourceScheme::kSecure) {

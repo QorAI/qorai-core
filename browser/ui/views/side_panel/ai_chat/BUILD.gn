@@ -1,0 +1,27 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("ai_chat") {
+  sources = [
+    "ai_chat_side_panel_utils_views.cc",
+    "ai_chat_side_panel_web_view.cc",
+    "ai_chat_side_panel_web_view.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/browser/ai_chat",
+    "//qorai/browser/ui/webui/ai_chat",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/constants",
+    "//qorai/components/resources:strings_grit",
+    "//chrome/browser/profiles",
+    "//chrome/browser/ui/browser_window",
+    "//chrome/browser/ui/views/side_panel",
+    "//ui/base",
+    "//ui/views",
+    "//url",
+  ]
+}

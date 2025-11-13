@@ -1,0 +1,11 @@
+# Copyright (c) 2024 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_base_test_support_sources = [
+  "//qorai/base/test/launcher/teamcity_reporter.cc",
+  "//qorai/base/test/launcher/teamcity_reporter.h",
+  "//qorai/base/test/launcher/teamcity_service_messages.cc",
+  "//qorai/base/test/launcher/teamcity_service_messages.h",
+]

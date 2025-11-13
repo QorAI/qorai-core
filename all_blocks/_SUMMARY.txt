@@ -1,0 +1,839 @@
+======================================================================
+Assets.car Block Summary
+======================================================================
+
+
+Block 0001:
+  File: block_0001_436bytes.dat
+  Offset: 512 (0x200)
+  Length: 436 bytes
+  First 16 bytes (hex): 52415443c90300001100000000000000
+  Info: Text preview: RATC...............@(#)PROGRAM:CoreUI  PROJECT:CoreUI-969 [LAR].................
+
+Block 0002:
+  File: block_0002_29bytes.dat
+  Offset: 960 (0x3C0)
+  Length: 29 bytes
+  First 16 bytes (hex): 74726565000000010000000300001000
+  Info: Text preview: tree.........................; BOM Tree structure
+
+Block 0003:
+  File: block_0003_4654bytes.dat
+  Offset: 992 (0x3E0)
+  Length: 4654 bytes
+  First 16 bytes (hex): 0001001f000000000000000000000034
+  Info: Text preview: ...............4...3...2...1...0.../...6...5...<...;...8...7...:...9...B...A....; Mostly zeros (95.0%)
+
+Block 0004:
+  File: block_0004_29bytes.dat
+  Offset: 5648 (0x1610)
+  Length: 29 bytes
+  First 16 bytes (hex): 74726565000000010000000500001000
+  Info: Text preview: tree.....................; BOM Tree structure
+
+Block 0005:
+  File: block_0005_4096bytes.dat
+  Offset: 5680 (0x1630)
+  Length: 4096 bytes
+  First 16 bytes (hex): 0001000d000000000000000000000011
+  Info: Text preview: ...............................................................................!; Mostly zeros (99.3%)
+
+Block 0006:
+  File: block_0006_29bytes.dat
+  Offset: 9776 (0x2630)
+  Length: 29 bytes
+  First 16 bytes (hex): 74726565000000010000000700001000
+  Info: Text preview: tree.....................; BOM Tree structure
+
+Block 0007:
+  File: block_0007_4096bytes.dat
+  Offset: 9808 (0x2650)
+  Length: 4096 bytes
+  First 16 bytes (hex): 0001000400000000000000000000000f
+  Info: Mostly zeros (99.8%)
+
+Block 0008:
+  File: block_0008_24bytes.dat
+  Offset: 13904 (0x3650)
+  Length: 24 bytes
+  First 16 bytes (hex): 4e53417070656172616e63654e616d65
+  Info: Text preview: NSAppearanceNameDarkAqua
+
+Block 0009:
+  File: block_0009_2bytes.dat
+  Offset: 13936 (0x3670)
+  Length: 2 bytes
+  First 16 bytes (hex): 0100
+
+Block 0010:
+  File: block_0010_20bytes.dat
+  Offset: 13952 (0x3680)
+  Length: 20 bytes
+  First 16 bytes (hex): 4e53417070656172616e63654e616d65
+  Info: Text preview: NSAppearanceNameAqua
+
+Block 0011:
+  File: block_0011_2bytes.dat
+  Offset: 13984 (0x36A0)
+  Length: 2 bytes
+  First 16 bytes (hex): 0800
+
+Block 0012:
+  File: block_0012_22bytes.dat
+  Offset: 14000 (0x36B0)
+  Length: 22 bytes
+  First 16 bytes (hex): 4e53417070656172616e63654e616d65
+  Info: Text preview: NSAppearanceNameSystem
+
+Block 0013:
+  File: block_0013_2bytes.dat
+  Offset: 14032 (0x36D0)
+  Length: 2 bytes
+  First 16 bytes (hex): 0000
+  Info: Mostly zeros (100.0%)
+
+Block 0014:
+  File: block_0014_20bytes.dat
+  Offset: 14048 (0x36E0)
+  Length: 20 bytes
+  First 16 bytes (hex): 4953417070656172616e636554696e74
+  Info: Text preview: ISAppearanceTintable
+
+Block 0015:
+  File: block_0015_2bytes.dat
+  Offset: 14080 (0x3700)
+  Length: 2 bytes
+  First 16 bytes (hex): 0a00
+
+Block 0016:
+  File: block_0016_7bytes.dat
+  Offset: 14096 (0x3710)
+  Length: 7 bytes
+  First 16 bytes (hex): 41707049636f6e
+  Info: Text preview: AppIcon
+
+Block 0017:
+  File: block_0017_18bytes.dat
+  Offset: 14112 (0x3720)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200f5001100
+  Info: Text preview: ........U.......
+
+Block 0018:
+  File: block_0018_13bytes.dat
+  Offset: 14144 (0x3740)
+  Length: 13 bytes
+  First 16 bytes (hex): 41707049636f6e2f47726f7570
+  Info: Text preview: AppIcon/Group
+
+Block 0019:
+  File: block_0019_18bytes.dat
+  Offset: 14160 (0x3750)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200f6001100
+  Info: Text preview: ........U.......
+
+Block 0020:
+  File: block_0020_15bytes.dat
+  Offset: 14192 (0x3770)
+  Length: 15 bytes
+  First 16 bytes (hex): 41707049636f6e2f47726f75702032
+  Info: Text preview: AppIcon/Group 2
+
+Block 0021:
+  File: block_0021_18bytes.dat
+  Offset: 14208 (0x3780)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200f6001100
+  Info: Text preview: ........U......]
+
+Block 0022:
+  File: block_0022_22bytes.dat
+  Offset: 14240 (0x37A0)
+  Length: 22 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f43
+  Info: Text preview: AppIcon_Assets/Color-1
+
+Block 0023:
+  File: block_0023_18bytes.dat
+  Offset: 14272 (0x37C0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200d9001100
+  Info: Text preview: ........U......Dm
+
+Block 0024:
+  File: block_0024_22bytes.dat
+  Offset: 14304 (0x37E0)
+  Length: 22 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f43
+  Info: Text preview: AppIcon_Assets/Color-2
+
+Block 0025:
+  File: block_0025_18bytes.dat
+  Offset: 14336 (0x3800)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200d9001100
+  Info: Text preview: ........U......
+
+Block 0026:
+  File: block_0026_22bytes.dat
+  Offset: 14368 (0x3820)
+  Length: 22 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f43
+  Info: Text preview: AppIcon_Assets/Color-3
+
+Block 0027:
+  File: block_0027_18bytes.dat
+  Offset: 14400 (0x3840)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200d9001100
+  Info: Text preview: ........U.......
+
+Block 0028:
+  File: block_0028_22bytes.dat
+  Offset: 14432 (0x3860)
+  Length: 22 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f43
+  Info: Text preview: AppIcon_Assets/Color-4
+
+Block 0029:
+  File: block_0029_18bytes.dat
+  Offset: 14464 (0x3880)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200d9001100
+  Info: Text preview: ........U......g.
+
+Block 0030:
+  File: block_0030_22bytes.dat
+  Offset: 14496 (0x38A0)
+  Length: 22 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f43
+  Info: Text preview: AppIcon_Assets/Color-5
+
+Block 0031:
+  File: block_0031_18bytes.dat
+  Offset: 14528 (0x38C0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200d9001100
+  Info: Text preview: ........U......Ȟ
+
+Block 0032:
+  File: block_0032_25bytes.dat
+  Offset: 14560 (0x38E0)
+  Length: 25 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f47
+  Info: Text preview: AppIcon_Assets/Gradient-1
+
+Block 0033:
+  File: block_0033_18bytes.dat
+  Offset: 14592 (0x3900)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200f7001100
+  Info: Text preview: ........U......
+
+Block 0034:
+  File: block_0034_25bytes.dat
+  Offset: 14624 (0x3920)
+  Length: 25 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f47
+  Info: Text preview: AppIcon_Assets/Gradient-2
+
+Block 0035:
+  File: block_0035_18bytes.dat
+  Offset: 14656 (0x3940)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200f7001100
+  Info: Text preview: ........U......Rt
+
+Block 0036:
+  File: block_0036_19bytes.dat
+  Offset: 14688 (0x3960)
+  Length: 19 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f66
+  Info: Text preview: AppIcon_Assets/face
+
+Block 0037:
+  File: block_0037_18bytes.dat
+  Offset: 14720 (0x3980)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200b5001100
+  Info: Text preview: ........U......;
+
+Block 0038:
+  File: block_0038_27bytes.dat
+  Offset: 14752 (0x39A0)
+  Length: 27 bytes
+  First 16 bytes (hex): 41707049636f6e5f4173736574732f68
+  Info: Text preview: AppIcon_Assets/head-release
+
+Block 0039:
+  File: block_0039_18bytes.dat
+  Offset: 14784 (0x39C0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200b5001100
+  Info: Text preview: ........U......
+
+Block 0040:
+  File: block_0040_4bytes.dat
+  Offset: 14816 (0x39E0)
+  Length: 4 bytes
+  First 16 bytes (hex): 49636f6e
+  Info: Text preview: Icon
+
+Block 0041:
+  File: block_0041_18bytes.dat
+  Offset: 14832 (0x39F0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000300010055000200dc001100
+  Info: Text preview: ........U......խ
+
+Block 0042:
+  File: block_0042_48bytes.dat
+  Offset: 14864 (0x3A10)
+  Length: 48 bytes
+  First 16 bytes (hex): 746d666b000000000900000007000000
+  Info: Text preview: tmfk............................................
+
+Block 0043:
+  File: block_0043_18bytes.dat
+  Offset: 14912 (0x3A40)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad03000000
+  Info: Text preview: ....U....խ......
+
+Block 0044:
+  File: block_0044_21938bytes.dat
+  Offset: 14944 (0x3A60)
+  Length: 21938 bytes
+  First 16 bytes (hex): 49535443010000000000000000010000
+  Info: Text preview: ISTC...................BGRA............icon_128x128@2x.png......................
+
+Block 0045:
+  File: block_0045_18bytes.dat
+  Offset: 36896 (0x9020)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500d9000000c89e00000000
+  Info: Text preview: ....U....Ȟ......
+
+Block 0046:
+  File: block_0046_244bytes.dat
+  Offset: 36928 (0x9040)
+  Length: 244 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC...................................AppIcon_Assets/Color-5...................
+
+Block 0047:
+  File: block_0047_18bytes.dat
+  Offset: 37184 (0x9140)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500b50000008ece00000000
+  Info: Text preview: ....U..........
+
+Block 0048:
+  File: block_0048_1043bytes.dat
+  Offset: 37216 (0x9160)
+  Length: 1043 bytes
+  First 16 bytes (hex): 49535443010000000400000000000000
+  Info: Text preview: ISTC.................... GVS............image.svg...............................; Contains SVG data
+
+Block 0049:
+  File: block_0049_18bytes.dat
+  Offset: 38272 (0x9580)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000900b5000000000000000000
+
+Block 0050:
+  File: block_0050_6519bytes.dat
+  Offset: 38304 (0x95A0)
+  Length: 6519 bytes
+  First 16 bytes (hex): 49535443010000000000000066000000
+  Info: Text preview: ISTC........f...D......BGRA...........ZZZZPackedAsset-2.0.0-gamut0..............
+
+Block 0051:
+  File: block_0051_18bytes.dat
+  Offset: 44832 (0xAF20)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000000900b5000000000000000000
+
+Block 0052:
+  File: block_0052_12449bytes.dat
+  Offset: 44864 (0xAF40)
+  Length: 12449 bytes
+  First 16 bytes (hex): 495354430100000000000000a6000000
+  Info: Text preview: ISTC..............d...BGRA...........ZZZZPackedAsset-1.0.0-gamut0...............
+
+Block 0053:
+  File: block_0053_18bytes.dat
+  Offset: 57328 (0xDFF0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500b5000000f83b00000000
+  Info: Text preview: ....U....;......
+
+Block 0054:
+  File: block_0054_2363bytes.dat
+  Offset: 57360 (0xE010)
+  Length: 2363 bytes
+  First 16 bytes (hex): 49535443010000000400000000000000
+  Info: Text preview: ISTC.................... GVS............image.svg...............................
+
+Block 0055:
+  File: block_0055_18bytes.dat
+  Offset: 59728 (0xE950)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500d9000000446d00000000
+  Info: Text preview: ....U....Dm......
+
+Block 0056:
+  File: block_0056_244bytes.dat
+  Offset: 59760 (0xE970)
+  Length: 244 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC...................................AppIcon_Assets/Color-1...................
+
+Block 0057:
+  File: block_0057_18bytes.dat
+  Offset: 60016 (0xEA70)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500d9000000671200000000
+  Info: Text preview: ....U....g.......
+
+Block 0058:
+  File: block_0058_244bytes.dat
+  Offset: 60048 (0xEA90)
+  Length: 244 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC...................................AppIcon_Assets/Color-4...................
+
+Block 0059:
+  File: block_0059_18bytes.dat
+  Offset: 60304 (0xEB90)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500d9000000068600000000
+  Info: Text preview: ....U...........
+
+Block 0060:
+  File: block_0060_244bytes.dat
+  Offset: 60336 (0xEBB0)
+  Length: 244 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC...................................AppIcon_Assets/Color-3...................
+
+Block 0061:
+  File: block_0061_18bytes.dat
+  Offset: 60592 (0xECB0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad01000000
+  Info: Text preview: ....U....խ......
+
+Block 0062:
+  File: block_0062_330bytes.dat
+  Offset: 60624 (0xECD0)
+  Length: 330 bytes
+  First 16 bytes (hex): 49535443010000000000000020000000
+  Info: Text preview: ISTC........ ... ......BGRA...........icon_16x16@2x.png.........................
+
+Block 0063:
+  File: block_0063_18bytes.dat
+  Offset: 60960 (0xEE20)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500da000000d5ad00000000
+  Info: Text preview: ....U....խ......
+
+Block 0064:
+  File: block_0064_284bytes.dat
+  Offset: 60992 (0xEE40)
+  Length: 284 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC...................................Icon.....................................
+
+Block 0065:
+  File: block_0065_18bytes.dat
+  Offset: 61280 (0xEF60)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500d9000000a5f900000000
+  Info: Text preview: ....U..........
+
+Block 0066:
+  File: block_0066_244bytes.dat
+  Offset: 61312 (0xEF80)
+  Length: 244 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC...................................AppIcon_Assets/Color-2...................
+
+Block 0067:
+  File: block_0067_18bytes.dat
+  Offset: 61568 (0xF080)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad01000000
+  Info: Text preview: ....U....խ......
+
+Block 0068:
+  File: block_0068_330bytes.dat
+  Offset: 61600 (0xF0A0)
+  Length: 330 bytes
+  First 16 bytes (hex): 49535443010000000000000010000000
+  Info: Text preview: ISTC................d...BGRA...........icon_16x16.png...........................
+
+Block 0069:
+  File: block_0069_18bytes.dat
+  Offset: 61936 (0xF1F0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad02000000
+  Info: Text preview: ....U....խ......
+
+Block 0070:
+  File: block_0070_330bytes.dat
+  Offset: 61968 (0xF210)
+  Length: 330 bytes
+  First 16 bytes (hex): 49535443010000000000000040000000
+  Info: Text preview: ISTC........@...@......BGRA...........icon_32x32@2x.png.........................
+
+Block 0071:
+  File: block_0071_18bytes.dat
+  Offset: 62304 (0xF360)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad02000000
+  Info: Text preview: ....U....խ......
+
+Block 0072:
+  File: block_0072_330bytes.dat
+  Offset: 62336 (0xF380)
+  Length: 330 bytes
+  First 16 bytes (hex): 49535443010000000000000020000000
+  Info: Text preview: ISTC........ ... ...d...BGRA...........icon_32x32.png...........................
+
+Block 0073:
+  File: block_0073_18bytes.dat
+  Offset: 62672 (0xF4D0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad03000000
+  Info: Text preview: ....U....խ......
+
+Block 0074:
+  File: block_0074_330bytes.dat
+  Offset: 62704 (0xF4F0)
+  Length: 330 bytes
+  First 16 bytes (hex): 49535443010000000000000080000000
+  Info: Text preview: ISTC..............d...BGRA...........icon_128x128.png...........................
+
+Block 0075:
+  File: block_0075_18bytes.dat
+  Offset: 63040 (0xF640)
+  Length: 18 bytes
+  First 16 bytes (hex): 010000005500f600000013d700000000
+  Info: Text preview: ....U...........
+
+Block 0076:
+  File: block_0076_378bytes.dat
+  Offset: 63072 (0xF660)
+  Length: 378 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC................d...ATAD...........IconGroup................................
+
+Block 0077:
+  File: block_0077_18bytes.dat
+  Offset: 63456 (0xF7E0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad05000000
+  Info: Text preview: ....U....խ......
+
+Block 0078:
+  File: block_0078_175340bytes.dat
+  Offset: 63488 (0xF800)
+  Length: 175340 bytes
+  First 16 bytes (hex): 49535443010000000000000000040000
+  Info: Text preview: ISTC...................BGRA............icon_512x512@2x.png......................
+
+Block 0079:
+  File: block_0079_18bytes.dat
+  Offset: 238832 (0x3A4F0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad04000000
+  Info: Text preview: ....U....խ......
+
+Block 0080:
+  File: block_0080_55426bytes.dat
+  Offset: 238864 (0x3A510)
+  Length: 55426 bytes
+  First 16 bytes (hex): 49535443010000000000000000020000
+  Info: Text preview: ISTC...................BGRA............icon_256x256@2x.png......................
+
+Block 0081:
+  File: block_0081_18bytes.dat
+  Offset: 294304 (0x47DA0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad04000000
+  Info: Text preview: ....U....խ......
+
+Block 0082:
+  File: block_0082_21800bytes.dat
+  Offset: 294336 (0x47DC0)
+  Length: 21800 bytes
+  First 16 bytes (hex): 49535443010000000000000000010000
+  Info: Text preview: ISTC................d...BGRA............icon_256x256.png........................
+
+Block 0083:
+  File: block_0083_18bytes.dat
+  Offset: 316144 (0x4D2F0)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500dc000000d5ad05000000
+  Info: Text preview: ....U....խ......
+
+Block 0084:
+  File: block_0084_55550bytes.dat
+  Offset: 316176 (0x4D310)
+  Length: 55550 bytes
+  First 16 bytes (hex): 49535443010000000000000000020000
+  Info: Text preview: ISTC................d...BGRA............icon_512x512.png........................
+
+Block 0085:
+  File: block_0085_18bytes.dat
+  Offset: 371728 (0x5AC10)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500f7000000f1e700000000
+  Info: Text preview: ....U..........
+
+Block 0086:
+  File: block_0086_306bytes.dat
+  Offset: 371760 (0x5AC30)
+  Length: 306 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC...................................AppIcon_Assets/Gradient-1................
+
+Block 0087:
+  File: block_0087_18bytes.dat
+  Offset: 372080 (0x5AD70)
+  Length: 18 bytes
+  First 16 bytes (hex): 000000005500f7000000527400000000
+  Info: Text preview: ....U....Rt......
+
+Block 0088:
+  File: block_0088_306bytes.dat
+  Offset: 372112 (0x5AD90)
+  Length: 306 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC...................................AppIcon_Assets/Gradient-2................
+
+Block 0089:
+  File: block_0089_18bytes.dat
+  Offset: 372432 (0x5AED0)
+  Length: 18 bytes
+  First 16 bytes (hex): 010000005500f5000000c11a00000000
+  Info: Text preview: ....U...........
+
+Block 0090:
+  File: block_0090_551bytes.dat
+  Offset: 372464 (0x5AEF0)
+  Length: 551 bytes
+  First 16 bytes (hex): 49535443010000000000000000040000
+  Info: Text preview: ISTC................d...ATAD...........AppIcon.iconstack........................
+
+Block 0091:
+  File: block_0091_18bytes.dat
+  Offset: 373024 (0x5B120)
+  Length: 18 bytes
+  First 16 bytes (hex): 080000005500f60000005de200000000
+  Info: Text preview: ....U....]......
+
+Block 0092:
+  File: block_0092_353bytes.dat
+  Offset: 373056 (0x5B140)
+  Length: 353 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC................d...ATAD...........IconGroup................................
+
+Block 0093:
+  File: block_0093_18bytes.dat
+  Offset: 373424 (0x5B2B0)
+  Length: 18 bytes
+  First 16 bytes (hex): 080000005500f5000000c11a00000000
+  Info: Text preview: ....U...........
+
+Block 0094:
+  File: block_0094_551bytes.dat
+  Offset: 373456 (0x5B2D0)
+  Length: 551 bytes
+  First 16 bytes (hex): 49535443010000000000000000040000
+  Info: Text preview: ISTC................d...ATAD...........AppIcon.iconstack........................
+
+Block 0095:
+  File: block_0095_18bytes.dat
+  Offset: 374016 (0x5B500)
+  Length: 18 bytes
+  First 16 bytes (hex): 010000005500f60000005de200000000
+  Info: Text preview: ....U....]......
+
+Block 0096:
+  File: block_0096_353bytes.dat
+  Offset: 374048 (0x5B520)
+  Length: 353 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC................d...ATAD...........IconGroup................................
+
+Block 0097:
+  File: block_0097_18bytes.dat
+  Offset: 374416 (0x5B690)
+  Length: 18 bytes
+  First 16 bytes (hex): 080000005500f600000013d700000000
+  Info: Text preview: ....U...........
+
+Block 0098:
+  File: block_0098_353bytes.dat
+  Offset: 374448 (0x5B6B0)
+  Length: 353 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC................d...ATAD...........IconGroup................................
+
+Block 0099:
+  File: block_0099_18bytes.dat
+  Offset: 374816 (0x5B820)
+  Length: 18 bytes
+  First 16 bytes (hex): 0a0000005500f600000013d700000000
+  Info: Text preview: ....U...........
+
+Block 0100:
+  File: block_0100_353bytes.dat
+  Offset: 374848 (0x5B840)
+  Length: 353 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC................d...ATAD...........IconGroup................................
+
+Block 0101:
+  File: block_0101_18bytes.dat
+  Offset: 375216 (0x5B9B0)
+  Length: 18 bytes
+  First 16 bytes (hex): 0a0000005500f5000000c11a00000000
+  Info: Text preview: ....U...........
+
+Block 0102:
+  File: block_0102_551bytes.dat
+  Offset: 375248 (0x5B9D0)
+  Length: 551 bytes
+  First 16 bytes (hex): 49535443010000000000000000040000
+  Info: Text preview: ISTC................d...ATAD...........AppIcon.iconstack........................
+
+Block 0103:
+  File: block_0103_18bytes.dat
+  Offset: 375808 (0x5BC00)
+  Length: 18 bytes
+  First 16 bytes (hex): 0a0000005500f60000005de200000000
+  Info: Text preview: ....U....]......
+
+Block 0104:
+  File: block_0104_353bytes.dat
+  Offset: 375840 (0x5BC20)
+  Length: 353 bytes
+  First 16 bytes (hex): 49535443010000000000000000000000
+  Info: Text preview: ISTC................d...ATAD...........IconGroup................................
+
+Block 0105:
+  File: block_0105_1028bytes.dat
+  Offset: 376208 (0x5BD90)
+  Length: 1028 bytes
+  First 16 bytes (hex): 4d455441000000000000000000000000
+  Info: Text preview: META............................................................................
+
+Block 0106:
+  File: block_0106_29bytes.dat
+  Offset: 377248 (0x5C1A0)
+  Length: 29 bytes
+  First 16 bytes (hex): 74726565000000010000006b00000400
+  Info: Text preview: tree.......k.................; BOM Tree structure
+
+Block 0107:
+  File: block_0107_1024bytes.dat
+  Offset: 377280 (0x5C1C0)
+  Length: 1024 bytes
+  First 16 bytes (hex): 0001000d00000000000000000000006c
+  Info: Text preview: ...............l...g...t......p..;...x..mD...u..tR...o......q.....m.....r..Ύ...s; Mostly zeros (96.0%)
+
+Block 0108:
+  File: block_0108_52bytes.dat
+  Offset: 378304 (0x5C5C0)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0109:
+  File: block_0109_52bytes.dat
+  Offset: 378368 (0x5C600)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...............?...........
+
+Block 0110:
+  File: block_0110_52bytes.dat
+  Offset: 378432 (0x5C640)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0111:
+  File: block_0111_52bytes.dat
+  Offset: 378496 (0x5C680)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0112:
+  File: block_0112_52bytes.dat
+  Offset: 378560 (0x5C6C0)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0113:
+  File: block_0113_52bytes.dat
+  Offset: 378624 (0x5C700)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0114:
+  File: block_0114_52bytes.dat
+  Offset: 378688 (0x5C740)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0115:
+  File: block_0115_52bytes.dat
+  Offset: 378752 (0x5C780)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0116:
+  File: block_0116_52bytes.dat
+  Offset: 378816 (0x5C7C0)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0117:
+  File: block_0117_52bytes.dat
+  Offset: 378880 (0x5C800)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0118:
+  File: block_0118_52bytes.dat
+  Offset: 378944 (0x5C840)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0119:
+  File: block_0119_52bytes.dat
+  Offset: 379008 (0x5C880)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................
+
+Block 0120:
+  File: block_0120_52bytes.dat
+  Offset: 379072 (0x5C8C0)
+  Length: 52 bytes
+  First 16 bytes (hex): 01000000000000002800000009000000
+  Info: Text preview: ........(...........................

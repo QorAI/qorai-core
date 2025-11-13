@@ -1,0 +1,96 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+component("common") {
+  output_name = "ai_chat_common"
+  defines = [ "IS_AI_CHAT_COMMON_IMPL" ]
+
+  sources = [
+    "ai_chat_urls.cc",
+    "ai_chat_urls.h",
+    "constants.h",
+    "features.cc",
+    "features.h",
+    "pref_names.cc",
+    "pref_names.h",
+    "prefs.cc",
+    "prefs.h",
+    "proto_conversion.cc",
+    "proto_conversion.h",
+    "utils.cc",
+    "utils.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/qorai_domains",
+    "//qorai/components/ai_chat/core/common/buildflags",
+    "//qorai/components/ai_chat/core/common/mojom",
+    "//qorai/components/ai_chat/core/proto",
+    "//qorai/components/constants",
+    "//components/prefs",
+    "//url",
+  ]
+}
+
+source_set("common_impl") {
+  visibility = [
+    ":unit_tests",
+    "//qorai/components/ai_chat/content/browser",
+    "//qorai/components/ai_chat/renderer",
+  ]
+  sources = [
+    "yt_util.cc",
+    "yt_util.h",
+  ]
+
+  deps = [
+    "//base",
+    "//services/data_decoder/public/cpp:safe_xml_parser",
+  ]
+}
+
+source_set("test_support") {
+  testonly = true
+  sources = [
+    "test_mojom_printers.cc",
+    "test_mojom_printers.h",
+    "test_utils.cc",
+    "test_utils.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/ai_chat/core/common/mojom",
+    "//crypto",
+    "//testing/gmock",
+    "//testing/gtest",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [
+    "pref_names_unittest.cc",
+    "prefs_unittest.cc",
+    "proto_conversion_unittest.cc",
+    "utils_unittest.cc",
+    "yt_util_unittest.cc",
+  ]
+
+  deps = [
+    ":common_impl",
+    ":test_support",
+    "//base/test:test_support",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/ai_chat/core/common/mojom",
+    "//qorai/components/ai_chat/core/proto",
+    "//components/prefs:test_support",
+    "//services/data_decoder/public/cpp",
+    "//services/data_decoder/public/cpp:test_support",
+    "//testing/gtest",
+    "//url",
+  ]
+}

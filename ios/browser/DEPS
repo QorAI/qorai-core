@@ -1,0 +1,15 @@
+from qorai_chromium_utils import inline_file
+inline_file('//ios/chrome/browser/DEPS', globals(), locals())
+
+include_rules += [
+  "+qorai/ios/browser",
+  "+qorai/components/constants",
+  "+qorai/components/ai_chat/core/browser",
+  "+qorai/components/qorai_component_updater/browser",
+  "+qorai/components/qorai_user_agent/browser",
+  "+qorai/components/qorai_wallet/browser",
+  "+qorai/components/p3a",
+  "+ios/chrome/browser",
+  "+ios/web/web_state",
+  "+ios/web_view",
+]

@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/modules/webaudio/analyser_handler.cc b/third_party/blink/renderer/modules/webaudio/analyser_handler.cc
+index 0c16348a2cb465573a9e88daddeaad0347b381b4..b6e2b8aa7f91488bb66cb7a5e59cebbd7063703d 100644
+--- a/third_party/blink/renderer/modules/webaudio/analyser_handler.cc
++++ b/third_party/blink/renderer/modules/webaudio/analyser_handler.cc
+@@ -24,6 +24,7 @@ AnalyserHandler::AnalyserHandler(AudioNode& node, float sample_rate)
+     : AudioHandler(NodeType::kNodeTypeAnalyser, node, sample_rate),
+       analyser_(
+           node.context()->GetDeferredTaskHandler().RenderQuantumFrames()) {
++  QORAI_ANALYSERHANDLER_CONSTRUCTOR
+   AddInput();
+   channel_count_ = kDefaultNumberOfInputChannels;
+   AddOutput(kDefaultNumberOfOutputChannels);

@@ -1,0 +1,12 @@
+diff --git a/chrome/installer/setup/BUILD.gn b/chrome/installer/setup/BUILD.gn
+index d8693d152c49961163fa0647c8cee07bbda42d60..8533e48204ce43f4665c2d86d1cbccdefc4c3b5e 100644
+--- a/chrome/installer/setup/BUILD.gn
++++ b/chrome/installer/setup/BUILD.gn
+@@ -122,6 +122,7 @@ if (is_win) {
+         "channel_override_work_item.h",
+       ]
+     }
++    import("//qorai/chromium_src/chrome/installer/setup/sources.gni") deps += qorai_chromium_src_chrome_installer_setup_deps sources += qorai_chromium_src_chrome_installer_setup_sources
+   }
+ 
+   process_version_rc_template("setup_exe_version") {

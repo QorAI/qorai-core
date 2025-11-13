@@ -1,0 +1,44 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/psst/buildflags/buildflags.gni")
+
+qorai_components_content_settings_core_browser_sources = [
+  "//qorai/components/content_settings/core/browser/qorai_content_settings_utils.cc",
+  "//qorai/components/content_settings/core/browser/qorai_content_settings_utils.h",
+]
+
+qorai_components_content_settings_core_browser_deps = [
+  "//base",
+  "//qorai/components/qorai_shields/core/common",
+  "//qorai/components/content_settings/core/common",
+  "//qorai/components/psst/buildflags",
+  "//url",
+]
+
+if (!is_ios) {
+  qorai_components_content_settings_core_browser_sources += [
+    "//qorai/components/content_settings/core/browser/qorai_content_settings_pref_provider.cc",
+    "//qorai/components/content_settings/core/browser/qorai_content_settings_pref_provider.h",
+    "//qorai/components/content_settings/core/browser/qorai_global_value_map.cc",
+    "//qorai/components/content_settings/core/browser/qorai_global_value_map.h",
+    "//qorai/components/content_settings/core/browser/remote_list_provider.cc",
+    "//qorai/components/content_settings/core/browser/remote_list_provider.h",
+  ]
+
+  qorai_components_content_settings_core_browser_deps += [
+    "//qorai/components/constants",
+    "//qorai/components/google_sign_in_permission",
+    "//qorai/components/webcompat/content/browser",
+    "//components/prefs",
+    "//content/public/browser",
+    "//net",
+  ]
+}
+
+if (enable_psst) {
+  qorai_components_content_settings_core_browser_deps +=
+      [ "//qorai/components/psst/common" ]
+}

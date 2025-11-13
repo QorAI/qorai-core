@@ -1,0 +1,175 @@
+# Copyright (c) 2018 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/qorai_channel.gni")
+import("//build/config/apple/symbols.gni")
+import("//build/util/branding.gni")
+import("//chrome/version.gni")
+
+declare_args() {
+  base_sparkle_update_url = ""
+  enable_sparkle = !is_component_build && is_mac
+  build_sparkle = false
+
+  sparkle_dsa_private_key_file = ""
+  sparkle_eddsa_private_key = ""
+  sparkle_eddsa_public_key = ""
+
+  qorai_product_name = "qorai"
+  qorai_exe = ""
+  qorai_version_major = ""
+  qorai_version_minor = ""
+  qorai_version_build = ""
+  chrome_version_string = ""
+  target_android_base = ""
+  target_android_output_format = ""
+  qorai_android_keystore_path = "."
+  qorai_android_keystore_name = ""
+  qorai_android_keystore_password = ""
+  qorai_android_key_password = ""
+  qorai_android_pkcs11_provider = ""
+  qorai_android_pkcs11_alias = ""
+
+  skip_signing = false
+
+  # Used for generating delta installer on macOS/Windows
+  build_delta_installer = false
+  last_chrome_installer = ""
+
+  # Enables qorai/tools/redirect_cc target, replaces qorai/chromium_src
+  # overrides with empty ones to make //base buildable for redirect_cc.
+  android_aab_to_apk = false
+}
+
+if (target_os == "win") {
+  # Omaha 3 and its related arguments are available on Windows only.
+  declare_args() {
+    build_omaha = false
+    tag_ap = ""
+    tag_installdataindex = ""
+  }
+}
+
+declare_args() {
+  # Generate symbols for Release builds.
+  # MacOS requires dSYMs and non-component build, otherwise upstream dump syms
+  # target is a no-op.
+  should_generate_symbols =
+      is_official_build && (!is_mac || (enable_dsyms && !is_component_build))
+}
+
+if (should_generate_symbols && is_mac) {
+  assert(enable_dsyms && !is_component_build,
+         "Incompatible args to generate symbols on MacOS")
+}
+
+qorai_version = "$qorai_version_major.$qorai_version_minor.$qorai_version_build"
+
+if (qorai_exe == "") {
+  qorai_exe = qorai_product_name
+}
+
+qorai_dist_dir = "$root_out_dir/dist"
+if (is_win) {
+  qorai_exe = "$qorai_exe.exe"
+  qorai_underline_full_version =
+      "_$chrome_version_major" + "_$qorai_version_major" +
+      "_$qorai_version_minor" + "_$qorai_version_build"
+  _channel = ""
+  qorai_app_guid = "{AFE6A462-C574-4B8A-AF43-4CC60DF4563B}"
+  if (qorai_channel == "nightly") {
+    # Temporary support PR's non-Release builds on nightly channel.
+    # CI expect the installer files (*Setup.exe) in the output dir are
+    # correspond passed qorai_channel. Therefore to make Static+nightly work
+    # we should set _channel to "Nightly".
+    # TODO(atuchin): revert after PRs start to use the development channel.
+    _channel = "Nightly"
+    qorai_app_guid = "{C6CB981E-DB30-4876-8639-109F8933582C}"
+  } else if (is_official_build) {
+    if (qorai_channel == "beta") {
+      _channel = "Beta"
+      qorai_app_guid = "{103BD053-949B-43A8-9120-2E424887DE11}"
+    } else if (qorai_channel == "dev") {
+      _channel = "Dev"
+      qorai_app_guid = "{CB2150F2-595F-4633-891A-E39720CE0531}"
+    } else {
+      assert(qorai_channel == "", "Unknown channel name")
+    }
+  } else {
+    _channel = "Development"
+  }
+  _arch = ""
+  if (target_cpu == "x86") {
+    _arch = "32"
+  }
+  qorai_installer_exe = "qorai_installer.exe"
+  qorai_stub_installer_exe =
+      "QoraiBrowser$_channel" + "Setup$_arch$qorai_underline_full_version.exe"
+  qorai_untagged_stub_installer_exe =
+      "QoraiBrowserUntagged$_channel" +
+      "Setup$_arch$qorai_underline_full_version.exe"
+  qorai_standalone_installer_exe =
+      "QoraiBrowserStandalone$_channel" +
+      "Setup$_arch$qorai_underline_full_version.exe"
+  qorai_silent_installer_exe = "QoraiBrowserStandaloneSilent$_channel" +
+                               "Setup$_arch$qorai_underline_full_version.exe"
+  qorai_untagged_installer_exe = "QoraiBrowserStandaloneUntagged$_channel" +
+                                 "Setup$_arch$qorai_underline_full_version.exe"
+} else if (is_mac) {
+  qorai_exe = "$chrome_product_full_name.app"
+  qorai_dmg = "$chrome_product_full_name.dmg"
+  qorai_delta = "$chrome_product_full_name.delta"
+
+  qorai_product_dir_name_suffix = ""
+  if (is_official_build) {
+    if (qorai_channel == "beta") {
+      qorai_product_dir_name_suffix = "-Beta"
+    } else if (qorai_channel == "dev") {
+      qorai_product_dir_name_suffix = "-Dev"
+    } else if (qorai_channel == "nightly") {
+      qorai_product_dir_name_suffix = "-Nightly"
+    } else {
+      assert(qorai_channel == "", "Unknown channel name")
+    }
+  } else {
+    qorai_product_dir_name_suffix = "-Development"
+  }
+  qorai_product_dir_name =
+      "QoraiSoftware/Qorai-Browser$qorai_product_dir_name_suffix"
+
+  if (base_sparkle_update_url == "") {
+    base_sparkle_update_url =
+        "https://updates.qoraisoftware.com/sparkle/Qorai-Browser"
+  }
+}
+
+qorai_platform = "darwin"
+if (is_win) {
+  qorai_platform = "win32"
+} else if (is_linux) {
+  qorai_platform = "linux"
+} else if (is_android) {
+  qorai_platform = "android"
+}
+
+is_release_channel = qorai_channel == ""
+
+qorai_android_output = ""
+if (is_android) {
+  qorai_android_output += "$root_out_dir/apks/Qorai"
+  if (target_android_base == "modern") {
+    assert(target_cpu != "arm64" && target_cpu != "x64")
+    qorai_android_output += "Modern"
+  } else if (target_cpu == "arm64" || target_cpu == "x64" ||
+             target_android_base == "mono") {
+    qorai_android_output += "Mono"
+  }
+
+  if (target_android_output_format == "aab") {
+    qorai_android_output += "$target_cpu.aab"
+  } else {
+    qorai_android_output += "$target_cpu.apk"
+  }
+}

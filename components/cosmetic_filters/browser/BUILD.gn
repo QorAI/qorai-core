@@ -1,0 +1,21 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/features.gni")
+
+static_library("browser") {
+  sources = [
+    "cosmetic_filters_resources.cc",
+    "cosmetic_filters_resources.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/cosmetic_filters/common:mojom",
+    "//components/content_settings/core/browser",
+  ]
+}

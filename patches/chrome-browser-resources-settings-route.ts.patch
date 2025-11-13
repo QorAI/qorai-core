@@ -1,0 +1,29 @@
+diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resources/settings/route.ts
+index 1fd9c83cb74e72debbd72942dcb12bc12c7cb7ea..ce72e2797bda6807ff9f0ceaf25886bf8be2a488 100644
+--- a/chrome/browser/resources/settings/route.ts
++++ b/chrome/browser/resources/settings/route.ts
+@@ -9,6 +9,7 @@ import {pageVisibility} from './page_visibility.js';
+ import type {SettingsRoutes} from './router.js';
+ import {Route, Router} from './router.js';
+ 
++import addQoraiRoutes from './qorai_routes.js'
+ /**
+  * Add all of the child routes that originate from the privacy route,
+  * regardless of whether the privacy section under basic or advanced.
+@@ -316,6 +317,7 @@ function createRoutes(): SettingsRoutes {
+         loadTimeData.getString('performancePageTitle'));
+   }
+ 
++  addQoraiRoutes(r);
+   return r as unknown as SettingsRoutes;
+ }
+ 
+@@ -349,7 +351,7 @@ export let routes: SettingsRoutes = Router.getInstance().getRoutes();
+ // Returns the "effective" route when at chrome://settings/.
+ export function getTopLevelRoute(): Route {
+   if (!loadTimeData.getBoolean('isGuest')) {
+-    return routes.PEOPLE;
++    return routes.GET_STARTED;
+   }
+ 
+   let guestTopLevelRoute = routes.SEARCH;

@@ -1,0 +1,28 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_browser_cosmetic_filters_sources = [
+  "//qorai/browser/cosmetic_filters/cosmetic_filters_tab_helper.cc",
+  "//qorai/browser/cosmetic_filters/cosmetic_filters_tab_helper.h",
+]
+
+qorai_browser_cosmetic_filters_deps = [
+  "//base",
+  "//qorai/components/cosmetic_filters/common:mojom",
+  "//chrome/browser/ui",
+  "//third_party/blink/public/common",
+]
+
+if (is_android) {
+  qorai_browser_cosmetic_filters_sources += [
+    "//qorai/browser/android/cosmetic_filters/cosmetic_filters_utils.cc",
+    "//qorai/browser/android/cosmetic_filters/cosmetic_filters_utils.h",
+  ]
+
+  qorai_browser_cosmetic_filters_deps += [ "//qorai/build/android:jni_headers" ]
+} else {
+  qorai_browser_cosmetic_filters_deps +=
+      [ "//chrome/browser/ui/browser_window" ]
+}

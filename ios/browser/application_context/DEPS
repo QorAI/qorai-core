@@ -1,0 +1,8 @@
+include_rules = [
+  "+qorai/components/qorai_component_updater/browser",
+  "+qorai/components/qorai_sync",
+  "+qorai/components/debounce/core/browser",
+  "+qorai/components/qorai_wallet/browser",
+  "+qorai/components/https_upgrade_exceptions/browser",
+  "+qorai/components/url_sanitizer/core/browser",
+]

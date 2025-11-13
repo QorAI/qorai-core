@@ -1,0 +1,22 @@
+# Copyright (c) 2020 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_components_sync_driver_sources = [
+  "//qorai/components/sync/service/qorai_sync_auth_manager.cc",
+  "//qorai/components/sync/service/qorai_sync_auth_manager.h",
+  "//qorai/components/sync/service/qorai_sync_service_impl.cc",
+  "//qorai/components/sync/service/qorai_sync_service_impl.h",
+  "//qorai/components/sync/service/qorai_sync_stopped_reporter.cc",
+  "//qorai/components/sync/service/qorai_sync_stopped_reporter.h",
+  "//qorai/components/sync/service/sync_service_impl_delegate.h",
+]
+qorai_components_sync_driver_deps = [
+  "//qorai/components/qorai_sync",
+  "//qorai/components/qorai_sync:crypto",
+  "//qorai/components/qorai_sync:features",
+  "//qorai/components/qorai_sync:network_time_helper",
+  "//qorai/components/qorai_sync:prefs",
+  "//qorai/components/constants",
+]

@@ -1,0 +1,41 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# you can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/common/typescript.gni")
+import("//mojo/public/tools/bindings/mojom.gni")
+import("//tools/grit/preprocess_if_expr.gni")
+
+transpile_web_ui("qorai_wallet_page_ui") {
+  output_module = false
+  entry_points = [ [
+        "qorai_wallet_page",
+        rebase_path("wallet_page.tsx"),
+      ] ]
+  resource_name = "qorai_wallet_page"
+  imports_from = [
+    "//qorai/components/qorai_wallet_ui/",
+    "//qorai/components/qorai_rewards/resources/",
+  ]
+  deps = [
+    "//qorai/components/qorai_wallet/common:mojom_js",
+    "//qorai/components/qorai_wallet/common:preprocess_mojo",
+  ]
+}
+
+preprocess_if_expr("preprocess_html") {
+  visibility = [ ":qorai_wallet_page_generated_grit" ]
+  in_folder = "."
+  in_files = [ "wallet_page.html" ]
+  out_folder = "$target_gen_dir/preprocessed"
+}
+
+pack_web_resources("qorai_wallet_page_generated") {
+  resource_name = "qorai_wallet_page"
+  output_dir = "$root_gen_dir/qorai/components/qorai_wallet_page/resources"
+  deps = [
+    ":qorai_wallet_page_ui",
+    ":preprocess_html",
+  ]
+}

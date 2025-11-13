@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/net",
+  "+components/content_settings/core/common",
+]

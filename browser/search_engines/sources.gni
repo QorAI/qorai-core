@@ -1,0 +1,71 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import("//extensions/buildflags/buildflags.gni")
+
+qorai_browser_search_engines_sources = [
+  "//qorai/browser/search_engines/search_engine_provider_service_factory.cc",
+  "//qorai/browser/search_engines/search_engine_provider_service_factory.h",
+  "//qorai/browser/search_engines/search_engine_tracker.cc",
+  "//qorai/browser/search_engines/search_engine_tracker.h",
+]
+
+qorai_browser_search_engines_deps = [
+  "//base",
+  "//qorai/components/qorai_search_conversion",
+  "//chrome/browser/profiles:profile",
+  "//components/keyed_service/content",
+  "//components/keyed_service/core",
+  "//components/pref_registry",
+  "//components/prefs",
+  "//components/search_engines",
+  "//url",
+]
+
+if (is_android) {
+  qorai_browser_search_engines_sources += [
+    "//qorai/browser/search_engines/qorai_search_engine_pref_helper_android.cc",
+    "//qorai/browser/search_engines/normal_window_search_engine_provider_service_android.cc",
+    "//qorai/browser/search_engines/normal_window_search_engine_provider_service_android.h",
+    "//qorai/browser/search_engines/private_window_search_engine_provider_service_android.cc",
+    "//qorai/browser/search_engines/private_window_search_engine_provider_service_android.h",
+  ]
+
+  qorai_browser_search_engines_deps += [
+    "//qorai/components/qorai_search/browser",
+    "//chrome/browser/profiles:profile",
+    "//components/prefs",
+  ]
+} else {
+  qorai_browser_search_engines_sources += [
+    "//qorai/browser/search_engines/normal_window_search_engine_provider_service.cc",
+    "//qorai/browser/search_engines/normal_window_search_engine_provider_service.h",
+    "//qorai/browser/search_engines/pref_names.h",
+    "//qorai/browser/search_engines/private_window_search_engine_provider_service.cc",
+    "//qorai/browser/search_engines/private_window_search_engine_provider_service.h",
+    "//qorai/browser/search_engines/private_window_search_engine_provider_service_base.cc",
+    "//qorai/browser/search_engines/private_window_search_engine_provider_service_base.h",
+    "//qorai/browser/search_engines/search_engine_provider_util.cc",
+    "//qorai/browser/search_engines/search_engine_provider_util.h",
+    "//qorai/browser/search_engines/tor_window_search_engine_provider_service.cc",
+    "//qorai/browser/search_engines/tor_window_search_engine_provider_service.h",
+  ]
+
+  qorai_browser_search_engines_deps += [
+    "//qorai/browser/profiles:util",
+    "//qorai/components/search_engines",
+    "//chrome/browser/profiles:profile",
+    "//components/keyed_service/content",
+    "//components/pref_registry",
+    "//components/prefs",
+    "//components/search_engines",
+    "//extensions/buildflags",
+    "//url",
+  ]
+}
+
+if (enable_extensions) {
+  qorai_browser_search_engines_deps += [ "//extensions/browser" ]
+}

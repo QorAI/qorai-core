@@ -1,0 +1,20 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+source_set("qorai_vpn") {
+  sources = [
+    "qorai_vpn_pref_names_bridge.h",
+    "qorai_vpn_pref_names_bridge.mm",
+  ]
+  deps = [
+    "//base",
+    "//qorai/components/qorai_vpn/common/buildflags",
+  ]
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/components/qorai_vpn/common" ]
+  }
+}

@@ -1,0 +1,34 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+
+source_set("split_view") {
+  sources = [
+    "qorai_contents_container_view.cc",
+    "qorai_contents_container_view.h",
+    "qorai_multi_contents_view.cc",
+    "qorai_multi_contents_view.h",
+    "qorai_multi_contents_view_mini_toolbar.cc",
+    "qorai_multi_contents_view_mini_toolbar.h",
+  ]
+
+  deps = [
+    "//qorai/browser/ui/tabs:tab_model",
+    "//qorai/components/vector_icons",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui:ui_features",
+    "//chrome/browser/ui/browser_window",
+    "//chrome/browser/ui/color:mixers",
+    "//chrome/browser/ui/exclusive_access",
+    "//ui/base/metadata",
+    "//ui/compositor",
+    "//ui/views",
+  ]
+
+  if (enable_speedreader) {
+    deps += [ "//qorai/browser/ui/views/speedreader" ]
+  }
+}

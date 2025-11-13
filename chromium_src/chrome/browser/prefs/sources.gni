@@ -1,0 +1,21 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//third_party/widevine/cdm/widevine.gni")
+
+qorai_chromium_src_chrome_browser_prefs_deps = [
+  "//qorai/components/qorai_shields/core/common",
+  "//qorai/components/qorai_sync",
+  "//qorai/components/qorai_vpn/common/buildflags",
+  "//qorai/components/qorai_wallet/browser",
+  "//qorai/components/constants",
+  "//chrome/browser/profiles:profile",
+  "//chrome/common:constants",
+  "//third_party/widevine/cdm:buildflags",
+]
+
+if (enable_widevine) {
+  qorai_chromium_src_chrome_browser_prefs_deps += [ "//qorai/browser/widevine" ]
+}

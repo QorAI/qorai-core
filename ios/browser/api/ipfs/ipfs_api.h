@@ -1,0 +1,28 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_IOS_BROWSER_API_IPFS_IPFS_API_H_
+#define QORAI_IOS_BROWSER_API_IPFS_IPFS_API_H_
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+OBJC_EXPORT
+@protocol IpfsAPI
+@required
+
+/// Resolve input url using the default IPFS public gateway
+- (nullable NSURL*)resolveGatewayUrlFor:(NSURL*)input;
+/// Resolve input url using the default IPFS NFT public gateway
+- (nullable NSURL*)resolveGatewayUrlForNft:(NSURL*)input;
+- (nullable NSURL*)contentHashToCIDv1URLFor:(NSArray<NSNumber*>*)contentHash;
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+#endif  // QORAI_IOS_BROWSER_API_IPFS_IPFS_API_H_

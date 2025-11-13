@@ -1,0 +1,12 @@
+diff --git a/components/browser_ui/settings/android/BUILD.gn b/components/browser_ui/settings/android/BUILD.gn
+index d78b42d106f36e8986a61754a595dbe17067bbbf..90d6cd97de5d878ec8fc60a6d0a75603b9ee31af 100644
+--- a/components/browser_ui/settings/android/BUILD.gn
++++ b/components/browser_ui/settings/android/BUILD.gn
+@@ -59,6 +59,7 @@ android_library("java") {
+     "//ui/android:ui_no_recycler_view_java",
+   ]
+   resources_package = "org.chromium.components.browser_ui.settings"
++  import("//qorai/components/browser_ui/settings/android/sources.gni") sources += qorai_components_browser_ui_settings_android_java_sources
+ }
+ 
+ android_resources("java_resources") {

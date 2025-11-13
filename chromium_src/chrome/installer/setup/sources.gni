@@ -1,0 +1,35 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+qorai_chromium_src_chrome_installer_setup_sources = []
+qorai_chromium_src_chrome_installer_setup_deps = []
+
+if (is_win) {
+  qorai_chromium_src_chrome_installer_setup_deps += [
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/installer/util",
+    "//chrome/installer/util:work_item",
+  ]
+
+  if (enable_qorai_vpn) {
+    qorai_chromium_src_chrome_installer_setup_deps += [
+      "//qorai/browser/qorai_vpn/win:wireguard_utils",
+      "//qorai/browser/qorai_vpn/win/qorai_vpn_helper:common",
+      "//qorai/browser/qorai_vpn/win/qorai_vpn_wireguard_service:install_utils",
+      "//qorai/components/qorai_vpn/browser/connection/ikev2/win:ras_utils",
+    ]
+  }
+
+  if (is_official_build) {
+    # These should be added to the lib target, but don't want to add another
+    # patch.
+    qorai_chromium_src_chrome_installer_setup_sources += [
+      "channel_override_work_item.cc",
+      "channel_override_work_item.h",
+    ]
+  }
+}

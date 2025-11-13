@@ -1,0 +1,30 @@
+// Copyright (c) 2023 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+#include "qorai/browser/ui/side_panel/ai_chat/ai_chat_side_panel_utils.h"
+
+#include "base/notimplemented.h"
+#include "qorai/components/ai_chat/core/common/features.h"
+#include "chrome/browser/profiles/profile.h"
+
+namespace ai_chat {
+
+#if !defined(TOOLKIT_VIEWS)
+Browser* GetBrowserForWebContents(content::WebContents* web_contents) {
+  NOTIMPLEMENTED();
+  return nullptr;
+}
+
+void ClosePanel(content::WebContents* web_contents) {
+  NOTIMPLEMENTED();
+}
+#endif
+
+bool ShouldSidePanelBeGlobal(Profile* profile) {
+  return profile->IsAIChatAgent() ||
+         ai_chat::features::IsAIChatGlobalSidePanelEverywhereEnabled();
+}
+
+}  // namespace ai_chat

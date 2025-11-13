@@ -1,0 +1,19 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_app_billing_sources = [
+  "//qorai/android/java/org/chromium/chrome/browser/billing/InAppPurchaseWrapper.java",
+  "//qorai/android/java/org/chromium/chrome/browser/billing/LinkSubscriptionUtils.java",
+  "//qorai/android/java/org/chromium/chrome/browser/billing/PurchaseModel.java",
+]
+
+qorai_app_billing_deps =
+    [ "//qorai/third_party/android_deps:com_android_billingclient_java" ]
+
+qorai_java_base_module_billing_deps = [
+  "//qorai/third_party/android_deps:com_android_billingclient_java",
+  "//third_party/android_deps:google_android_datatransport_transport_backend_cct_java",
+  "//third_party/android_deps:google_android_datatransport_transport_runtime_java",
+]

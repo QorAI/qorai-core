@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/containers/buildflags",
+  "+qorai/components/containers/core/browser",
+  "+components/search_engines",
+]

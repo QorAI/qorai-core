@@ -1,0 +1,29 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("cpp") {
+  visibility = [
+    "//qorai/components/qorai_wallet/browser:*",
+    "//chrome/utility:*",
+  ]
+
+  sources = [
+    "qorai_wallet_utils_service.cc",
+    "qorai_wallet_utils_service.h",
+    "qorai_wallet_utils_service_in_process_launcher.cc",
+    "qorai_wallet_utils_service_in_process_launcher.h",
+  ]
+
+  deps = [
+    "//qorai/components/services/qorai_wallet:lib",
+    "//qorai/components/services/qorai_wallet/public/mojom",
+    "//qorai/components/services/qorai_wallet/zcash:zcash_decoder",
+    "//mojo/public/cpp/bindings",
+  ]
+
+  if (!is_ios) {
+    deps += [ "//qorai/components/services/qorai_wallet/content" ]
+  }
+}

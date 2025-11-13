@@ -1,0 +1,62 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+static_library("qorai_origin") {
+  sources = [
+    "qorai_origin_handler.cc",
+    "qorai_origin_handler.h",
+    "qorai_origin_policy_info.cc",
+    "qorai_origin_policy_info.h",
+    "qorai_origin_policy_manager.cc",
+    "qorai_origin_policy_manager.h",
+    "qorai_origin_prefs.cc",
+    "qorai_origin_prefs.h",
+    "qorai_origin_service.cc",
+    "qorai_origin_service.h",
+    "qorai_origin_utils.cc",
+    "qorai_origin_utils.h",
+    "features.cc",
+    "features.h",
+    "pref_names.cc",
+    "pref_names.h",
+    "profile_id.cc",
+    "profile_id.h",
+  ]
+
+  friend = [ ":unit_tests" ]
+
+  public_deps = [
+    "buildflags",
+    "common/mojom",
+    "//base",
+    "//mojo/public/cpp/bindings",
+  ]
+  deps = [
+    "//qorai/components/qorai_policy:qorai_policy_observer",
+    "//components/keyed_service/core",
+    "//components/policy/core/common",
+    "//components/prefs",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [
+    "qorai_origin_handler_unittest.cc",
+    "qorai_origin_policy_manager_unittest.cc",
+    "qorai_origin_service_unittest.cc",
+    "qorai_origin_utils_unittest.cc",
+    "profile_id_unittest.cc",
+  ]
+
+  deps = [
+    ":qorai_origin",
+    "//base/test:test_support",
+    "//components/policy/core/common:test_support",
+    "//components/prefs:test_support",
+    "//testing/gtest",
+  ]
+}

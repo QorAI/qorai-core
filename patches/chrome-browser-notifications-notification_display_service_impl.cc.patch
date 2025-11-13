@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/notifications/notification_display_service_impl.cc b/chrome/browser/notifications/notification_display_service_impl.cc
+index 9509359d1ff276962815618172cc10790373a092..84f88eb63a5e9d05f69d0d676000a57a71541fa2 100644
+--- a/chrome/browser/notifications/notification_display_service_impl.cc
++++ b/chrome/browser/notifications/notification_display_service_impl.cc
+@@ -119,6 +119,7 @@ NotificationDisplayServiceImpl::NotificationDisplayServiceImpl(Profile* profile)
+                              std::make_unique<NearbyNotificationHandler>());
+     }
+ #endif
++    QORAI_ADD_QORAI_ADS_NOTIFICATION_HANDLER;
+   }
+ 
+   bridge_delegator_ = std::make_unique<NotificationPlatformBridgeDelegator>(

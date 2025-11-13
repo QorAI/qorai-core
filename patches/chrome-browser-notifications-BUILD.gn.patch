@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/notifications/BUILD.gn b/chrome/browser/notifications/BUILD.gn
+index 1f057daf84f3d877db4f86501b676b99b5ee0f1f..d659dbc970f3982969b6bf9b44b8a936192ecc10 100644
+--- a/chrome/browser/notifications/BUILD.gn
++++ b/chrome/browser/notifications/BUILD.gn
+@@ -96,6 +96,7 @@ if (is_android) {
+       "//third_party/jni_zero:jni_zero_java",
+       "//ui/android:ui_no_recycler_view_java",
+     ]
++    deps += [ "//qorai/browser/notifications/android:qorai_java", ]
+ 
+     srcjar_deps = [
+       ":jni_headers",

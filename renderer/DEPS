@@ -1,0 +1,46 @@
+from qorai_chromium_utils import inline_file
+inline_file("//chrome/DEPS", globals(), locals())
+
+chrome_renderer_deps = {}
+inline_file("//chrome/renderer/DEPS", {}, chrome_renderer_deps)
+include_rules += chrome_renderer_deps["include_rules"]
+
+include_rules += [
+  "+qorai/common",
+  "+chrome/renderer",
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/ai_chat/renderer",
+  "+qorai/components/ai_rewriter/common",
+  "+qorai/components/qorai_search/common",
+  "+qorai/components/qorai_search/renderer",
+  "+qorai/components/qorai_shields/core/common",
+  "+qorai/components/qorai_vpn/common/buildflags/buildflags.h",
+  "+qorai/components/qorai_wallet/common",
+  "+qorai/components/cosmetic_filters/renderer",
+  "+qorai/components/playlist/core/common",
+  "+qorai/components/safe_builtins/renderer/safe_builtins.h",
+  "+qorai/components/script_injector/renderer",
+  "+qorai/components/skus/common",
+  "+qorai/components/skus/renderer",
+  "+qorai/components/speedreader/common",
+  "+qorai/components/ai_rewriter/common",
+  "+qorai/components/ai_rewriter/renderer",
+  "+qorai/components/speedreader/common",
+  "+qorai/components/speedreader/renderer",
+  "+qorai/components/qorai_vpn/common",
+  "!qorai/components/qorai_mobile_subscription/renderer/android/subscription_render_frame_observer.h",
+  "+qorai/components/playlist/core/common",
+  "+qorai/components/playlist/content/renderer",
+  "+qorai/components/web_discovery/buildflags",
+  "+qorai/components/web_discovery/common",
+  "+qorai/components/web_discovery/renderer",
+]
+
+specific_include_rules = {
+  ".*browsertest\.cc": [
+    "+chrome/test",
+    "+chrome/app/chrome_command_ids.h",
+    "+content/public/test",
+    "+net",
+  ]
+}

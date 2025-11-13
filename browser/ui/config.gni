@@ -1,0 +1,51 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/containers/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//build/config/ui.gni")
+
+qorai_ui_allow_circular_includes_from = [
+  "//qorai/browser/ui/webui/ads_internals",
+  "//qorai/browser/ui/webui/ai_chat",
+]
+if (!is_android) {
+  qorai_ui_allow_circular_includes_from += [
+    "//qorai/browser/ui/browser_window/internal",
+    "//qorai/browser/ui/tabs:tabs_public",
+    "//qorai/browser/ui/webui/qorai_education",
+    "//qorai/browser/ui/webui/qorai_new_tab_page_refresh",
+    "//qorai/browser/ui/webui/qorai_news_internals",
+    "//qorai/browser/ui/webui/cr_components",
+    "//qorai/browser/ui/webui/side_panel/customize_chrome",
+    "//qorai/browser/ui/tabs:tab_strip",
+  ]
+}
+if (is_android) {
+  qorai_ui_allow_circular_includes_from +=
+      [ "//qorai/browser/ui/webui/new_tab_takeover/android:new_tab_takeover" ]
+}
+if (toolkit_views) {
+  qorai_ui_allow_circular_includes_from += [
+    "//qorai/browser/ui/views/frame/split_view",
+    "//qorai/browser/ui/views/frame/vertical_tabs",
+    "//qorai/browser/ui/views/page_info",
+    "//qorai/browser/ui/views/side_panel/ai_chat",
+    "//qorai/browser/ui/sidebar",
+  ]
+
+  if (enable_containers) {
+    qorai_ui_allow_circular_includes_from += [ "//qorai/browser/ui/containers" ]
+  }
+
+  if (enable_speedreader) {
+    qorai_ui_allow_circular_includes_from +=
+        [ "//qorai/browser/ui/views/speedreader" ]
+  }
+}
+
+if (enable_speedreader) {
+  qorai_ui_allow_circular_includes_from += [ "//qorai/browser/ui/speedreader" ]
+}

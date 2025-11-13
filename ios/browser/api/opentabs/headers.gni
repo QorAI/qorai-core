@@ -1,0 +1,7 @@
+browser_api_opentabs_public_headers = [
+  "//qorai/ios/browser/api/opentabs/qorai_opentabs_api.h",
+  "//qorai/ios/browser/api/opentabs/qorai_opentabs_observer.h",
+  "//qorai/ios/browser/api/opentabs/qorai_sendtab_api.h",
+  "//qorai/ios/browser/api/opentabs/qorai_sendtab_observer.h",
+  "//qorai/ios/browser/api/opentabs/qorai_tabgenerator_api.h",
+]

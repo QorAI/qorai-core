@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/qorai_ads/core/browser/service",
+  "+qorai/components/ntp_background_images/browser",
+  "+qorai/components/ntp_background_images/common",
+]

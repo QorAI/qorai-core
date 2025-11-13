@@ -1,0 +1,292 @@
+/* Copyright (c) 2022 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/ui/webui/playlist_ui.h"
+
+#include <memory>
+#include <utility>
+
+#include "base/check.h"
+#include "base/feature_list.h"
+#include "base/functional/bind.h"
+#include "base/strings/strcat.h"
+#include "qorai/browser/playlist/playlist_service_factory.h"
+#include "qorai/browser/ui/browser_commands.h"
+#include "qorai/browser/ui/playlist/playlist_dialogs.h"
+#include "qorai/browser/ui/webui/qorai_webui_source.h"
+#include "qorai/browser/ui/webui/playlist_active_tab_tracker.h"
+#include "qorai/components/constants/webui_url_constants.h"
+#include "qorai/components/playlist/content/browser/playlist_service.h"
+#include "qorai/components/playlist/content/browser/resources/grit/playlist_generated_map.h"
+#include "qorai/components/playlist/core/common/features.h"
+#include "qorai/components/playlist/core/common/pref_names.h"
+#include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/ui/browser.h"
+#include "chrome/browser/ui/browser_finder.h"
+#include "chrome/browser/ui/webui/theme_source.h"
+#include "chrome/grit/generated_resources.h"
+#include "components/grit/qorai_components_resources.h"
+#include "components/grit/qorai_components_strings.h"
+#include "components/prefs/pref_service.h"
+#include "components/sessions/content/session_tab_helper.h"
+#include "components/user_prefs/user_prefs.h"
+#include "content/public/browser/url_data_source.h"
+#include "content/public/browser/web_ui.h"
+#include "content/public/browser/web_ui_data_source.h"
+#include "content/public/common/bindings_policy.h"
+#include "content/public/common/url_constants.h"
+#include "ui/base/l10n/l10n_util.h"
+#include "ui/base/webui/web_ui_util.h"
+#include "url/gurl.h"
+
+namespace playlist {
+
+namespace {
+
+void AddLocalizedStrings(content::WebUIDataSource* source) {
+  static constexpr webui::LocalizedString kLocalizedStrings[] = {
+      {"qoraiDefaultPlaylistName", IDS_PLAYLIST_DEFAULT_PLAYLIST_NAME},
+      {"qoraiPlaylistContextMenuEdit", IDS_PLAYLIST_CONTEXT_MENU_EDIT},
+      {"qoraiPlaylistContextMenuShare", IDS_PLAYLIST_CONTEXT_MENU_SHARE},
+      {"qoraiPlaylistContextMenuKeepForOfflinePlaying",
+       IDS_PLAYLIST_CONTEXT_MENU_KEEP_FOR_OFFLINE_PLAYING},
+      {"qoraiPlaylistContextMenuRemovePlayedContents",
+       IDS_PLAYLIST_CONTEXT_MENU_REMOVE_PLAYED_CONTENTS},
+      {"qoraiPlaylistContextMenuMove", IDS_PLAYLIST_CONTEXT_MENU_MOVE},
+      {"qoraiPlaylistContextMenuRemoveOfflineData",
+       IDS_PLAYLIST_CONTEXT_MENU_REMOVE_OFFLINE_DATA},
+      {"qoraiPlaylistContextMenuRemoveFromPlaylist",
+       IDS_PLAYLIST_CONTEXT_MENU_REMOVE_FROM_PLAYLIST},
+      {"qoraiPlaylistContextMenuRenamePlaylist",
+       IDS_PLAYLIST_CONTEXT_MENU_RENAME_PLAYLIST},
+      {"qoraiPlaylistContextMenuDeletePlaylist",
+       IDS_PLAYLIST_CONTEXT_MENU_DELETE_PLAYLIST},
+      {"qoraiPlaylistContextMenuViewOriginalPage",
+       IDS_PLAYLIST_CONTEXT_MENU_VIEW_ORIGINAL_PAGE},
+      {"qoraiPlaylistEmptyFolderMessage", IDS_PLAYLIST_EMPTY_FOLDER_MESSAGE},
+      {"qoraiPlaylistTooltipCreatePlaylistFolder",
+       IDS_PLAYLIST_TOOLTIP_CREATE_PLAYLIST_FOLDER},
+      {"qoraiPlaylistTooltipOpenPlaylistSettings",
+       IDS_PLAYLIST_TOOLTIP_OPEN_PLAYLIST_SETTINGS},
+      {"qoraiPlaylistTooltipClosePanel",
+       IDS_SIDEBAR_PANEL_CLOSE_BUTTON_TOOLTIP},
+      {"qoraiPlaylistTooltipPlay", IDS_PLAYLIST_TOOLTIP_PLAY},
+      {"qoraiPlaylistTooltipPause", IDS_PLAYLIST_TOOLTIP_PAUSE},
+      {"qoraiPlaylistTooltipNext", IDS_PLAYLIST_TOOLTIP_NEXT},
+      {"qoraiPlaylistTooltipPrevious", IDS_PLAYLIST_TOOLTIP_PREVIOUS},
+      {"qoraiPlaylistTooltipShuffle", IDS_PLAYLIST_TOOLTIP_SHUFFLE},
+      {"qoraiPlaylistTooltipToggleMuted", IDS_PLAYLIST_TOOLTIP_TOGGLE_MUTED},
+      {"qoraiPlaylistTooltipRewind", IDS_PLAYLIST_TOOLTIP_REWIND},
+      {"qoraiPlaylistTooltipForward", IDS_PLAYLIST_TOOLTIP_FORWARD},
+      {"qoraiPlaylistTooltipClose", IDS_PLAYLIST_TOOLTIP_CLOSE},
+      {"qoraiPlaylistTooltipLoopOff", IDS_PLAYLIST_TOOLTIP_LOOP_OFF},
+      {"qoraiPlaylistTooltipLoopOne", IDS_PLAYLIST_TOOLTIP_LOOP_ONE},
+      {"qoraiPlaylistTooltipLoopAll", IDS_PLAYLIST_TOOLTIP_LOOP_ALL},
+      {"qoraiPlaylistFailedToPlayTitle", IDS_PLAYLIST_FAILED_TO_PLAY_TITLE},
+      {"qoraiPlaylistFailedToPlayDescription",
+       IDS_PLAYLIST_FAILED_TO_PLAY_DESCRIPTION},
+      {"qoraiPlaylistFailedToPlayRecover", IDS_PLAYLIST_FAILED_TO_PLAY_RECOVER},
+      {"qoraiPlaylistAddMediaFromPage", IDS_PLAYLIST_ADD_MEDIA_FROM_PAGE},
+      {"qoraiPlaylistAlertDismiss", IDS_PLAYLIST_ALERT_DISMISS},
+  };
+
+  for (const auto& [name, id] : kLocalizedStrings) {
+    source->AddString(name, l10n_util::GetStringUTF16(id));
+  }
+}
+
+}  // namespace
+
+UntrustedPlayerUI::UntrustedPlayerUI(content::WebUI* web_ui)
+    : UntrustedWebUIController(web_ui) {
+  auto* source = CreateAndAddWebUIDataSource(
+      web_ui, kPlaylistPlayerURL, kPlaylistGenerated, IDR_PLAYLIST_PLAYER_HTML);
+  source->AddFrameAncestor(GURL(kPlaylistURL));
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ScriptSrc,
+      std::string("script-src 'self' chrome-untrusted://resources "
+                  "chrome-untrusted://qorai-resources;"));
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::MediaSrc,
+      std::string("media-src 'self' chrome-untrusted://playlist-data "
+                  "https: http://localhost;"));
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::StyleSrc,
+      std::string("style-src chrome-untrusted://resources "
+                  "chrome-untrusted://qorai-resources chrome-untrusted://theme "
+                  "'unsafe-inline';"));
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ImgSrc,
+      std::string("img-src 'self' chrome-untrusted://playlist-data "
+                  "chrome-untrusted://resources;"));
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::FontSrc,
+      std::string("font-src 'self' chrome-untrusted://resources;"));
+
+  AddLocalizedStrings(source);
+
+  content::URLDataSource::Add(
+      Profile::FromWebUI(web_ui),
+      std::make_unique<ThemeSource>(Profile::FromWebUI(web_ui), true));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PlaylistUI
+//
+// static
+bool PlaylistUI::ShouldBlockPlaylistWebUI(
+    content::BrowserContext* browser_context,
+    const GURL& url) {
+  if (url.host_piece() != kPlaylistHost) {
+    return false;
+  }
+
+  return !PlaylistServiceFactory::GetForBrowserContext(browser_context) ||
+         !user_prefs::UserPrefs::Get(browser_context)
+              ->GetBoolean(playlist::kPlaylistEnabledPref);
+}
+
+PlaylistUI::PlaylistUI(content::WebUI* web_ui)
+    : UntrustedWebUIController(web_ui) {
+  // From MojoWebUIController
+  web_ui->SetBindings(
+      content::BindingsPolicySet({content::BindingsPolicyValue::kWebUi}));
+
+  auto* source = CreateAndAddWebUIDataSource(
+      web_ui, kPlaylistURL, kPlaylistGenerated, IDR_PLAYLIST_HTML);
+
+  AddLocalizedStrings(source);
+
+  // Allow to load untrusted resources.
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::StyleSrc,
+      std::string(
+          "style-src chrome-untrusted://resources chrome-untrusted://theme "
+          "'unsafe-inline';"));
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ScriptSrc,
+      std::string("script-src 'self' "
+                  "chrome-untrusted://resources;"));
+
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ImgSrc,
+      std::string("img-src 'self' chrome-untrusted://playlist-data "
+                  "chrome-untrusted://resources;"));
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::FontSrc,
+      std::string("font-src 'self' chrome-untrusted://resources;"));
+
+  web_ui->AddRequestableScheme(content::kChromeUIUntrustedScheme);
+  source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::FrameSrc,
+      base::StrCat({"frame-src ", kPlaylistPlayerURL, ";"}));
+
+  content::URLDataSource::Add(
+      Profile::FromWebUI(web_ui),
+      std::make_unique<ThemeSource>(Profile::FromWebUI(web_ui), true));
+}
+
+PlaylistUI::~PlaylistUI() = default;
+
+void PlaylistUI::BindInterface(
+    mojo::PendingReceiver<playlist::mojom::PageHandlerFactory>
+        pending_receiver) {
+  if (page_handler_factory_receiver_.is_bound()) {
+    page_handler_factory_receiver_.reset();
+  }
+
+  page_handler_factory_receiver_.Bind(std::move(pending_receiver));
+}
+
+void PlaylistUI::CreatePageHandler(
+    mojo::PendingRemote<playlist::mojom::PlaylistPage> page,
+    mojo::PendingRemote<playlist::mojom::PlaylistServiceObserver>
+        service_observer,
+    mojo::PendingReceiver<playlist::mojom::PlaylistService> pending_service,
+    mojo::PendingReceiver<playlist::mojom::PlaylistPageHandler> native_ui) {
+  DCHECK(service_observer.is_valid());
+
+  if (page_.is_bound()) {
+    // this can happen when page navigation is triggered from browser side(Open
+    // in Playlist menu)
+    page_.reset();
+  }
+  page_.Bind(std::move(page));
+
+  auto* service = playlist::PlaylistServiceFactory::GetForBrowserContext(
+      Profile::FromWebUI(web_ui()));
+  page_handler_receivers_.Add(this, std::move(native_ui));
+  service_receivers_.Add(service, std::move(pending_service));
+  service->AddObserver(std::move(service_observer));
+
+  // When WebUI calls this, mark that the page can be shown on sidebar.
+  if (embedder_) {
+    embedder_->ShowUI();
+  }
+
+  active_tab_tracker_ = std::make_unique<PlaylistActiveTabTracker>(
+      web_ui()->GetWebContents(),
+      base::BindRepeating(&PlaylistUI::OnActiveTabStateChanged,
+                          weak_ptr_factory_.GetWeakPtr()));
+}
+
+void PlaylistUI::ShowCreatePlaylistUI() {
+  playlist::ShowCreatePlaylistDialog(web_ui()->GetWebContents());
+}
+
+void PlaylistUI::ShowRemovePlaylistUI(const std::string& playlist_id) {
+  playlist::ShowRemovePlaylistDialog(web_ui()->GetWebContents(), playlist_id);
+}
+
+void PlaylistUI::ShowMoveItemsUI(const std::string& playlist_id,
+                                 const std::vector<std::string>& items) {
+  playlist::ShowMoveItemsDialog(web_ui()->GetWebContents(), playlist_id, items);
+}
+
+void PlaylistUI::OpenSettingsPage() {
+  playlist::ShowPlaylistSettings(web_ui()->GetWebContents());
+}
+
+void PlaylistUI::ShowAddMediaToPlaylistUI() {
+  playlist::ShowPlaylistAddBubble(web_ui()->GetWebContents());
+}
+
+void PlaylistUI::ClosePanel() {
+  playlist::ClosePanel(web_ui()->GetWebContents());
+}
+
+void PlaylistUI::ShouldShowAddMediaFromPageUI(
+    ShouldShowAddMediaFromPageUICallback callback) {
+  CHECK(active_tab_tracker_);
+  std::move(callback).Run(active_tab_tracker_->ShouldShowAddMediaFromPageUI());
+}
+
+void PlaylistUI::OnActiveTabStateChanged(
+    bool should_show_add_media_from_page_ui) {
+  page_->OnActiveTabChanged(should_show_add_media_from_page_ui);
+}
+
+WEB_UI_CONTROLLER_TYPE_IMPL(PlaylistUI)
+
+////////////////////////////////////////////////////////////////////////////////
+// UntrustedPlaylistUIConfig
+//
+bool UntrustedPlaylistUIConfig::IsWebUIEnabled(
+    content::BrowserContext* browser_context) {
+  return base::FeatureList::IsEnabled(playlist::features::kPlaylist);
+}
+
+UntrustedPlaylistUIConfig::UntrustedPlaylistUIConfig()
+    : DefaultTopChromeWebUIConfig(content::kChromeUIUntrustedScheme,
+                                  kPlaylistHost) {}
+
+////////////////////////////////////////////////////////////////////////////////
+// UntrustedPlaylistPlayerUIConfig
+//
+UntrustedPlaylistPlayerUIConfig::UntrustedPlaylistPlayerUIConfig()
+    : DefaultTopChromeWebUIConfig(content::kChromeUIUntrustedScheme,
+                                  kPlaylistPlayerHost) {}
+
+}  // namespace playlist

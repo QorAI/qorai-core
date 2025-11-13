@@ -1,0 +1,25 @@
+diff --git a/chrome/test/base/testing_browser_process.cc b/chrome/test/base/testing_browser_process.cc
+index 693321f66c798fc35a8f3246d1257d03377d1798..02a8deb852992e4a1cf38a309e3ca961bf07a0d0 100644
+--- a/chrome/test/base/testing_browser_process.cc
++++ b/chrome/test/base/testing_browser_process.cc
+@@ -130,10 +130,12 @@ void TestingBrowserProcess::CreateInstance() {
+         std::move(fake_geolocation_system_permission_manager));
+   }
+ #endif  // BUILDFLAG(OS_LEVEL_GEOLOCATION_PERMISSION_SUPPORTED)
++  QORAI_TESTING_BROWSER_PROCESS_CREATE_INSTANCE
+ }
+ 
+ // static
+ void TestingBrowserProcess::DeleteInstance() {
++  QORAI_TESTING_BROWSER_PROCESS_DELETE_INSTANCE
+   // g_browser_process must be null during its own destruction.
+   BrowserProcess* browser_process = g_browser_process;
+   g_browser_process = nullptr;
+@@ -142,6 +144,7 @@ void TestingBrowserProcess::DeleteInstance() {
+ 
+ // static
+ void TestingBrowserProcess::TearDownAndDeleteInstance() {
++  QORAI_TESTING_BROWSER_PROCESS_TEAR_DOWN_AND_DELETE_INSTANCE
+   TestingBrowserProcess::DeleteInstance();
+ }
+ 

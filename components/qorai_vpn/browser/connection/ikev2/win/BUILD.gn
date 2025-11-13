@@ -1,0 +1,58 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+assert(enable_qorai_vpn)
+assert(is_win)
+
+source_set("ras_utils") {
+  sources = [
+    "ras_utils.cc",
+    "ras_utils.h",
+  ]
+  libs = [ "rasapi32.lib" ]
+  deps = [
+    "//base",
+    "//qorai/base",
+    "//qorai/components/qorai_vpn/browser/connection:common",
+    "//qorai/components/qorai_vpn/common",
+  ]
+}
+
+source_set("win") {
+  sources = [
+    "ras_connection_api_impl_win.cc",
+    "ras_connection_api_impl_win.h",
+  ]
+
+  deps = [
+    ":ras_utils",
+    "//base",
+    "//qorai/components/qorai_vpn/browser/api",
+    "//qorai/components/qorai_vpn/browser/connection:api",
+    "//qorai/components/qorai_vpn/browser/connection:common",
+    "//qorai/components/qorai_vpn/browser/connection/ikev2",
+    "//qorai/components/qorai_vpn/common",
+    "//qorai/components/qorai_vpn/common/mojom",
+    "//qorai/components/qorai_vpn/common/win/ras",
+    "//net",
+    "//services/network/public/cpp",
+  ]
+}
+
+executable("vpntool") {
+  sources = [ "winvpntool.cc" ]
+  libs = [
+    "rasapi32.lib",
+    "userenv.lib",
+  ]
+  deps = [
+    ":ras_utils",
+    ":win",
+    "//base",
+    "//qorai/components/qorai_vpn/browser/connection:common",
+  ]
+}

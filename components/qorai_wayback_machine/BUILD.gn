@@ -1,0 +1,63 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_wayback_machine/buildflags/buildflags.gni")
+import("//testing/test.gni")
+
+assert(enable_qorai_wayback_machine)
+
+static_library("qorai_wayback_machine") {
+  assert_no_deps = [ "//chrome/*" ]
+
+  sources = [
+    "qorai_wayback_machine_tab_helper.cc",
+    "qorai_wayback_machine_tab_helper.h",
+    "qorai_wayback_machine_utils.cc",
+    "qorai_wayback_machine_utils.h",
+    "pref_names.h",
+    "url_constants.h",
+    "wayback_machine_url_fetcher.cc",
+    "wayback_machine_url_fetcher.h",
+    "wayback_state.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/api_request_helper",
+    "//qorai/components/constants",
+    "//components/prefs",
+    "//components/user_prefs",
+    "//content/public/browser",
+    "//content/public/common",
+    "//net",
+    "//services/network/public/cpp",
+    "//ui/gfx:native_widget_types",
+    "//url",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [
+    "qorai_wayback_machine_policy_unittest.cc",
+    "qorai_wayback_machine_utils_unittest.cc",
+    "wayback_machine_url_fetcher_unittest.cc",
+  ]
+
+  deps = [
+    ":qorai_wayback_machine",
+    "//base",
+    "//base/test:test_support",
+    "//components/sync_preferences",
+    "//components/sync_preferences:test_support",
+    "//net",
+    "//services/data_decoder/public/cpp:test_support",
+    "//services/network:network_service",
+    "//services/network:test_support",
+    "//services/network/public/cpp",
+    "//testing/gtest",
+    "//url",
+  ]
+}

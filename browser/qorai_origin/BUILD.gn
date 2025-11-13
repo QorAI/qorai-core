@@ -1,0 +1,89 @@
+# Copyright (c) 2025 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_wayback_machine/buildflags/buildflags.gni")
+import("//qorai/components/ipfs/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//build/config/features.gni")
+
+source_set("qorai_origin") {
+  sources = [
+    "qorai_origin_service_factory.cc",
+    "qorai_origin_service_factory.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/browser/policy:qorai_simple_policy_map",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_origin",
+    "//qorai/components/qorai_policy",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wallet/common:pref_names",
+    "//qorai/components/qorai_wayback_machine/buildflags",
+    "//qorai/components/constants",
+    "//qorai/components/ipfs/buildflags",
+    "//qorai/components/p3a",
+    "//qorai/components/speedreader/common/buildflags",
+    "//qorai/components/tor/buildflags",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/profiles",
+    "//components/keyed_service/content",
+    "//components/policy/core/browser",
+    "//components/policy/core/common",
+  ]
+
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/components/qorai_vpn/common" ]
+  }
+
+  if (enable_qorai_wayback_machine) {
+    deps += [ "//qorai/components/qorai_wayback_machine" ]
+  }
+
+  if (enable_speedreader) {
+    deps += [ "//qorai/components/speedreader" ]
+  }
+
+  if (enable_tor) {
+    deps += [ "//qorai/components/tor:pref_names" ]
+  }
+
+  if (deprecate_ipfs) {
+    deps += [ "//qorai/components/ipfs" ]
+  }
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [ "qorai_origin_service_factory_unittest.cc" ]
+
+  deps = [
+    ":qorai_origin",
+    "//base/test:test_support",
+    "//qorai/browser/policy:qorai_simple_policy_map",
+    "//qorai/components/qorai_origin",
+    "//qorai/components/constants",
+    "//qorai/components/p3a",
+    "//chrome/browser/profiles",
+    "//chrome/test:test_support",
+    "//components/policy/core/common:test_support",
+    "//content/test:test_support",
+    "//testing/gtest",
+  ]
+
+  if (enable_tor) {
+    deps += [ "//qorai/components/tor:pref_names" ]
+  }
+
+  if (is_win || is_mac || is_linux) {
+    deps += [ "//qorai/components/qorai_rewards/core" ]
+  }
+}

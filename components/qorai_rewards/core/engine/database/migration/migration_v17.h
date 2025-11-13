@@ -1,0 +1,21 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_DATABASE_MIGRATION_MIGRATION_V17_H_
+#define QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_DATABASE_MIGRATION_MIGRATION_V17_H_
+
+namespace qorai_rewards::internal {
+namespace database {
+namespace migration {
+
+const char v17[] = R"(
+  ALTER TABLE contribution_info ADD processor INTEGER NOT NULL DEFAULT 1;
+)";
+
+}  // namespace migration
+}  // namespace database
+}  // namespace qorai_rewards::internal
+
+#endif  // QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_DATABASE_MIGRATION_MIGRATION_V17_H_

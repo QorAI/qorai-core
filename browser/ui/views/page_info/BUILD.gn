@@ -1,0 +1,53 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/features.gni")
+
+source_set("page_info") {
+  sources = [
+    "qorai_page_info_bubble_view.cc",
+    "qorai_page_info_bubble_view.h",
+    "qorai_page_info_tab_switcher.cc",
+    "qorai_page_info_tab_switcher.h",
+    "qorai_page_info_view_ids.h",
+    "qorai_shields_page_info_view.cc",
+    "qorai_shields_page_info_view.h",
+  ]
+
+  deps = [
+    "//qorai/browser/ui/page_info",
+    "//qorai/components/constants",
+    "//qorai/components/resources:strings",
+    "//qorai/components/vector_icons",
+    "//chrome/browser/profiles",
+    "//chrome/browser/ui/browser_window",
+    "//chrome/browser/ui/views/page_info",
+    "//chrome/browser/ui/webui:webui_util",
+    "//chrome/browser/ui/webui/top_chrome",
+    "//components/strings:components_strings",
+    "//components/tabs:public",
+    "//ui/base",
+    "//ui/views/controls/webview",
+  ]
+}
+
+source_set("browser_tests") {
+  testonly = true
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+  sources = [ "qorai_page_info_bubble_view_browsertest.cc" ]
+
+  deps = [
+    ":page_info",
+    "//qorai/browser/ui/page_info",
+    "//chrome/browser/ui/views/frame",
+    "//chrome/browser/ui/views/location_bar",
+    "//chrome/browser/ui/views/page_info",
+    "//chrome/test:test_support",
+    "//content/test:test_support",
+    "//ui/events:test_support",
+    "//ui/views:test_support",
+  ]
+}

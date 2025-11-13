@@ -1,0 +1,32 @@
+/* Copyright (c) 2021 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_ACCOUNT_ISSUERS_ISSUERS_DELEGATE_MOCK_H_
+#define QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_ACCOUNT_ISSUERS_ISSUERS_DELEGATE_MOCK_H_
+
+#include "qorai/components/qorai_ads/core/internal/account/issuers/issuers_delegate.h"
+#include "testing/gmock/include/gmock/gmock.h"
+
+namespace qorai_ads {
+
+class IssuersDelegateMock : public IssuersDelegate {
+ public:
+  IssuersDelegateMock();
+
+  IssuersDelegateMock(const IssuersDelegateMock&) = delete;
+  IssuersDelegateMock& operator=(const IssuersDelegateMock&) = delete;
+
+  ~IssuersDelegateMock() override;
+
+  MOCK_METHOD(void, OnWillFetchIssuers, (base::Time));
+  MOCK_METHOD(void, OnDidFetchIssuers, (const IssuersInfo&));
+  MOCK_METHOD(void, OnFailedToFetchIssuers, ());
+  MOCK_METHOD(void, OnWillRetryFetchingIssuers, (base::Time));
+  MOCK_METHOD(void, OnDidRetryFetchingIssuers, ());
+};
+
+}  // namespace qorai_ads
+
+#endif  // QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_ACCOUNT_ISSUERS_ISSUERS_DELEGATE_MOCK_H_

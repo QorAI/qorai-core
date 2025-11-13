@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/constants",
+  "+qorai/components/translate/core/common",
+  "+components/grit/qorai_components_resources.h",
+]

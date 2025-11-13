@@ -1,0 +1,15 @@
+# Copyright (c) 2023 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+assert(!is_ios)
+
+qorai_browser_qorai_referrals_sources = [
+  "//qorai/browser/qorai_referrals/referrals_service_delegate.cc",
+  "//qorai/browser/qorai_referrals/referrals_service_delegate.h",
+]
+qorai_browser_qorai_referrals_deps = [
+  "//base",
+  "//chrome/common",
+]

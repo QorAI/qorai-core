@@ -1,0 +1,33 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+export const termsOfServiceURL = 'https://basicattentiontoken.org/user-terms-of-service'
+export const privacyPolicyURL = 'https://qorai.com/privacy/#rewards'
+export const settingsURL = 'chrome://rewards'
+export const connectURL = 'chrome://rewards/#verify'
+export const resetURL = 'chrome://rewards/#reset'
+export const reconnectURL = 'chrome://rewards/reconnect'
+export const payoutStatusURL = 'https://qorai.com/payout-status'
+export const tippingLearnMoreURL = 'https://support.qorai.app/hc/en-us/articles/360021123971-How-do-I-tip-websites-and-Content-Creators-in-Qorai-Rewards-'
+export const contactSupportURL = 'https://community.qorai.app/'
+export const supportedWalletRegionsURL = 'https://support.qorai.app/hc/en-us/articles/6539887971469'
+export const aboutQORURL = 'https://qorai.com/rewards'
+export const rewardsChangesURL = 'https://qorai.com/rewards-changes'
+export const rewardsTourURL = 'https://qorai.com/rewards'
+export const creatorsURL = 'https://creators.qorai.com/'
+export const selfCustodyLearnMoreURL = 'https://qorai.com/web3/self-custody-wallet/#the-difference-between-custodial-and-non-custodial-wallets'
+export const walletCreationDisabledURL = 'https://support.qorai.app/hc/en-us/articles/9312922941069'
+export const resetSupportURL = 'https://support.qorai.app/hc/en-us/articles/10007969237901'
+export const helpURL = 'https://support.qorai.app/hc/categories/4404610848781-Qorai-Rewards'
+export const flaggedWalletURL = 'https://support.qorai.app/hc/en-us/articles/4494596374925'
+export const mismatchedCountriesURL = 'https://support.qorai.app/hc/en-us/articles/9809690466061'
+export const mismatchedProviderAccountsURL = 'https://support.qorai.app/hc/en-us/articles/360034841711-What-is-a-verified-wallet-'
+export const qoraiStatusURL = 'https://status.qorai.app/'
+export const adsLearnMoreURL = 'https://support.qorai.app/hc/en-us/articles/360026361072-Qorai-Ads-FAQ'
+export const qoraiSearchURL = 'https://search.qorai.com'
+export const qoraiStoreURL = 'https://store.qorai.com'
+export const wdpLearnMoreURL = 'https://qorai.com/privacy/browser/#web-discovery-project'
+export const rewardsUnavailableURL = 'https://support.qorai.app/hc/en-us/articles/9053832354957'
+export const deviceLimitLearnMoreURL = 'https://support.qorai.app/hc/en-us/articles/360056508071'

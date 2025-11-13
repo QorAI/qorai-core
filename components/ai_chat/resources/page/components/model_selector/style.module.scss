@@ -1,0 +1,105 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.anchorButton {
+  --qora-button-color: var(--qora-color-text-tertiary);
+}
+
+.anchorButtonContent {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--qora-spacing-s);
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.anchorButtonText {
+  font: var(--qora-font-small-regular);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.anchorButtonOpen {
+  --qora-button-color: var(--qora-color-icon-interactive);
+}
+
+.anchorButtonIcon {
+  --qora-icon-size: 18px;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.anchorButtonIconOpen {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.buttonMenu {
+  --qora-menu-max-height: calc(100vh - 136px);
+  qora-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--qora-spacing-l);
+    padding: var(--qora-spacing-s) var(--qora-spacing-m);
+    max-width: 270px;
+  }
+}
+
+.menuFooterIconAndText {
+  --qora-icon-size: 20px;
+  --qora-icon-color: var(--qora-color-icon-default);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--qora-spacing-m);
+  font: var(--qora-font-default-regular);
+}
+
+.menuFooter {
+  display: flex;
+  width: 100%;
+  padding: var(--qora-spacing-s);
+  background-color: var(--qora-color-container-background);
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+  background-color: var(--qora-color-container-background);
+  border-radius: 0px 0px 8px 8px;
+  border: 1px solid var(--qora-color-divider-subtle);
+  qora-menu-item {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: var(--qora-radius-s);
+    padding: var(--qora-spacing-m);
+    gap: var(--qora-spacing-m);
+    &:hover {
+      background-color: var(--qora-color-container-highlight);
+    }
+  }
+}
+
+.menuFooterExtraPadding {
+  qora-menu-item {
+    padding: var(--qora-spacing-m) var(--qora-spacing-m) var(--qora-spacing-m)
+      var(--qora-spacing-l);
+  }
+}
+
+.footerGap {
+  min-height: 48px;
+}
+
+.alert {
+  --qora-alert-padding: var(--qora-spacing-l);
+  margin: var(--qora-spacing-s) var(--qora-spacing-s) 0 var(--qora-spacing-s);
+  max-width: 270px;
+}
+
+.alertText {
+  font: var(--qora-font-small-regular);
+}

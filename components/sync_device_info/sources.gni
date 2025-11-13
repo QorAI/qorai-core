@@ -1,0 +1,10 @@
+# Copyright (c) 2020 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+qorai_components_sync_device_info_sources = [
+  "//qorai/components/sync_device_info/qorai_device_info.cc",
+  "//qorai/components/sync_device_info/qorai_device_info.h",
+]
+qorai_components_sync_device_info_deps = []

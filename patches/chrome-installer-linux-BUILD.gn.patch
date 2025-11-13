@@ -1,0 +1,93 @@
+diff --git a/chrome/installer/linux/BUILD.gn b/chrome/installer/linux/BUILD.gn
+index e74e5240eb2b5bcca9ba47b15fabeaf928e90540..322b54651a15b6e276a1f456d64a6527bc9b7f08 100644
+--- a/chrome/installer/linux/BUILD.gn
++++ b/chrome/installer/linux/BUILD.gn
+@@ -17,6 +17,7 @@ import("//third_party/angle/gni/angle.gni")
+ import("//third_party/widevine/cdm/widevine.gni")
+ import("//ui/gl/features.gni")
+ import("//ui/qt/qt.gni")
++import("//qorai/build/config.gni")
+ 
+ if (bundle_widevine_cdm) {
+   import("//media/cdm/library_cdm/cdm_paths.gni")
+@@ -64,6 +65,7 @@ if (build_with_internal_optimization_guide) {
+       [ "$root_out_dir/liboptimization_guide_internal.so" ]
+ }
+ 
++packaging_files_executables -= excluded_packaging_files_executables packaging_files_executables += qorai_packaging_files_executables
+ packaging_files_binaries = packaging_files_executables + packaging_files_shlibs
+ 
+ # TODO(mmoss) Any convenient way to get all the relevant build files?
+@@ -172,6 +174,7 @@ action("merge_rpm_dependencies") {
+ strip_binary("strip_chrome_binary") {
+   binary_input = "$root_out_dir/chrome"
+   deps = [ "//chrome" ]
++  binary_input = "$root_out_dir/qorai" symbol_output = "$root_out_dir/qorai.debug" stripped_binary_output = "$root_out_dir/qorai.stripped" deps += strip_chrome_binary_deps
+ }
+ 
+ strip_binary("strip_chrome_crashpad_handler") {
+@@ -187,6 +190,7 @@ strip_binary("strip_chrome_management_service") {
+ strip_binary("strip_chrome_sandbox") {
+   binary_input = "$root_out_dir/chrome_sandbox"
+   deps = [ "//sandbox/linux:chrome_sandbox" ]
++  binary_input = "$root_out_dir/qorai_sandbox" symbol_output = "$root_out_dir/qorai_sandbox.debug" stripped_binary_output = "$root_out_dir/qorai_sandbox.stripped" deps += strip_chrome_sandbox_deps
+ }
+ 
+ strip_binary("strip_libEGL_shlib") {
+@@ -276,6 +280,7 @@ copy("common_packaging_files") {
+   }
+ 
+   outputs = [ "$root_out_dir/installer/common/{{source_file_part}}" ]
++  sources -= common_packaging_files_excluded_sources sources += common_packaging_files_sources
+ }
+ 
+ copy("deb_packaging_files") {
+@@ -377,6 +382,7 @@ group("installer_deps") {
+     "//components/privacy_sandbox/privacy_sandbox_attestations/preload:component",
+     "//sandbox/linux:chrome_sandbox",
+   ]
++  public_deps += qorai_installer_deps
+   if (bundle_widevine_cdm) {
+     public_deps += [ "//third_party/widevine/cdm" ]
+   }
+@@ -431,11 +437,14 @@ group("installer_deps") {
+ template("linux_package") {
+   assert(defined(invoker.channel))
+   channel = invoker.channel
++  if (channel == "unstable" ) {
++    channel = "dev"
++  }
+ 
+   if (is_chrome_branded) {
+     package = "google-chrome"
+   } else {
+-    package = "chromium-browser"
++    package = "qorai-browser" chrome_version_full = qorai_version
+   }
+ 
+   deb_target_name = "${target_name}_deb"
+@@ -464,7 +473,7 @@ template("linux_package") {
+     }
+ 
+     inputs = packaging_files
+-    outputs = [ "$root_out_dir/${package}-${channel}_${chrome_version_full}-1_${deb_arch}.deb" ]
++    if (channel == "stable") { outputs = [ "$root_out_dir/${package}_${chrome_version_full}_${deb_arch}.deb" ] } else { outputs = [ "$root_out_dir/${package}-${channel}_${chrome_version_full}_${deb_arch}.deb" ] }
+ 
+     args = [
+       rebase_path("$root_out_dir/installer/debian/build.sh", root_build_dir),
+@@ -519,7 +528,7 @@ template("linux_package") {
+       }
+ 
+       inputs = packaging_files
+-      outputs = [ "$root_out_dir/${package}-${channel}-${chrome_version_full}-1.${rpm_arch}.rpm" ]
++      if (channel == "stable") { outputs = [ "$root_out_dir/${package}-${chrome_version_full}-1.${rpm_arch}.rpm" ] } else { outputs = [ "$root_out_dir/${package}-${channel}-${chrome_version_full}-1.${rpm_arch}.rpm" ] }
+ 
+       args = [
+         rebase_path("$root_out_dir/installer/rpm/build.sh", root_build_dir),
+@@ -567,3 +576,6 @@ linux_package("unstable") {
+ linux_package("canary") {
+   channel = "canary"
+ }
++linux_package("nightly") {
++  channel = "nightly"
++}

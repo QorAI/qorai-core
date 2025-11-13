@@ -1,0 +1,73 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# common includes which can help minimize patches for
+# src/third_party/blink/renderer/core/BUILD.gn
+
+import("//qorai/third_party/blink/renderer/core/qorai_page_graph/sources.gni")
+
+qorai_blink_renderer_platform_visibility = []
+
+qorai_blink_renderer_platform_public_deps = []
+
+qorai_blink_renderer_platform_sources = [
+  "//qorai/third_party/blink/renderer/platform/qorai_audio_farbling_helper.cc",
+  "//qorai/third_party/blink/renderer/platform/qorai_audio_farbling_helper.h",
+]
+
+qorai_blink_renderer_platform_deps = []
+
+qorai_blink_renderer_core_visibility =
+    [ "//qorai/third_party/blink/renderer/*" ]
+
+qorai_blink_renderer_core_public_deps = [
+  "//qorai/components/qorai_page_graph/common:buildflags",
+  "//qorai/third_party/blink/renderer",
+]
+
+qorai_blink_renderer_core_sources = [
+  "//qorai/third_party/blink/renderer/core/farbling/qorai_session_cache.cc",
+  "//qorai/third_party/blink/renderer/core/farbling/qorai_session_cache.h",
+  "//qorai/third_party/blink/renderer/core/resource_pool_limiter/resource_pool_limiter.cc",
+  "//qorai/third_party/blink/renderer/core/resource_pool_limiter/resource_pool_limiter.h",
+]
+
+qorai_blink_renderer_core_deps =
+    [ "//qorai/components/qorai_shields/core/common/" ]
+
+if (!is_android && !is_ios) {
+  qorai_blink_renderer_core_deps += [ "//qorai/components/qorai_geolocation_permission/common:qorai_geolocation_permission_blink" ]
+}
+
+qorai_blink_renderer_core_public_deps += qorai_page_graph_core_public_deps
+qorai_blink_renderer_core_sources += qorai_page_graph_core_sources
+qorai_blink_renderer_core_deps += qorai_page_graph_core_deps
+
+# common includes which can help minimize patches for
+# src/third_party/blink/renderer/modules/BUILD.gn
+qorai_blink_renderer_modules_visibility =
+    [ "//qorai/third_party/blink/renderer/*" ]
+
+qorai_blink_sub_modules = [
+  "//qorai/third_party/blink/renderer/modules/qorai",
+  "//qorai/third_party/blink/renderer/modules/global_privacy_control",
+]
+
+# common includes which can help minimize patches for
+# third_party/blink/renderer/bindings/idl_in_modules.gni
+qorai_static_idl_files_in_modules = [
+  "//qorai/third_party/blink/renderer/modules/qorai/qorai.idl",
+  "//qorai/third_party/blink/renderer/modules/qorai/navigator_qorai.idl",
+  "//qorai/third_party/blink/renderer/modules/qorai/worker_navigator_qorai.idl",
+  "//qorai/third_party/blink/renderer/modules/global_privacy_control/navigator_global_privacy_control.idl",
+  "//qorai/third_party/blink/renderer/modules/global_privacy_control/worker_navigator_global_privacy_control.idl",
+]
+
+# common includes which can help minimize patches for
+# third_party/blink/renderer/bindings/generated_in_modules.gni
+qorai_generated_interface_sources_in_modules = [
+  "$root_gen_dir/third_party/blink/renderer/bindings/modules/v8/v8_qorai.h",
+  "$root_gen_dir/third_party/blink/renderer/bindings/modules/v8/v8_qorai.cc",
+]

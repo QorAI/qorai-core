@@ -1,0 +1,67 @@
+/* Copyright (c) 2021 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "base/command_line.h"
+#include "chrome/test/base/in_process_browser_test.h"
+#include "components/os_crypt/sync/keychain_password_mac.h"
+#include "content/public/test/browser_test.h"
+
+namespace {
+struct TestParams {
+  const char* switch_to_append;
+  const char* service_name;
+  const char* account_name;
+};
+
+constexpr TestParams kTestVectors[] = {
+    {
+        nullptr,
+        "Qorai Safe Storage",
+        "Qorai",
+    },
+    {
+        "import-qorai",
+        "Chromium Safe Storage",
+        "Chromium",
+    },
+    {
+        "import-chromium",
+        "Chromium Safe Storage",
+        "Chromium",
+    },
+    {
+        "import-chrome",
+        "Chrome Safe Storage",
+        "Chrome",
+    },
+};
+}  // namespace
+
+class QoraiKeychainPasswordTest
+    : public InProcessBrowserTest,
+      public ::testing::WithParamInterface<TestParams> {
+ public:
+  QoraiKeychainPasswordTest() = default;
+  QoraiKeychainPasswordTest(const QoraiKeychainPasswordTest&) = delete;
+  QoraiKeychainPasswordTest& operator=(const QoraiKeychainPasswordTest&) =
+      delete;
+};
+
+// It has to be browser test instead of unit test becasue GetServiceName() and
+// GetAccountName() uses a static variable inside the function, only browser
+// test can exit program for each test suite
+IN_PROC_BROWSER_TEST_P(QoraiKeychainPasswordTest, ServiceAndAccountName) {
+  TestParams test_data(GetParam());
+  if (test_data.switch_to_append) {
+    base::CommandLine::ForCurrentProcess()->AppendSwitch(
+        test_data.switch_to_append);
+  }
+  EXPECT_EQ(KeychainPassword::GetServiceName(), test_data.service_name);
+  EXPECT_EQ(KeychainPassword::GetAccountName(), test_data.account_name);
+}
+
+INSTANTIATE_TEST_SUITE_P(/*no prefix*/,
+                         QoraiKeychainPasswordTest,
+                         testing::ValuesIn(kTestVectors));

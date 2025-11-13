@@ -1,0 +1,22 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("services") {
+  sources = [
+    "qor_ads_service_factory_impl.cc",
+    "qor_ads_service_factory_impl.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/services/qor_ads:lib",
+    "//content/public/browser",
+    "//mojo/public/cpp/bindings",
+    "//mojo/public/cpp/system",
+  ]
+}

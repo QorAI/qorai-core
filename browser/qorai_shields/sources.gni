@@ -1,0 +1,52 @@
+# Copyright (c) 2021 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+qorai_browser_qorai_shields_sources = [
+  "//qorai/browser/qorai_shields/ad_block_pref_service_factory.cc",
+  "//qorai/browser/qorai_shields/ad_block_pref_service_factory.h",
+  "//qorai/browser/qorai_shields/ad_block_subscription_download_manager_getter.cc",
+  "//qorai/browser/qorai_shields/ad_block_subscription_download_manager_getter.h",
+  "//qorai/browser/qorai_shields/qorai_farbling_service_factory.cc",
+  "//qorai/browser/qorai_shields/qorai_farbling_service_factory.h",
+  "//qorai/browser/qorai_shields/qorai_shields_settings_service_factory.cc",
+  "//qorai/browser/qorai_shields/qorai_shields_settings_service_factory.h",
+  "//qorai/browser/qorai_shields/qorai_shields_tab_helper.cc",
+  "//qorai/browser/qorai_shields/qorai_shields_tab_helper.h",
+  "//qorai/browser/qorai_shields/qorai_shields_web_contents_observer.cc",
+  "//qorai/browser/qorai_shields/qorai_shields_web_contents_observer.h",
+  "//qorai/browser/qorai_shields/filter_list_service_factory.cc",
+  "//qorai/browser/qorai_shields/filter_list_service_factory.h",
+]
+
+qorai_browser_qorai_shields_deps = [
+  "//base",
+  "//qorai/browser:browser_process",
+  "//qorai/common",
+  "//qorai/components/qorai_perf_predictor/browser",
+  "//qorai/components/qorai_shields/content/browser",
+  "//qorai/components/qorai_shields/core/browser",
+  "//qorai/components/qorai_shields/core/common",
+  "//qorai/components/constants",
+  "//chrome/browser/profiles:profile",
+  "//chrome/common",
+  "//components/content_settings/core/browser",
+  "//components/content_settings/core/common",
+  "//components/keyed_service/content",
+  "//components/prefs",
+  "//content/public/browser",
+  "//ipc",
+  "//mojo/public/cpp/bindings",
+]
+
+if (is_android) {
+  qorai_browser_qorai_shields_sources += [
+    "//qorai/browser/qorai_shields/android/filter_list_service_factory_android.cc",
+    "//qorai/browser/qorai_shields/qorai_shields_web_contents_observer_android.cc",
+  ]
+  qorai_browser_qorai_shields_deps += [
+    "//qorai/browser/android:android_browser_process",
+    "//qorai/build/android:jni_headers",
+  ]
+}

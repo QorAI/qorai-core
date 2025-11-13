@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/ipfs",
+  "+components/grit/qorai_components_strings.h",
+]

@@ -1,0 +1,75 @@
+// Copyright (c) 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+#ifndef QORAI_COMPONENTS_QORAI_WALLET_BROWSER_ZCASH_ZCASH_CREATE_TRANSPARENT_TRANSACTION_TASK_H_
+#define QORAI_COMPONENTS_QORAI_WALLET_BROWSER_ZCASH_ZCASH_CREATE_TRANSPARENT_TRANSACTION_TASK_H_
+
+#include <string>
+
+#include "base/memory/raw_ref.h"
+#include "qorai/components/qorai_wallet/browser/zcash/zcash_action_context.h"
+#include "qorai/components/qorai_wallet/browser/zcash/zcash_wallet_service.h"
+
+namespace qorai_wallet {
+
+// Creates transaction with transparent inputs and transparent outputs.
+class ZCashCreateTransparentTransactionTask {
+ public:
+  using UtxoMap = ZCashWalletService::UtxoMap;
+  using CreateTransactionCallback =
+      ZCashWalletService::CreateTransactionCallback;
+
+  ZCashCreateTransparentTransactionTask(
+      std::variant<
+          base::PassKey<ZCashWalletService>,
+          base::PassKey<class ZCashCreateTransparentTransactionTaskTest>>
+          pass_key,
+      ZCashWalletService& zcash_wallet_service,
+      ZCashActionContext context,
+      const std::string& address_to,
+      uint64_t amount);
+  ~ZCashCreateTransparentTransactionTask();
+
+  void Start(CreateTransactionCallback callback);
+
+ private:
+  void ScheduleWorkOnTask();
+  void WorkOnTask();
+
+  bool IsTestnet() {
+    return context_.account_id->keyring_id == mojom::KeyringId::kZCashTestnet;
+  }
+
+  void SetError(const std::string& error_string) { error_ = error_string; }
+
+  bool PrepareOutputs();
+
+  void OnGetChainHeight(
+      base::expected<zcash::mojom::BlockIDPtr, std::string> result);
+  void OnGetUtxos(
+      base::expected<ZCashWalletService::UtxoMap, std::string> utxo_map);
+  void OnGetChangeAddress(
+      base::expected<mojom::ZCashAddressPtr, std::string> result);
+
+  const raw_ref<ZCashWalletService> zcash_wallet_service_;  // Owns `this`.
+  ZCashActionContext context_;
+  uint64_t amount_;
+  CreateTransactionCallback callback_;
+
+  std::optional<uint32_t> chain_height_;
+  std::optional<ZCashWalletService::UtxoMap> utxo_map_;
+
+  std::optional<std::string> error_;
+  ZCashTransaction transaction_;
+
+  mojom::ZCashAddressPtr change_address_;
+
+  base::WeakPtrFactory<ZCashCreateTransparentTransactionTask> weak_ptr_factory_{
+      this};
+};
+
+}  // namespace qorai_wallet
+
+#endif  // QORAI_COMPONENTS_QORAI_WALLET_BROWSER_ZCASH_ZCASH_CREATE_TRANSPARENT_TRANSACTION_TASK_H_

@@ -1,0 +1,63 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//build/config/ios/rules.gni")
+import("//ios/build/config.gni")
+
+group("browser") {
+  deps = [
+    "api/bookmarks",
+    "api/bookmarks/exporter",
+    "api/bookmarks/importer",
+    "api/qorai_domains",
+    "api/qorai_services_key",
+    "api/qorai_shields",
+    "api/qorai_wallet:wallet_mojom_wrappers",
+    "api/certificate",
+    "api/content_settings",
+    "api/credential_provider",
+    "api/developer_options_code",
+    "api/favicon",
+    "api/features",
+    "api/history",
+    "api/history/importer",
+    "api/https_upgrades",
+    "api/ipfs",
+    "api/net",
+    "api/ntp_background_images",
+    "api/omnibox",
+    "api/opentabs",
+    "api/p3a",
+    "api/password",
+    "api/session_restore",
+    "api/storekit_receipt",
+    "api/sync",
+    "api/translate",
+    "api/unicode",
+    "api/unzip",
+    "api/url",
+    "api/version_info",
+    "api/web",
+    "api/web_image",
+    "api/web_view",
+    "qorai_wallet",
+    "//qorai/browser/sync",
+    "//qorai/components/constants",
+    "//qorai/ios/browser/ai_chat",
+    "//qorai/ios/browser/application_context",
+    "//qorai/ios/browser/qorai_news",
+    "//qorai/ios/browser/qorai_vpn",
+    "//qorai/ios/browser/qorai_wallet",
+    "//qorai/ios/browser/playlist",
+    "//qorai/ios/browser/policy",
+    "//qorai/ios/browser/profile/model",
+    "//qorai/ios/browser/safari_data_import",
+    "//qorai/ios/browser/shared/prefs",
+    "//qorai/ios/browser/ui/webui",
+    "//qorai/ios/browser/web",
+    "//qorai/ios/components/prefs",
+    "//ios/chrome/browser/shared/model/prefs",
+  ]
+}

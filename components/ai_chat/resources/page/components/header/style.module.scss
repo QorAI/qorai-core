@@ -1,0 +1,95 @@
+// Copyright (c) 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// you can obtain one at https://mozilla.org/MPL/2.0/.
+
+.header {
+  padding: var(--qora-spacing-m) var(--qora-spacing-xl);
+  border-bottom: 1px solid var(--qora-color-divider-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  min-height: 60px;
+
+  & qora-button {
+    flex-grow: 0;
+  }
+}
+
+.actions {
+  --qora-icon-size: 20px;
+  --gap: 12px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  color: var(--qora-color-icon-default);
+  gap: var(--gap);
+}
+
+.logo {
+  --qora-icon-size: 20px;
+  --qora-icon-color: linear-gradient(
+    314.42deg,
+    #fa7250 8.49%,
+    #ff1893 43.72%,
+    #a78aff 99.51%
+  );
+
+  display: flex;
+  align-items: center;
+  gap: var(--qora-spacing-m);
+  font: var(--qora-font-large-regular);
+  white-space: nowrap;
+}
+
+.logoTitle {
+  font: var(--qora-font-heading-h4);
+  color: var(--qora-color-text-primary);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.badgePremium {
+  background: var(--qora-color-blue-20);
+  color: var(--qora-color-blue-50);
+  user-select: none;
+  padding: 3px 5px;
+  font: var(--qora-font-x-small-semibold);
+  border-radius: 4px;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.divider {
+  height: 20px;
+  width: 1px;
+  background: var(--qora-color-divider-subtle);
+}
+
+.logoBody {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-left: 36px;
+
+  &:not(:first-child) {
+    padding-left: 16px;
+  }
+}
+
+.conversationTitle {
+  margin-right: var(--qora-spacing-m);
+  display: flex;
+  align-items: center;
+  gap: var(--qora-spacing-m);
+  overflow: hidden;
+}
+
+.conversationTitleText {
+  font: var(--qora-font-heading-h4);
+  color: var(--qora-color-text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

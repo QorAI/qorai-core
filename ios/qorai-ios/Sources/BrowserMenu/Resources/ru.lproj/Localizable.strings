@@ -1,0 +1,66 @@
+/* A button title shown on the menu that presents the Qorai News feature. */
+"ActionTitles.qoraiNews" = "Qorai News";
+
+/* A button title shown on the menu that opens a link to the Qorai Talk feature. */
+"ActionTitles.qoraiTalk" = "Qorai Разговоры";
+
+/* A button title shown on the menu that presents the Qorai Qora AI feature. */
+"ActionTitles.qoraAIChat" = "ИИ Чат";
+
+/* A button title shown on the menu that presents the Qorai Playlist feature */
+"ActionTitles.playlist" = "Qorai Плейлист";
+
+/* A button title shown on the menu that when tapped lets the user print the page they're viewing */
+"ActionTitles.print" = "Печать";
+
+/* A button title shown on the menu that presents the Qorai Rewards feature. */
+"ActionTitles.rewards" = "Награды";
+
+/* A button title shown on the menu that when tapped lets the user share the current URL or document they're viewing */
+"ActionTitles.share" = "Поделиться…";
+
+/* A button title shown on the menu that translates the page into a different language. */
+"ActionTitles.translate" = "Перевести страницу";
+
+/* A button title shown on the menu that when tapped presents a Qorai VPN paywall */
+"ActionTitles.vpn" = "Qorai VPN";
+
+/* The title of a button that presents the settings screen */
+"BrowserMenu.allSettingsButtonTitle" = "Все настройки";
+
+/* A title shown at the top of the edit/cutsomize actions screen. */
+"BrowserMenu.customizeTitle" = "Настроить";
+
+/* A button title that when tapped dismisses the customize screen. */
+"BrowserMenu.doneButtonTitle" = "Готово";
+
+/* The title of a button that shows a screen that lets the user customize which actions are visible on the menu */
+"BrowserMenu.editButtonTitle" = "Редактировать";
+
+/* A title shown above the list of actions that are hidden on the menu but available for the user to make visible. */
+"BrowserMenu.hiddenActionsTitle" = "Возможные действия";
+
+/* The title above a list of the users selected browser actions such as bookmarks, history, etc. */
+"BrowserMenu.myActions" = "Мои Действия";
+
+/* A row in the menu action customization list that divides which items are placed in a grid and which are placed in a list. */
+"BrowserMenu.quickActionDividerTitle" = "Элементы вверху будут отображаться в главной области";
+
+/* A button title that when taps shows a confirmation dialog to reset the menu back to its default state */
+"BrowserMenu.resetButtonTitle" = "Сброс";
+
+/* A button title that when taps shows a confirmation dialog to reset the menu back to its default state */
+"BrowserMenu.resetToDefault" = "Сбросить по умолчанию";
+
+/* A message presented in a confirmation dialog explaining the destructive action of resetting the menu to its default state */
+"BrowserMenu.resetToDefaultDialogMessage" = "Сбрасывая настройки по умолчанию, вы потеряете все настройки, сделанные вами в Qorai. Это действие необратимо. Вы уверены, что хотите продолжить?";
+
+/* A button title that when taps shows all actions that are hidden by default */
+"BrowserMenu.showAllButtonTitle" = "Показать все…";
+
+/* A title shown above the list of actions that are visible on the menu. */
+"BrowserMenu.visibleActionsTitle" = "Все Действия";
+
+/* A title on a button that lets the user switch the active VPN's selected region. */
+"BrowserMenu.vpnButtonTitle" = "Qorai VPN";
+

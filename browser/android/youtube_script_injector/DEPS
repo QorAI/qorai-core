@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/script_injector/common",
+  "+qorai/content/public/browser",
+]

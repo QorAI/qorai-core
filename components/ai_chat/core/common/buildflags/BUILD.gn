@@ -1,0 +1,26 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# TODO(https://github.com/qorai/qorai-browser/issues/48186): Move to root of
+# component.
+
+import("//build/buildflag_header.gni")
+import("buildflags.gni")
+
+declare_args() {
+  service_key_aichat = ""
+}
+
+if (is_official_build) {
+  assert(service_key_aichat != "")
+}
+
+buildflag_header("buildflags") {
+  header = "buildflags.h"
+  flags = [
+    "SERVICE_KEY_AICHAT=\"$service_key_aichat\"",
+    "ENABLE_QORAI_AI_CHAT_AGENT_PROFILE=$enable_qorai_ai_chat_agent_profile",
+  ]
+}

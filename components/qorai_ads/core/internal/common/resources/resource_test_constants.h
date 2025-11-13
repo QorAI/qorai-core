@@ -1,0 +1,17 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_COMMON_RESOURCES_RESOURCE_TEST_CONSTANTS_H_
+#define QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_COMMON_RESOURCES_RESOURCE_TEST_CONSTANTS_H_
+
+namespace qorai_ads::test {
+
+inline constexpr char kMissingResourceId[] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+inline constexpr char kMalformedResourceId[] =
+    "resources/components/malformed_resource_component";
+
+}  // namespace qorai_ads::test
+
+#endif  // QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_COMMON_RESOURCES_RESOURCE_TEST_CONSTANTS_H_

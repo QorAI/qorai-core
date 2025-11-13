@@ -1,0 +1,12 @@
+diff --git a/front_end/panels/network/BUILD.gn b/front_end/panels/network/BUILD.gn
+index 69ed7f0733af122d9fd419ed0a689846720cdcf8..2c50956a9da817e31daab50f7bfdfc73480c3a81 100644
+--- a/front_end/panels/network/BUILD.gn
++++ b/front_end/panels/network/BUILD.gn
+@@ -100,6 +100,7 @@ devtools_module("network") {
+     "./components:bundle",
+     "./forward:bundle",
+   ]
++  import("//qorai/third_party/devtools-frontend/src/front_end/panels/network/sources.gni")  sources += qorai_devtools_front_end_panels_network_source
+ }
+ 
+ devtools_entrypoint("bundle") {

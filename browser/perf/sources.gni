@@ -1,0 +1,26 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+
+qorai_browser_perf_sources = [
+  "//qorai/browser/perf/qorai_perf_features_processor.cc",
+  "//qorai/browser/perf/qorai_perf_features_processor.h",
+  "//qorai/browser/perf/qorai_perf_switches.h",
+]
+
+qorai_browser_perf_deps = [
+  "//base",
+  "//qorai/components/qorai_ads/core",
+  "//qorai/components/qorai_rewards/content",
+  "//qorai/components/qorai_shields/content/browser",
+  "//qorai/components/qorai_shields/core/browser",
+  "//qorai/components/qorai_shields/core/common/",
+  "//components/prefs",
+]
+
+if (enable_speedreader) {
+  qorai_browser_perf_deps += [ "//qorai/components/speedreader" ]
+}

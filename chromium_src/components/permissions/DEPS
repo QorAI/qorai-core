@@ -1,0 +1,10 @@
+include_rules = [
+  "+qorai/components/qorai_wallet/browser/permission_utils.h",
+  "+qorai/components/permissions",
+  "+components/grit/qorai_components_strings.h",
+  "+components/resources/android",
+  "+components/strings/grit/components_strings.h",
+  "+components/vector_icons",
+  "+third_party/widevine/cdm",
+  "+ui/gfx",
+]

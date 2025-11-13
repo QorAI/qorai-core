@@ -1,0 +1,9 @@
+include_rules = [
+  "+qorai/browser",
+  "+qorai/common",
+  "+qorai/renderer",
+  "+qorai/app",
+  "+qorai/utility",
+  "+qorai/components/qorai_shields/content/browser",
+  "+qorai/test/base",
+]

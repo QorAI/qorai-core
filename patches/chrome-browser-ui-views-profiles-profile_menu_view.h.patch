@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/ui/views/profiles/profile_menu_view.h b/chrome/browser/ui/views/profiles/profile_menu_view.h
+index a2ad71dbabb32905d7bead0dd9a452d61378de7f..ea7c7ef7001fccc46ad37b2535216aa80fe08f10 100644
+--- a/chrome/browser/ui/views/profiles/profile_menu_view.h
++++ b/chrome/browser/ui/views/profiles/profile_menu_view.h
+@@ -73,6 +73,7 @@ class ProfileMenuView : public ProfileMenuViewBase {
+   }
+ 
+  private:
++  QORAI_PROFILE_MENU_VIEW_H
+   friend class ProfileMenuViewExtensionsTest;
+   friend class ProfileMenuViewSigninPendingTest;
+   friend class ProfileMenuViewSignoutTest;

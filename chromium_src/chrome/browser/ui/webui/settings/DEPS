@@ -1,0 +1,8 @@
+include_rules = [
+  "+qorai/components/sync/service",
+  "+qorai/components/qorai_vpn/common/buildflags",
+  "+qorai/net/dns",
+  "+qorai/components/qorai_vpn/common",
+  "+qorai/components/qorai_shields/core/common",
+  "+qorai/components/content_settings/core/browser",
+]

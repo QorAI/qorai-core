@@ -1,0 +1,45 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+import("//build/config/features.gni")
+
+source_set("qorai_wallet") {
+  sources = [
+    "line_chart_ui.h",
+    "line_chart_ui.mm",
+    "market_ui.h",
+    "market_ui.mm",
+    "nft_ui.h",
+    "nft_ui.mm",
+    "wallet_page_handler.h",
+    "wallet_page_handler.mm",
+    "wallet_page_ui.h",
+    "wallet_page_ui.mm",
+  ]
+
+  deps = [
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:constants",
+    "//qorai/components/qorai_wallet/browser:wallet_handler",
+    "//qorai/components/qorai_wallet/common",
+    "//qorai/components/qorai_wallet_ui/line_chart:line_chart_display_generated",
+    "//qorai/components/qorai_wallet_ui/market:market_display_generated",
+    "//qorai/components/qorai_wallet_ui/nft:nft_display_generated",
+    "//qorai/components/qorai_wallet_ui/page:qorai_wallet_page_generated",
+    "//qorai/components/constants",
+    "//qorai/components/resources:static_resources_grit",
+    "//qorai/ios/browser/qorai_wallet",
+    "//qorai/ios/browser/ui/webui:data_sources",
+    "//qorai/ios/web/webui",
+    "//ios/chrome/browser/shared/model/profile",
+    "//ios/web/public",
+    "//ios/web/public/webui",
+    "//ios/web/web_state",
+    "//mojo/public/cpp/bindings",
+    "//ui/base",
+    "//ui/webui/resources:resources_grit",
+  ]
+}

@@ -1,0 +1,12 @@
+diff --git a/content/public/browser/BUILD.gn b/content/public/browser/BUILD.gn
+index 143bd74a6920fea431c1fd99910ecff24d51271e..ea5d964c0e66a1e3b7d29e69af7696415441ec2a 100644
+--- a/content/public/browser/BUILD.gn
++++ b/content/public/browser/BUILD.gn
+@@ -755,6 +755,7 @@ source_set("browser_sources") {
+   if (enable_video_effects) {
+     public_deps += [ "//services/video_effects/public/mojom" ]
+   }
++  import("//qorai/content/public/browser/sources.gni") sources += qorai_content_public_browser_sources
+ }
+ 
+ if (is_android) {

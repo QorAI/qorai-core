@@ -1,0 +1,54 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/features.gni")
+
+static_library("browser") {
+  sources = [
+    "backup_results_allowed_urls.cc",
+    "backup_results_allowed_urls.h",
+    "backup_results_metrics.cc",
+    "backup_results_metrics.h",
+    "backup_results_service.cc",
+    "backup_results_service.h",
+    "qorai_search_default_host.cc",
+    "qorai_search_default_host.h",
+    "qorai_search_default_host_private.cc",
+    "qorai_search_default_host_private.h",
+    "qorai_search_fallback_host.cc",
+    "qorai_search_fallback_host.h",
+    "prefs.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_search/common",
+    "//qorai/components/qorai_search/common:mojom",
+    "//qorai/components/qorai_search_conversion",
+    "//qorai/components/p3a_utils",
+    "//qorai/components/time_period_storage",
+    "//components/prefs",
+    "//components/search_engines",
+    "//net",
+    "//services/network/public/cpp",
+    "//url",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [
+    "backup_results_allowed_urls_unittest.cc",
+    "backup_results_metrics_unittest.cc",
+  ]
+
+  deps = [
+    ":browser",
+    "//base/test:test_support",
+    "//components/prefs:test_support",
+    "//testing/gtest",
+    "//url",
+  ]
+}

@@ -1,0 +1,50 @@
+/* Copyright (c) 2024 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_MIGRATIONS_PREF_MIGRATION_MANAGER_H_
+#define QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_MIGRATIONS_PREF_MIGRATION_MANAGER_H_
+
+#include "base/memory/weak_ptr.h"
+#include "qorai/components/qorai_rewards/core/engine/rewards_engine_helper.h"
+
+namespace qorai_rewards::internal {
+
+class RewardsPrefs;
+
+// Responsible for performing migrations on data stored in user preferences.
+class PrefMigrationManager : public RewardsEngineHelper,
+                             public WithHelperKey<PrefMigrationManager> {
+ public:
+  explicit PrefMigrationManager(RewardsEngine& engine);
+  ~PrefMigrationManager() override;
+
+  // Migrates the user to the current pref version.
+  void MigratePrefs(base::OnceClosure callback);
+
+  void MigratePrefsForTesting(int target_version, base::OnceClosure callback);
+
+  static int GetCurrentVersionForTesting();
+
+ private:
+  RewardsPrefs& prefs();
+
+  void MigratePrefsToVersion(int target_version, base::OnceClosure callback);
+
+  template <int... kVersions>
+  void PerformMigrations(int target_version,
+                         std::integer_sequence<int, kVersions...>);
+
+  template <int kVersion>
+  void MaybePerformMigration(int target_version);
+
+  template <int kVersion>
+  void MigrateToVersion();
+
+  base::WeakPtrFactory<PrefMigrationManager> weak_factory_{this};
+};
+
+}  // namespace qorai_rewards::internal
+
+#endif  // QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_MIGRATIONS_PREF_MIGRATION_MANAGER_H_

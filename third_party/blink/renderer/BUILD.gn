@@ -1,0 +1,21 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+component("renderer") {
+  sources = [
+    "qorai_farbling_constants.h",
+    "qorai_font_whitelist.cc",
+    "qorai_font_whitelist.h",
+  ]
+
+  deps = [
+    "//qorai/components/qorai_drm:qorai_drm_blink",
+    "//qorai/components/qorai_shields/core/common:mojom",
+  ]
+
+  defines = [ "BLINK_IMPLEMENTATION=1" ]
+
+  output_name = "qorai_blink_renderer_addon"
+}

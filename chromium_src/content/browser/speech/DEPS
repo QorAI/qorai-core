@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/constants/qorai_services_key.h",
+  "+qorai/components/speech_to_text"
+]

@@ -1,0 +1,48 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+config("config") {
+  # For our own public headers to be able to import the official public headers
+  include_dirs = [
+    "//ios/web_view/public",
+    "//qorai/ios/web_view/public",
+  ]
+}
+
+source_set("web_view") {
+  sources = [
+    "qorai_web_view.h",
+    "qorai_web_view.mm",
+    "qorai_web_view_configuration.h",
+    "qorai_web_view_configuration.mm",
+    "qorai_web_view_download_manager.h",
+    "qorai_web_view_download_manager.mm",
+    "qorai_web_view_internal.h",
+  ]
+  deps = [
+    "//base",
+    "//qorai/ios/browser/api/web_view/autofill",
+    "//qorai/ios/browser/api/web_view/passwords",
+    "//qorai/ios/browser/ui/web_view:features",
+    "//qorai/ios/browser/ui/webui/ai_chat",
+    "//qorai/ios/web_view",
+    "//ios/chrome/browser/affiliations/model",
+    "//ios/chrome/browser/autofill/model",
+    "//ios/chrome/browser/passwords/model",
+    "//ios/chrome/browser/shared/model/profile",
+    "//ios/chrome/browser/signin/model",
+    "//ios/chrome/browser/sync/model",
+    "//ios/chrome/browser/tabs/model",
+    "//ios/web/common",
+    "//ios/web/web_state",
+    "//ios/web_view/framework:web_view_sources",
+  ]
+  frameworks = [
+    "Foundation.framework",
+    "UIKit.framework",
+    "WebKit.framework",
+  ]
+  public_configs = [ ":config" ]
+}

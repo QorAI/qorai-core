@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/qorai_account",
+  "+qorai/components/password_strength_meter",
+]

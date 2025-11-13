@@ -1,0 +1,9 @@
+module qorai_search.mojom;
+
+import "mojo/public/mojom/base/values.mojom";
+
+interface QoraiSearchDefault {
+  SetCanAlwaysSetDefault();
+  GetCanSetDefaultSearchProvider() => (bool can_set_default_search_provider);
+  SetIsDefaultSearchProvider();
+};

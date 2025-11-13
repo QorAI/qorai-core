@@ -1,0 +1,29 @@
+# Copyright (c) 2021 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# you can obtain one at http://mozilla.org/MPL/2.0/.
+
+qorai_browser_qorai_news_sources = []
+qorai_browser_qorai_news_deps = []
+
+if (is_android) {
+  qorai_browser_qorai_news_sources += [ "//qorai/browser/qorai_news/android/qorai_news_controller_factory_android.cc" ]
+}
+qorai_browser_qorai_news_sources += [
+  "//qorai/browser/qorai_news/qorai_news_controller_factory.cc",
+  "//qorai/browser/qorai_news/qorai_news_controller_factory.h",
+  "//qorai/browser/qorai_news/qorai_news_tab_helper.cc",
+  "//qorai/browser/qorai_news/qorai_news_tab_helper.h",
+  "//qorai/browser/qorai_news/direct_feed_fetcher_delegate_impl.cc",
+  "//qorai/browser/qorai_news/direct_feed_fetcher_delegate_impl.h",
+]
+
+qorai_browser_qorai_news_deps += [
+  "//base",
+  "//qorai/components/qorai_news/browser",
+  "//qorai/components/qorai_news/common",
+  "//qorai/components/qorai_shields/content/browser",
+  "//chrome/browser/profiles:profile",
+  "//components/keyed_service/content",
+  "//content/public/browser",
+]

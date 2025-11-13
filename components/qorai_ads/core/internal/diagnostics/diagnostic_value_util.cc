@@ -1,0 +1,33 @@
+/* Copyright (c) 2022 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_ads/core/internal/diagnostics/diagnostic_value_util.h"
+
+#include "base/check.h"
+
+namespace qorai_ads {
+
+namespace {
+
+constexpr char kNameKey[] = "name";
+constexpr char kValueKey[] = "value";
+
+}  // namespace
+
+base::Value::List DiagnosticsToValue(const DiagnosticMap& diagnostics) {
+  base::Value::List list;
+
+  for (const auto& [_, entry] : diagnostics) {
+    CHECK(entry);
+
+    list.Append(base::Value::Dict()
+                    .Set(kNameKey, entry->GetName())
+                    .Set(kValueKey, entry->GetValue()));
+  }
+
+  return list;
+}
+
+}  // namespace qorai_ads

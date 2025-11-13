@@ -1,0 +1,174 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/ai_rewriter/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/playlist/core/common/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//qorai/resources/qorai_grit.gni")
+import("//build/config/locales.gni")
+import("//extensions/buildflags/buildflags.gni")
+import("//tools/grit/repack.gni")
+
+qorai_grit("static_resources") {
+  source = "qorai_components_resources.grd"
+
+  output_name = "qorai_components_resources_new"
+
+  outputs = [
+    "grit/qorai_components_resources.h",
+    "qorai_components_static.pak",
+  ]
+  deps = [
+    ":strings",
+    "//qorai/components/ai_chat/resources",
+    "//qorai/components/qorai_rewards/resources",
+    "//qorai/components/qorai_shields/resources:bundle_js",
+    "//qorai/components/qorai_wallet_ui/page:qorai_wallet_page_generated",
+    "//qorai/components/decentralized_dns/content/resources:bundle_js",
+    "//qorai/components/request_otr/resources:bundle_js",
+  ]
+
+  if (enable_extensions) {
+    deps += [ "//qorai/components/qorai_extension/extension/qorai_extension" ]
+  }
+
+  if (enable_tor) {
+    deps += [ "//qorai/components/tor/resources" ]
+  }
+
+  defines = [
+    "enable_qorai_vpn=$enable_qorai_vpn",
+    "enable_playlist_webui=$enable_playlist_webui",
+    "enable_speedreader=$enable_speedreader",
+  ]
+
+  output_dir = "$root_gen_dir/components"
+}
+
+repack("resources") {
+  deps = [
+    ":static_resources",
+    "//qorai/components/ai_chat/resources",
+    "//qorai/components/ai_chat/resources/custom_site_distiller_scripts:generated_resources",
+    "//qorai/components/ai_rewriter/common/buildflags",
+    "//qorai/components/qorai_account/resources",
+    "//qorai/components/qorai_ads/browser/resources:generated_resources",
+    "//qorai/components/qorai_wallet_ui:resources",
+    "//qorai/components/cosmetic_filters/resources/data:generated_resources",
+    "//qorai/components/skus/browser/resources:generated_resources",
+  ]
+  sources = [
+    "$root_gen_dir/qorai/components/ai_chat/resources/ai_chat_ui_generated.pak",
+    "$root_gen_dir/qorai/components/ai_chat/resources/custom_site_distiller_scripts/custom_site_distiller_scripts_generated.pak",
+    "$root_gen_dir/qorai/components/qorai_account/resources/qorai_account_resources.pak",
+    "$root_gen_dir/qorai/components/qorai_ads/browser/resources/ads_internals_generated.pak",
+    "$root_gen_dir/qorai/components/qorai_wallet/resources/qorai_wallet.pak",
+    "$root_gen_dir/qorai/components/cosmetic_filters/resources/cosmetic_filters_generated.pak",
+    "$root_gen_dir/qorai/components/skus/browser/resources/skus_internals_generated.pak",
+    "$root_gen_dir/components/qorai_components_static.pak",
+  ]
+
+  if (is_android) {
+    deps += [ "//qorai/components/new_tab_takeover:new_tab_takeover_generated_resources" ]
+    sources += [ "$root_gen_dir/qorai/components/new_tab_takeover/new_tab_takeover_generated.pak" ]
+  }
+
+  if (!is_ios) {
+    deps += [
+      "//qorai/components/qorai_adblock_ui:generated_resources",
+      "//qorai/components/qorai_adblock_ui/adblock_internals:generated_resources",
+    ]
+
+    sources += [
+      "$root_gen_dir/qorai/components/qorai_adblock/adblock_internals/resources/qorai_adblock_internals_generated.pak",
+      "$root_gen_dir/qorai/components/qorai_adblock/resources/qorai_adblock_generated.pak",
+    ]
+  }
+
+  if (!is_android && !is_ios) {
+    deps += [
+      "//qorai/components/qorai_new_tab_ui:generated_resources",
+      "//qorai/components/qorai_news/browser/resources:generated_resources",
+      "//qorai/components/qorai_private_new_tab_ui/resources/page:generated_resources",
+      "//qorai/components/qorai_shields/resources/panel:qorai_shields_panel_generated",
+      "//qorai/components/qorai_welcome_ui:generated_resources",
+      "//qorai/components/webcompat_reporter/ui:generated_resources",
+    ]
+
+    sources += [
+      "$root_gen_dir/qorai/components/qorai_new_tab/resources/qorai_new_tab_generated.pak",
+      "$root_gen_dir/qorai/components/qorai_news/browser/resources/qorai_news_internals_generated.pak",
+      "$root_gen_dir/qorai/components/qorai_private_new_tab/resources/page/qorai_private_new_tab_generated.pak",
+      "$root_gen_dir/qorai/components/qorai_shields/resources/panel/qorai_shields_panel_generated.pak",
+      "$root_gen_dir/qorai/components/qorai_welcome/resources/qorai_welcome_generated.pak",
+      "$root_gen_dir/qorai/components/webcompat_reporter/resources/webcompat_reporter_generated.pak",
+    ]
+
+    if (enable_speedreader) {
+      deps += [
+        "//qorai/components/speedreader/resources/panel:generated_resources",
+      ]
+      sources += [ "$root_gen_dir/qorai/components/speedreader/resources/panel/qorai_speedreader_toolbar_generated.pak" ]
+    }
+  }
+
+  if (enable_ai_rewriter) {
+    deps +=
+        [ "//qorai/components/ai_rewriter/resources/page:generated_resources" ]
+    sources += [ "$root_gen_dir/qorai/components/ai_rewriter/resources/page/ai_rewriter_ui_generated.pak" ]
+  }
+
+  deps += [ "//qorai/components/qorai_wallet/resources:ethereum_provider_generated_resources" ]
+  sources += [ "$root_gen_dir/qorai/components/qorai_wallet/resources/qorai_wallet_script_generated.pak" ]
+
+  if (enable_qorai_vpn_panel) {
+    deps += [ "//qorai/components/qorai_vpn/resources/panel:resources" ]
+    sources += [
+      "$root_gen_dir/qorai/components/qorai_vpn/qorai_vpn_panel_resources.pak",
+    ]
+  }
+
+  if (enable_playlist_webui) {
+    deps += [ "//qorai/components/playlist/content/browser/resources:generated_resources" ]
+    sources += [ "$root_gen_dir/qorai/components/playlist/content/browser/resources/playlist_generated.pak" ]
+  }
+
+  output = "$root_gen_dir/components/qorai_components_resources.pak"
+}
+
+qorai_grit("strings") {
+  source = "qorai_components_strings.grd"
+
+  outputs = [
+    "grit/qorai_components_strings.h",
+    "grit/qorai_components_webui_strings.h",
+    "grit/qorai_components_webui_strings.ts",
+    "grit/qorai_components_webui_mock_strings.ts",
+  ]
+
+  defines = [
+    "enable_speedreader=$enable_speedreader",
+    "enable_tor=$enable_tor",
+    "enable_qorai_vpn=$enable_qorai_vpn",
+  ]
+
+  foreach(locale, all_chrome_locales) {
+    outputs += [ "qorai_components_strings_$locale.pak" ]
+  }
+
+  output_dir = "$root_gen_dir/components"
+}
+
+action("about_credits") {
+  script = "//qorai/script/check_npm_licenses.py"
+
+  inputs = [ "//qorai/package.json" ]
+
+  outputs = [ "$root_gen_dir/npm_licenses.checked" ]
+
+  args = [ rebase_path("$root_gen_dir/npm_licenses.checked") ]
+}

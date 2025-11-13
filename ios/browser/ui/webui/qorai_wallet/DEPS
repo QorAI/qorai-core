@@ -1,0 +1,9 @@
+include_rules = [
+  "+qorai/components/qorai_wallet/browser",
+  "+qorai/components/qorai_wallet/common",
+  "+qorai/components/qorai_wallet_page/resources",
+  "+qorai/components/line_chart_display/resources",
+  "+qorai/components/market_display/resources",
+  "+qorai/components/nft_display/resources",
+  "+qorai/components/constants",
+]

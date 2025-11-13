@@ -1,0 +1,922 @@
+// Copyright (c) 2020 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import * as React from 'react'
+
+// Components
+import getNTPBrowserAPI from '../../api/background'
+import { addNewTopSite, editTopSite } from '../../api/topSites'
+import { recordClickedAdEvent } from '../../api/wallpaper'
+import * as QoraiAds from 'gen/qorai/components/qorai_ads/core/mojom/qorai_ads.mojom.m.js'
+import {
+  QoraiTalkWidget as QoraiTalk, Clock, EditTopSite, OverrideReadabilityColor, RewardsWidget as Rewards, SearchPromotion, VPNWidget
+} from '../../components/default'
+import BrandedWallpaperLogo from '../../components/default/brandedWallpaper/logo'
+import QoraiNews, { GetDisplayAdContent } from '../../components/default/qoraiNews'
+import FooterInfo from '../../components/default/footer/footer'
+import * as Page from '../../components/default/page'
+import TopSitesGrid from './gridSites'
+import SiteRemovalNotification from './notification'
+import Stats from './stats'
+
+// Helpers
+import { getLocale } from '$web-common/locale'
+import VisibilityTimer from '$web-common/visibilityTimer'
+import { loadTimeData } from '$web-common/loadTimeData'
+import isReadableOnBackground from '../../helpers/colorUtil'
+
+// Types
+import { NewTabActions } from '../../constants/new_tab_types'
+import { QoraiNewsState } from '../../reducers/today'
+import { QoraiVPNState } from '../../reducers/qorai_vpn'
+
+// NTP features
+import { MAX_GRID_SIZE } from '../../constants/new_tab_ui'
+import Settings, { TabType as SettingsTabType } from './settings'
+
+import { QoraiNewsContextProvider } from '../../../qorai_news/browser/resources/shared/Context'
+import QoraiNewsModal from '../../../qorai_news/browser/resources/customize/Modal'
+import QoraiNewsHint from '../../components/default/qoraiNews/hint'
+import SponsoredImageClickArea from '../../components/default/sponsoredImage/sponsoredImageClickArea'
+import GridWidget from './gridWidget'
+
+import Icon from '@qorai/qora/react/icon'
+
+import * as style from './style'
+import { defaultState } from '../../storage/new_tab_storage'
+import { EngineContextProvider } from '../../components/search/EngineContext'
+import {
+  SponsoredRichMediaBackgroundInfo, SponsoredRichMediaBackground
+} from './sponsored_rich_media_background'
+
+const QoraiNewsPeek =  React.lazy(() => import('../../../qorai_news/browser/resources/Peek'))
+const SearchPlaceholder = React.lazy(() => import('../../components/search/SearchPlaceholder'))
+
+interface Props {
+  newTabData: NewTab.State
+  gridSitesData: NewTab.GridSitesState
+  todayData: QoraiNewsState
+  qoraiVPNData: QoraiVPNState
+  actions: NewTabActions
+  getQoraiNewsDisplayAd: GetDisplayAdContent
+  saveShowBackgroundImage: (value: boolean) => void
+  saveShowRewards: (value: boolean) => void
+  saveShowQoraiTalk: (value: boolean) => void
+  saveBrandedWallpaperOptIn: (value: boolean) => void
+  saveSetAllStackWidgets: (value: boolean) => void
+  chooseNewCustomBackgroundImage: () => void
+  setCustomImageBackground: (selectedBackground: string) => void
+  removeCustomImageBackground: (background: string) => void
+  setQoraiBackground: (selectedBackground: string) => void
+  setColorBackground: (color: string, useRandomColor: boolean) => void
+}
+
+interface State {
+  showSettingsMenu: boolean
+  showEditTopSite: boolean
+  targetTopSiteForEditing?: NewTab.Site
+  backgroundHasLoaded: boolean
+  activeSettingsTab: SettingsTabType | null
+  isPromptingQoraiNews: boolean
+  showSearchPromotion: boolean
+  forceToHideWidget: boolean
+}
+
+function GetBackgroundImageSrc (props: Props) {
+  if (!props.newTabData.showBackgroundImage &&
+    (!props.newTabData.brandedWallpaper || props.newTabData.brandedWallpaper.isSponsored)) {
+    return undefined
+  }
+
+  if (props.newTabData.brandedWallpaper?.type === 'image') {
+    const wallpaperData = props.newTabData.brandedWallpaper
+    if (wallpaperData.wallpaperImageUrl) {
+      return wallpaperData.wallpaperImageUrl
+    }
+  }
+
+  if (props.newTabData.backgroundWallpaper?.type === 'image' ||
+      props.newTabData.backgroundWallpaper?.type === 'qorai') {
+    return props.newTabData.backgroundWallpaper.wallpaperImageUrl
+  }
+
+  return undefined
+}
+
+function GetSponsoredRichMediaBackground(props: Props): SponsoredRichMediaBackgroundInfo | undefined {
+  const wallpaperData = props.newTabData.brandedWallpaper
+
+  const shouldShowRichMediaBackground =
+    props.newTabData.showBackgroundImage &&
+    wallpaperData &&
+    wallpaperData.isSponsored &&
+    wallpaperData.type === 'richMedia' &&
+    wallpaperData.wallpaperImageUrl
+
+  return shouldShowRichMediaBackground ? {
+    url: wallpaperData.wallpaperImageUrl,
+    placementId: wallpaperData.wallpaperId,
+    creativeInstanceId: wallpaperData.creativeInstanceId,
+    metricType: wallpaperData.metricType,
+    targetUrl: wallpaperData.logo.destinationUrl
+  } : undefined
+}
+
+function GetShouldShowSearchPromotion (props: Props, showSearchPromotion: boolean) {
+  if (GetIsShowingBrandedWallpaper(props)) { return false }
+
+  return props.newTabData.searchPromotionEnabled && showSearchPromotion
+}
+
+function GetShouldForceToHideWidget (props: Props, showSearchPromotion: boolean) {
+  if (!GetShouldShowSearchPromotion(props, showSearchPromotion)) {
+    return false
+  }
+
+  // Avoid promotion popup and other widgets overlap with narrow window.
+  return window.innerWidth < 1000
+}
+
+function GetIsShowingBrandedWallpaper (props: Props) {
+  const { newTabData } = props
+  return !!((newTabData.brandedWallpaper &&
+    newTabData.brandedWallpaper.isSponsored))
+}
+
+function GetShouldShowBrandedWallpaperNotification (props: Props) {
+  return GetIsShowingBrandedWallpaper(props) &&
+    !props.newTabData.isBrandedWallpaperNotificationDismissed
+}
+
+interface NewsProviderProps {
+  disabled: boolean
+  children: React.ReactNode
+}
+
+function NewsProvider(props: NewsProviderProps) {
+  if (props.disabled) {
+    return <>{props.children}</>
+  }
+  return <QoraiNewsContextProvider>{props.children}</QoraiNewsContextProvider>
+}
+
+class NewTabPage extends React.Component<Props, State> {
+  state: State = {
+    showSettingsMenu: false,
+    showEditTopSite: false,
+    backgroundHasLoaded: false,
+    activeSettingsTab: null,
+    isPromptingQoraiNews: false,
+    showSearchPromotion: false,
+    forceToHideWidget: false
+  }
+
+  imgCache: HTMLImageElement
+  qoraiNewsPromptTimerId: number
+  hasInitQoraiNews: boolean = false
+  imageSource?: string = undefined
+  sponsoredRichMediaBackgroundInfo?: SponsoredRichMediaBackgroundInfo = undefined
+  timerIdForBrandedWallpaperNotification?: number = undefined
+  onVisiblityTimerExpired = () => {
+    this.dismissBrandedWallpaperNotification(false)
+  }
+
+  visibilityTimer = new VisibilityTimer(this.onVisiblityTimerExpired, 4000)
+
+  componentDidMount () {
+    // if a notification is open at component mounting time, close it
+    this.props.actions.showTilesRemovedNotice(false)
+    this.imageSource = GetBackgroundImageSrc(this.props)
+    this.sponsoredRichMediaBackgroundInfo = GetSponsoredRichMediaBackground(this.props)
+
+    this.trackCachedImage()
+    if (GetShouldShowBrandedWallpaperNotification(this.props)) {
+      this.trackBrandedWallpaperNotificationAutoDismiss()
+    }
+    this.checkShouldOpenSettings()
+    const searchPromotionEnabled = this.props.newTabData.searchPromotionEnabled
+    this.setState({
+      showSearchPromotion: searchPromotionEnabled,
+      forceToHideWidget: GetShouldForceToHideWidget(this.props, searchPromotionEnabled)
+    })
+    window.addEventListener('resize', this.handleResize)
+    window.navigation.addEventListener('currententrychange', this.checkShouldOpenSettings)
+  }
+
+  componentWillUnmount () {
+    if (this.qoraiNewsPromptTimerId) {
+      window.clearTimeout(this.qoraiNewsPromptTimerId)
+    }
+    window.removeEventListener('resize', this.handleResize)
+    window.navigation.removeEventListener('currententrychange', this.checkShouldOpenSettings)
+  }
+
+  componentDidUpdate (prevProps: Props) {
+    this.maybePeekQoraiNews()
+    const oldImageSource = GetBackgroundImageSrc(prevProps)
+    const newImageSource = GetBackgroundImageSrc(this.props)
+    this.imageSource = newImageSource
+    if (newImageSource && oldImageSource !== newImageSource) {
+      this.trackCachedImage()
+    }
+
+    const oldSponsoredRichMediaBackground = GetSponsoredRichMediaBackground(prevProps)
+    const newSponsoredRichMediaBackground = GetSponsoredRichMediaBackground(this.props)
+    this.sponsoredRichMediaBackgroundInfo = newSponsoredRichMediaBackground
+    if (newSponsoredRichMediaBackground &&
+        oldSponsoredRichMediaBackground?.url !== newSponsoredRichMediaBackground?.url) {
+      if (this.state.backgroundHasLoaded) {
+        console.debug('Resetting to sponsored rich media background')
+        this.setState({ backgroundHasLoaded: false })
+      }
+    }
+
+    if ((oldImageSource && !newImageSource) ||
+        (oldSponsoredRichMediaBackground && !newSponsoredRichMediaBackground)) {
+      // reset loaded state
+      console.debug('reset image loaded state due to removing image source')
+      this.setState({ backgroundHasLoaded: false })
+    }
+    if (!GetShouldShowBrandedWallpaperNotification(prevProps) &&
+      GetShouldShowBrandedWallpaperNotification(this.props)) {
+      this.trackBrandedWallpaperNotificationAutoDismiss()
+    }
+
+    if (GetShouldShowBrandedWallpaperNotification(prevProps) &&
+      !GetShouldShowBrandedWallpaperNotification(this.props)) {
+      this.stopWaitingForBrandedWallpaperNotificationAutoDismiss()
+    }
+  }
+
+  maybePeekQoraiNews () {
+    const hasPromptedQoraiNews = !!this.qoraiNewsPromptTimerId
+    const shouldPromptQoraiNews =
+      !this.props.newTabData.isQoraiNewsDisabledByPolicy &&
+      !hasPromptedQoraiNews && // Don't start a prompt if we already did
+      window.scrollY === 0 && // Don't start a prompt if we are scrolled
+      this.props.newTabData.featureFlagQoraiNewsPromptEnabled &&
+      this.props.newTabData.initialDataLoaded && // Wait for accurate showToday
+      this.props.newTabData.showToday &&
+      // Don't prompt if the user has navigated back and we're going to scroll
+      // down to a previous place in the feed.
+      !this.props.todayData.articleScrollTo
+    if (shouldPromptQoraiNews) {
+      this.qoraiNewsPromptTimerId = window.setTimeout(() => {
+        if (window.scrollY > 0) {
+          // If the user happens to start scrolling whilst waiting for the timer,
+          // make sure we cancel the timer otherwise content will shift and provide
+          // a poor UX.
+          return
+        }
+        this.setState({ isPromptingQoraiNews: true })
+      }, 1700)
+    }
+  }
+
+  shouldOverrideReadabilityColor (newTabData: NewTab.State) {
+    return !newTabData.brandedWallpaper && newTabData.backgroundWallpaper?.type === 'color' && !isReadableOnBackground(newTabData.backgroundWallpaper)
+  }
+
+  handleResize = () => {
+    this.setState({
+      forceToHideWidget: GetShouldForceToHideWidget(this.props, this.state.showSearchPromotion)
+    })
+  }
+
+  trackCachedImage () {
+    console.debug('trackCachedImage')
+    if (this.state.backgroundHasLoaded) {
+      console.debug('Resetting to new image')
+      this.setState({ backgroundHasLoaded: false })
+    }
+    if (this.imageSource) {
+      const imgCache = new Image()
+      // Store Image in class so it doesn't go out of scope
+      this.imgCache = imgCache
+      imgCache.src = this.imageSource
+      console.debug('image start loading...')
+      imgCache.addEventListener('load', () => {
+        console.debug('image loaded')
+        this.setState({
+          backgroundHasLoaded: true
+        })
+      })
+      imgCache.addEventListener('error', (e) => {
+        console.debug('image error', e)
+      })
+    }
+  }
+
+  trackBrandedWallpaperNotificationAutoDismiss () {
+    // Wait until page has been visible for an uninterupted Y seconds and then
+    // dismiss the notification.
+    this.visibilityTimer.startTracking()
+  }
+
+  checkShouldOpenSettings = () => {
+    const params = window.location.search
+    const urlParams = new URLSearchParams(params)
+    const openSettings = urlParams.get('openSettings') || this.props.newTabData.forceSettingsTab
+
+    if (openSettings) {
+      let activeSettingsTab: SettingsTabType | null = null
+      const activeSettingsTabRaw = typeof openSettings === 'string'
+        ? openSettings
+        : this.props.newTabData.forceSettingsTab || null
+      if (activeSettingsTabRaw) {
+        const allSettingsTabTypes = [...Object.keys(SettingsTabType)]
+        if (allSettingsTabTypes.includes(activeSettingsTabRaw)) {
+          activeSettingsTab = SettingsTabType[activeSettingsTabRaw as keyof typeof SettingsTabType]
+        }
+      }
+      this.setState({ showSettingsMenu: true, activeSettingsTab })
+      // Remove settings param so menu doesn't persist on reload
+      window.history.pushState(null, '', '/')
+    }
+  }
+
+  stopWaitingForBrandedWallpaperNotificationAutoDismiss () {
+    this.visibilityTimer.stopTracking()
+  }
+
+  toggleShowBackgroundImage = () => {
+    this.props.saveShowBackgroundImage(
+      !this.props.newTabData.showBackgroundImage
+    )
+  }
+
+  toggleShowTopSites = () => {
+    const { showTopSites, customLinksEnabled } = this.props.newTabData
+    this.props.actions.setMostVisitedSettings(!showTopSites, customLinksEnabled)
+  }
+
+  toggleCustomLinksEnabled = () => {
+    const { showTopSites, customLinksEnabled } = this.props.newTabData
+    this.props.actions.setMostVisitedSettings(showTopSites, !customLinksEnabled)
+  }
+
+  setMostVisitedSettings = (showTopSites: boolean, customLinksEnabled: boolean) => {
+    this.props.actions.setMostVisitedSettings(showTopSites, customLinksEnabled)
+  }
+
+  toggleShowRewards = () => {
+    this.props.saveShowRewards(!this.props.newTabData.showRewards)
+  }
+
+  toggleShowQoraiTalk = () => {
+    this.props.saveShowQoraiTalk(!this.props.newTabData.showQoraiTalk)
+  }
+
+  disableBrandedWallpaper = () => {
+    this.props.saveBrandedWallpaperOptIn(false)
+  }
+
+  toggleShowBrandedWallpaper = () => {
+    this.props.saveBrandedWallpaperOptIn(
+      !this.props.newTabData.brandedWallpaperOptIn
+    )
+  }
+
+  startRewards = () => {
+    chrome.qoraiRewards.openRewardsPanel()
+  }
+
+  dismissBrandedWallpaperNotification = (isUserAction: boolean) => {
+    this.props.actions.dismissBrandedWallpaperNotification(isUserAction)
+  }
+
+  dismissNotification = (id: string) => {
+    this.props.actions.dismissNotification(id)
+  }
+
+  closeSettings = () => {
+    this.setState({
+      showSettingsMenu: false,
+      activeSettingsTab: null
+    })
+  }
+
+  showEditTopSite = (targetTopSiteForEditing?: NewTab.Site) => {
+    this.setState({
+      showEditTopSite: true,
+      targetTopSiteForEditing
+    })
+  }
+
+  closeEditTopSite = () => {
+    this.setState({
+      showEditTopSite: false
+    })
+  }
+
+  closeSearchPromotion = () => {
+    this.setState({
+      showSearchPromotion: false,
+      forceToHideWidget: false
+    })
+  }
+
+  saveNewTopSite = (title: string, url: string, newUrl: string) => {
+    if (url) {
+      editTopSite(title, url, newUrl === url ? '' : newUrl)
+    } else {
+      addNewTopSite(title, newUrl)
+    }
+    this.closeEditTopSite()
+  }
+
+  openSettings = (activeTab?: SettingsTabType) => {
+    this.props.actions.customizeClicked()
+    this.setState({
+      showSettingsMenu: !this.state.showSettingsMenu,
+      activeSettingsTab: activeTab || null
+    })
+  }
+
+  onClickLogo = () => {
+    recordClickedAdEvent(this.props.newTabData.brandedWallpaper)
+  }
+
+  setForegroundStackWidget = (widget: NewTab.StackWidget) => {
+    this.props.actions.setForegroundStackWidget(widget)
+  }
+
+  learnMoreRewards = () => {
+    window.open('https://qorai.com/qorai-rewards/', '_blank', 'noopener')
+  }
+
+  qoraiVPNSupported = loadTimeData.getBoolean('vpnWidgetSupported')
+
+  getCryptoContent () {
+    if (this.props.newTabData.hideAllWidgets) {
+      return null
+    }
+
+    const {
+      widgetStackOrder,
+      qoraiRewardsSupported,
+      qoraiTalkSupported,
+      showRewards,
+      showQoraiTalk,
+      showQoraiVPN,
+      isQoraiTalkDisabledByPolicy
+    } = this.props.newTabData
+
+    const lookup: { [p: string]: { display: boolean, render: any } } = {
+      'rewards': {
+        display: qoraiRewardsSupported && showRewards,
+        render: this.renderRewardsWidget.bind(this)
+      },
+      'qoraiVPN': {
+        display: this.qoraiVPNSupported && showQoraiVPN,
+        render: this.renderQoraiVPNWidget
+      },
+      'qoraiTalk': {
+        display: qoraiTalkSupported && showQoraiTalk &&
+          !isQoraiTalkDisabledByPolicy,
+        render: this.renderQoraiTalkWidget.bind(this)
+      }
+    }
+
+    const widgetList = widgetStackOrder.filter((widget: NewTab.StackWidget) => {
+      if (!lookup.hasOwnProperty(widget)) {
+        return false
+      }
+
+      return lookup[widget].display
+    })
+
+    return (
+      <>
+        {widgetList.map((widget: NewTab.StackWidget, i: number) => {
+          const isForeground = i === widgetList.length - 1
+          return (
+            <div key={`widget-${widget}`}>
+              {lookup[widget].render(isForeground, i)}
+            </div>
+          )
+        })}
+      </>
+    )
+  }
+
+  allWidgetsHidden = () => {
+    const {
+      qoraiRewardsSupported,
+      qoraiTalkSupported,
+      showRewards,
+      showQoraiTalk,
+      showQoraiVPN,
+      hideAllWidgets,
+      isQoraiTalkDisabledByPolicy
+    } = this.props.newTabData
+    return hideAllWidgets || [
+      qoraiRewardsSupported && showRewards,
+      qoraiTalkSupported && showQoraiTalk &&
+        !isQoraiTalkDisabledByPolicy,
+      this.qoraiVPNSupported && showQoraiVPN,
+    ].every((widget: boolean) => !widget)
+  }
+
+  renderCryptoContent () {
+    const { newTabData } = this.props
+    const { widgetStackOrder } = newTabData
+
+    if (!widgetStackOrder.length) {
+      return null
+    }
+
+    return (
+      <Page.GridItemWidgetStack>
+        {this.getCryptoContent()}
+      </Page.GridItemWidgetStack>
+    )
+  }
+
+  renderSearchPromotion () {
+    if (!GetShouldShowSearchPromotion(this.props, this.state.showSearchPromotion)) {
+      return null
+    }
+
+    const onClose = () => { this.closeSearchPromotion() }
+    const onDismiss = () => { getNTPBrowserAPI().pageHandler.dismissQoraiSearchPromotion() }
+    const onTryQoraiSearch = (input: string, openNewTab: boolean) => { getNTPBrowserAPI().pageHandler.tryQoraiSearchPromotion(input, openNewTab) }
+
+    return (
+      <SearchPromotion textDirection={this.props.newTabData.textDirection} onTryQoraiSearch={onTryQoraiSearch} onClose={onClose} onDismiss={onDismiss} />
+    )
+  }
+
+  renderBrandedWallpaperNotification () {
+    if (!GetShouldShowBrandedWallpaperNotification(this.props)) {
+      return null
+    }
+
+    // Previously the NTP would show a Rewards tooltip on top of a sponsored
+    // image under certain conditions. We no longer show that tooltip, and there
+    // are currently no other "branded wallpaper notifications" defined.
+    return null
+  }
+
+  renderRewardsWidget (showContent: boolean, position: number) {
+    const { rewardsState, showRewards, textDirection, qoraiRewardsSupported } = this.props.newTabData
+    if (!qoraiRewardsSupported || !showRewards) {
+      return null
+    }
+
+    const customMenuItems = [
+      {
+        label: 'rewardsOpenPanel',
+        renderIcon: () => {
+          return (
+            <style.rewardsMenuIcon>
+              <Icon name='product-qor-outline' />
+            </style.rewardsMenuIcon>
+          )
+        },
+        onClick: () => { chrome.qoraiRewards.openRewardsPanel() }
+      },
+      {
+        label: 'rewardsSettings',
+        renderIcon: () => {
+          return (
+            <style.rewardsMenuIcon>
+              <Icon name='settings' />
+            </style.rewardsMenuIcon>
+          )
+        },
+        onClick: () => { window.open('chrome://rewards', '_blank', 'noopener') }
+      }
+    ]
+
+    const onSelfCustodyInviteDismissed = () => {
+      chrome.qoraiRewards.dismissSelfCustodyInvite()
+    }
+
+    const onTosUpdateAccepted = () => {
+      chrome.qoraiRewards.acceptTermsOfServiceUpdate()
+    }
+
+    return (
+      <Rewards
+        {...rewardsState}
+        widgetTitle={getLocale('rewardsWidgetQoraiRewards')}
+        onLearnMore={this.learnMoreRewards}
+        menuPosition={'left'}
+        isCardWidget
+        paddingType={'none'}
+        isForeground={showContent}
+        stackPosition={position}
+        textDirection={textDirection}
+        preventFocus={false}
+        hideWidget={this.toggleShowRewards}
+        showContent={showContent}
+        onShowContent={this.setForegroundStackWidget.bind(this, 'rewards')}
+        onDismissNotification={this.dismissNotification}
+        customMenuItems={customMenuItems}
+        onSelfCustodyInviteDismissed={onSelfCustodyInviteDismissed}
+        onTermsOfServiceUpdateAccepted={onTosUpdateAccepted}
+      />
+    )
+  }
+
+  renderQoraiTalkWidget (showContent: boolean, position: number) {
+    const { newTabData } = this.props
+    const {
+      showQoraiTalk,
+      textDirection,
+      qoraiTalkSupported,
+      isQoraiTalkDisabledByPolicy
+    } = newTabData
+
+    if (!showQoraiTalk || !qoraiTalkSupported || isQoraiTalkDisabledByPolicy) {
+      return null
+    }
+
+    return (
+      <QoraiTalk
+        isCardWidget
+        paddingType={'none'}
+        menuPosition={'left'}
+        widgetTitle={getLocale('qoraiTalkWidgetTitle')}
+        isForeground={showContent}
+        stackPosition={position}
+        textDirection={textDirection}
+        hideWidget={this.toggleShowQoraiTalk}
+        showContent={showContent}
+        onShowContent={this.setForegroundStackWidget.bind(this, 'qoraiTalk')}
+      />
+    )
+  }
+
+  renderQoraiVPNWidget = (showContent: boolean, position: number) => {
+    return (
+      <VPNWidget
+        isCardWidget
+        paddingType={'none'}
+        menuPosition={'left'}
+        textDirection={this.props.newTabData.textDirection}
+        widgetTitle={getLocale('qoraiVpnWidgetTitle')}
+        onShowContent={this.setForegroundStackWidget.bind(this, 'qoraiVPN')}
+        isForeground={showContent}
+        showContent={showContent}
+        qoraiVPNState={this.props.qoraiVPNData}
+      />
+    )
+  }
+
+  render () {
+    const { newTabData, gridSitesData, actions } = this.props
+    const { showSettingsMenu, showEditTopSite, targetTopSiteForEditing, forceToHideWidget } = this.state
+
+    if (!newTabData) {
+      return null
+    }
+
+    const hasImage = this.imageSource !== undefined
+    const hasSponsoredRichMediaBackground = !!this.sponsoredRichMediaBackgroundInfo
+    const isShowingBrandedWallpaper = !!newTabData.brandedWallpaper
+
+    const hasWallpaperInfo = newTabData.backgroundWallpaper?.type === 'qorai'
+    const colorForBackground = newTabData.backgroundWallpaper?.type === 'color' ? newTabData.backgroundWallpaper.wallpaperColor : undefined
+
+    let cryptoContent = this.renderCryptoContent()
+    const showAddNewSiteMenuItem = newTabData.customLinksNum < MAX_GRID_SIZE
+
+    let { showTopSites, showStats, showClock } = newTabData
+    // In favorites mode, add site tile is visible by default if there is no
+    // item. In frecency, top sites widget is hidden with empty tiles.
+    if (showTopSites && !newTabData.customLinksEnabled) {
+      showTopSites = this.props.gridSitesData.gridSites.length !== 0
+    }
+
+    // Allow background customization if Super Referrals is not activated.
+    const isSuperReferral = newTabData.brandedWallpaper && !newTabData.brandedWallpaper.isSponsored
+    const allowBackgroundCustomization = !isSuperReferral
+
+    if (forceToHideWidget) {
+      showTopSites = false
+      showStats = false
+      showClock = false
+      cryptoContent = null
+    }
+
+    return (
+      <Page.App
+        dataIsReady={newTabData.initialDataLoaded}
+        hasImage={hasImage}
+        imageSrc={this.imageSource}
+        imageHasLoaded={this.state.backgroundHasLoaded}
+        colorForBackground={colorForBackground}
+        hasSponsoredRichMediaBackground={hasSponsoredRichMediaBackground}
+        data-show-news-prompt={((this.state.backgroundHasLoaded || colorForBackground) && this.state.isPromptingQoraiNews && !defaultState.featureFlagQoraiNewsFeedV2Enabled) ? true : undefined}>
+        <OverrideReadabilityColor override={ this.shouldOverrideReadabilityColor(this.props.newTabData) } />
+        <NewsProvider disabled={newTabData.isQoraiNewsDisabledByPolicy}>
+        <EngineContextProvider>
+
+        {
+          this.sponsoredRichMediaBackgroundInfo &&
+          <SponsoredRichMediaBackground
+              sponsoredRichMediaBackgroundInfo={this.sponsoredRichMediaBackgroundInfo}
+              richMediaHasLoaded={this.state.backgroundHasLoaded}
+              onLoaded={() => {
+                this.setState({ backgroundHasLoaded: true })
+              }}
+              onEventReported={(adEventType) => {
+                if (!this.sponsoredRichMediaBackgroundInfo) {
+                  return
+                }
+
+                getNTPBrowserAPI().sponsoredRichMediaAdEventHandler.maybeReportRichMediaAdEvent(
+                  this.sponsoredRichMediaBackgroundInfo.placementId,
+                  this.sponsoredRichMediaBackgroundInfo.creativeInstanceId,
+                  this.sponsoredRichMediaBackgroundInfo.metricType,
+                  adEventType)
+
+                if (adEventType === QoraiAds.NewTabPageAdEventType.kClicked) {
+                  window.open(this.sponsoredRichMediaBackgroundInfo.targetUrl, '_self', 'noopener,noreferrer');
+                }
+              }
+            }
+          />
+        }
+
+        <Page.Page
+            hasImage={hasImage}
+            imageSrc={this.imageSource}
+            imageHasLoaded={this.state.backgroundHasLoaded}
+            hasSponsoredRichMediaBackground={hasSponsoredRichMediaBackground}
+            showClock={showClock}
+            showStats={showStats}
+            colorForBackground={colorForBackground}
+            showCryptoContent={!!cryptoContent}
+            showTopSites={showTopSites}
+            showBrandedWallpaper={isShowingBrandedWallpaper}
+        >
+          {this.renderSearchPromotion()}
+          <GridWidget
+            pref='showStats'
+            container={Page.GridItemStats}
+            paddingType={'right'}
+            widgetTitle={getLocale('statsTitle')}
+            textDirection={newTabData.textDirection}
+            menuPosition={'right'}>
+            <Stats stats={newTabData.stats}/>
+          </GridWidget>
+          <GridWidget
+            pref='showClock'
+            container={Page.GridItemClock}
+            paddingType='right'
+            widgetTitle={getLocale('clockTitle')}
+            textDirection={newTabData.textDirection}
+            menuPosition='left'>
+            <Clock />
+          </GridWidget>
+          {
+            showTopSites &&
+              <Page.GridItemTopSites>
+                <TopSitesGrid
+                  actions={actions}
+                  paddingType={'none'}
+                  customLinksEnabled={newTabData.customLinksEnabled}
+                  onShowEditTopSite={this.showEditTopSite}
+                  widgetTitle={getLocale('topSitesTitle')}
+                  gridSites={gridSitesData.gridSites}
+                  menuPosition={'right'}
+                  hideWidget={this.toggleShowTopSites}
+                  onAddSite={showAddNewSiteMenuItem ? this.showEditTopSite : undefined}
+                  onToggleCustomLinksEnabled={this.toggleCustomLinksEnabled}
+                  textDirection={newTabData.textDirection}
+                />
+              </Page.GridItemTopSites>
+            }
+            {newTabData.brandedWallpaper?.isSponsored
+              && newTabData.brandedWallpaper.type !== 'richMedia'
+              && <Page.GridItemSponsoredImageClickArea otherWidgetsHidden={this.allWidgetsHidden()}>
+                <SponsoredImageClickArea onClick={this.onClickLogo}
+                  sponsoredImageUrl={newTabData.brandedWallpaper.logo.destinationUrl}/>
+              </Page.GridItemSponsoredImageClickArea>}
+            {
+              gridSitesData.shouldShowSiteRemovedNotification
+                ? (
+                  <Page.GridItemNotification>
+                    <SiteRemovalNotification actions={actions} showRestoreAll={!newTabData.customLinksEnabled} />
+                  </Page.GridItemNotification>
+                ) : null
+            }
+            {cryptoContent}
+            <Page.Footer>
+              <Page.FooterContent>
+                {isShowingBrandedWallpaper && newTabData.brandedWallpaper &&
+                  newTabData.brandedWallpaper.logo &&
+                  !hasSponsoredRichMediaBackground &&
+                  <Page.GridItemBrandedLogo>
+                    <BrandedWallpaperLogo
+                      menuPosition={'right'}
+                      paddingType={'default'}
+                      textDirection={newTabData.textDirection}
+                      onClickLogo={this.onClickLogo}
+                      data={newTabData.brandedWallpaper.logo}
+                    />
+                    {this.renderBrandedWallpaperNotification()}
+                  </Page.GridItemBrandedLogo>}
+                <FooterInfo
+                  textDirection={newTabData.textDirection}
+                  backgroundImageInfo={newTabData.backgroundWallpaper}
+                  showPhotoInfo={!isShowingBrandedWallpaper && hasWallpaperInfo && newTabData.showBackgroundImage}
+                  onClickSettings={this.openSettings}
+                />
+              </Page.FooterContent>
+            </Page.Footer>
+              <Page.GridItemPageFooter>
+                {loadTimeData.getBoolean('featureFlagSearchWidget')
+                  && <React.Suspense fallback={null}>
+                    <SearchPlaceholder />
+                  </React.Suspense>}
+                                {newTabData.showToday &&
+                  !newTabData.isQoraiNewsDisabledByPolicy && (
+                  defaultState.featureFlagQoraiNewsFeedV2Enabled
+                  ? <React.Suspense fallback={null}>
+                    <QoraiNewsPeek/>
+                  </React.Suspense>
+                  : <QoraiNewsHint />
+                )}
+              </Page.GridItemPageFooter>
+          </Page.Page>
+        { newTabData.showToday && !newTabData.isQoraiNewsDisabledByPolicy &&
+        <QoraiNews
+          feed={this.props.todayData.feed}
+          articleToScrollTo={this.props.todayData.articleScrollTo}
+          displayAdToScrollTo={this.props.todayData.displayAdToScrollTo}
+          displayedPageCount={this.props.todayData.currentPageIndex}
+          publishers={this.props.todayData.publishers}
+          isFetching={this.props.todayData.isFetching === true}
+          hasInteracted={this.props.todayData.hasInteracted}
+          isPrompting={this.state.isPromptingQoraiNews}
+          isUpdateAvailable={this.props.todayData.isUpdateAvailable}
+          onRefresh={this.props.actions.today.refresh}
+          onAnotherPageNeeded={this.props.actions.today.anotherPageNeeded}
+          onFeedItemViewedCountChanged={
+            this.props.actions.today.feedItemViewedCountChanged
+          }
+          onCustomizeQoraiNews={() => { this.openSettings(SettingsTabType.QoraiNews) }}
+          onReadFeedItem={this.props.actions.today.readFeedItem}
+          onPromotedItemViewed={this.props.actions.today.promotedItemViewed}
+          onSetPublisherPref={this.props.actions.today.setPublisherPref}
+          onCheckForUpdate={this.props.actions.today.checkForUpdate}
+          onViewedDisplayAd={this.props.actions.today.displayAdViewed}
+          onVisitDisplayAd={this.props.actions.today.visitDisplayAd}
+          getDisplayAd={this.props.getQoraiNewsDisplayAd}
+        />
+        }
+        <Settings
+          textDirection={newTabData.textDirection}
+          showSettingsMenu={showSettingsMenu}
+          featureCustomBackgroundEnabled={newTabData.featureCustomBackgroundEnabled}
+          onClose={this.closeSettings}
+          setActiveTab={this.state.activeSettingsTab || undefined}
+          toggleShowBackgroundImage={this.toggleShowBackgroundImage}
+          toggleShowTopSites={this.toggleShowTopSites}
+          setMostVisitedSettings={this.setMostVisitedSettings}
+          toggleBrandedWallpaperOptIn={this.toggleShowBrandedWallpaper}
+          chooseNewCustomImageBackground={this.props.chooseNewCustomBackgroundImage}
+          setCustomImageBackground={this.props.setCustomImageBackground}
+          removeCustomImageBackground={this.props.removeCustomImageBackground}
+          setQoraiBackground={this.props.setQoraiBackground}
+          setColorBackground={this.props.setColorBackground}
+          showBackgroundImage={newTabData.showBackgroundImage}
+          showTopSites={newTabData.showTopSites}
+          customLinksEnabled={newTabData.customLinksEnabled}
+          showRewards={newTabData.showRewards}
+          qoraiRewardsSupported={newTabData.qoraiRewardsSupported}
+          brandedWallpaperOptIn={newTabData.brandedWallpaperOptIn}
+          allowBackgroundCustomization={allowBackgroundCustomization}
+          toggleShowRewards={this.toggleShowRewards}
+          qoraiTalkSupported={newTabData.qoraiTalkSupported}
+          toggleShowQoraiTalk={this.toggleShowQoraiTalk}
+          showQoraiTalk={newTabData.showQoraiTalk}
+          cardsHidden={this.allWidgetsHidden()}
+          toggleCards={this.props.saveSetAllStackWidgets}
+          newTabData={this.props.newTabData}
+          onEnableRewards={this.startRewards}
+        />
+        {
+          showEditTopSite
+            ? <EditTopSite
+              targetTopSiteForEditing={targetTopSiteForEditing}
+              textDirection={newTabData.textDirection}
+              onClose={this.closeEditTopSite}
+              onSave={this.saveNewTopSite}
+            /> : null
+        }
+        <QoraiNewsModal/>
+        </EngineContextProvider>
+        </NewsProvider>
+      </Page.App>
+    )
+  }
+}
+
+export default NewTabPage

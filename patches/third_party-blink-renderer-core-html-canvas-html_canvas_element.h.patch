@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/core/html/canvas/html_canvas_element.h b/third_party/blink/renderer/core/html/canvas/html_canvas_element.h
+index 3556ebcdab1be05730823cb3e1ad5129817193c7..45ff5c5ab80cbb01a52beb6dc70ed3e66c0cce69 100644
+--- a/third_party/blink/renderer/core/html/canvas/html_canvas_element.h
++++ b/third_party/blink/renderer/core/html/canvas/html_canvas_element.h
+@@ -358,6 +358,7 @@ class CORE_EXPORT HTMLCanvasElement final
+ 
+   void ResetLayer();
+ 
++  QORAI_HTML_CANVAS_ELEMENT_H_
+  protected:
+   void DidMoveToNewDocument(Document& old_document) override;
+   void DidRecalcStyle(const StyleRecalcChange change) override;

@@ -1,0 +1,12 @@
+# Copyright (c) 2024 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# This target should be included into all QorAI test binaries to make
+# base::CurrentTestVendor::Get() return kQorAI.
+source_set("test_vendor_is_qorai") {
+  testonly = true
+  sources = [ "test_vendor_is_qorai.cc" ]
+  deps = [ "//base/test:test_support" ]
+}

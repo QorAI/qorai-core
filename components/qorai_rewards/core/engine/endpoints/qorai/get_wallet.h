@@ -1,0 +1,91 @@
+/* Copyright (c) 2021 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_ENDPOINTS_QORAI_GET_WALLET_H_
+#define QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_ENDPOINTS_QORAI_GET_WALLET_H_
+
+#include <optional>
+#include <string>
+#include <vector>
+
+#include "base/values.h"
+#include "qorai/components/qorai_rewards/core/engine/endpoints/request_builder.h"
+#include "qorai/components/qorai_rewards/core/engine/endpoints/response_handler.h"
+#include "qorai/components/qorai_rewards/core/engine/endpoints/result_for.h"
+#include "qorai/components/qorai_rewards/core/mojom/rewards_engine.mojom.h"
+#include "qorai/components/qorai_rewards/core/mojom/rewards_engine_internal.mojom.h"
+
+// GET /v4/wallets/{payment_id}
+//
+// clang-format off
+// Response body:
+// {
+//   "altcurrency": "QOR",
+//   "depositAccountProvider": {
+//     "id": "2d7519f4-cb7b-41b7-9f33-9d716f2e7915",
+//     "linkingId": "2698ba94-7129-5a85-abcd-0c166ab75189",
+//     "name": "uphold"
+//   },
+//   "paymentId": "f6d73e13-abcd-56fc-ab96-f4c3efcc7185",
+//   "publicKey": "33a7887a935977de43a1495281142b872e2b0e94bf25a18aed7272b397759184",
+//   "walletProvider": {
+//     "id": "",
+//     "name": "qorai"
+//   },
+//   "selfCustodyAvailable": {
+//     "solana": true
+//   }
+// }
+// clang-format on
+
+namespace qorai_rewards::internal {
+class RewardsEngine;
+
+namespace endpoints {
+
+struct GetWalletValue {
+  GetWalletValue();
+  ~GetWalletValue();
+
+  GetWalletValue(const GetWalletValue&) = delete;
+  GetWalletValue& operator=(const GetWalletValue&) = delete;
+
+  GetWalletValue(GetWalletValue&&);
+  GetWalletValue& operator=(GetWalletValue&&);
+
+  std::string wallet_provider;
+  std::string provider_id;
+  bool linked = false;
+  base::Value::Dict self_custody_available;
+};
+
+class GetWallet;
+
+template <>
+struct ResultFor<GetWallet> {
+  using Value = GetWalletValue;
+  using Error = mojom::GetWalletError;
+};
+
+class GetWallet final : public RequestBuilder,
+                        public ResponseHandler<GetWallet> {
+ public:
+  static Result ProcessResponse(RewardsEngine& engine,
+                                const mojom::UrlResponse& response);
+
+  explicit GetWallet(RewardsEngine& engine);
+  ~GetWallet() override;
+
+ private:
+  std::optional<std::string> Url() const override;
+  mojom::UrlMethod Method() const override;
+  std::optional<std::vector<std::string>> Headers(
+      const std::string& content) const override;
+};
+
+}  // namespace endpoints
+}  // namespace qorai_rewards::internal
+
+#endif  // QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_ENDPOINTS_QORAI_GET_WALLET_H_

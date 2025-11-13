@@ -1,0 +1,70 @@
+# Copyright (c) 2020 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/commander/common/buildflags/buildflags.gni")
+import("//qorai/components/omnibox/buildflags/buildflags.gni")
+
+qorai_components_omnibox_browser_sources = [
+  "//qorai/components/omnibox/browser/qorai_bookmark_provider.cc",
+  "//qorai/components/omnibox/browser/qorai_bookmark_provider.h",
+  "//qorai/components/omnibox/browser/qorai_history_quick_provider.cc",
+  "//qorai/components/omnibox/browser/qorai_history_quick_provider.h",
+  "//qorai/components/omnibox/browser/qorai_history_url_provider.cc",
+  "//qorai/components/omnibox/browser/qorai_history_url_provider.h",
+  "//qorai/components/omnibox/browser/qorai_local_history_zero_suggest_provider.cc",
+  "//qorai/components/omnibox/browser/qorai_local_history_zero_suggest_provider.h",
+  "//qorai/components/omnibox/browser/qorai_omnibox_prefs.cc",
+  "//qorai/components/omnibox/browser/qorai_omnibox_prefs.h",
+  "//qorai/components/omnibox/browser/qorai_on_device_head_provider.cc",
+  "//qorai/components/omnibox/browser/qorai_on_device_head_provider.h",
+  "//qorai/components/omnibox/browser/qorai_search_provider.cc",
+  "//qorai/components/omnibox/browser/qorai_search_provider.h",
+  "//qorai/components/omnibox/browser/qorai_search_suggestion_parser.cc",
+  "//qorai/components/omnibox/browser/qorai_search_suggestion_parser.h",
+  "//qorai/components/omnibox/browser/qorai_shortcuts_provider.cc",
+  "//qorai/components/omnibox/browser/qorai_shortcuts_provider.h",
+  "//qorai/components/omnibox/browser/qora_action.cc",
+  "//qorai/components/omnibox/browser/qora_action.h",
+  "//qorai/components/omnibox/browser/qora_provider.cc",
+  "//qorai/components/omnibox/browser/qora_provider.h",
+  "//qorai/components/omnibox/browser/open_here_action.cc",
+  "//qorai/components/omnibox/browser/open_here_action.h",
+  "//qorai/components/omnibox/browser/promotion_provider.cc",
+  "//qorai/components/omnibox/browser/promotion_provider.h",
+  "//qorai/components/omnibox/browser/promotion_utils.cc",
+  "//qorai/components/omnibox/browser/promotion_utils.h",
+]
+
+qorai_components_omnibox_browser_deps = [
+  "//base",
+  "//qorai/components/ai_chat/core/browser",
+  "//qorai/components/ai_chat/core/common",
+  "//qorai/components/qorai_search_conversion",
+  "//qorai/components/commander/common/buildflags",
+  "//qorai/components/constants",
+  "//qorai/components/omnibox/buildflags",
+  "//qorai/components/resources:strings",
+  "//qorai/components/vector_icons",
+  "//components/prefs",
+  "//components/vector_icons",
+  "//url",
+]
+
+if (enable_commander) {
+  qorai_components_omnibox_browser_sources += [
+    "//qorai/components/omnibox/browser/commander_action.cc",
+    "//qorai/components/omnibox/browser/commander_action.h",
+    "//qorai/components/omnibox/browser/commander_provider.cc",
+    "//qorai/components/omnibox/browser/commander_provider.h",
+  ]
+
+  qorai_components_omnibox_browser_deps +=
+      [ "//qorai/components/commander/browser" ]
+}
+
+if (enable_strict_query_check_for_search_suggestions) {
+  qorai_components_omnibox_browser_deps +=
+      [ "//qorai/components/omnibox/browser/search_suggestions" ]
+}

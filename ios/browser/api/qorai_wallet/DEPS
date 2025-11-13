@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/qorai_wallet/browser",
+  "+qorai/components/qorai_wallet/resources",
+  "+qorai/components/qorai_wallet/common",
+]

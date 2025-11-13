@@ -1,0 +1,16 @@
+qorai_stage_install_common() {
+  install -m 644 "${OUTPUTDIR}/installer/common/LICENSE" "${STAGEDIR}/${INSTALLDIR}/"
+
+  # qorai_resources.pak, contains customization, shields
+  install -m 644 "${OUTPUTDIR}/qorai_resources.pak" "${STAGEDIR}/${INSTALLDIR}/"
+
+  # qorai_[100|200]_resources.pak for scaled resources
+  install -m 644 "${OUTPUTDIR}/qorai_100_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
+  install -m 644 "${OUTPUTDIR}/qorai_200_percent.pak" "${STAGEDIR}/${INSTALLDIR}/"
+
+  # localization files for Qorai extension
+  install -d -m 755 "${STAGEDIR}/${INSTALLDIR}/resources/qorai_extension/_locales"
+  cp -a "${OUTPUTDIR}/resources/qorai_extension/_locales" "${STAGEDIR}/${INSTALLDIR}/resources/qorai_extension"
+  find "${STAGEDIR}/${INSTALLDIR}/resources/qorai_extension/_locales" -type f -exec chmod 644 '{}' \;
+  find "${STAGEDIR}/${INSTALLDIR}/resources/qorai_extension/_locales" -type d -exec chmod 755 '{}' \;
+}

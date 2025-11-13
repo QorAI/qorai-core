@@ -1,0 +1,51 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+import("//build/buildflag_header.gni")
+import("//testing/test.gni")
+
+declare_args() {
+  # QORAI_SERVICES_KEY_ID = TARGET_OS + '-' + CV_MAJOR + '-' + RELEASE_CHANNEL
+  # It is used (in combination with a secret seed) to generate service keys
+  # for each service, OS, chrominum version, release channel
+  # combination.
+  qorai_services_key_id = ""
+}
+
+if (is_official_build) {
+  assert(qorai_services_key_id != "")
+}
+
+buildflag_header("buildflags") {
+  header = "buildflags.h"
+  flags = [ "QORAI_SERVICES_KEY_ID=\"$qorai_services_key_id\"" ]
+}
+
+static_library("qorai_service_keys") {
+  sources = [
+    "qorai_service_key_utils.cc",
+    "qorai_service_key_utils.h",
+  ]
+
+  deps = [
+    ":buildflags",
+    "//base",
+    "//crypto",
+    "//net",
+    "//url",
+  ]
+}
+source_set("unit_tests") {
+  testonly = true
+  sources = [ "qorai_service_key_utils_unittest.cc" ]
+
+  deps = [
+    ":qorai_service_keys",
+    ":buildflags",
+    "//base",
+    "//testing/gtest",
+  ]
+}

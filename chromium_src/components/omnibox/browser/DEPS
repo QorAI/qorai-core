@@ -1,0 +1,9 @@
+include_rules = [
+  "+qorai/components/ai_chat/core/browser",
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/qorai_search_conversion",
+  "+qorai/components/commander",
+  "+qorai/components/omnibox/browser",
+  "+qorai/components/vector_icons",
+  "+content/public/common",
+]

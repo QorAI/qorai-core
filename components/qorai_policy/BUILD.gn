@@ -1,0 +1,55 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+static_library("qorai_policy") {
+  sources = [
+    "qorai_browser_policy_provider.cc",
+    "qorai_browser_policy_provider.h",
+    "qorai_policy_profile_id.cc",
+    "qorai_profile_policy_provider.cc",
+    "qorai_profile_policy_provider.h",
+  ]
+
+  deps = [
+    ":qorai_policy_observer",
+    "//base",
+    "//qorai/components/qorai_origin",
+    "//qorai/components/qorai_policy/ad_block_only_mode",
+    "//components/policy/core/browser",
+    "//components/policy/core/common",
+    "//components/prefs",
+  ]
+}
+
+source_set("qorai_policy_observer") {
+  sources = [ "qorai_policy_observer.h" ]
+
+  public_deps = [ "//base" ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [
+    "qorai_browser_policy_provider_unittest.cc",
+    "qorai_policy_conversions_unittest.cc",
+    "qorai_policy_source_unittest.cc",
+    "qorai_profile_policy_provider_unittest.cc",
+  ]
+
+  deps = [
+    ":qorai_policy",
+    "//base",
+    "//base/test:test_support",
+    "//qorai/components/resources:strings",
+    "//components/enterprise",
+    "//components/policy/core/browser",
+    "//components/policy/core/common",
+    "//components/policy/core/common:test_support",
+    "//components/policy/proto",
+    "//components/prefs:test_support",
+    "//components/strings:components_strings_grit",
+    "//testing/gtest",
+  ]
+}

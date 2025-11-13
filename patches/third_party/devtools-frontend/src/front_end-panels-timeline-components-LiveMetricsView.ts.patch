@@ -1,0 +1,13 @@
+diff --git a/front_end/panels/timeline/components/LiveMetricsView.ts b/front_end/panels/timeline/components/LiveMetricsView.ts
+index cf072cb80341eb6c08a8f6d3892a6055ca77409b..39581960b64df612443834ebe3c70f46a3a3346e 100644
+--- a/front_end/panels/timeline/components/LiveMetricsView.ts
++++ b/front_end/panels/timeline/components/LiveMetricsView.ts
+@@ -1126,7 +1126,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
+           </main>
+           <aside class="next-steps" aria-labelledby="next-steps-section-title">
+             <h2 id="next-steps-section-title" class="section-title">${i18nString(UIStrings.nextSteps)}</h2>
+-            <div id="field-setup" class="settings-card">
++            <div id="field-setup" class="settings-card" hidden="true">
+               <h3 class="card-title">${i18nString(UIStrings.fieldMetricsTitle)}</h3>
+               ${this.#renderFieldDataMessage()}
+               ${this.#renderPageScopeSetting()}

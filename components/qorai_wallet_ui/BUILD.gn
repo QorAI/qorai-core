@@ -1,0 +1,54 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# you can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/common/typescript.gni")
+import("//mojo/public/tools/bindings/mojom.gni")
+import("//tools/grit/repack.gni")
+
+repack("resources") {
+  deps = [
+    "//qorai/components/qorai_wallet_ui/line_chart:line_chart_display_generated",
+    "//qorai/components/qorai_wallet_ui/market:market_display_generated",
+    "//qorai/components/qorai_wallet_ui/nft:nft_display_generated",
+    "//qorai/components/qorai_wallet_ui/page:qorai_wallet_page_generated",
+  ]
+
+  sources = [
+    "$root_gen_dir/qorai/components/qorai_wallet_page/resources/qorai_wallet_page_generated.pak",
+    "$root_gen_dir/qorai/components/line_chart_display/resources/line_chart_display_generated.pak",
+    "$root_gen_dir/qorai/components/market_display/resources/market_display_generated.pak",
+    "$root_gen_dir/qorai/components/nft_display/resources/nft_display_generated.pak",
+  ]
+  if (is_android) {
+    deps += [
+      "//qorai/components/qorai_wallet_ui/page/screens/android-buy/android:qorai_wallet_fund_wallet_page_generated",
+      "//qorai/components/qorai_wallet_ui/page/screens/fund-wallet/android:qorai_wallet_deposit_page_generated",
+      "//qorai/components/qorai_wallet_ui/page/screens/send/android:qorai_wallet_send_page_generated",
+      "//qorai/components/qorai_wallet_ui/page/screens/swap/android:qorai_wallet_swap_page_generated",
+    ]
+
+    sources += [
+      "$root_gen_dir/qorai/components/qorai_wallet_page/resources/qorai_wallet_deposit_page_generated.pak",
+      "$root_gen_dir/qorai/components/qorai_wallet_page/resources/qorai_wallet_fund_wallet_page_generated.pak",
+      "$root_gen_dir/qorai/components/qorai_wallet_page/resources/qorai_wallet_send_page_generated.pak",
+      "$root_gen_dir/qorai/components/qorai_wallet_page/resources/qorai_wallet_swap_page_generated.pak",
+    ]
+  } else if (!is_ios) {
+    deps += [
+      "//qorai/components/qorai_wallet_ui/ledger:ledger_bridge_generated",
+      "//qorai/components/qorai_wallet_ui/panel:qorai_wallet_panel_generated",
+      "//qorai/components/qorai_wallet_ui/trezor:trezor_bridge_generated",
+    ]
+
+    sources += [
+      "$root_gen_dir/qorai/components/qorai_wallet_panel/resources/qorai_wallet_panel_generated.pak",
+      "$root_gen_dir/qorai/components/ledger_bridge/resources/ledger_bridge_generated.pak",
+      "$root_gen_dir/qorai/components/trezor_bridge/resources/trezor_bridge_generated.pak",
+    ]
+  }
+
+  output =
+      "$root_gen_dir/qorai/components/qorai_wallet/resources/qorai_wallet.pak"
+}

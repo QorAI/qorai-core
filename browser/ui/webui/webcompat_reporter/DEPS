@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/webcompat_reporter/browser",
+  "+qorai/components/qorai_shields/core/browser",
+  "+qorai/components/webcompat_reporter/resources",
+]

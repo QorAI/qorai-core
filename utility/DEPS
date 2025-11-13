@@ -1,0 +1,19 @@
+from qorai_chromium_utils import inline_file
+inline_file("//chrome/DEPS", globals(), locals())
+
+chrome_utility_deps = {}
+inline_file("//chrome/utility/DEPS", {}, chrome_utility_deps)
+include_rules += chrome_utility_deps["include_rules"]
+
+include_rules += [
+  "+qorai/common",
+  "+qorai/grit",
+  "+chrome/utility",
+  "+qorai/components/constants",
+  "+qorai/components/constants",
+  "+qorai/components/services/qor_ads",
+  "+qorai/components/services/qor_rewards",
+  "+qorai/components/services/qorai_wallet",
+  "+qorai/components/services/tor",
+  "+qorai/components/tor/buildflags",
+]

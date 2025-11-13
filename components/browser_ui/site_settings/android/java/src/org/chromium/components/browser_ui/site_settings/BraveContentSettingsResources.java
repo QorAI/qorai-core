@@ -1,0 +1,82 @@
+/* Copyright (c) 2021 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+package org.chromium.components.browser_ui.site_settings;
+
+import org.chromium.base.QoraiReflectionUtil;
+import org.chromium.build.annotations.NullMarked;
+import org.chromium.build.annotations.Nullable;
+import org.chromium.components.content_settings.ContentSetting;
+import org.chromium.components.content_settings.ContentSettingsType;
+
+@NullMarked
+public class QoraiContentSettingsResources extends ContentSettingsResources {
+    // Placeholder class
+    protected static class ResourceItem {
+        ResourceItem(
+                int icon,
+                int title,
+                @ContentSetting @Nullable Integer defaultEnabledValue,
+                @ContentSetting @Nullable Integer defaultDisabledValue,
+                int enabledSummary,
+                int disabledSummary,
+                int summaryOverrideForScreenReader,
+                int iconBlocked,
+                int enabledPrimaryText,
+                int disabledPrimaryText) {
+            assert false;
+        }
+    }
+
+    @Nullable
+    protected static ResourceItem getResourceItem(int contentType) {
+        switch (contentType) {
+            case ContentSettingsType.AUTOPLAY:
+                return new ResourceItem(
+                        R.drawable.ic_volume_up_grey600_24dp,
+                        R.string.autoplay_title,
+                        ContentSetting.ALLOW,
+                        ContentSetting.BLOCK,
+                        R.string.website_settings_category_autoplay_allowed,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0);
+            case ContentSettingsType.QORAI_GOOGLE_SIGN_IN:
+                return new ResourceItem(
+                        R.drawable.ic_person_24dp,
+                        R.string.google_sign_in_title,
+                        ContentSetting.ASK,
+                        ContentSetting.BLOCK,
+                        R.string.website_settings_category_google_sign_in_ask,
+                        R.string.website_settings_category_google_sign_in_block,
+                        0,
+                        0,
+                        0,
+                        0);
+            case ContentSettingsType.QORAI_LOCALHOST_ACCESS:
+                return new ResourceItem(
+                        R.drawable.ic_desktop_windows,
+                        R.string.localhost_title,
+                        ContentSetting.ASK,
+                        ContentSetting.BLOCK,
+                        R.string.website_settings_category_localhost_ask,
+                        R.string.website_settings_category_localhost_block,
+                        0,
+                        0,
+                        0,
+                        0);
+        }
+
+        return (ResourceItem)
+                QoraiReflectionUtil.invokeMethod(
+                        ContentSettingsResources.class,
+                        null,
+                        "getResourceItem",
+                        int.class,
+                        contentType);
+    }
+}

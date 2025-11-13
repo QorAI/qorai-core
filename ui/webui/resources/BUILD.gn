@@ -1,0 +1,632 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/common/typescript.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//tools/grit/preprocess_if_expr.gni")
+import("//tools/polymer/css_to_wrapper.gni")
+import("//tools/polymer/html_to_wrapper.gni")
+import("//ui/webui/resources/tools/build_webui.gni")
+import("//ui/webui/resources/tools/generate_grd.gni")
+import("//ui/webui/webui_features.gni")
+import("./fonts/fonts.gni")
+import("./sources.gni")
+
+# These targets add files to chrome://resources/qorai
+# - Use build_cr_componesnrt or other methods to compile resources and generate GRDPs
+# - Use extensible patch to ui/webui/resources/build.gn to get the files in these GRDPs to typescript, grd, and c++ (via the main resources .grd)
+# - Files generates here are path mapped from chrome://resources/qorai via:
+#    - Typescript compiler in //tools/typescript/ts_library.gni
+#    - Rollup bundler in //chrome/browser/resources/tools/optimize_webui.gni
+
+include_polymer = !is_android && !is_ios
+
+group("grdp") {
+  public_deps = [
+    ":fonts_grdp",
+    ":icons_grdp",
+    ":qora_bundle",
+    ":opaque_ke",
+    ":static_grdp",
+  ]
+  if (include_polymer) {
+    public_deps += [ ":build_grdp" ]
+  }
+}
+
+if (include_polymer) {
+  build_webui("build") {
+    grd_prefix = "qorai"
+
+    # Ensure all the files are relative to this dir (with a qorai/ prefix),
+    # and not //ui/webui/resources which is the default for build_cr_component.
+    ts_files = [
+      "lit_overriding.ts",
+      "polymer_overriding.ts",
+      "js/qorai_browser_command/qorai_browser_command_proxy.ts",
+    ]
+
+    mojo_files = [ "$root_gen_dir/qorai/ui/webui/resources/js/qorai_browser_command/qorai_browser_command.mojom-webui.ts" ]
+    mojo_files_deps = [ "js/qorai_browser_command:mojo_bindings_ts__generator" ]
+
+    css_files = [ "page_specific/settings/br_settings_shared.css" ]
+
+    ts_composite = true
+    generate_grdp = true
+    grd_resource_path_prefix = "qorai"
+    ts_out_dir = "$root_gen_dir/qorai/ui/webui/resources/tsc"
+    ts_deps = [
+      "//third_party/lit/v3_0:build_ts",
+      "//third_party/polymer/v3_0:library",
+      "//ui/webui/resources/js:build_ts",
+      "//ui/webui/resources/mojo:build_ts",
+    ]
+    webui_context_type = "trusted"
+  }
+}
+
+qora_static_files = [ "css/variables.css" ]
+
+static_files = [
+  "css/md_colors.css",
+  "css/text_defaults_md.css",
+  "css/reset.css",
+
+  # Note: On Android, we replace this with the default theme, as it doesn't
+  # support ThemeSource.
+  "css/nala.css",
+]
+
+if (include_polymer) {
+  static_files += [
+    "page_specific/history/history_loading_shim.css",
+    "page_specific/downloads/downloads_loading_shim.css",
+    "page_specific/settings/settings_loading_shim.css",
+    "page_specific/bookmarks/bookmarks_loading_shim.css",
+    "page_specific/extensions/extensions_loading_shim.css",
+  ]
+}
+
+transpile_web_ui("qora_bundle") {
+  generate_grdp = true
+  resource_path_prefix = "qorai"
+
+  imports_from = [ "//qorai/ui/webui/resources/qora/" ]
+
+  entry_points = [ [
+        "qora",
+        rebase_path("qora/initialize_bundle.ts"),
+      ] ]
+
+  resource_name = "qora"
+}
+
+transpile_web_ui("opaque_ke") {
+  resource_name = "opaque_ke"
+  generate_grdp = true
+  resource_path_prefix = "qorai"
+
+  entry_points = [ [
+        "opaque_ke",
+        rebase_path("wasm/opaque_ke/index.js"),
+      ] ]
+
+  inputs = [
+    rebase_path("wasm/Cargo.lock"),
+    rebase_path("wasm/opaque_ke/src/lib.rs"),
+  ]
+
+  imports_from = [ "//qorai/ui/webui/resources/wasm/" ]
+
+  rust_packages = [ rebase_path("wasm/opaque_ke/Cargo.toml") ]
+
+  public_asset_path = "chrome://resources/qorai/"
+}
+
+# Create a grdp that //ui/webui/resources can include in its main resources GRD
+generate_grd("static_grdp") {
+  grd_prefix = "qorai_webui"
+  resource_path_prefix = "qorai"
+  out_grd = "$qorai_resources_extra_grdps_path/qorai_static_resources.grdp"
+  input_files = static_files + rebase_path(qora_static_files, ".", "qora")
+  input_files_base_dir =
+      rebase_path("$qorai_resources_extra_grdps_path", root_build_dir)
+  deps = [
+    ":qora_static_copy",
+    ":static_copy",
+  ]
+}
+
+# Create a grdp that //ui/webui/resources can include in its main resources GRD
+generate_grd("fonts_grdp") {
+  grd_prefix = "qorai_webui"
+  resource_path_prefix = "qorai"
+  out_grd = "$qorai_resources_extra_grdps_path/qorai_fonts_resources.grdp"
+  input_files = qorai_font_files
+  input_files_base_dir =
+      rebase_path("$qorai_resources_extra_grdps_path", root_build_dir)
+  deps = [ ":fonts_copy" ]
+}
+
+qora_icons_base_path = "../../../node_modules/QorAI/qora/icons"
+
+# These are icons included in qora. Add them on an as-needed basis, because there
+# are a **LOT** of icons in qora. You can check if there's an icon  which suits
+# your needs here: https://qora.qoraisoftware.com/?path=/story/icon--all-icons
+qora_icons = [
+  "accessibility.svg",
+  "activity.svg",
+  "anthropic-color.svg",
+  "appearance.svg",
+  "arrow-diagonal-down-right.svg",
+  "arrow-diagonal-up-right.svg",
+  "arrow-down.svg",
+  "arrow-left.svg",
+  "arrow-redo.svg",
+  "arrow-right.svg",
+  "arrow-small-down.svg",
+  "arrow-small-right.svg",
+  "arrow-small-up.svg",
+  "arrow-undo.svg",
+  "arrow-up-and-down.svg",
+  "arrow-up.svg",
+  "attachment.svg",
+  "autoplay-off.svg",
+  "autoplay-on.svg",
+  "backward.svg",
+  "bank.svg",
+  "bar-chart.svg",
+  "qor-color.svg",
+  "bing-color.svg",
+  "bluetooth-off.svg",
+  "bluetooth.svg",
+  "qorai-icon-monochrome.svg",
+  "qorai-icon-outline.svg",
+  "qorai-icon-release-color.svg",
+  "qorai-icon-search-color.svg",
+  "qorai-icon-search.svg",
+  "qorai-search-big-color.svg",
+  "browser-add.svg",
+  "browser-extensions.svg",
+  "browser-home.svg",
+  "browser-ntp-widget.svg",
+  "btc-color.svg",
+  "calendar-check.svg",
+  "camera.svg",
+  "carat-down.svg",
+  "carat-first.svg",
+  "carat-last.svg",
+  "carat-left.svg",
+  "carat-right.svg",
+  "carat-up.svg",
+  "cardano-off.svg",
+  "cardano-on.svg",
+  "check-circle-filled.svg",
+  "check-circle-outline.svg",
+  "check-normal.svg",
+  "checkbox-checked.svg",
+  "checkbox-unchecked.svg",
+  "clock.svg",
+  "close.svg",
+  "cloud-download.svg",
+  "cloud-off.svg",
+  "code-off.svg",
+  "code.svg",
+  "coins-alt1.svg",
+  "coins.svg",
+  "container-personal.svg",
+  "container-work.svg",
+  "container-shopping.svg",
+  "container-social.svg",
+  "container-events.svg",
+  "container-banking.svg",
+  "container-star.svg",
+  "container-travel.svg",
+  "container-school.svg",
+  "container-private.svg",
+  "container-messaging.svg",
+  "content-big.svg",
+  "contract.svg",
+  "cookie-off.svg",
+  "cookie.svg",
+  "copy-off.svg",
+  "copy-plain-text.svg",
+  "copy.svg",
+  "cpu-chip-off.svg",
+  "cpu-chip.svg",
+  "credit-card-off.svg",
+  "credit-card.svg",
+  "crypto-wallets.svg",
+  "currency-exchange.svg",
+  "database.svg",
+  "deepseek-color.svg",
+  "disable-outline.svg",
+  "discover.svg",
+  "download-off.svg",
+  "download.svg",
+  "duckduckgo-color.svg",
+  "ecosia-color.svg",
+  "edit-box.svg",
+  "edit-pencil.svg",
+  "email-shield.svg",
+  "erase.svg",
+  "ethereum-off.svg",
+  "ethereum-on.svg",
+  "expand.svg",
+  "eye-off.svg",
+  "eye-on.svg",
+  "file-corrupted.svg",
+  "file-edit.svg",
+  "file-text.svg",
+  "file-upload.svg",
+  "file.svg",
+  "files-many.svg",
+  "filter-settings.svg",
+  "filter.svg",
+  "finger-double-tap.svg",
+  "flash.svg",
+  "flashdrive.svg",
+  "folder-exchange.svg",
+  "folder-new.svg",
+  "font-size-off.svg",
+  "font-size.svg",
+  "forward-15.svg",
+  "fullscreen-on.svg",
+  "gemma-color.svg",
+  "globe.svg",
+  "google-color.svg",
+  "graph.svg",
+  "grid04.svg",
+  "hamburger-menu.svg",
+  "hand-coins.svg",
+  "hearts.svg",
+  "help-outline.svg",
+  "history.svg",
+  "idea.svg",
+  "image-off.svg",
+  "image.svg",
+  "info-filled.svg",
+  "info-outline.svg",
+  "junk-false.svg",
+  "junk-true.svg",
+  "key-lock-off.svg",
+  "key-lock.svg",
+  "key.svg",
+  "launch-off.svg",
+  "launch.svg",
+  "qora-cursor.svg",
+  "qora-cursor-filled.svg",
+  "link-broken.svg",
+  "link-normal.svg",
+  "list-bullet-default.svg",
+  "list-checks.svg",
+  "list-settings.svg",
+  "loading-spinner.svg",
+  "location-off.svg",
+  "location-on.svg",
+  "lock-open.svg",
+  "lock-plain.svg",
+  "lock.svg",
+  "loop-1-toggle-on.svg",
+  "loop-all-toggle-on.svg",
+  "loop-all.svg",
+  "media-visualizer-off.svg",
+  "media-visualizer.svg",
+  "message-bubble-comments.svg",
+  "message-bubble-temporary.svg",
+  "message-bubble-text.svg",
+  "meta-color.svg",
+  "microphone-off.svg",
+  "microphone.svg",
+  "money-bag-coins.svg",
+  "more-horizontal.svg",
+  "more-vertical.svg",
+  "motion-sensor-off.svg",
+  "motion-sensor.svg",
+  "network-speed-average.svg",
+  "network-speed-fast.svg",
+  "news-business.svg",
+  "news-car.svg",
+  "news-culture.svg",
+  "news-entertainment.svg",
+  "news-fashion.svg",
+  "news-filmandtv.svg",
+  "news-food.svg",
+  "news-fun.svg",
+  "news-gaming.svg",
+  "news-health.svg",
+  "news-home.svg",
+  "news-music.svg",
+  "news-politics.svg",
+  "news-regional.svg",
+  "news-science.svg",
+  "news-sports.svg",
+  "news-technology.svg",
+  "news-topnews.svg",
+  "news-travel.svg",
+  "news-weather.svg",
+  "news-worldnews.svg",
+  "next-outline.svg",
+  "nft.svg",
+  "notification-off.svg",
+  "notification.svg",
+  "outside.svg",
+  "pause-filled.svg",
+  "percent.svg",
+  "picture-in-picture.svg",
+  "play-filled.svg",
+  "plus-add-circle.svg",
+  "plus-add.svg",
+  "premium-indicator.svg",
+  "previous-outline.svg",
+  "print.svg",
+  "product-qor-color.svg",
+  "social-qora-favicon-fullheight-color.svg",
+  "product-qor-outline.svg",
+  "product-bookmarks.svg",
+  "product-qorai-qora.svg",
+  "product-qorai-news.svg",
+  "product-qorai-talk.svg",
+  "product-qorai-wallet.svg",
+  "product-ipfs-outline.svg",
+  "product-origin.svg",
+  "product-playlist-add.svg",
+  "product-playlist-bold-add-color.svg",
+  "product-playlist.svg",
+  "product-private-window.svg",
+  "product-sync.svg",
+  "product-tor.svg",
+  "product-translate.svg",
+  "product-vpn.svg",
+  "protocol-handler-off.svg",
+  "protocol-handler.svg",
+  "qr-code.svg",
+  "qr-code-alternative.svg",
+  "qwant-color.svg",
+  "qwen-color.svg",
+  "radio-checked.svg",
+  "radio-unchecked.svg",
+  "refresh.svg",
+  "remove-circle-filled.svg",
+  "remove-circle-outline.svg",
+  "rewind-15.svg",
+  "rocket.svg",
+  "safe.svg",
+  "screenshot.svg",
+  "search-fuel-tank.svg",
+  "search-zoom-in.svg",
+  "search.svg",
+  "send.svg",
+  "send-filled.svg",
+  "settings.svg",
+  "share-macos.svg",
+  "shield-done.svg",
+  "shield-done-filled.svg",
+  "shield-star.svg",
+  "shuffle-off.svg",
+  "shuffle-on.svg",
+  "shuffle-toggle-on.svg",
+  "sidepanel-open.svg",
+  "sidenav-collapse.svg",
+  "sidenav-expand.svg",
+  "smartphone-desktop-off.svg",
+  "smartphone-desktop.svg",
+  "smartphone-hand.svg",
+  "smart-proxy-routing.svg",
+  "social-qorai-release-favicon-fullheight-color.svg",
+  "social-dribbble.svg",
+  "social-github.svg",
+  "social-reddit.svg",
+  "social-twitch.svg",
+  "social-vimeo.svg",
+  "social-x.svg",
+  "social-youtube.svg",
+  "solana-off.svg",
+  "solana-on.svg",
+  "sort-asc.svg",
+  "sort-desc.svg",
+  "sparkles-off.svg",
+  "sparkles.svg",
+  "stack.svg",
+  "star-outline.svg",
+  "startpage-color.svg",
+  "support.svg",
+  "swap-horizontal.svg",
+  "swap-vertical.svg",
+  "themes.svg",
+  "theme-darker.svg",
+  "thumb-down.svg",
+  "thumb-up.svg",
+  "trash.svg",
+  "tune.svg",
+  "uphold-color.svg",
+  "upload.svg",
+  "usb-off.svg",
+  "usb.svg",
+  "usd-circle.svg",
+  "user-accounts.svg",
+  "user-circle.svg",
+  "user-off.svg",
+  "user.svg",
+  "verification-filled-color.svg",
+  "verification-filled.svg",
+  "video-camera-off.svg",
+  "video-camera.svg",
+  "virtual-reality-off.svg",
+  "virtual-reality.svg",
+  "volume-off.svg",
+  "volume-on.svg",
+  "warning-circle-filled.svg",
+  "warning-circle-outline.svg",
+  "warning-triangle-filled.svg",
+  "warning-triangle-outline.svg",
+  "web3.svg",
+  "web3-blockexplorer.svg",
+  "web3-bridge.svg",
+  "widget-generic.svg",
+  "window-bookmark.svg",
+  "window-404.svg",
+  "window-content.svg",
+  "window-edit.svg",
+  "window-tab-close.svg",
+  "window-tab-new.svg",
+  "window.svg",
+  "windows-open.svg",
+  "import-arrow.svg",
+  "metamask-color.svg",
+  "phantom-color.svg",
+  "coinbase-color.svg",
+  "trezor-color.svg",
+  "wallet-ledger.svg",
+  "close-circle.svg",
+  "close-circle-filled.svg",
+  "eth-color.svg",
+  "matic-color.svg",
+  "op-color.svg",
+  "aurora-color.svg",
+  "sol-color.svg",
+  "filecoin-color.svg",
+  "slash.svg",
+  "xmark-color.svg",
+  "yahoo-color.svg",
+  "yandex-color.svg",
+  "window-tab.svg",
+  "window-tabs.svg",
+  "window-tabs-vertical-expanded.svg",
+  "stop-circle.svg",
+]
+
+if (enable_qorai_vpn_panel) {
+  qora_icons += [
+    "country-al.svg",
+    "country-ar.svg",
+    "country-at.svg",
+    "country-au.svg",
+    "country-be.svg",
+    "country-bg.svg",
+    "country-br.svg",
+    "country-ca.svg",
+    "country-ch.svg",
+    "country-cl.svg",
+    "country-co.svg",
+    "country-cr.svg",
+    "country-cy.svg",
+    "country-cz.svg",
+    "country-de.svg",
+    "country-dk.svg",
+    "country-ee.svg",
+    "country-es.svg",
+    "country-fi.svg",
+    "country-fr.svg",
+    "country-gb.svg",
+    "country-gr.svg",
+    "country-hk.svg",
+    "country-hr.svg",
+    "country-hu.svg",
+    "country-id.svg",
+    "country-ie.svg",
+    "country-il.svg",
+    "country-is.svg",
+    "country-it.svg",
+    "country-jp.svg",
+    "country-kr.svg",
+    "country-lu.svg",
+    "country-mx.svg",
+    "country-my.svg",
+    "country-nl.svg",
+    "country-no.svg",
+    "country-nz.svg",
+    "country-pa.svg",
+    "country-pe.svg",
+    "country-pl.svg",
+    "country-pt.svg",
+    "country-py.svg",
+    "country-ro.svg",
+    "country-se.svg",
+    "country-sg.svg",
+    "country-th.svg",
+    "country-tr.svg",
+    "country-ua.svg",
+    "country-us.svg",
+    "country-uy.svg",
+    "country-worldwide.svg",
+    "country-za.svg",
+  ]
+}
+
+if (enable_speedreader) {
+  qora_icons += [
+    "characters.svg",
+    "forward-outline.svg",
+    "headphones.svg",
+    "minus.svg",
+    "pause-outline.svg",
+    "play-outline.svg",
+    "product-speedreader.svg",
+    "readermode-column-default.svg",
+    "readermode-column-wide.svg",
+    "readermode-dislexyc.svg",
+    "readermode-mono.svg",
+    "readermode-sans.svg",
+    "readermode-serif.svg",
+    "rewind-outline.svg",
+    "speed.svg",
+    "theme-system.svg",
+  ]
+}
+
+generate_grd("icons_grdp") {
+  grd_prefix = "qorai_icons"
+  resource_path_prefix = "qorai-icons"
+  out_grd = "$qorai_resources_extra_grdps_path/qorai_icons_resources.grdp"
+
+  input_files = qora_icons
+  input_files_base_dir =
+      rebase_path("$qorai_resources_extra_grdps_path/icons/", root_build_dir)
+
+  deps = [ ":icons_copy" ]
+}
+
+if (is_android || is_ios) {
+  # This target replaces the dynamic nala.css file with the default theme. It's
+  # used on Android and iOS since we don't support the ThemeSource there.
+  copy("hardcode_nala_theme_variables") {
+    sources = [ "$qorai_resources_extra_grdps_path/qora/css/variables.css" ]
+    outputs = [ "$qorai_resources_extra_grdps_path/css/nala.css" ]
+    deps = [ ":qora_static_copy" ]
+  }
+}
+
+# Static files should be put relative to //ui/webui/resources main resources GRD
+copy("static_copy") {
+  if (is_android || is_ios) {
+    # Exclude the nala.css file - we'll copy the hardcoded theme instead.
+    sources = filter_exclude(static_files, [ "css/nala.css" ])
+    deps = [ ":hardcode_nala_theme_variables" ]
+  } else {
+    sources = static_files
+  }
+
+  outputs = [ "$qorai_resources_extra_grdps_path/{{source_target_relative}}" ]
+}
+
+copy("qora_static_copy") {
+  sources = rebase_path(qora_static_files,
+                        ".",
+                        "../../../node_modules/@qorai/qora/tokens")
+  outputs = [ "$qorai_resources_extra_grdps_path/qora/css/{{source_file_part}}" ]
+}
+
+# Static files should be put relative to //ui/webui/resources main resources GRD
+copy("fonts_copy") {
+  sources = qorai_font_files
+  outputs = [ "$qorai_resources_extra_grdps_path/{{source_target_relative}}" ]
+}
+
+copy("icons_copy") {
+  sources = rebase_path(qora_icons, ".", qora_icons_base_path)
+  outputs = [ "$qorai_resources_extra_grdps_path/icons/{{source_file_part}}" ]
+}

@@ -1,0 +1,8 @@
+# Copyright 2022 The Qorai Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+qorai_feed_java_sources = [
+  "//qorai/android/feed/core/java/src/org/chromium/chrome/browser/feed/QoraiFeedSurfaceCoordinator.java",
+  "//qorai/android/feed/core/java/src/org/chromium/chrome/browser/feed/QoraiFeedSurfaceMediator.java",
+]

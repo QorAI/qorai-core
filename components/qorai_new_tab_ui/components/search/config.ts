@@ -1,0 +1,15 @@
+// Copyright (c) 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import { loadTimeData } from '$web-common/loadTimeData'
+import { radius } from "@qorai/qora/tokens/css/variables"
+
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+export const ENABLED_SEARCH_ENGINES_KEY = 'search-engines'
+export const LAST_SEARCH_ENGINE_KEY = 'last-search-engine'
+export const qoraiSearchHost = 'search.qorai.com'
+export const defaultSearchHost = loadTimeData.getString(
+  'searchWidgetDefaultHost')
+export const searchBoxRadius = radius.xl

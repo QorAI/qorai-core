@@ -1,0 +1,44 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//qorai/utility/importer/sources.gni")
+
+qorai_utility_sources = [
+  "//qorai/utility/qorai_content_utility_client.cc",
+  "//qorai/utility/qorai_content_utility_client.h",
+]
+
+qorai_utility_sources += qorai_utility_importer_sources
+
+qorai_utility_deps = [
+  "//qorai/components/services/qor_ads:lib",
+  "//qorai/components/services/qor_ads/public/interfaces",
+  "//qorai/components/services/qor_rewards:lib",
+  "//qorai/components/services/qor_rewards/public/interfaces",
+  "//qorai/components/services/qorai_wallet:lib",
+  "//qorai/components/services/qorai_wallet/public/mojom",
+  "//qorai/components/tor/buildflags",
+  "//mojo/public/cpp/bindings",
+]
+
+if (is_android) {
+  # This deps is only to suppress gn check error:
+  # ERROR at //chrome/utility/services.cc:56:11: Include not allowed.
+  #  #include "chrome/common/importer/profile_import.mojom.h"
+  qorai_utility_deps += [ "//chrome/common/importer:interfaces" ]
+}
+
+qorai_utility_deps += qorai_utility_importer_deps
+
+if (enable_tor) {
+  qorai_utility_deps += [
+    "//qorai/components/services/tor",
+    "//qorai/components/services/tor/public/interfaces",
+  ]
+}
+
+qorai_utility_public_deps = []
+qorai_utility_public_deps += qorai_utility_importer_public_deps

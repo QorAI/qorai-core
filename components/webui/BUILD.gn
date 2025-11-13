@@ -1,0 +1,37 @@
+# Copyright (c) 2023 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+import("//build/buildflag_header.gni")
+
+static_library("webui") {
+  visibility = [
+    "//qorai/browser/ui",
+    "//qorai/ios/browser/ui/webui",
+    "//qorai/ios/web/webui",
+  ]
+
+  sources = [
+    "about_ui.cc",
+    "about_ui.h",
+    "webui_resources.cc",
+    "webui_resources.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/ai_rewriter/common/buildflags",
+    "//qorai/components/qorai_rewards/resources:static_resources",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/constants",
+    "//qorai/components/resources:static_resources",
+    "//qorai/components/resources:strings_grit",
+    "//qorai/components/tor/buildflags",
+    "//components/resources:components_resources_grit",
+    "//components/strings:components_strings",
+    "//third_party/re2",
+    "//ui/base",
+  ]
+}

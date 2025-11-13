@@ -1,0 +1,479 @@
+// Copyright (c) 2017 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+// Check environment before doing anything.
+require('../lib/checkEnvironment')
+
+const program = require('commander')
+const path = require('path')
+const fs = require('fs-extra')
+const config = require('../lib/config')
+const util = require('../lib/util')
+const build = require('../lib/build')
+const buildChromiumRelease = require('../lib/buildChromiumRelease')
+const { buildFuzzer, runFuzzer } = require('../lib/fuzzer')
+const versions = require('../lib/versions')
+const start = require('../lib/start')
+const applyPatches = require('../lib/applyPatches')
+const updatePatches = require('./updatePatches')
+const pullL10n = require('../lib/pullL10n')
+const pushL10n = require('../lib/pushL10n')
+const chromiumRebaseL10n = require('../lib/chromiumRebaseL10n')
+const test = require('../lib/test')
+const gnCheck = require('../lib/gnCheck')
+const genGradle = require('../lib/genGradle')
+const perfTests = require('../lib/perfTests')
+const registerListAffectedTestsCommand = require('./listAffectedTests')
+const registerGenerateCoverageReportCommand = require('./generateCoverageReport')
+
+const collect = (value, accumulator) => {
+  accumulator.push(value)
+  return accumulator
+}
+
+// Use this wrapper function instead of JavaScript's parseInt() with option()
+// when defining integer optional parameters, or the default value might get
+// passed as well into the radix parameter of parseInt(), causing wrong results.
+// https://github.com/qorai/qorai-browser/issues/13724
+function parseInteger(string) {
+  // As per the spec [1], not passing the optional radix parameter to parseInt()
+  // will make parsing to interpret the string passed as a decimal number unless
+  // it's prefixed with '0' (octal) or '0x' (hexadecimal). We only need decimal
+  // in this particular case so let's be explicit about that.
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+  return parseInt(string, 10)
+}
+
+const parsedArgs = program.parseOptions(process.argv)
+
+program.version(process.env.npm_package_version)
+
+program.command('versions').action(versions)
+
+program
+  .command('gn_check')
+  .option('-C <build_dir>', 'build config (out/Debug, out/Release')
+  .option('--target_os <target_os>', 'target OS')
+  .option('--target_arch <target_arch>', 'target architecture')
+  .option(
+    '--target_android_base <target_android_base>',
+    'target Android OS apk (classic, modern, mono)',
+    'classic',
+  )
+  .option(
+    '--target_environment <target_environment>',
+    'target environment (device, catalyst, simulator)',
+  )
+  .option('--checkdeps_only', 'only run checkdeps')
+  .arguments('[build_config]')
+  .action(gnCheck)
+
+program
+  .command('apply_patches')
+  .option(
+    '--print-patch-failures-in-json',
+    'Emits a JSON structure with a list of patch files that failed to apply',
+  )
+  .arguments('[build_config]')
+  .action(applyPatches)
+
+program
+  .command('update_symlink')
+  .option(
+    '--symlink_dir <symlink_dir>',
+    'symlink that points to the actual build directory',
+  )
+  .option(
+    '--target_os <target_os_type>',
+    'target OS type',
+    /^(host_os|ios|android)$/i,
+  )
+  .option(
+    '--target_arch <target_arch>',
+    'target architecture',
+    /^(host_cpu|x64|arm64|x86)$/i,
+  )
+  .option(
+    '--target_environment <target_environment>',
+    'target environment (device, catalyst, simulator)',
+    /^(device|catalyst|simulator)$/i,
+  )
+  .arguments('[build_config]')
+  .action(async (buildConfig = config.defaultBuildConfig, options = {}) => {
+    config.buildConfig = buildConfig
+    if (options.target_os === 'host_os') {
+      delete options.target_os
+    }
+
+    if (options.target_arch === 'host_cpu') {
+      delete options.target_arch
+    }
+
+    config.update(options)
+    // ignore use_no_gn_gen when updating the symlink
+    delete config.use_no_gn_gen
+    const currentLink = options.symlink_dir
+    if (
+      !path.isAbsolute(currentLink)
+      && !path.relative(currentLink, config.srcDir).startsWith('..')
+    ) {
+      console.error('Symlink must be an absolute path in src')
+      process.exit(1)
+    }
+
+    fs.removeSync(currentLink)
+    fs.symlinkSync(config.outputDir, currentLink, 'junction')
+    await util.generateNinjaFiles()
+  })
+
+program
+  .command('build')
+  .option('-C <build_dir>', 'build directory, relative to out/ or absolute')
+  .option(
+    '--android_aab_to_apk',
+    'applies an aab to apk conversion to the output aab',
+  )
+  .option(
+    '--android_override_version_name <android_override_version_name>',
+    'Android version number',
+  )
+  .option('--build_delta_installer', 'build delta mini installer')
+  .option('--build_omaha', 'build omaha stub/standalone installer')
+  .option(
+    '--build_sparkle',
+    'Build the Sparkle macOS update framework from source',
+  )
+  .option(
+    '--channel <target_channel>',
+    'target channel to build',
+    /^(beta|dev|nightly|release)$/i,
+  )
+  .option('--force_gn_gen', 'always run gn gen')
+  .option(
+    '--gn <arg>',
+    'Additional gn args, in the form <key>:<value>',
+    collect,
+    [],
+  )
+  .option('--ignore_compile_failure', 'Keep compiling regardless of error')
+  .option('--use_clang_coverage', 'enable coverage for qorai source code')
+  .option('--is_asan', 'is asan enabled')
+  .option('--is_ubsan', 'is ubsan enabled')
+  .option(
+    '--last_chrome_installer <last_chrome_installer>',
+    'folder contains previous version uncompressed chrome.7z pack file. This folder should be in out dir.',
+  )
+  .option(
+    '--mac_installer_signing_identifier <id>',
+    'The identifier to use for signing installers',
+  )
+  .option('--mac_signing_identifier <id>', 'The identifier to use for signing')
+  .option(
+    '--mac_signing_keychain <keychain>',
+    'The identifier to use for signing',
+    'login',
+  )
+  .option(
+    '--ninja <opt>',
+    'Additional Ninja command-line options, in the form <key>:<value>',
+    collect,
+    [],
+  )
+  .option('--notarize', 'notarize targets that support it with Apple')
+  .option('--offline', 'use offline mode for RBE')
+  .option(
+    '--prepare_only',
+    'Do not build targets, but prepare everything (build redirect_cc, update branding, etc.)',
+  )
+  .option('--skip_signing', 'skip signing binaries')
+  .option('--tag_ap <ap>', 'ap for stub/standalone installer')
+  .option(
+    '--tag_installdataindex <index>',
+    'installdataindex for stub/standalone installer',
+  )
+  .option(
+    '--target <target>',
+    'Comma-separated list of targets to build, instead of the default browser target',
+  )
+  .option(
+    '--target_android_base <target_android_base>',
+    'target Android SDK level for apk or aab (classic, modern, mono)',
+    'classic',
+  )
+  .option(
+    '--target_android_output_format <target_android_output_format>',
+    'target Android output format (apk, aab)',
+    'aab',
+  )
+  .option('--target_arch <target_arch>', 'target architecture')
+  .option(
+    '--target_environment <target_environment>',
+    'target environment (device, catalyst, simulator)',
+  )
+  .option('--target_os <target_os>', 'target OS')
+  .option('--universal', 'build a universal binary distribution')
+  .option(
+    '--use_remoteexec [arg]',
+    'whether to use RBE for building',
+    JSON.parse,
+  )
+  .option(
+    '--xcode_gen <target>',
+    'Generate an Xcode workspace ("ios" or a list of semi-colon separated label patterns, run `gn help label_pattern` for more info.',
+  )
+  .option(
+    '--pkcs11-provider <provider_config_file>',
+    'PKCS11 provider configuration file path',
+  )
+  .option('--pkcs11-alias <alias>', 'PKCS11 key alias')
+  .arguments('[build_config]')
+  .action(build)
+
+program
+  .command('build_chromium_release')
+  .description(
+    'Produces a chromium release build for performance testing.\n'
+      + 'Uses the same /src directory; all qorai patches are reverted.\n'
+      + 'The default build_dir is `chromium_Release(_target_arch)`.\n'
+      + 'Intended for use on CI, use locally with care.',
+  )
+  .option('--force', 'Ignore a warning about non-CI build')
+  .option('-C <build_dir>', 'build config (out/chromium_Release')
+  .option('--target_os <target_os>', 'target OS')
+  .option('--target_arch <target_arch>', 'target architecture')
+  .option(
+    '--gn <arg>',
+    'Additional gn args, in the form <key>:<value>',
+    collect,
+    [],
+  )
+  .option(
+    '--ninja <opt>',
+    'Additional Ninja command-line options, in the form <key>:<value>',
+    collect,
+    [],
+  )
+  .action(buildChromiumRelease)
+
+program
+  .command('start')
+  .allowUnknownOption(true)
+  .option('-C <build_dir>', 'build config (out/Debug, out/Release')
+  .option('--v [log_level]', 'set log level to [log_level]', parseInteger, '0')
+  .option('--vmodule [modules]', 'verbose log from specific modules')
+  .option(
+    '--user_data_dir_name [base_name]',
+    'set user data directory base name to [base_name]',
+  )
+  .option('--no_sandbox', 'disable the sandbox')
+  .option('--disable_qorai_extension', 'disable loading the Qorai extension')
+  .option(
+    '--disable_qorai_rewards_extension',
+    'disable loading the Qorai Rewards extension',
+  )
+  .option('--disable_pdfjs_extension', 'disable loading the PDFJS extension')
+  .option(
+    '--ui_mode <ui_mode>',
+    'which built-in ui appearance mode to use',
+    /^(dark|light)$/i,
+  )
+  .option(
+    '--show_component_extensions',
+    'show component extensions in chrome://extensions',
+  )
+  .option('--enable_qorai_update', 'enable qorai update')
+  .option(
+    '--channel <target_channel>',
+    'target channel to start',
+    /^(beta|dev|nightly|release)$/i,
+    'release',
+  )
+  .option('--official_build <official_build>', 'force official build settings')
+  // See https://github.com/qorai/qorai-browser/wiki/Rewards#flags for more information
+  .option('--rewards [options]', 'options for rewards')
+  .option('--qorai_ads_testing', 'ads testing')
+  .option('--qorai_ads_production', 'ads production')
+  .option('--qorai_ads_staging', 'ads staging')
+  .option('--qorai_ads_debug', 'ads debug')
+  .option('--single_process', 'use a single process')
+  .option('--use_real_keychain', "don't add --use-mock-keychain in macOS")
+  .option(
+    '--output_path [pathname]',
+    'use the Qorai binary located at [pathname]',
+  )
+  .arguments('[build_config]')
+  .action(start.bind(null, parsedArgs.unknown))
+
+program
+  .command('pull_l10n')
+  .option('--channel <channel>', 'Release|Beta|Nightly, Release by default')
+  .option(
+    '--grd_path <grd_path>',
+    `Relative path to match end of full GRD path, e.g: 'generated_resources.grd'.`,
+  )
+  .option('--lang <language>', 'Only download content for this language')
+  .option(
+    '--debug',
+    `Dumps downloaded content for one language into CrowdinCurrent.txt file in the temp directory.`,
+  )
+  .action(pullL10n)
+
+program
+  .command('push_l10n')
+  .option('--channel <channel>', 'Release|Beta|Nightly, Release by default')
+  .option(
+    '--grd_path <grd_path>',
+    `Relative path to match end of full GRD path, e.g: 'generated_resources.grd'.`,
+  )
+  .option(
+    '--with_translations',
+    'Push local translations. WARNING: this will overwrite translations in Crowdin.',
+  )
+  .option(
+    '--with_missing_translations',
+    'Push local translations for strings that do not have translations in Crowdin.',
+  )
+  .action(pushL10n)
+
+program.command('chromium_rebase_l10n').action(chromiumRebaseL10n)
+
+program
+  .command('update_patches')
+  .arguments('[filePaths...]')
+  .description(
+    'Updates all patches in the qorai-core repo. If a filePath is provider, only that specific file will be updated.',
+  )
+  .action(updatePatches)
+
+program
+  .command('cibuild')
+  .option('--target_arch <target_arch>', 'target architecture')
+  .action((options) => {
+    build('Release', options)
+  })
+
+program
+  .command('test <suite>')
+  .allowUnknownOption(true)
+  .option('-C <build_dir>', 'build config (out/Debug, out/Release')
+  .option('--v [log_level]', 'set log level to [log_level]', parseInteger, '0')
+  .option('--vmodule [modules]', 'verbose log from specific modules')
+  .option('--filter <filter>', 'set test filter')
+  .option(
+    '--base [targetCommitRef]',
+    'use this commit/branch/tag as reference for change detection',
+  )
+  .option(
+    '--output_xml',
+    'indicates if test results xml output file(s) should be generated. '
+      + '<suite>.txt file will contain the list of xml files with results. '
+      + 'All output files are generated in the src directory',
+  )
+  .option('--disable_qorai_extension', 'disable loading the Qorai extension')
+  .option(
+    '--single_process',
+    'uses a single process to run tests to help with debugging',
+  )
+  .option(
+    '--test_launcher_jobs <test_launcher_jobs>',
+    'Number of jobs to launch',
+    parseInteger,
+    '4',
+  )
+  .option('--target_os <target_os>', 'target OS')
+  .option('--target_arch <target_arch>', 'target architecture')
+  .option(
+    '--target_environment <target_environment>',
+    'target environment (device, catalyst, simulator)',
+  )
+  .option('--run_disabled_tests', 'run disabled tests')
+  .option(
+    '--manual_android_test_device',
+    'indicates that Android test device is run manually',
+  )
+  .option(
+    '--android_test_emulator_name <emulator_name',
+    'set name of the Android emulator for tests',
+    'android_33_google_atd_x64',
+  )
+  .option(
+    '--use_remoteexec [arg]',
+    'whether to use RBE for building',
+    JSON.parse,
+  )
+  .option(
+    '--ios_xcode_build_version <build_version>',
+    'xcode build version for ios',
+  )
+  .option(
+    '--ios_simulator_platform <simulator_platform>',
+    'platform to use for ios simulator',
+    'iPhone 17',
+  )
+  .option(
+    '--ios_simulator_version <simulator_version>',
+    'ios version for simulator',
+    '26.0',
+  ) // should match ios_deployment_target
+  .option('--offline', 'use offline mode for RBE')
+  .arguments('[build_config]')
+  .action(test.bind(null, parsedArgs.unknown))
+
+program
+  .command('presubmit')
+  .option('--base <base branch>', 'set the destination branch for the PR')
+  .option('--all', 'run presubmit on all files')
+  .option(
+    '--files <file list>',
+    'semicolon-separated list files to run presubmit on',
+  )
+  .option(
+    '--verbose [arg]',
+    'pass --verbose 2 for more debugging info',
+    JSON.parse,
+  )
+  .option('--fix', 'try to fix found issues automatically')
+  .option('--json <output>', 'An output file for a JSON report')
+  .action(util.presubmit)
+
+program.command('mass_rename').action(util.massRename)
+
+program
+  .command('build_fuzzer <fuzzer_test_target>')
+  .option(
+    '--use_remoteexec [arg]',
+    'whether to use RBE for building',
+    JSON.parse,
+  )
+  .option('--offline', 'use offline mode for RBE')
+  .action(buildFuzzer)
+
+program
+  .command('run_fuzzer <suite>')
+  .allowUnknownOption(true)
+  .action(runFuzzer.bind(null, parsedArgs.unknown))
+
+program
+  .command('run_perf_tests [perf_config] [targets]')
+  .option('--target_os <target_os>', 'target OS')
+  .option('--target_arch <target_arch>', 'target architecture')
+  .allowUnknownOption(true)
+  .description('Call npm run perf_tests -- --more-help for detailed help')
+  .action(perfTests.runPerfTests.bind(null, parsedArgs.unknown))
+
+program
+  .command('gen_gradle')
+  .allowUnknownOption(true)
+  .option('-C <build_dir>', 'build config (out/Debug, out/Release)')
+  .option('--target_arch <target_arch>', 'target architecture')
+  .arguments('[build_config]')
+  .action(genGradle.bind(null, parsedArgs.unknown))
+
+program.command('docs').action(util.launchDocs)
+
+registerListAffectedTestsCommand(program)
+registerGenerateCoverageReportCommand(program)
+
+program.parse(process.argv)

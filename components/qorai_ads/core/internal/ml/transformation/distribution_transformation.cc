@@ -1,0 +1,34 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_ads/core/internal/ml/transformation/distribution_transformation.h"
+
+#include <utility>
+
+#include "base/check.h"
+#include "qorai/components/qorai_ads/core/internal/ml/data/vector_data.h"
+
+namespace qorai_ads::ml {
+
+DistributionTransformation::DistributionTransformation()
+    : Transformation(TransformationType::kDistribution) {}
+
+std::unique_ptr<Data> DistributionTransformation::Apply(
+    const std::unique_ptr<Data>& input_data) const {
+  CHECK(input_data);
+
+  if (input_data->GetType() != DataType::kVector) {
+    return {};
+  }
+
+  const auto* const vector_data = static_cast<VectorData*>(input_data.get());
+
+  VectorData vector_data_copy = *vector_data;
+  vector_data_copy.ToDistribution();
+
+  return std::make_unique<VectorData>(std::move(vector_data_copy));
+}
+
+}  // namespace qorai_ads::ml

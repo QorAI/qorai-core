@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/ui/tabs/tab_style.cc b/chrome/browser/ui/tabs/tab_style.cc
+index eb6789e6212b6ab4059ccf394434a0d6e3661900..d135126ee7d23ed7e3ab9f3f5558090250d105a9 100644
+--- a/chrome/browser/ui/tabs/tab_style.cc
++++ b/chrome/browser/ui/tabs/tab_style.cc
+@@ -191,6 +191,7 @@ float TabStyle::GetSelectedTabOpacity() const {
+ 
+ // static
+ const TabStyle* TabStyle::Get() {
++  QORAI_TAB_STYLE_GET
+   static TabStyle* const tab_style = static_cast<TabStyle*>(new TabStyle());
+ 
+   return tab_style;

@@ -1,0 +1,16 @@
+diff --git a/chrome/browser/ui/android/toolbar/java/res/layout/toolbar_phone.xml b/chrome/browser/ui/android/toolbar/java/res/layout/toolbar_phone.xml
+index 1c90a2eae52d90af549e68b6a6dfdc21d427b909..a69a76bf78b9532f0181452a0bced2dc2d1bbeb1 100644
+--- a/chrome/browser/ui/android/toolbar/java/res/layout/toolbar_phone.xml
++++ b/chrome/browser/ui/android/toolbar/java/res/layout/toolbar_phone.xml
+@@ -47,9 +47,11 @@ found in the LICENSE file.
+         android:orientation="horizontal"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
++        android:layout_marginEnd="8dp"
+         android:layout_gravity="top|end"
+         android:focusable="false"
+         android:focusableInTouchMode="false">
++    <include layout="@layout/qorai_toolbar" android:layout_height="wrap_content" android:layout_width="match_parent" />
+ 
+         <ViewStub
+             android:id="@+id/optional_button_stub"

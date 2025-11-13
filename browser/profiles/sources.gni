@@ -1,0 +1,15 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_browser_profiles_sources = [
+  "//qorai/browser/profiles/qorai_profile_avatar_downloader.cc",
+  "//qorai/browser/profiles/qorai_profile_avatar_downloader.h",
+  "//qorai/browser/profiles/qorai_profile_manager.cc",
+  "//qorai/browser/profiles/qorai_profile_manager.h",
+  "//qorai/browser/profiles/qorai_renderer_updater.cc",
+  "//qorai/browser/profiles/qorai_renderer_updater.h",
+  "//qorai/browser/profiles/qorai_renderer_updater_factory.cc",
+  "//qorai/browser/profiles/qorai_renderer_updater_factory.h",
+]

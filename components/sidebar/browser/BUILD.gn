@@ -1,0 +1,61 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/ui.gni")
+
+assert(toolkit_views)
+
+static_library("browser") {
+  sources = [
+    "constants.h",
+    "pref_names.h",
+    "sidebar_item.cc",
+    "sidebar_item.h",
+    "sidebar_p3a.cc",
+    "sidebar_p3a.h",
+    "sidebar_service.cc",
+    "sidebar_service.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/qorai_wallet/common",
+    "//qorai/components/constants",
+    "//qorai/components/l10n/common",
+    "//qorai/components/playlist/core/common",
+    "//qorai/components/resources:strings",
+    "//qorai/components/sidebar/common",
+    "//components/keyed_service/core",
+    "//components/prefs",
+    "//components/version_info",
+    "//ui/base",
+    "//url",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [ "sidebar_service_unittest.cc" ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/constants",
+    "//qorai/components/playlist/core/common",
+    "//qorai/components/sidebar/browser",
+    "//qorai/components/sidebar/common",
+    "//components/prefs",
+    "//components/prefs:test_support",
+    "//components/sync_preferences:test_support",
+    "//components/version_info",
+    "//content/public/browser",
+    "//content/test:test_support",
+    "//testing/gmock",
+    "//testing/gtest",
+  ]
+}

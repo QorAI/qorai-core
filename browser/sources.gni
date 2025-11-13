@@ -1,0 +1,742 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/browser/ai_chat/android/sources.gni")
+import("//qorai/browser/autocomplete/sources.gni")
+import("//qorai/browser/qorai_news/sources.gni")
+import("//qorai/browser/qorai_referrals/sources.gni")
+import("//qorai/browser/qorai_rewards/android/sources.gni")
+import("//qorai/browser/qorai_shields/sources.gni")
+import("//qorai/browser/qorai_vpn/sources.gni")
+import("//qorai/browser/qorai_wallet/android/sources.gni")
+import("//qorai/browser/qorai_wallet/notifications/sources.gni")
+import("//qorai/browser/browsing_data/sources.gni")
+import("//qorai/browser/cosmetic_filters/sources.gni")
+import("//qorai/browser/debounce/sources.gni")
+import("//qorai/browser/download/sources.gni")
+import("//qorai/browser/ephemeral_storage/sources.gni")
+import("//qorai/browser/gcm_driver/sources.gni")
+import("//qorai/browser/infobars/sources.gni")
+import("//qorai/browser/misc_metrics/sources.gni")
+import("//qorai/browser/net/sources.gni")
+import("//qorai/browser/new_tab/sources.gni")
+import("//qorai/browser/notifications/sources.gni")
+import("//qorai/browser/onboarding/sources.gni")
+import("//qorai/browser/perf/sources.gni")
+import("//qorai/browser/permissions/sources.gni")
+import("//qorai/browser/playlist/sources.gni")
+import("//qorai/browser/profiles/sources.gni")
+import("//qorai/browser/renderer_context_menu/sources.gni")
+import("//qorai/browser/request_otr/sources.gni")
+import("//qorai/browser/search_engines/sources.gni")
+import("//qorai/browser/sync/sources.gni")
+import("//qorai/browser/themes/sources.gni")
+import("//qorai/browser/ui/config.gni")
+import("//qorai/browser/updater/buildflags.gni")
+import("//qorai/browser/url_sanitizer/sources.gni")
+import("//qorai/browser/web_discovery/sources.gni")
+import("//qorai/browser/webcompat_reporter/sources.gni")
+import("//qorai/build/config.gni")
+import("//qorai/chromium_src/chrome/browser/prefs/sources.gni")
+import("//qorai/chromium_src/chrome/browser/sources.gni")
+import("//qorai/components/ai_chat/core/common/buildflags/buildflags.gni")
+import("//qorai/components/ai_rewriter/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_education/buildflags.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_wayback_machine/buildflags/buildflags.gni")
+import("//qorai/components/commander/common/buildflags/buildflags.gni")
+import("//qorai/components/containers/buildflags/buildflags.gni")
+import("//qorai/components/psst/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//qorai/components/web_discovery/buildflags/buildflags.gni")
+import("//chrome/browser/buildflags.gni")
+import("//extensions/buildflags/buildflags.gni")
+import("//printing/buildflags/buildflags.gni")
+
+qorai_chrome_browser_visibility = [
+  "//qorai/browser/*",
+  "//qorai/test:*",
+
+  # Chrome does not yet define a visibility list by itself, meaning we can't
+  # append our list to them and that what we have here will become law not just
+  # for Qorai, but also for the rest of chrome. Thus, we need to provide our own
+  # permissive list for chrome here too, to be removed in the future if Chrome
+  # ever provides it's own list (at which point we'll append instead of set).
+  "//chrome:dependencies",
+  "//chrome/app/*",
+  "//chrome/test/*",
+  "//extensions/*",
+]
+
+qorai_chrome_browser_sources = [
+  "//qorai/browser/qorai_browser_features.cc",
+  "//qorai/browser/qorai_browser_features.h",
+  "//qorai/browser/qorai_browser_main_extra_parts.cc",
+  "//qorai/browser/qorai_browser_main_extra_parts.h",
+  "//qorai/browser/qorai_browser_main_parts.cc",
+  "//qorai/browser/qorai_browser_main_parts.h",
+  "//qorai/browser/qorai_browser_process.cc",
+  "//qorai/browser/qorai_browser_process_impl.cc",
+  "//qorai/browser/qorai_browser_process_impl.h",
+  "//qorai/browser/qorai_content_browser_client.cc",
+  "//qorai/browser/qorai_content_browser_client.h",
+  "//qorai/browser/qorai_local_state_prefs.cc",
+  "//qorai/browser/qorai_local_state_prefs.h",
+  "//qorai/browser/qorai_profile_prefs.cc",
+  "//qorai/browser/qorai_profile_prefs.h",
+  "//qorai/browser/qorai_shell_integration.cc",
+  "//qorai/browser/qorai_shell_integration.h",
+  "//qorai/browser/qorai_tab_helpers.cc",
+  "//qorai/browser/qorai_tab_helpers.h",
+  "//qorai/browser/qorai_wallet/wallet_data_files_installer_delegate_impl.cc",
+  "//qorai/browser/qorai_wallet/wallet_data_files_installer_delegate_impl.h",
+  "//qorai/browser/browser_context_keyed_service_factories.cc",
+  "//qorai/browser/browser_context_keyed_service_factories.h",
+  "//qorai/browser/geolocation/qorai_geolocation_permission_context_delegate.cc",
+  "//qorai/browser/geolocation/qorai_geolocation_permission_context_delegate.h",
+  "//qorai/browser/metrics/qorai_metrics_service_accessor.cc",
+  "//qorai/browser/metrics/qorai_metrics_service_accessor.h",
+  "//qorai/browser/metrics/metrics_reporting_util.cc",
+  "//qorai/browser/metrics/metrics_reporting_util.h",
+  "//qorai/browser/policy/qorai_simple_policy_map.h",
+  "//qorai/browser/prefs/qorai_pref_service_incognito_allowlist.cc",
+  "//qorai/browser/prefs/qorai_pref_service_incognito_allowlist.h",
+  "//qorai/browser/translate/qorai_translate_prefs_migration.cc",
+  "//qorai/browser/translate/qorai_translate_prefs_migration.h",
+  "//qorai/browser/translate/qorai_translate_utils.cc",
+  "//qorai/browser/translate/qorai_translate_utils.h",
+  "//qorai/browser/update_util.cc",
+  "//qorai/browser/update_util.h",
+  "//qorai/chromium_src/chrome/browser/notifications/notification_handler_impl.h",
+]
+
+qorai_chrome_browser_deps = [
+  "//base",
+  "//qorai/app:qorai_generated_resources_grit",
+  "//qorai/browser:browser_process",
+  "//qorai/browser:sparkle_buildflags",
+  "//qorai/browser/ai_chat",
+  "//qorai/browser/ai_chat/ollama",
+  "//qorai/browser/qorai_account",
+  "//qorai/browser/qorai_adaptive_captcha",
+  "//qorai/browser/qorai_adaptive_captcha:impl",
+  "//qorai/browser/qorai_ads",
+  "//qorai/browser/qorai_ads:impl",
+  "//qorai/browser/qorai_ads/creatives/search_result_ad",
+  "//qorai/browser/qorai_ads/tabs",
+  "//qorai/browser/qorai_origin",
+  "//qorai/browser/qorai_rewards:qorai_rewards_impl",
+  "//qorai/browser/qorai_rewards:util",
+  "//qorai/browser/qorai_search",
+  "//qorai/browser/qorai_stats",
+  "//qorai/browser/qorai_wallet",
+  "//qorai/browser/qorai_wallet:qorai_wallet_delegate",
+  "//qorai/browser/qorai_wallet:tab_helper",
+  "//qorai/browser/component_updater",
+  "//qorai/browser/email_aliases",
+  "//qorai/browser/metrics/buildflags",
+  "//qorai/browser/misc_metrics",
+  "//qorai/browser/misc_metrics:misc_metrics_impl",
+  "//qorai/browser/ntp_background",
+  "//qorai/browser/skus",
+  "//qorai/browser/sync",
+  "//qorai/browser/themes",
+  "//qorai/browser/ui",
+  "//qorai/browser/ui/webui/ads_internals",
+  "//qorai/browser/ui/webui/ai_chat",
+  "//qorai/browser/ui/webui/qorai_account",
+  "//qorai/browser/updater:buildflags",
+  "//qorai/common",
+  "//qorai/common:mojo_bindings",
+  "//qorai/components/ai_chat/content/browser",
+  "//qorai/components/ai_chat/core/browser",
+  "//qorai/components/ai_chat/core/common",
+  "//qorai/components/ai_chat/core/common/mojom",
+  "//qorai/components/ai_rewriter/common/buildflags",
+  "//qorai/components/body_sniffer",
+  "//qorai/components/qorai_account",
+  "//qorai/components/qorai_account:features",
+  "//qorai/components/qorai_account/mojom",
+  "//qorai/components/qorai_adaptive_captcha",
+  "//qorai/components/qorai_ads/browser",
+  "//qorai/components/qorai_ads/core",
+  "//qorai/components/qorai_component_updater/browser",
+  "//qorai/components/qorai_education:buildflags",
+  "//qorai/components/qorai_new_tab_ui:mojom",
+  "//qorai/components/qorai_news/common:mojom",
+  "//qorai/components/qorai_origin",
+  "//qorai/components/qorai_perf_predictor/browser",
+  "//qorai/components/qorai_policy",
+  "//qorai/components/qorai_policy/ad_block_only_mode",
+  "//qorai/components/qorai_private_new_tab_ui/common",
+  "//qorai/components/qorai_private_new_tab_ui/common:mojom",
+  "//qorai/components/qorai_referrals/browser",
+  "//qorai/components/qorai_rewards/core",
+  "//qorai/components/qorai_rewards/core:features",
+  "//qorai/components/qorai_rewards/core/buildflags",
+  "//qorai/components/qorai_rewards/core/mojom",
+  "//qorai/components/qorai_rewards/core/mojom:webui",
+  "//qorai/components/qorai_search/browser",
+  "//qorai/components/qorai_search/common",
+  "//qorai/components/qorai_search/common:mojom",
+  "//qorai/components/qorai_shields/core/common",
+  "//qorai/components/qorai_shields/core/common:mojom",
+  "//qorai/components/qorai_sync",
+  "//qorai/components/qorai_sync:features",
+  "//qorai/components/qorai_sync:network_time_helper",
+  "//qorai/components/qorai_sync:prefs",
+  "//qorai/components/qorai_user_agent/browser",
+  "//qorai/components/qorai_user_agent/common",
+  "//qorai/components/qorai_vpn/common/buildflags",
+  "//qorai/components/qorai_vpn/common/mojom",
+  "//qorai/components/qorai_wallet/browser",
+  "//qorai/components/qorai_wallet/browser:utils",
+  "//qorai/components/qorai_wallet/common",
+  "//qorai/components/qorai_wallet/common:mojom",
+  "//qorai/components/qorai_wallet/common:pref_names",
+  "//qorai/components/qorai_wayback_machine/buildflags",
+  "//qorai/components/commander/common/buildflags",
+  "//qorai/components/constants",
+  "//qorai/components/containers/buildflags",
+  "//qorai/components/cosmetic_filters/browser",
+  "//qorai/components/cosmetic_filters/common:mojom",
+  "//qorai/components/de_amp/browser",
+  "//qorai/components/de_amp/common",
+  "//qorai/components/debounce/content/browser",
+  "//qorai/components/decentralized_dns/content",
+  "//qorai/components/decentralized_dns/core",
+  "//qorai/components/email_aliases:features",
+  "//qorai/components/global_privacy_control",
+  "//qorai/components/google_sign_in_permission",
+  "//qorai/components/https_upgrade_exceptions/browser",
+  "//qorai/components/ipfs",
+  "//qorai/components/ipfs/buildflags",
+  "//qorai/components/l10n/common",
+  "//qorai/components/ntp_background_images/browser",
+  "//qorai/components/ntp_background_images/buildflags",
+  "//qorai/components/ntp_background_images/common",
+  "//qorai/components/ntp_tiles",
+  "//qorai/components/p3a",
+  "//qorai/components/p3a_utils",
+  "//qorai/components/password_strength_meter:mojom",
+  "//qorai/components/playlist/core/common/buildflags",
+  "//qorai/components/privacy_sandbox",
+  "//qorai/components/request_otr/common/buildflags",
+  "//qorai/components/resources",
+  "//qorai/components/skus/browser",
+  "//qorai/components/skus/common",
+  "//qorai/components/skus/common:mojom",
+  "//qorai/components/speech_to_text",
+  "//qorai/components/speech_to_text:buildflags",
+  "//qorai/components/speedreader/common/buildflags",
+  "//qorai/components/tor/buildflags",
+  "//qorai/components/v8/buildflags",
+  "//qorai/components/version_info",
+  "//qorai/components/web_discovery/buildflags",
+  "//qorai/components/webcompat/content/browser",
+  "//qorai/components/webcompat/core/common",
+  "//qorai/extensions:common",
+  "//qorai/services/network/public/cpp",
+  "//qorai/third_party/blink/renderer",
+  "//chrome/browser:browser_process",
+  "//chrome/browser/profiles:profile",
+  "//chrome/browser/ui",
+  "//chrome/common",
+  "//chrome/common:channel_info",
+  "//chrome/utility",
+  "//components/account_id",
+  "//components/autofill/core/common",
+  "//components/browsing_data/core",
+  "//components/content_settings/browser",
+  "//components/content_settings/core/browser",
+  "//components/content_settings/core/common",
+  "//components/embedder_support",
+  "//components/feed/core/shared_prefs:feed_shared_prefs",
+  "//components/gcm_driver:gcm_buildflags",
+  "//components/metrics",
+  "//components/ntp_tiles",
+  "//components/omnibox/browser",
+  "//components/password_manager/core/common",
+  "//components/permissions",
+  "//components/policy/core/common:common_constants",
+  "//components/pref_registry",
+  "//components/prefs",
+  "//components/privacy_sandbox:privacy_sandbox_prefs",
+  "//components/safe_browsing/core/common:safe_browsing_prefs",
+  "//components/search_engines",
+  "//components/services/heap_profiling/public/mojom",
+  "//components/signin/public/base",
+  "//components/sync/base",
+  "//components/sync/service",
+  "//components/translate/core/browser:translate_pref_names",
+  "//components/version_info",
+  "//components/version_info:channel",
+  "//content/public/browser",
+  "//content/public/common",
+  "//extensions/buildflags",
+  "//mojo/public/cpp/bindings",
+  "//net",
+  "//services/metrics/public/cpp:metrics_cpp",
+  "//services/network/public/cpp",
+  "//third_party/abseil-cpp:absl",
+  "//third_party/blink/public/mojom:mojom_platform_headers",
+  "//third_party/widevine/cdm:buildflags",
+  "//ui/base",
+  "//url",
+]
+
+if (enable_psst) {
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/psst",
+    "//qorai/components/psst/browser/content",
+    "//qorai/components/psst/browser/core",
+    "//qorai/components/psst/common",
+  ]
+}
+
+if (!is_android) {
+  # Already included on android by upstream
+
+  # Including v2 back into qorai build as we make use of `feed::FetchRssLinks` in `qorai_news_tab_helper.cc`.
+  qorai_chrome_browser_sources += [
+    "feed/feed_service_factory.cc",
+    "feed/feed_service_factory.h",
+    "feed/rss_links_fetcher.cc",
+    "feed/rss_links_fetcher.h",
+    "feed/web_feed_page_information_fetcher.cc",
+    "feed/web_feed_page_information_fetcher.h",
+    "feed/web_feed_tab_helper.cc",
+    "feed/web_feed_tab_helper.h",
+    "feed/web_feed_ui_util.cc",
+    "feed/web_feed_ui_util.h",
+    "feed/web_feed_util.cc",
+    "feed/web_feed_util.h",
+  ]
+
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/ui/ai_chat",
+    "//qorai/browser/ui/tabs:impl",
+    "//qorai/browser/ui/webui/qorai_new_tab_page_refresh",
+    "//qorai/browser/ui/webui/qorai_new_tab_page_refresh:mojom",
+    "//qorai/browser/ui/webui/qorai_news_internals",
+    "//qorai/browser/user_education:features",
+    "//qorai/ui/webui/qorai_color_change_listener",
+    "//chrome/browser/regional_capabilities",
+    "//chrome/browser/ui/thumbnails",
+    "//components/feed:feature_list",
+    "//components/feed/core/v2:feed_core_v2",
+    "//components/feed/mojom:mojo_bindings",
+    "//components/regional_capabilities",
+  ]
+}
+
+if (enable_qorai_education) {
+  qorai_chrome_browser_deps += [ "//qorai/browser/ui/webui/qorai_education" ]
+}
+
+if (is_android) {
+  qorai_chrome_browser_sources += qorai_browser_ai_chat_android_sources
+  qorai_chrome_browser_deps += qorai_browser_ai_chat_android_deps
+}
+
+if (enable_containers) {
+  qorai_chrome_browser_deps += [
+    "//qorai/components/containers/core/browser",
+    "//qorai/components/containers/core/common",
+  ]
+}
+
+if (enable_commander) {
+  qorai_chrome_browser_deps += [
+    "//qorai/components/commander/browser",
+    "//qorai/components/commands/browser",
+    "//qorai/components/commands/common",
+  ]
+}
+
+if (is_mac) {
+  qorai_chrome_browser_sources += [
+    "//qorai/browser/qorai_app_controller_mac.h",
+    "//qorai/browser/qorai_app_controller_mac.mm",
+    "//qorai/browser/qorai_browser_main_parts_mac.h",
+    "//qorai/browser/qorai_browser_main_parts_mac.mm",
+    "//qorai/browser/qorai_shell_integration_mac.h",
+    "//qorai/browser/qorai_shell_integration_mac.mm",
+    "//qorai/browser/mac/keystone_glue.h",
+    "//qorai/browser/mac/keystone_glue.mm",
+    "//qorai/browser/mac/keystone_registration.h",
+    "//qorai/browser/mac/keystone_registration.mm",
+  ]
+  qorai_chrome_browser_deps += [
+    "//qorai/app:command_ids",
+    "//qorai/browser:sparkle_buildflags",
+    "//qorai/browser/updater:buildflags",
+    "//chrome:strings",
+    "//chrome/app:generated_resources",
+    "//chrome/common:non_code_constants",
+  ]
+  qorai_chrome_framework_contents = []
+}
+
+if (enable_sparkle) {
+  qorai_chrome_browser_sources += [
+    "//qorai/browser/mac/sparkle_glue.h",
+    "//qorai/browser/mac/sparkle_glue.mm",
+    "//qorai/browser/mac/su_updater.h",
+  ]
+  qorai_chrome_framework_contents += [ "Frameworks" ]
+}
+
+if (enable_omaha4) {
+  qorai_chrome_browser_sources += [
+    "//qorai/browser/qorai_browser_main_extra_parts_p3a.cc",
+    "//qorai/browser/qorai_browser_main_extra_parts_p3a.h",
+  ]
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/updater:features",
+    "//qorai/browser/updater:p3a",
+  ]
+}
+
+if (enable_speedreader) {
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/speedreader",
+    "//qorai/browser/ui/speedreader",
+  ]
+}
+
+if (enable_request_otr) {
+  qorai_chrome_browser_deps += [ "//qorai/components/request_otr/common" ]
+}
+
+if (enable_ai_rewriter) {
+  qorai_chrome_browser_deps += [ "//qorai/components/ai_rewriter/common" ]
+}
+
+if (enable_web_discovery_native) {
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/web_discovery",
+    "//qorai/components/web_discovery/browser",
+    "//qorai/components/web_discovery/common",
+  ]
+}
+
+if (enable_qorai_vpn) {
+  qorai_chrome_browser_deps += [
+    "//qorai/components/qorai_vpn/browser",
+    "//qorai/components/qorai_vpn/browser/connection",
+    "//qorai/components/qorai_vpn/browser/connection:api",
+    "//qorai/components/qorai_vpn/common",
+  ]
+}
+
+if (is_android) {
+  qorai_chrome_browser_sources += [
+    "//qorai/browser/android/qorai_init_android.cc",
+    "//qorai/browser/password_manager/android/password_ui_view_android.cc",
+    "//qorai/browser/password_manager/android/password_ui_view_android.h",
+    "//qorai/browser/sync/qorai_sync_devices_android.cc",
+    "//qorai/browser/sync/qorai_sync_devices_android.h",
+    "//chrome/browser/bookmarks/bookmark_html_writer.cc",
+    "//chrome/browser/bookmarks/bookmark_html_writer.h",
+    "//chrome/browser/importer/profile_writer.cc",
+    "//chrome/browser/importer/profile_writer.h",
+  ]
+
+  qorai_chrome_browser_sources += qorai_browser_qorai_rewards_android_sources
+  qorai_chrome_browser_sources += qorai_browser_qorai_wallet_android_sources
+  qorai_chrome_browser_sources += qorai_browser_misc_metrics_android_sources
+  qorai_chrome_browser_deps += qorai_browser_qorai_wallet_android_deps
+
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/android:android_browser_process",
+    "//qorai/browser/android:tabs_impl",
+    "//qorai/browser/android/preferences",
+    "//qorai/browser/android/safe_browsing:buildflags",
+    "//qorai/browser/android/youtube_script_injector",
+    "//qorai/browser/android/youtube_script_injector:features",
+    "//qorai/browser/qorai_ads/android",
+    "//qorai/browser/download/android:jni_headers",
+    "//qorai/browser/ntp_background/android",
+    "//qorai/browser/password_entry_edit/android",
+    "//qorai/browser/ui/webui/new_tab_takeover/android:new_tab_takeover",
+    "//qorai/build/android:jni_headers",
+    "//qorai/components/qorai_sync:sync_service_impl_helper",
+    "//chrome/android:jni_headers",
+    "//chrome/browser/password_manager/android:jni_headers",
+    "//components/password_manager/core/browser/import:importer",
+    "//components/sync_device_info",
+  ]
+} else {
+  qorai_chrome_browser_sources += [
+    "//qorai/browser/p3a/p3a_core_metrics.cc",
+    "//qorai/browser/p3a/p3a_core_metrics.h",
+    "//qorai/browser/profile_resetter/qorai_profile_resetter.cc",
+    "//qorai/browser/profile_resetter/qorai_profile_resetter.h",
+  ]
+
+  qorai_chrome_browser_deps += [
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/browser/qorai_ads/tooltips",
+    "//qorai/browser/importer",
+    "//qorai/components/qorai_search_conversion",
+    "//qorai/components/time_period_storage",
+    "//components/infobars/content",
+  ]
+}
+
+if (toolkit_views) {
+  qorai_chrome_browser_sources += qorai_browser_onboarding_sources
+
+  qorai_chrome_browser_deps += qorai_browser_onboarding_deps
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/ui/darker_theme",
+    "//qorai/components/sidebar/browser",
+  ]
+}
+
+if (enable_extensions) {
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/extensions",
+    "//chrome/browser/extensions",
+    "//extensions/browser",
+    "//extensions/common:common_constants",
+  ]
+}
+
+if (enable_qorai_wayback_machine) {
+  qorai_chrome_browser_deps += [ "//qorai/components/qorai_wayback_machine" ]
+}
+
+if (enable_tor) {
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/tor",
+    "//qorai/browser/tor:impl",
+    "//qorai/components/tor",
+    "//qorai/components/tor:common",
+    "//qorai/components/tor:pref_names",
+  ]
+}
+
+if (enable_widevine) {
+  qorai_chrome_browser_sources += [
+    "//qorai/browser/qorai_drm_tab_helper.cc",
+    "//qorai/browser/qorai_drm_tab_helper.h",
+  ]
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/widevine",
+    "//qorai/components/qorai_drm",
+    "//qorai/components/widevine:constants",
+  ]
+}
+
+if (is_win) {
+  qorai_chrome_browser_sources += [
+    "//qorai/browser/qorai_shell_integration_win.cc",
+    "//qorai/browser/qorai_shell_integration_win.h",
+    "//qorai/browser/default_protocol_handler_utils_win.cc",
+    "//qorai/browser/default_protocol_handler_utils_win.h",
+  ]
+
+  qorai_chrome_browser_deps += [
+    "//qorai/components/windows_recall",
+    "//chrome/install_static:install_static_util",
+    "//chrome/installer/util:with_no_strings",
+  ]
+}
+
+if (is_win || is_android) {
+  qorai_chrome_browser_sources += [
+    "//qorai/browser/day_zero_browser_ui_expt/day_zero_browser_ui_expt_manager.cc",
+    "//qorai/browser/day_zero_browser_ui_expt/day_zero_browser_ui_expt_manager.h",
+    "//qorai/browser/day_zero_browser_ui_expt/pref_names.h",
+  ]
+}
+
+if (is_win && is_official_build) {
+  qorai_chrome_browser_sources += [
+    "//chrome/browser/google/google_update_win.cc",
+    "//chrome/browser/google/google_update_win.h",
+    "//chrome/browser/google/switches.cc",
+    "//chrome/browser/google/switches.h",
+  ]
+}
+
+qorai_chrome_browser_public_deps = [
+  "//qorai/app/vector_icons",
+  "//qorai/browser:browser_process",
+  "//qorai/common/importer:interfaces",
+  "//qorai/components/qorai_sync:constants",
+  "//qorai/components/psst/buildflags",
+  "//qorai/components/variations",
+]
+
+if (is_mac) {
+  qorai_chrome_framework_public_deps = [ "//qorai:framework_bundle_data" ]
+  qorai_chrome_framework_bundle_deps = [ "//qorai:framework_bundle_data" ]
+}
+
+qorai_chrome_browser_sources += qorai_browser_profiles_sources
+qorai_chrome_browser_sources += qorai_browser_autocomplete_sources
+qorai_chrome_browser_sources += qorai_browser_qorai_news_sources
+qorai_chrome_browser_sources += qorai_browser_qorai_referrals_sources
+qorai_chrome_browser_sources += qorai_browser_qorai_shields_sources
+qorai_chrome_browser_sources += qorai_browser_qorai_vpn_sources
+qorai_chrome_browser_sources += qorai_browser_qorai_wallet_sources
+qorai_chrome_browser_sources += qorai_browser_browsing_data_sources
+qorai_chrome_browser_sources += qorai_browser_cosmetic_filters_sources
+qorai_chrome_browser_sources += qorai_browser_debounce_sources
+qorai_chrome_browser_sources += qorai_browser_download_sources
+qorai_chrome_browser_sources += qorai_browser_ephemeral_storage_sources
+qorai_chrome_browser_sources += qorai_browser_gcm_driver_sources
+qorai_chrome_browser_sources += qorai_browser_infobar_sources
+qorai_chrome_browser_sources += qorai_browser_misc_metrics_sources
+qorai_chrome_browser_sources += qorai_browser_net_sources
+qorai_chrome_browser_sources += qorai_browser_new_tab_sources
+qorai_chrome_browser_sources += qorai_browser_notifications_sources
+qorai_chrome_browser_sources += qorai_browser_perf_sources
+qorai_chrome_browser_sources += qorai_browser_permissions_sources
+qorai_chrome_browser_sources += qorai_browser_playlist_sources
+qorai_chrome_browser_sources += qorai_browser_renderer_context_menu_sources
+qorai_chrome_browser_sources += qorai_browser_request_otr_sources
+qorai_chrome_browser_sources += qorai_browser_search_engines_sources
+qorai_chrome_browser_sources += qorai_browser_sync_sources
+qorai_chrome_browser_sources += qorai_browser_themes_sources
+qorai_chrome_browser_sources += qorai_browser_url_sanitizer_sources
+qorai_chrome_browser_sources += qorai_browser_web_discovery_sources
+qorai_chrome_browser_sources += qorai_browser_webcompat_reporter_sources
+
+qorai_chrome_browser_deps += qorai_browser_autocomplete_deps
+qorai_chrome_browser_deps += qorai_browser_qorai_news_deps
+qorai_chrome_browser_deps += qorai_browser_qorai_referrals_deps
+qorai_chrome_browser_deps += qorai_browser_qorai_shields_deps
+qorai_chrome_browser_deps += qorai_browser_qorai_vpn_deps
+qorai_chrome_browser_deps += qorai_browser_qorai_wallet_deps
+qorai_chrome_browser_deps += qorai_browser_browsing_data_deps
+qorai_chrome_browser_deps += qorai_browser_cosmetic_filters_deps
+qorai_chrome_browser_deps += qorai_browser_debounce_deps
+qorai_chrome_browser_deps += qorai_browser_download_deps
+qorai_chrome_browser_deps += qorai_browser_ephemeral_storage_deps
+qorai_chrome_browser_deps += qorai_browser_gcm_driver_deps
+qorai_chrome_browser_deps += qorai_browser_infobar_deps
+qorai_chrome_browser_deps += qorai_browser_misc_metrics_deps
+qorai_chrome_browser_deps += qorai_browser_net_deps
+qorai_chrome_browser_deps += qorai_browser_new_tab_deps
+qorai_chrome_browser_deps += qorai_browser_notifications_deps
+qorai_chrome_browser_deps += qorai_browser_perf_deps
+qorai_chrome_browser_deps += qorai_browser_permissions_deps
+qorai_chrome_browser_deps += qorai_browser_playlist_deps
+qorai_chrome_browser_deps += qorai_browser_renderer_context_menu_deps
+qorai_chrome_browser_deps += qorai_browser_request_otr_deps
+qorai_chrome_browser_deps += qorai_browser_search_engines_deps
+qorai_chrome_browser_deps += qorai_browser_sync_deps
+qorai_chrome_browser_deps += qorai_browser_themes_deps
+qorai_chrome_browser_deps += qorai_browser_url_sanitizer_deps
+qorai_chrome_browser_deps += qorai_browser_web_discovery_deps
+qorai_chrome_browser_deps += qorai_browser_webcompat_reporter_deps
+qorai_chrome_browser_deps += qorai_chromium_src_chrome_browser_deps
+qorai_chrome_browser_deps += qorai_chromium_src_chrome_browser_prefs_deps
+
+qorai_chrome_browser_ui_allow_circular_includes_from = [ "//qorai/browser/ui" ]
+qorai_chrome_browser_ui_allow_circular_includes_from +=
+    qorai_ui_allow_circular_includes_from
+
+qorai_chrome_browser_allow_circular_includes_from = [
+  "//qorai/browser/ui",
+  "//qorai/browser/qorai_ads:impl",
+  "//qorai/browser/qorai_ads/creatives/search_result_ad",
+  "//qorai/browser/qorai_stats",
+  "//qorai/browser/ntp_background",
+
+  # TODO(https://github.com/qorai/qorai-browser/issues/50507):
+  # Remove this once webui/ai_chat does not depend on chrome/browser.
+  "//qorai/browser/ui/webui/ai_chat",
+]
+
+if (enable_qorai_ai_chat_agent_profile) {
+  qorai_chrome_browser_deps +=
+      [ "//qorai/browser/ai_chat:ai_chat_agent_profile_impl" ]
+  qorai_chrome_browser_allow_circular_includes_from +=
+      [ "//qorai/browser/ai_chat:ai_chat_agent_profile_impl" ]
+}
+
+if (toolkit_views) {
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/ui/sidebar",
+    "//qorai/browser/ui/views/page_info",
+  ]
+  qorai_chrome_browser_allow_circular_includes_from += [
+    "//qorai/browser/ui/sidebar",
+
+    # TODO(https://github.com/qorai/qorai-browser/issues/50542): Remove this
+    # once a target has been created for `//qorai/browser/qorai_shields`.
+    "//qorai/browser/ui/views/page_info",
+  ]
+}
+
+# https://github.com/qorai/qorai-browser/issues/41418
+if (enable_extensions) {
+  qorai_chrome_browser_deps +=
+      [ "//qorai/browser/extensions:qorai_prefs_util_impl" ]
+  qorai_chrome_browser_allow_circular_includes_from +=
+      [ "//qorai/browser/extensions:qorai_prefs_util_impl" ]
+}
+
+if (enable_print_preview) {
+  qorai_chrome_browser_deps += [
+    "//qorai/browser/ai_chat:print_preview_extractor",
+    "//qorai/browser/ai_chat:print_preview_extractor_internal",
+  ]
+  qorai_chrome_browser_allow_circular_includes_from +=
+      [ "//qorai/browser/ai_chat:print_preview_extractor_internal" ]
+}
+
+# https://github.com/qorai/qorai-browser/issues/41464
+if (enable_tor) {
+  qorai_chrome_browser_deps += [ "//qorai/browser/tor:util" ]
+  qorai_chrome_browser_allow_circular_includes_from +=
+      [ "//qorai/browser/tor:util" ]
+}
+
+# https://github.com/qorai/qorai-browser/issues/10644
+if (enable_widevine) {
+  qorai_chrome_browser_deps += [ "//qorai/browser/widevine" ]
+  qorai_chrome_browser_allow_circular_includes_from +=
+      [ "//qorai/browser/widevine" ]
+}
+
+# https://github.com/qorai/qorai-browser/issues/41486
+if (is_android) {
+  qorai_chrome_browser_allow_circular_includes_from += [
+    "//qorai/browser/android:android_browser_process",
+    "//qorai/browser/android:tabs_impl",
+    "//qorai/browser/android/preferences",
+  ]
+}
+
+# TODO(https://github.com/qorai/qorai-browser/issues/43310):
+# qorai_new_tab_page_ui.cc includes some headers (e.g. from
+# //qorai/browser/new_tab) that are currently in the //chrome/browser target.
+if (!is_android) {
+  qorai_chrome_browser_allow_circular_includes_from +=
+      [ "//qorai/browser/ui/webui/qorai_new_tab_page_refresh" ]
+}
+
+if (is_mac) {
+  qorai_chrome_browser_deps += [ "//qorai/browser/upgrade_when_idle" ]
+  qorai_chrome_browser_allow_circular_includes_from +=
+      [ "//qorai/browser/upgrade_when_idle" ]
+}
+
+# qorai/browser/ui/qorai_layout_constants.cc includes some headers (e.g. from
+# qorai/browser/ui/tabs) that are currently in //qorai/browser/ui:ui target,
+# which depends on //chrome/browser:browser_public_dependencies.
+# This approach is only done as a one-off here because
+# "//chrome/browser/ui/views" target is a `component` and it depends on
+# "//chrome/browser/ui:layout_constants".
+qorai_chrome_browser_ui_layout_constants_public_deps =
+    [ "//qorai/browser/ui:qorai_layout_constants" ]
+qorai_chrome_browser_ui_layout_constants_allow_circular_includes_from =
+    [ "//qorai/browser/ui:qorai_layout_constants" ]

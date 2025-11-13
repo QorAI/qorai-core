@@ -1,0 +1,243 @@
+{
+  "disabled_checks": {
+    // Checks defined in the //PRESUBMIT.py global scope.
+    "//PRESUBMIT.py": [
+      // We don't use OWNERS files.
+      "CheckSecurityOwners",
+      // This validates added strings with screenshot tests which we don't use.
+      "CheckStrings",
+      // We don't update upstream pydeps.
+      "CheckPydepsNeedsUpdating",
+      // Disable check for .*google.* images being added to the repository.
+      "CheckNoProductIconsAddedToPublicRepo",
+      // Disable check for Google support URLs.
+      "CheckGoogleSupportAnswerUrlOnUpload",
+      // Disable check for hardcoded Google API urls.
+      "CheckHardcodedGoogleHostsInLowerLayers",
+    ],
+    // Checks defined in depot_tools/presubmit_canned_checks.py.
+    "canned": [
+      // Disable Chromium license check. We use our own checker.
+      "CheckLicense",
+      // We don't use OWNERS files.
+      "CheckOwnersFormat",
+      "CheckOwners",
+      // We don't use AUTHORS file.
+      "CheckAuthorizedAuthor",
+      // We don't upload change to Chromium version control.
+      "CheckChangeWasUploaded",
+      "CheckChangeHasBugField",
+      "CheckTreeIsOpen",
+      // We run our own format check.
+      "CheckPatchFormatted",
+      // We don't use Chromium LSC process for Qorai repository.
+      "CheckLargeScaleChange",
+    ],
+  },
+
+  // Checks that should trigger presubmit errors instead of warnings.
+  "checks_to_force_presubmit_errors": {
+    "//PRESUBMIT.py": [
+      "CheckBuildConfigMacrosWithoutInclude",
+      "CheckForSuperfluousStlIncludesInHeaders",
+      "CheckForIncludeGuards",
+      "CheckGnGlobForward",
+      "CheckNewHeaderWithoutGnChangeOnUpload",
+    ],
+    "canned": [
+      "CheckChangeLintsClean",
+      "GetPylint",
+    ],
+  },
+
+  // Additional files to check (extends InputApi.DEFAULT_FILES_TO_CHECK).
+  "additional_default_files_to_check": [
+    ".+\\.jsx$",
+    ".+\\.tsx$",
+  ],
+
+  // Files to skip in all checks.
+  "default_files_to_skip": [
+    "\\.storybook/",
+    "ios/qorai-ios/Sources/Qorai/Frontend/UserContent/UserScripts/Scripts_Dynamic/Scripts/Sandboxed/DarkReaderScript.js",
+    "components/qorai_wallet/resources/solana_web3_script\\.js",
+    "third_party/rust/",
+    "tools/cr/test/plasters/",
+    "tools/crates/",
+    "win_build_output/",
+    "ios/third_party/",
+    "ui/webui/resources/wasm/vendor/",
+  ],
+
+  // Regex to match function names in the current presubmit stack trace. Matched
+  // functions are used in `per_check_files_to_skip` filter.
+  "check_function_regex": "_?Check",
+
+  // Files to skip per check.
+  "per_check_files_to_skip": {
+    // Permanent ignores.
+    "CheckNewHeaderWithoutGnChangeOnUpload": ["chromium_src/"],
+    "CheckForCcIncludes": ["chromium_src/"],
+    "CheckForRelativeIncludes": ["chromium_src/"],
+    "CheckLongLines": [
+      "components/p3a/metric_names\\.h",
+      ".*/res/.*/.*\\.xml",
+    ],
+    "CheckParseErrors": [
+      ".*tsconfig\\.json",
+      "components/qorai_ads/core/test/data/invalid\\.json",
+    ],
+    "CheckNoBannedFunctions": [
+      // Use `ban_rule_excluded_paths` instead.
+    ],
+    "CheckNoJsInIos": ["ios/qorai-ios/"],
+    "CheckNoDeprecatedCss": ["ios/qorai-ios/"],
+    "CheckLicense":[
+      // These have AOSP license header
+      "android/java/org/chromium/chrome/browser/qrreader/BarcodeTracker.java",
+      "android/java/org/chromium/chrome/browser/qrreader/BarcodeTrackerFactory.java",
+      "android/java/org/chromium/chrome/browser/qrreader/CameraSource.java",
+      "android/java/org/chromium/chrome/browser/qrreader/CameraSourcePreview.java",
+    ],
+
+    // Checks to be fixed.
+    "CheckUnwantedDependencies": [".*\\.java"],
+    "CheckSpamLogging": [
+      "browser/browsing_data/qorai_clear_browsing_data\\.cc",
+      "chromium_src/chrome/browser/ui/startup/startup_browser_creator\\.cc",
+      "components/qorai_vpn/winvpntool\\.cc",
+      "components/permissions/permission_lifetime_utils\\.cc",
+      "components/tor/tor_launcher_factory\\.cc",
+      "components/webcompat_reporter/browser/webcompat_report_uploader\\.cc",
+    ],
+    "CheckUniquePtrOnUpload": [
+      "components/qorai_sync/qr_code_data\\.cc",
+      "components/qorai_news/browser/direct_feed_controller\\.cc",
+      "components/qorai_wallet/browser/tx_service\\.cc",
+      "components/qorai_wallet/common/eth_sign_typed_data_helper\\.cc",
+      "components/tor/tor_profile_service_impl\\.cc",
+    ],
+    "_CheckAndroidCrLogUsage": [
+      "android/java/org/chromium/base/QoraiCommandLineInitUtil\\.java",
+      "android/java/org/chromium/chrome/browser/QoraiAdaptiveCaptchaUtils\\.java",
+      "android/java/org/chromium/chrome/browser/crypto_wallet/fragments/EditVisibleAssetsBottomSheetDialogFragment\\.java",
+      "android/java/org/chromium/chrome/browser/help/QoraiHelpAndFeedbackLauncher\\.java",
+      "android/java/org/chromium/chrome/browser/search_engines/settings/QoraiSearchEngineAdapter\\.java",
+      "android/java/org/chromium/chrome/browser/settings/QoraiPreferenceDialogFragment\\.java",
+    ],
+    "_CheckAndroidToastUsage": [
+      "android/java/org/chromium/chrome/browser/qorai_news/QoraiNewsBottomSheetDialogFragment\\.java",
+      "android/java/org/chromium/chrome/browser/crypto_wallet/activities/AccountPrivateKeyActivity\\.java",
+      "android/java/org/chromium/chrome/browser/crypto_wallet/activities/NetworkSelectorActivity\\.java",
+      "android/java/org/chromium/chrome/browser/crypto_wallet/fragments/PortfolioFragment\\.java",
+      "android/java/org/chromium/chrome/browser/crypto_wallet/fragments/onboarding_fragments/BackupWalletFragment\\.java",
+      "android/java/org/chromium/chrome/browser/crypto_wallet/fragments/onboarding_fragments/SecurePasswordFragment\\.java",
+      "android/java/org/chromium/chrome/browser/crypto_wallet/fragments/onboarding_fragments/UnlockWalletFragment\\.java",
+      "android/java/org/chromium/chrome/browser/crypto_wallet/modal/QoraiWalletPanel\\.java",
+      "android/java/org/chromium/chrome/browser/rate/RateDialogFragment\\.java",
+      "android/java/org/chromium/chrome/browser/settings/QoraiStatsPreferences\\.java",
+      "android/java/org/chromium/chrome/browser/settings/QoraiSyncScreensPreference\\.java",
+      "android/java/org/chromium/chrome/browser/settings/developer/QoraiQAPreferences\\.java",
+      "android/java/org/chromium/chrome/browser/util/QoraiDbUtil\\.java",
+    ],
+    "CheckForDeprecatedOSMacros": [
+      "browser/ntp_background/custom_background_file_manager\\.h",
+      "browser/ntp_background/ntp_custom_background_images_service_delegate\\.cc",
+      "browser/ui/webui/new_tab_page/qorai_new_tab_page_handler\\.cc",
+      "components/qorai_sync/network_time_helper\\.cc",
+    ],
+    "CheckConsistentGrdChanges": [
+      "browser/ui/android/strings/android_qorai_strings\\.grd",
+    ],
+    "CheckRawPtrUsage": [
+      "components/qorai_search/renderer/qorai_search_default_js_handler\\.h",
+      "components/qorai_search/renderer/qorai_search_fallback_js_handler\\.h",
+      "components/qorai_search/renderer/qorai_search_service_worker_holder\\.h",
+      "components/qorai_wallet/renderer/js_ethereum_provider\\.h",
+      "components/content_settings/renderer/qorai_content_settings_agent_impl_autoplay_browsertest\\.cc",
+      "components/cosmetic_filters/renderer/cosmetic_filters_js_handler\\.h",
+      "components/speedreader/renderer/speedreader_js_handler\\.h",
+    ],
+    "CheckWebDevStyle": [
+      "components/speedreader/resources/speedreader-desktop.css",
+      "components/speedreader/resources/third_party/",
+      "components/webpack/gen-webpack-grd\\.js",
+      "test/data/speedreader/",
+    ],
+    "CheckStableMojomChanges": [
+      "components/qorai_rewards/core/mojom/.*\\.mojom",
+    ],
+    // TODO(alexeybarabash): https://github.com/qorai/qorai-browser/issues/45245
+    "_CheckAndroidNullAwayAnnotatedClasses": [
+      "android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/QoraiIncognitoTabSwitcherPane.java",
+      "android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/QoraiTabGroupUiCoordinator.java",
+      "android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/QoraiTabSwitcherPaneBase.java",
+      "android/feed/core/java/src/org/chromium/chrome/browser/feed/QoraiFeedSurfaceCoordinator.java",
+      "android/feed/core/java/src/org/chromium/chrome/browser/feed/QoraiFeedSurfaceMediator.java",
+      "android/java/org/chromium/chrome/browser/QoraiAppHooks.java",
+      "android/java/org/chromium/chrome/browser/app/QoraiActivity.java",
+      "android/java/org/chromium/chrome/browser/qorai_origin/QoraiOriginPlansActivity.java",
+      "android/java/org/chromium/chrome/browser/ntp/QoraiNewTabPageLayout.java",
+      "android/java/org/chromium/chrome/browser/bookmarks/QoraiBookmarkManagerCoordinator.java",
+      "android/java/org/chromium/chrome/browser/bookmarks/QoraiBookmarkManagerMediator.java",
+      "android/java/org/chromium/chrome/browser/bookmarks/QoraiBookmarkToolbarCoordinator.java",
+      "android/java/org/chromium/chrome/browser/bookmarks/QoraiBookmarkUtils.java",
+      "android/java/org/chromium/chrome/browser/customtabs/FullScreenCustomTabActivity.java",
+      "android/java/org/chromium/chrome/browser/customtabs/FullScreenCustomTabRootUiCoordinator.java",
+      "android/java/org/chromium/chrome/browser/firstrun/WelcomeOnboardingActivity.java",
+      "android/java/org/chromium/chrome/browser/infobar/QoraiInfoBarContainerView.java",
+      "android/java/org/chromium/chrome/browser/settings/AppearancePreferences.java",
+      "android/java/org/chromium/chrome/browser/settings/QoraiNewsPreferencesDetails.java",
+      "android/java/org/chromium/chrome/browser/settings/QoraiNewsPreferencesV2.java",
+      "android/java/org/chromium/chrome/browser/suggestions/tile/QoraiMostVisitedTilesLayoutBase.java",
+      "android/java/org/chromium/chrome/browser/toolbar/QoraiToolbarManager.java",
+      "android/java/org/chromium/chrome/browser/toolbar/bottom/BottomToolbarCoordinator.java",
+      "android/java/org/chromium/chrome/browser/toolbar/bottom/QoraiBottomControlsCoordinator.java",
+      "android/java/org/chromium/chrome/browser/toolbar/top/QoraiToolbarLayoutImpl.java",
+      "android/java/org/chromium/chrome/browser/toolbar/top/QoraiTopToolbarCoordinator.java",
+      "browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/QoraiHubManagerImpl.java",
+      "browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/QoraiHubToolbarView.java",
+    ]
+  },
+
+  // Additional excludes to _BANRULE_* lists in //PRESUBMIT.py.
+  //
+  // Maps BanRule.pattern -> BanRule.excluded_paths.
+  "ban_rule_excluded_paths": {
+    "import android.annotation.TargetApi;": [
+      "android/java/org/chromium/chrome/browser/qrreader/CameraSource\\.java",
+      "browser/notifications/android/java/src/org/chromium/chrome/browser/notifications/QoraiNotificationManagerProxyImpl\\.java",
+    ],
+    "/\\s+UTF8String\\s*]": [
+      "base/mac/conversions\\.h",
+      "browser/mac/sparkle_glue\\.mm",
+    ],
+    "/\\bstd::function\\b": [
+      "chromium_src/chrome/browser/ui/views/frame/browser_non_client_frame_view_factory_views\\.cc",
+      "ios/browser/api/bookmarks/exporter/qorai_bookmarks_exporter\\.mm",
+      "ios/browser/api/bookmarks/importer/qorai_bookmarks_importer\\.mm",
+    ],
+    "/\\bstd::shared_ptr\\b": [
+      "browser/net/.*",
+      "ios/browser/api/certificate/qorai_certificate\\.mm",
+      "ios/browser/api/net/certificate_utility\\.mm",
+    ],
+    "/\\bstd::sto(i|l|ul|ll|ull)\\b": [
+      "components/qorai_wallet/browser/rlp_encode_unittest\\.cc",
+      "components/qorai_wallet/common/eth_address\\.cc",
+      "utility/importer/chrome_importer\\.cc",
+    ],
+    "/\\busing namespace ": [
+      "browser/ui/webui/new_tab_page/qorai_new_tab_ui_browsertest\\.cc",
+      "browser/ui/webui/private_new_tab_page/qorai_private_new_tab_page_browsertest\\.cc",
+      "chromium_src/components/search_engines/qorai_template_url_prepopulate_data_unittest\\.cc",
+      "components/qorai_shields/browser/ad_block_engine\\.cc",
+    ],
+    "/v8::Extension\\(": [
+      "components/safe_builtins/renderer/safe_builtins\\.cc",
+    ],
+    "StringFromGUID2": [
+      "chromium_src/chrome/install_static/qorai_install_util_unittest\\.cc",
+    ],
+  },
+}

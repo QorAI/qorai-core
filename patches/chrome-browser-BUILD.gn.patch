@@ -1,0 +1,20 @@
+diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
+index 7280ef29b85c1b16b11dd9e4d628a9eb579bb4dd..926b18ea66f33024e051b0eec2a4856e8dfe2a31 100644
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -2673,6 +2673,7 @@ static_library("browser") {
+   } else {
+     sources += [ "net/net_error_diagnostics_dialog_stub.cc" ]
+   }
++  import("//qorai/browser/sources.gni") sources += qorai_chrome_browser_sources deps += qorai_chrome_browser_deps public_deps += qorai_chrome_browser_public_deps allow_circular_includes_from += qorai_chrome_browser_allow_circular_includes_from
+ 
+   if (is_android) {
+     sources += [
+@@ -8616,6 +8617,7 @@ static_library("browser_public_dependencies") {
+       "//rlz:rlz_lib",
+     ]
+   }
++  import("//qorai/browser/sources.gni") public_deps += qorai_chrome_browser_public_deps
+ }
+ 
+ # All generated files in //chrome/browser/ depended on by

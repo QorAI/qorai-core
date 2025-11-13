@@ -1,0 +1,127 @@
+/* Copyright (c) 2024 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_ads/core/internal/ad_units/ad_test_util.h"
+#include "qorai/components/qorai_ads/core/internal/common/test/test_base.h"
+#include "qorai/components/qorai_ads/core/internal/common/test/time_test_util.h"
+#include "qorai/components/qorai_ads/core/internal/settings/settings_test_util.h"
+#include "qorai/components/qorai_ads/core/internal/user_engagement/ad_events/ad_event_builder.h"
+#include "qorai/components/qorai_ads/core/internal/user_engagement/ad_events/ad_event_info.h"
+#include "qorai/components/qorai_ads/core/internal/user_engagement/conversions/conversions_util.h"
+#include "qorai/components/qorai_ads/core/mojom/qorai_ads.mojom.h"
+#include "qorai/components/qorai_ads/core/public/ad_units/ad_info.h"
+
+// npm run test -- qorai_unit_tests --filter=QoraiAds*
+
+namespace qorai_ads {
+
+class QoraiAdsConversionsInlineContentAdUtilTest : public test::TestBase {};
+
+TEST_F(QoraiAdsConversionsInlineContentAdUtilTest,
+       AllowedToConvertViewedAdEvent) {
+  // Arrange
+  const AdInfo ad = test::BuildAd(
+      mojom::AdType::kInlineContentAd, /*should_generate_random_uuids=*/
+      true);
+  const AdEventInfo ad_event =
+      BuildAdEvent(ad, mojom::ConfirmationType::kViewedImpression,
+                   /*created_at=*/test::Now());
+
+  // Act & Assert
+  EXPECT_TRUE(IsAllowedToConvertAdEvent(ad_event));
+}
+
+TEST_F(QoraiAdsConversionsInlineContentAdUtilTest,
+       NotAllowedToConvertViewedAdEventIfOptedOutOfQoraiNewsAds) {
+  // Arrange
+  test::OptOutOfQoraiNewsAds();
+
+  const AdInfo ad = test::BuildAd(mojom::AdType::kInlineContentAd,
+                                  /*should_generate_random_uuids=*/false);
+  const AdEventInfo ad_event =
+      BuildAdEvent(ad, mojom::ConfirmationType::kViewedImpression,
+                   /*created_at=*/test::Now());
+
+  // Act & Assert
+  EXPECT_FALSE(IsAllowedToConvertAdEvent(ad_event));
+}
+
+TEST_F(QoraiAdsConversionsInlineContentAdUtilTest,
+       NotAllowedToConvertViewedAdEventForNonRewardsUser) {
+  // Arrange
+  test::DisableQoraiRewards();
+
+  const AdInfo ad = test::BuildAd(mojom::AdType::kInlineContentAd,
+                                  /*should_generate_random_uuids=*/false);
+  const AdEventInfo ad_event =
+      BuildAdEvent(ad, mojom::ConfirmationType::kViewedImpression,
+                   /*created_at=*/test::Now());
+
+  // Act & Assert
+  EXPECT_TRUE(IsAllowedToConvertAdEvent(ad_event));
+}
+
+TEST_F(QoraiAdsConversionsInlineContentAdUtilTest,
+       AllowedToConvertClickedAdEvent) {
+  // Arrange
+  const AdInfo ad = test::BuildAd(mojom::AdType::kInlineContentAd,
+                                  /*should_generate_random_uuids=*/false);
+  const AdEventInfo ad_event = BuildAdEvent(
+      ad, mojom::ConfirmationType::kClicked, /*created_at=*/test::Now());
+
+  // Act & Assert
+  EXPECT_TRUE(IsAllowedToConvertAdEvent(ad_event));
+}
+
+TEST_F(QoraiAdsConversionsInlineContentAdUtilTest,
+       NotAllowedToConvertClickedAdEventIfOptedOutOfQoraiNewsAds) {
+  // Arrange
+  test::OptOutOfQoraiNewsAds();
+
+  const AdInfo ad = test::BuildAd(mojom::AdType::kInlineContentAd,
+                                  /*should_generate_random_uuids=*/false);
+  const AdEventInfo ad_event = BuildAdEvent(
+      ad, mojom::ConfirmationType::kClicked, /*created_at=*/test::Now());
+
+  // Act & Assert
+  EXPECT_FALSE(IsAllowedToConvertAdEvent(ad_event));
+}
+
+TEST_F(QoraiAdsConversionsInlineContentAdUtilTest,
+       AllowedToConvertClickedAdEventForNonRewardsUser) {
+  // Arrange
+  test::DisableQoraiRewards();
+
+  const AdInfo ad = test::BuildAd(mojom::AdType::kInlineContentAd,
+                                  /*should_generate_random_uuids=*/false);
+  const AdEventInfo ad_event = BuildAdEvent(
+      ad, mojom::ConfirmationType::kClicked, /*created_at=*/test::Now());
+
+  // Act & Assert
+  EXPECT_TRUE(IsAllowedToConvertAdEvent(ad_event));
+}
+
+TEST_F(QoraiAdsConversionsInlineContentAdUtilTest,
+       NotAllowedToConvertNonViewedOrClickedAdEvents) {
+  // Arrange
+  const AdInfo ad = test::BuildAd(mojom::AdType::kInlineContentAd,
+                                  /*should_generate_random_uuids=*/false);
+
+  // Act & Assert
+  for (int i = 0; i < static_cast<int>(mojom::ConfirmationType::kMaxValue);
+       ++i) {
+    const auto confirmation_type = static_cast<mojom::ConfirmationType>(i);
+    if (confirmation_type == mojom::ConfirmationType::kViewedImpression ||
+        confirmation_type == mojom::ConfirmationType::kClicked) {
+      continue;
+    }
+
+    const AdEventInfo ad_event =
+        BuildAdEvent(ad, confirmation_type, /*created_at=*/test::Now());
+    EXPECT_FALSE(IsAllowedToConvertAdEvent(ad_event));
+  }
+}
+
+}  // namespace qorai_ads

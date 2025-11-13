@@ -1,0 +1,70 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//tools/json_schema_compiler/json_schema_api.gni")
+
+source_set("endpoints") {
+  sources = [
+    "host.cc",
+    "host.h",
+    "password_finalize.h",
+    "password_init.h",
+    "service_token.h",
+    "verify_result.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/qorai_domains",
+    "//qorai/components/qorai_account/endpoint_client",
+    "//net",
+    "//url",
+  ]
+
+  public_deps =
+      [ "//qorai/components/qorai_account/endpoints:generated_api_types" ]
+}
+
+generated_types("generated_api_types") {
+  sources = [
+    "error.idl",
+    "password_finalize_request.idl",
+    "password_finalize_response.idl",
+    "password_init_request.idl",
+    "password_init_response.idl",
+    "service_token_request.idl",
+    "service_token_response.idl",
+    "verify_result_request.idl",
+    "verify_result_response.idl",
+  ]
+
+  deps = [ "//base" ]
+
+  root_namespace = "qorai_account::%(namespace)s"
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [
+    "endpoint_test.h",
+    "password_finalize_unittest.cc",
+    "password_init_unittest.cc",
+    "service_token_unittest.cc",
+    "verify_result_unittest.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/components/qorai_account/endpoint_client",
+    "//qorai/components/qorai_account/endpoints",
+    "//net",
+    "//services/network:test_support",
+    "//services/network/public/cpp",
+    "//testing/gtest",
+    "//url",
+  ]
+}

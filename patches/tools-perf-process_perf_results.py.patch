@@ -1,0 +1,13 @@
+diff --git a/tools/perf/process_perf_results.py b/tools/perf/process_perf_results.py
+index 02dbddabdd5a0475aa4df826e73de9dc062ae3c7..9cb3f150d9dd6898635643096f682cf15d05afb5 100755
+--- a/tools/perf/process_perf_results.py
++++ b/tools/perf/process_perf_results.py
+@@ -45,7 +45,7 @@ except ImportError:
+   pass
+ 
+ 
+-RESULTS_URL = 'https://chromeperf.appspot.com'
++RESULTS_URL = 'https://qorai-perf-dashboard.appspot.com'; sys.path.append(os.path.join(path_util.GetChromiumSrcDir(), 'qorai', 'tools', 'perf', 'components')); import qorai_logdog_helper as logdog_helper
+ 
+ # Until we are migrated to LUCI, we will be utilizing a hard
+ # coded master name based on what is passed in in the build properties.

@@ -1,0 +1,59 @@
+/* Copyright (c) 2024 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_ENDPOINTS_QORAI_POST_CHALLENGES_H_
+#define QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_ENDPOINTS_QORAI_POST_CHALLENGES_H_
+
+#include <string>
+
+#include "base/memory/weak_ptr.h"
+#include "base/types/expected.h"
+#include "qorai/components/qorai_rewards/core/engine/rewards_engine_helper.h"
+#include "qorai/components/qorai_rewards/core/mojom/rewards.mojom.h"
+#include "qorai/components/qorai_rewards/core/mojom/rewards_engine_internal.mojom.h"
+
+namespace qorai_rewards::internal::endpoints {
+
+// POST /v3/wallet/challenges
+//
+// Request body:
+// {
+//   "paymentId": "<rewards-payment-id>"
+// }
+//
+// Success code: HTTP_CREATED (201)
+//
+// Response body:
+// {
+//   "challengeId": "<challenge-id>"
+// }
+class PostChallenges : public RewardsEngineHelper,
+                       public WithHelperKey<PostChallenges> {
+ public:
+  explicit PostChallenges(RewardsEngine& engine);
+  ~PostChallenges() override;
+
+  enum class Error {
+    kFailedToCreateRequest,
+    kUnexpectedStatusCode,
+    kFailedToParseBody
+  };
+
+  using Result = base::expected<std::string, Error>;
+  using RequestCallback = base::OnceCallback<void(Result result)>;
+
+  virtual void Request(RequestCallback callback);
+
+ private:
+  mojom::UrlRequestPtr CreateRequest();
+  Result MapResponse(const mojom::UrlResponse& response);
+  void OnResponse(RequestCallback callback, mojom::UrlResponsePtr response);
+
+  base::WeakPtrFactory<PostChallenges> weak_factory_{this};
+};
+
+}  // namespace qorai_rewards::internal::endpoints
+
+#endif  // QORAI_COMPONENTS_QORAI_REWARDS_CORE_ENGINE_ENDPOINTS_QORAI_POST_CHALLENGES_H_

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Qora test</title>
+</head>
+<body>
+  <a id="valid" href="https://search.qorai.com/qora#5566" data-nonce="5566">Open Qora</a>
+  <a id="invalid" href="https://search.qorai.com/qora#1234" data-nonce="5566">Open Qora</a>
+  <div id="not-a-tag"></div>
+  <a id="no-href" data-nonce="5566">Open Qora</a>
+  <a id="no-nonce" href="https://search.qorai.com/qora#5566">Open Qora</a>
+  <a id="empty-nonce" href="https://search.qorai.com/qora#5566" data-nonce="">Open Qora</a>
+  <a id="empty-nonce2" href="https://search.qorai.com/qora#" data-nonce="5566">Open Qora</a>
+  <a id="empty-nonce3" href="https://search.qorai.com/qora" data-nonce="5566">Open Qora</a>
+  <a id="empty-nonce4" href="https://search.qorai.com/qora#">Open Qora</a>
+  <a id="empty-nonce5" href="https://search.qorai.com/qora" data-nonce="">Open Qora</a>
+  <a id="empty-nonce6" href="https://search.qorai.com/qora">Open Qora</a>
+  <a id="not-https-url" href="http://search.qorai.com/qora#5566" data-nonce="5566">Open Qora</a>
+  <a id="not-search-url" href="https://qorai.com/qora#5566" data-nonce="5566">Open Qora</a>
+  <a id="not-open-qora-url" href="https://search.qorai.com/test#5566" data-nonce="5566">Open Qora</a>
+</body>
+</html>

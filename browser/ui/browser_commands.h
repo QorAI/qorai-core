@@ -1,0 +1,143 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_BROWSER_UI_BROWSER_COMMANDS_H_
+#define QORAI_BROWSER_UI_BROWSER_COMMANDS_H_
+
+#include "qorai/components/qorai_wayback_machine/buildflags/buildflags.h"
+#include "qorai/components/commander/common/buildflags/buildflags.h"
+#include "qorai/components/playlist/core/common/buildflags/buildflags.h"
+#include "qorai/components/tor/buildflags/buildflags.h"
+#include "chrome/browser/ui/tabs/split_tab_metrics.h"
+#include "chrome/browser/ui/tabs/tab_model.h"
+#include "content/public/browser/page_navigator.h"
+#include "url/gurl.h"
+#include "url/origin.h"
+
+class Browser;
+class Profile;
+
+namespace qorai {
+
+bool HasSelectedURL(Browser* browser);
+void CleanAndCopySelectedURL(Browser* browser);
+
+#if BUILDFLAG(ENABLE_TOR)
+void NewOffTheRecordWindowTor(Browser* browser);
+void NewOffTheRecordWindowTor(Profile* profile);
+void NewTorConnectionForSite(Browser*);
+#endif
+
+void ToggleAIChat(Browser* browser);
+
+void ShowWalletBubble(Browser* browser);
+void ShowApproveWalletBubble(Browser* browser);
+void CloseWalletBubble(Browser* browser);
+void MaybeDistillAndShowSpeedreaderBubble(Browser* browser);
+void ShowQoraiVPNBubble(Browser* browser);
+void ToggleQoraiVPNButton(Browser* browser);
+void ToggleQoraiVPNTrayIcon();
+void OpenQoraiVPNUrls(Browser* browser, int command_id);
+// Copies an url sanitized by URLSanitizerService.
+void CopySanitizedURL(Browser* browser, const GURL& url);
+// Copies an url cleared through:
+// - Debouncer (potentially debouncing many levels)
+// - Query filter
+// - URLSanitizerService
+void CopyLinkWithStrictCleaning(Browser* browser, const GURL& url);
+
+void ToggleWindowTitleVisibilityForVerticalTabs(Browser* browser);
+void ToggleVerticalTabStrip(Browser* browser);
+void ToggleVerticalTabStripFloatingMode(Browser* browser);
+void ToggleVerticalTabStripExpanded(Browser* browser);
+
+void ToggleActiveTabAudioMute(Browser* browser);
+void ToggleSidebarPosition(Browser* browser);
+void ToggleSidebar(Browser* browser);
+
+void ToggleShieldsEnabled(Browser* browser);
+void ToggleJavascriptEnabled(Browser* browser);
+
+#if BUILDFLAG(ENABLE_COMMANDER)
+void ToggleCommander(Browser* browser);
+#endif
+
+#if BUILDFLAG(ENABLE_PLAYLIST_WEBUI)
+void ShowPlaylistBubble(Browser* browser);
+#endif
+
+#if BUILDFLAG(ENABLE_QORAI_WAYBACK_MACHINE)
+void ShowWaybackMachineBubble(Browser* browser);
+#endif
+
+void GroupTabsOnCurrentOrigin(Browser* browser);
+void MoveGroupToNewWindow(Browser* browser);
+
+bool IsInGroup(Browser* browser);
+bool HasUngroupedTabs(Browser* browser);
+
+void GroupUngroupedTabs(Browser* browser);
+void UngroupCurrentGroup(Browser* browser);
+void RemoveTabFromGroup(Browser* browser);
+void NameGroup(Browser* browser);
+void NewTabInGroup(Browser* browser);
+
+bool CanUngroupAllTabs(Browser* browser);
+void UngroupAllTabs(Browser* browser);
+
+void ToggleGroupExpanded(Browser* browser);
+void CloseUngroupedTabs(Browser* browser);
+void CloseTabsNotInCurrentGroup(Browser* browser);
+void CloseGroup(Browser* browser);
+
+bool CanBringAllTabs(Browser* browser);
+void BringAllTabs(Browser* browser);
+
+bool HasDuplicateTabs(Browser* browser);
+void CloseDuplicateTabs(Browser* browser);
+
+bool CanCloseTabsToLeft(Browser* browser);
+void CloseTabsToLeft(Browser* browser);
+
+bool CanCloseUnpinnedTabs(Browser* browser);
+void CloseUnpinnedTabs(Browser* browser);
+
+void AddAllTabsToNewGroup(Browser* browser);
+
+bool CanMuteAllTabs(Browser* browser, bool exclude_active);
+void MuteAllTabs(Browser* browser, bool exclude_active);
+
+bool CanUnmuteAllTabs(Browser* browser);
+void UnmuteAllTabs(Browser* browser);
+
+void ScrollTabToTop(Browser* browser);
+void ScrollTabToBottom(Browser* browser);
+
+void ExportAllBookmarks(Browser* browser);
+void ToggleAllBookmarksButtonVisibility(Browser* browser);
+
+// Split view API with SideBySide.
+// false if active tab is already split tab.
+bool CanOpenNewSplitTabsWithSideBySide(Browser* browser);
+
+// true if two tabs are selected and both are not in split tabs.
+bool CanSplitTabsWithSideBySide(Browser* browser);
+
+// Add to split with selected two tabs.
+void SplitTabsWithSideBySide(Browser* browser,
+                             split_tabs::SplitTabCreatedSource source);
+
+// true if any selected tab is split tabs.
+bool IsSplitTabs(Browser* browser);
+
+// Remove split tabs of selected tabs.
+void RemoveSplitWithSideBySide(Browser* browser);
+
+// Swap tabs in active tab.
+void SwapTabsInSplitWithSideBySide(Browser* browser);
+
+}  // namespace qorai
+
+#endif  // QORAI_BROWSER_UI_BROWSER_COMMANDS_H_

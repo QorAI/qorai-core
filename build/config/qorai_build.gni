@@ -1,0 +1,26 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# Add imports here for things that need to be available in chromium code.
+# This file is included in most gn files either directly or through
+# import("//build/config/chrome_build.gni") in compiler.gni
+import("//qorai/app/entitlements.gni")
+import("//qorai/qorai_repack_locales.gni")
+import("//qorai/browser/extensions/resources.gni")
+import("//qorai/browser/resources/settings/sources.gni")
+import("//qorai/browser/ui/color/sources.gni")
+import("//qorai/build/mac/config.gni")
+import("//qorai/components/content_settings/core/browser/sources.gni")
+import("//qorai/components/omnibox/browser/sources.gni")
+import("//qorai/components/search_engines/sources.gni")
+import("//qorai/components/sync/service/sources.gni")
+import("//qorai/components/sync_device_info/sources.gni")
+import("//qorai/components/update_client/sources.gni")
+import("//qorai/elevation_service/sources.gni")
+import("//qorai/installer/linux/sources.gni")
+import("//qorai/net/dns/sources.gni")
+import("//qorai/net/sources.gni")
+import("//qorai/resources/allowlist.gni")
+import("//qorai/third_party/blink/renderer/includes.gni")

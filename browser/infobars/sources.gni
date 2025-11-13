@@ -1,0 +1,45 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/features.gni")
+
+qorai_browser_infobar_sources = []
+qorai_browser_infobar_deps = []
+
+if (!is_android) {
+  qorai_browser_infobar_sources += [
+    "//qorai/browser/infobars/qorai_confirm_infobar_creator.h",
+    "//qorai/browser/infobars/qorai_confirm_p3a_infobar_delegate.cc",
+    "//qorai/browser/infobars/qorai_confirm_p3a_infobar_delegate.h",
+    "//qorai/browser/infobars/qorai_sync_account_deleted_infobar_delegate.cc",
+    "//qorai/browser/infobars/qorai_sync_account_deleted_infobar_delegate.h",
+    "//qorai/browser/infobars/dev_channel_deprecation_infobar_delegate.cc",
+    "//qorai/browser/infobars/dev_channel_deprecation_infobar_delegate.h",
+    "//qorai/browser/infobars/request_otr_infobar_delegate.cc",
+    "//qorai/browser/infobars/request_otr_infobar_delegate.h",
+    "//qorai/browser/infobars/sync_cannot_run_infobar_delegate.cc",
+    "//qorai/browser/infobars/sync_cannot_run_infobar_delegate.h",
+  ]
+
+  qorai_browser_infobar_deps += [
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/common",
+    "//qorai/components/qorai_sync:features",
+    "//qorai/components/qorai_sync:prefs",
+    "//qorai/components/constants",
+    "//qorai/components/infobars/core",
+    "//qorai/components/p3a",
+    "//chrome/app:branded_strings",
+    "//chrome/browser/ui",
+    "//components/infobars/content",
+    "//components/infobars/core",
+    "//components/prefs",
+    "//components/strings",
+    "//ui/base",
+    "//ui/views",
+    "//url",
+  ]
+}

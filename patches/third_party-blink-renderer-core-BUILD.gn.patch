@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/core/BUILD.gn b/third_party/blink/renderer/core/BUILD.gn
+index 267e8ddfe2905f169a7cf9a819a4baa82b47770e..2487a98bc2cc1904e94b6e5e5af0f508f4e302ab 100644
+--- a/third_party/blink/renderer/core/BUILD.gn
++++ b/third_party/blink/renderer/core/BUILD.gn
+@@ -459,6 +459,7 @@ component("core") {
+       "Carbon.framework",
+     ]
+   }
++  visibility += qorai_blink_renderer_core_visibility public_deps += qorai_blink_renderer_core_public_deps sources += qorai_blink_renderer_core_sources deps += qorai_blink_renderer_core_deps
+ }
+ 
+ # Certain sources should be compiled with heavy optimization enabled.

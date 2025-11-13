@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/ui/webui/history/history_ui.cc b/chrome/browser/ui/webui/history/history_ui.cc
+index 24d39b8aa0b757240944cb835317b6b477098a73..bcdde5f592c01d381ce56db9a7a9bdf608b18cff 100644
+--- a/chrome/browser/ui/webui/history/history_ui.cc
++++ b/chrome/browser/ui/webui/history/history_ui.cc
+@@ -84,6 +84,7 @@ content::WebUIDataSource* CreateAndAddHistoryUIHTMLSource(Profile* profile) {
+       base::FeatureList::IsEnabled(syncer::kReplaceSyncPromosWithSignInPromos));
+ 
+   HistoryUtil::PopulateCommonSourceForHistory(source, profile);
++  QORAI_CREATE_HISTORY_UI_HTML_SOURCE
+ 
+   static constexpr webui::LocalizedString kStrings[] = {
+       // Localized strings (alphabetical order).

@@ -1,0 +1,29 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// you can obtain one at https://mozilla.org/MPL/2.0/.
+
+.dialog {
+  --qora-dialog-padding: var(--qora-spacing-2xl);
+}
+
+.dialogTitle {
+  font: var(--qora-font-heading-h3);
+  font-size: 20px;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--qora-spacing-xl);
+  color: var(--qora-color-text-secondary);
+}
+
+.actionsRow {
+  justify-content: flex-end;
+}
+
+.buttonsWrapper {
+  display: flex;
+  gap: var(--qora-spacing-m);
+}

@@ -1,0 +1,129 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/importer/qorai_external_process_importer_client.h"
+
+#include <utility>
+
+#include "base/functional/bind.h"
+#include "qorai/browser/importer/qorai_in_process_importer_bridge.h"
+#include "chrome/grit/generated_resources.h"
+#include "content/public/browser/service_process_host.h"
+
+namespace {
+bool ShouldUseQoraiImporter(user_data_importer::ImporterType type) {
+  switch (type) {
+    case user_data_importer::TYPE_CHROME:
+    case user_data_importer::TYPE_EDGE_CHROMIUM:
+    case user_data_importer::TYPE_VIVALDI:
+    case user_data_importer::TYPE_OPERA:
+    case user_data_importer::TYPE_YANDEX:
+    case user_data_importer::TYPE_WHALE:
+      return true;
+    default:
+      return false;
+  }
+}
+}  // namespace
+
+template <>
+inline sandbox::mojom::Sandbox
+content::GetServiceSandboxType<qorai::mojom::ProfileImport>() {
+  return sandbox::mojom::Sandbox::kNoSandbox;
+}
+
+QoraiExternalProcessImporterClient::QoraiExternalProcessImporterClient(
+    base::WeakPtr<ExternalProcessImporterHost> importer_host,
+    const user_data_importer::SourceProfile& source_profile,
+    uint16_t items,
+    InProcessImporterBridge* bridge)
+    : ExternalProcessImporterClient(importer_host,
+                                    source_profile,
+                                    items,
+                                    bridge) {}
+
+QoraiExternalProcessImporterClient::
+    ~QoraiExternalProcessImporterClient() = default;
+
+void QoraiExternalProcessImporterClient::Start() {
+  if (!ShouldUseQoraiImporter(source_profile_.importer_type)) {
+    ExternalProcessImporterClient::Start();
+    return;
+  }
+
+  AddRef();  // balanced in Cleanup.
+
+  auto options = content::ServiceProcessHost::Options()
+                     .WithDisplayName(IDS_UTILITY_PROCESS_PROFILE_IMPORTER_NAME)
+                     .Pass();
+  content::ServiceProcessHost::Launch(
+      qorai_profile_import_.BindNewPipeAndPassReceiver(), std::move(options));
+
+  qorai_profile_import_.set_disconnect_handler(
+      base::BindOnce(&ExternalProcessImporterClient::OnProcessCrashed, this));
+
+  base::flat_map<uint32_t, std::string> localized_strings;
+  qorai_profile_import_->StartImport(
+      source_profile_, items_, localized_strings,
+      receiver_.BindNewPipeAndPassRemote(),
+      qorai_receiver_.BindNewPipeAndPassRemote());
+}
+
+void QoraiExternalProcessImporterClient::Cancel() {
+  if (!ShouldUseQoraiImporter(source_profile_.importer_type)) {
+    ExternalProcessImporterClient::Cancel();
+    return;
+  }
+
+  if (cancelled_)
+    return;
+
+  cancelled_ = true;
+  qorai_profile_import_->CancelImport();
+  CloseMojoHandles();
+  Release();
+}
+
+void QoraiExternalProcessImporterClient::CloseMojoHandles() {
+  if (!ShouldUseQoraiImporter(source_profile_.importer_type)) {
+    ExternalProcessImporterClient::CloseMojoHandles();
+    return;
+  }
+
+  qorai_profile_import_.reset();
+  qorai_receiver_.reset();
+  receiver_.reset();
+}
+
+void QoraiExternalProcessImporterClient::OnImportItemFinished(
+    user_data_importer::ImportItem import_item) {
+  if (!ShouldUseQoraiImporter(source_profile_.importer_type)) {
+    ExternalProcessImporterClient::OnImportItemFinished(import_item);
+    return;
+  }
+
+  if (cancelled_)
+    return;
+
+  bridge_->NotifyItemEnded(import_item);
+  qorai_profile_import_->ReportImportItemFinished(import_item);
+}
+
+void QoraiExternalProcessImporterClient::OnCreditCardImportReady(
+    const std::u16string& name_on_card,
+    const std::u16string& expiration_month,
+    const std::u16string& expiration_year,
+    const std::u16string& decrypted_card_number,
+    const std::string& origin) {
+  if (cancelled_)
+    return;
+
+  static_cast<QoraiInProcessImporterBridge*>(
+      bridge_.get())->SetCreditCard(name_on_card,
+                                    expiration_month,
+                                    expiration_year,
+                                    decrypted_card_number,
+                                    origin);
+}

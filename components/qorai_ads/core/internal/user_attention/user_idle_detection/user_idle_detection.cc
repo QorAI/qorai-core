@@ -1,0 +1,51 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/components/qorai_ads/core/internal/user_attention/user_idle_detection/user_idle_detection.h"
+
+#include "base/time/time.h"
+#include "qorai/components/qorai_ads/core/internal/ads_client/ads_client_util.h"
+#include "qorai/components/qorai_ads/core/internal/common/logging_util.h"
+#include "qorai/components/qorai_ads/core/internal/diagnostics/entries/last_unidle_time_diagnostic_entry_util.h"
+#include "qorai/components/qorai_ads/core/internal/settings/settings.h"
+#include "qorai/components/qorai_ads/core/public/ads_client/ads_client.h"
+
+namespace qorai_ads {
+
+UserIdleDetection::UserIdleDetection() {
+  GetAdsClient().AddObserver(this);
+}
+
+UserIdleDetection::~UserIdleDetection() {
+  GetAdsClient().RemoveObserver(this);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void UserIdleDetection::OnNotifyUserDidBecomeActive(base::TimeDelta idle_time,
+                                                    bool screen_was_locked) {
+  if (!UserHasJoinedQoraiRewards()) {
+    // User has not joined Qorai Rewards, so we don't need to track idle time.
+    return;
+  }
+
+  BLOG(1, "User is active after " << idle_time);
+  if (screen_was_locked) {
+    BLOG(1, "Screen was locked before the user become active");
+  }
+
+  SetLastUnIdleTimeDiagnosticEntry(base::Time::Now());
+}
+
+void UserIdleDetection::OnNotifyUserDidBecomeIdle() {
+  if (!UserHasJoinedQoraiRewards()) {
+    // User has not joined Qorai Rewards, so we don't need to track idle time.
+    return;
+  }
+
+  BLOG(1, "User is idle");
+}
+
+}  // namespace qorai_ads

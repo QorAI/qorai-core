@@ -1,0 +1,119 @@
+<!-- Copyright (c) 2025 The Qorai Authors. All rights reserved.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this file,
+You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<style include="settings-shared md-select">
+  .header {
+    padding: var(--qora-spacing-2xl);
+  }
+
+  .main-header {
+    font: var(--qora-font-heading-h4);
+  }
+
+  .menu-item-with-icon {
+    --qora-icon-size: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .model-subtitle {
+    font: var(--qora-font-small-regular);
+    color: var(--qora-color-text-tertiary);
+    padding: 0;
+    margin: 0;
+  }
+
+  .menu-section-title {
+    background-color: var(--qora-color-page-background);
+    padding: var(--qora-spacing-l) var(--qora-spacing-xl);
+    color: var(--qora-color-text-tertiary);
+    font: var(--qora-font-components-label);
+    text-transform: uppercase;
+  }
+  qora-dropdown {
+    min-width: 240px;
+  }
+
+  qora-option {
+    padding: var(--qora-spacing-m);
+  }
+</style>
+
+<settings-section
+  id="leoPersonalization"
+  page-title="$i18n{qoraiQoraAssistantPersonalizationLabel}">
+
+<div class="settings-box">
+  <div class="flex cr-padded-text">
+    <div>$i18n{qoraiQoraAssistantModelSelectionLabel}</div>
+  </div>
+  <qora-dropdown
+    class="cr-padded-text"
+    value="[[defaultModelKeyPrefValue_]]"
+    on-change="onModelSelectionChange_"
+  >
+    <div slot="value">[[selectedModelDisplayName_]]</div>
+    <div class="menu-section-title">
+      <span>$i18n{qoraiQoraModelSectionTitle}</span>
+    </div>
+    <template
+      is="dom-repeat"
+      items="[[models_]]"
+    >
+      <qora-option value$="[[item.model.key]]">
+        <div class="menu-item-with-icon">
+          <div>
+            <div>[[item.model.displayName]]</div>
+            <template
+              is="dom-if"
+              if="[[isQoraModel_(item.model)]]"
+            >
+              <p class="model-subtitle">[[item.subtitle]]</p>
+            </template>
+            <template
+              is="dom-if"
+              if="[[!isQoraModel_(item.model)]]"
+            >
+              <p class="model-subtitle">
+                [[item.model.options.customModelOptions.modelRequestName]]
+              </p>
+            </template>
+          </div>
+          <template
+            is="dom-if"
+            if="[[isQoraModel_(item.model)]]"
+          >
+            <template
+              is="dom-if"
+              if="[[shouldShowModelPremiumLabel_(item.model.options.qoraModelOptions.access)]]"
+            >
+              <qora-label
+                mode="outline"
+                color="blue"
+                >$i18n{qoraiQoraPremiumLabelNonPremium}</qora-label
+              >
+            </template>
+          </template>
+        </div>
+      </qora-option>
+    </template>
+  </qora-dropdown>
+</div>
+<template is="dom-if" if="[[isHistoryFeatureEnabled_]]">
+  <settings-toggle-button class="cr-row hr"
+    pref="{{prefs.qorai.ai_chat.storage_enabled}}"
+    label="$i18n{qoraiQoraAssistantHistoryPreferenceLabel}"
+    on-settings-boolean-control-change="onStorageEnabledChange_">
+  </settings-toggle-button>
+</template>
+<cr-link-row id="manageCustomization" class="cr-row hr"
+  label="$i18n{qoraiQoraAssistantCustomizationLinkLabel}"
+  on-click="openCustomizationPage_">
+</cr-link-row>
+
+</settings-section>

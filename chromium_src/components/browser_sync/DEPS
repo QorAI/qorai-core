@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/history/core/browser/sync/qorai_history_delete_directives_data_type_controller.h",
+  "+qorai/components/history/core/browser/sync/qorai_history_data_type_controller.h",
+]

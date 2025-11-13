@@ -1,0 +1,63 @@
+# Copyright (c) 2023 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//third_party/widevine/cdm/widevine.gni")
+
+qorai_components_permissions_sources = [
+  "//qorai/components/permissions/qorai_permission_manager.cc",
+  "//qorai/components/permissions/qorai_permission_manager.h",
+  "//qorai/components/permissions/contexts/qorai_google_sign_in_permission_context.cc",
+  "//qorai/components/permissions/contexts/qorai_google_sign_in_permission_context.h",
+  "//qorai/components/permissions/contexts/qorai_localhost_permission_context.cc",
+  "//qorai/components/permissions/contexts/qorai_localhost_permission_context.h",
+  "//qorai/components/permissions/contexts/qorai_open_ai_chat_permission_context.cc",
+  "//qorai/components/permissions/contexts/qorai_open_ai_chat_permission_context.h",
+  "//qorai/components/permissions/contexts/qorai_wallet_permission_context.cc",
+  "//qorai/components/permissions/contexts/qorai_wallet_permission_context.h",
+  "//qorai/components/permissions/permission_expiration_key.cc",
+  "//qorai/components/permissions/permission_expiration_key.h",
+  "//qorai/components/permissions/permission_expirations.cc",
+  "//qorai/components/permissions/permission_expirations.h",
+  "//qorai/components/permissions/permission_lifetime_manager.cc",
+  "//qorai/components/permissions/permission_lifetime_manager.h",
+  "//qorai/components/permissions/permission_lifetime_options.cc",
+  "//qorai/components/permissions/permission_lifetime_options.h",
+  "//qorai/components/permissions/permission_lifetime_pref_names.h",
+  "//qorai/components/permissions/permission_lifetime_utils.cc",
+  "//qorai/components/permissions/permission_lifetime_utils.h",
+  "//qorai/components/permissions/permission_origin_lifetime_monitor.h",
+  "//qorai/components/permissions/permission_origins.cc",
+  "//qorai/components/permissions/permission_origins.h",
+]
+
+if (enable_widevine) {
+  qorai_components_permissions_sources += [
+    "//qorai/components/permissions/permission_widevine_utils.cc",
+    "//qorai/components/permissions/permission_widevine_utils.h",
+  ]
+}
+
+qorai_components_permissions_deps = [
+  "//base",
+  "//qorai/qorai_domains",
+  "//qorai/components/qorai_wallet/browser:permission_utils",
+  "//qorai/components/qorai_wallet/common:mojom",
+  "//qorai/components/constants",
+  "//qorai/components/resources:strings_grit",
+  "//components/content_settings/core/browser",
+  "//components/content_settings/core/common",
+  "//components/keyed_service/core",
+  "//components/pref_registry",
+  "//services/network/public/mojom",
+  "//services/preferences/public/cpp",
+  "//third_party/blink/public/common",
+  "//ui/base",
+  "//url",
+]
+
+if (is_android) {
+  qorai_components_permissions_deps +=
+      [ "//qorai/components/permissions/android:jni_headers" ]
+}

@@ -1,0 +1,12 @@
+diff --git a/components/crash/core/app/crashpad.cc b/components/crash/core/app/crashpad.cc
+index dbe996b5c13ad1944c73ed41d9327b54539604cd..8ed1da48311c4973d8bc36986868a6e214bb83a3 100644
+--- a/components/crash/core/app/crashpad.cc
++++ b/components/crash/core/app/crashpad.cc
+@@ -100,6 +100,7 @@ bool InitializeCrashpadImpl(bool initial_client,
+            process_type == "os-update-handler" ||
+            process_type == "platform-experience-helper" ||
+ #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
++           QORAI_INITIALIZE_CRASHPAD_IMPL_PROCESS_TYPE
+            process_type == "GCPW Installer" || process_type == "GCPW DLL" ||
+            process_type == "elevated-tracing-service");
+ #elif BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)

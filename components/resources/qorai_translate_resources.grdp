@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <include name="IDR_QORAI_TRANSLATE_JS" file="../translate/core/browser/resources/qorai_translate.js" type="BINDATA" />
+</grit-part>

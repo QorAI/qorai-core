@@ -1,0 +1,81 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/ui/webui/qorai_wallet/line_chart/line_chart_ui.h"
+
+#include <memory>
+#include <string>
+
+#include "qorai/components/qorai_wallet/browser/qorai_wallet_constants.h"
+#include "qorai/components/constants/webui_url_constants.h"
+#include "qorai/components/line_chart_display/resources/grit/line_chart_display_generated_map.h"
+#include "chrome/grit/browser_resources.h"
+#include "chrome/grit/generated_resources.h"
+#include "components/grit/qorai_components_resources.h"
+#include "content/public/browser/web_contents.h"
+#include "content/public/browser/web_ui_data_source.h"
+#include "ui/base/l10n/l10n_util.h"
+#include "ui/webui/webui_util.h"
+
+#if !BUILDFLAG(IS_ANDROID)
+#include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/ui/webui/theme_source.h"
+#endif
+
+namespace line_chart {
+
+UntrustedLineChartUI::UntrustedLineChartUI(content::WebUI* web_ui)
+    : ui::UntrustedWebUIController(web_ui) {
+  auto* untrusted_source = content::WebUIDataSource::CreateAndAdd(
+      web_ui->GetWebContents()->GetBrowserContext(), kUntrustedLineChartURL);
+
+  for (const auto& str : qorai_wallet::kLocalizedStrings) {
+    std::u16string l10n_str = l10n_util::GetStringUTF16(str.id);
+    untrusted_source->AddString(str.name, l10n_str);
+  }
+
+  untrusted_source->SetDefaultResource(
+      IDR_QORAI_WALLET_LINE_CHART_DISPLAY_HTML);
+  untrusted_source->AddResourcePaths(kLineChartDisplayGenerated);
+  untrusted_source->AddFrameAncestor(GURL(kQoraiUIWalletPageURL));
+  untrusted_source->AddFrameAncestor(GURL(kQoraiUIWalletPanelURL));
+  webui::SetupWebUIDataSource(untrusted_source, kLineChartDisplayGenerated,
+                              IDR_QORAI_WALLET_LINE_CHART_DISPLAY_HTML);
+  untrusted_source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ScriptSrc,
+      std::string("script-src 'self' chrome-untrusted://resources "
+                  "chrome-untrusted://qorai-resources;"));
+  untrusted_source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::StyleSrc,
+      std::string("style-src 'self' 'unsafe-inline' "
+                  "chrome-untrusted://resources chrome-untrusted://theme;"));
+  untrusted_source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::FontSrc,
+      std::string("font-src 'self' data: chrome-untrusted://resources;"));
+  untrusted_source->AddString("qoraiWalletLineChartBridgeUrl",
+                              kUntrustedLineChartURL);
+  untrusted_source->OverrideContentSecurityPolicy(
+      network::mojom::CSPDirectiveName::ImgSrc,
+      std::string("img-src 'self' data:;"));
+
+#if !BUILDFLAG(IS_ANDROID)
+  Profile* profile = Profile::FromWebUI(web_ui);
+  content::URLDataSource::Add(profile, std::make_unique<ThemeSource>(
+                                           profile, /*serve_untrusted=*/true));
+#endif
+}
+
+UntrustedLineChartUI::~UntrustedLineChartUI() = default;
+
+std::unique_ptr<content::WebUIController>
+UntrustedLineChartUIConfig::CreateWebUIController(content::WebUI* web_ui,
+                                                  const GURL& url) {
+  return std::make_unique<UntrustedLineChartUI>(web_ui);
+}
+
+UntrustedLineChartUIConfig::UntrustedLineChartUIConfig()
+    : WebUIConfig(content::kChromeUIUntrustedScheme, kUntrustedLineChartHost) {}
+
+}  // namespace line_chart

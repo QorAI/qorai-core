@@ -1,0 +1,13 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_ads_java_sources = [
+  "../../qorai/browser/qorai_ads/android/java/org/chromium/chrome/browser/QoraiAdsNativeHelper.java",
+  "../../qorai/browser/qorai_ads/android/java/org/chromium/chrome/browser/device_id/DeviceIdImplAndroid.java",
+  "../../qorai/browser/qorai_ads/android/java/org/chromium/chrome/browser/dialogs/QoraiAdsNotificationDialog.java",
+  "../../qorai/browser/qorai_ads/android/java/org/chromium/chrome/browser/dialogs/QoraiAdsSignupDialog.java",
+  "../../qorai/browser/qorai_ads/android/java/org/chromium/chrome/browser/notifications/QoraiAds.java",
+  "../../qorai/browser/qorai_ads/android/java/org/chromium/chrome/browser/onboarding/QoraiAdsOnboardingFragment.java",
+]

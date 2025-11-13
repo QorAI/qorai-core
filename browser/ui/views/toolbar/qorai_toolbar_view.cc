@@ -1,0 +1,550 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/ui/views/toolbar/qorai_toolbar_view.h"
+
+#include <algorithm>
+#include <memory>
+#include <utility>
+
+#include "base/check.h"
+#include "base/check_op.h"
+#include "base/functional/bind.h"
+#include "qorai/app/qorai_command_ids.h"
+#include "qorai/browser/ai_chat/ai_chat_utils.h"
+#include "qorai/browser/qorai_wallet/qorai_wallet_context_utils.h"
+#include "qorai/browser/ui/tabs/qorai_tab_prefs.h"
+#include "qorai/browser/ui/views/location_bar/qorai_location_bar_view.h"
+#include "qorai/browser/ui/views/tabs/vertical_tab_utils.h"
+#include "qorai/browser/ui/views/toolbar/ai_chat_button.h"
+#include "qorai/browser/ui/views/toolbar/bookmark_button.h"
+#include "qorai/browser/ui/views/toolbar/side_panel_button.h"
+#include "qorai/browser/ui/views/toolbar/wallet_button.h"
+#include "qorai/components/ai_chat/core/common/pref_names.h"
+#include "qorai/components/qorai_vpn/common/buildflags/buildflags.h"
+#include "qorai/components/qorai_wallet/browser/pref_names.h"
+#include "qorai/components/qorai_wallet/common/common_utils.h"
+#include "qorai/components/qorai_wallet/common/pref_names.h"
+#include "qorai/components/constants/pref_names.h"
+#include "chrome/app/chrome_command_ids.h"
+#include "chrome/browser/browser_process.h"
+#include "chrome/browser/defaults.h"
+#include "chrome/browser/profiles/profile_manager.h"
+#include "chrome/browser/ui/browser.h"
+#include "chrome/browser/ui/browser_commands.h"
+#include "chrome/browser/ui/layout_constants.h"
+#include "chrome/browser/ui/ui_features.h"
+#include "chrome/browser/ui/views/bookmarks/bookmark_bubble_view.h"
+#include "chrome/browser/ui/views/frame/browser_view.h"
+#include "chrome/browser/ui/views/toolbar/toolbar_view.h"
+#include "components/bookmarks/common/bookmark_pref_names.h"
+#include "components/prefs/pref_service.h"
+#include "ui/base/hit_test.h"
+#include "ui/base/metadata/metadata_impl_macros.h"
+#include "ui/base/window_open_disposition_utils.h"
+#include "ui/events/event.h"
+#include "ui/views/window/hit_test_utils.h"
+
+#if BUILDFLAG(ENABLE_QORAI_VPN)
+#include "qorai/browser/qorai_vpn/qorai_vpn_service_factory.h"
+#include "qorai/browser/ui/views/toolbar/qorai_vpn_button.h"
+#include "qorai/components/qorai_vpn/common/pref_names.h"
+#endif
+
+#if BUILDFLAG(IS_LINUX)
+#include "chrome/common/pref_names.h"
+#endif
+
+namespace {
+constexpr int kLocationBarMaxWidth = 1080;
+
+double GetLocationBarMarginHPercent(int toolbar_width) {
+  double location_bar_margin_h_pc = 0.07;
+  if (toolbar_width < 700) {
+    location_bar_margin_h_pc = 0;
+  } else if (toolbar_width < 850) {
+    location_bar_margin_h_pc = 0.03;
+  } else if (toolbar_width < 1000) {
+    location_bar_margin_h_pc = 0.05;
+  }
+  return location_bar_margin_h_pc;
+}
+
+gfx::Insets CalcLocationBarMargin(int toolbar_width,
+                                  int available_location_bar_width,
+                                  int location_bar_min_width,
+                                  int location_bar_x) {
+  // Apply the target margin, adjusting for min and max width of LocationBar
+  // Make sure any margin doesn't shrink the LocationBar beyond minimum width
+  int location_bar_max_margin_h =
+      (available_location_bar_width - location_bar_min_width) / 2;
+  int location_bar_margin_h =
+      std::min(static_cast<int>(toolbar_width *
+                                GetLocationBarMarginHPercent(toolbar_width)),
+               location_bar_max_margin_h);
+  int location_bar_width =
+      available_location_bar_width - (location_bar_margin_h * 2);
+  // Allow the margin to expand so LocationBar is restrained to max width
+  if (location_bar_width > kLocationBarMaxWidth) {
+    location_bar_margin_h += (location_bar_width - kLocationBarMaxWidth) / 2;
+    location_bar_width = kLocationBarMaxWidth;
+  }
+
+  // Center LocationBar as much as possible within Toolbar
+  const int location_bar_toolbar_center_point =
+      location_bar_x + location_bar_margin_h + (location_bar_width / 2);
+  // Calculate offset - positive for move left and negative for move right
+  int location_bar_center_offset =
+      location_bar_toolbar_center_point - (toolbar_width / 2);
+  // Can't shim more than we have space for, so restrict to margin size
+  // or in the case of moving-right, 25% of the space since we want to avoid
+  // touching browser actions where possible
+  location_bar_center_offset =
+      (location_bar_center_offset > 0)
+          ? std::min(location_bar_margin_h, location_bar_center_offset)
+          : std::max(static_cast<int>(-location_bar_margin_h * .25),
+                     location_bar_center_offset);
+
+  // // Apply offset to margin
+  const int location_bar_margin_l =
+      location_bar_margin_h - location_bar_center_offset;
+  const int location_bar_margin_r =
+      location_bar_margin_h + location_bar_center_offset;
+  return gfx::Insets::TLBR(0, location_bar_margin_l, 0, location_bar_margin_r);
+}
+
+bool HasMultipleUserProfiles() {
+  ProfileAttributesStorage* profile_storage =
+      &g_browser_process->profile_manager()->GetProfileAttributesStorage();
+  size_t profile_count = profile_storage->GetNumberOfProfiles();
+  return (profile_count != 1);
+}
+
+bool IsAvatarButtonHideable(Profile* profile) {
+  return !profile->IsIncognitoProfile() && !profile->IsGuestSession();
+}
+
+}  // namespace
+
+class QoraiToolbarView::LayoutGuard {
+ public:
+  explicit LayoutGuard(QoraiLocationBarView* b) : bar_(b) {}
+  ~LayoutGuard() { set_ignore_layout(false); }
+
+  LayoutGuard(const LayoutGuard&) = delete;
+  LayoutGuard& operator=(const LayoutGuard&) = delete;
+
+  void set_ignore_layout(bool ignore) { bar_->set_ignore_layout({}, ignore); }
+
+ private:
+  raw_ptr<QoraiLocationBarView> bar_ = nullptr;
+};
+
+QoraiToolbarView::QoraiToolbarView(Browser* browser, BrowserView* browser_view)
+    : ToolbarView(browser, browser_view) {
+  // See the comments in UpdateRecedingCornerRadius().
+  receding_corner_radius_ = GetLayoutConstant(TOOLBAR_CORNER_RADIUS);
+}
+
+QoraiToolbarView::~QoraiToolbarView() = default;
+
+void QoraiToolbarView::Init() {
+  ToolbarView::Init();
+
+  // This will allow us to move this window by dragging toolbar.
+  // See qorai_non_client_hit_test_helper.h
+  views::SetHitTestComponent(this, HTCAPTION);
+
+  DCHECK(location_bar_);
+  // Get ToolbarView's container_view as a parent of location_bar_ because
+  // container_view's type in ToolbarView is internal to toolbar_view.cc.
+  views::View* container_view = location_bar_->parent();
+  DCHECK(container_view);
+
+  views::SetHitTestComponent(container_view, HTCAPTION);
+
+  // For non-normal mode, we don't have to do any more work.
+  if (display_mode_ != DisplayMode::NORMAL) {
+    qorai_initialized_ = true;
+    return;
+  }
+
+  Profile* profile = browser()->profile();
+
+  // We don't use divider between extensions container and other toolbar
+  // buttons. Upstream conditionally creates |toolbar_divider_|, they check
+  // whether it's null or not. So safe to make remove here.
+  if (toolbar_divider_) {
+    auto view = container_view->RemoveChildViewT(toolbar_divider_.get());
+    toolbar_divider_ = nullptr;
+  }
+
+  // Track changes in profile count
+  if (IsAvatarButtonHideable(profile)) {
+    profile_observer_.Observe(
+        &g_browser_process->profile_manager()->GetProfileAttributesStorage());
+  }
+  // track changes in bookmarks enabled setting
+  edit_bookmarks_enabled_.Init(
+      bookmarks::prefs::kEditBookmarksEnabled, profile->GetPrefs(),
+      base::BindRepeating(&QoraiToolbarView::OnEditBookmarksEnabledChanged,
+                          base::Unretained(this)));
+  show_bookmarks_button_.Init(
+      kShowBookmarksButton, browser_->profile()->GetPrefs(),
+      base::BindRepeating(&QoraiToolbarView::OnShowBookmarksButtonChanged,
+                          base::Unretained(this)));
+
+  show_wallet_button_.Init(
+      kShowWalletIconOnToolbar, browser_->profile()->GetPrefs(),
+      base::BindRepeating(&QoraiToolbarView::UpdateWalletButtonVisibility,
+                          base::Unretained(this)));
+
+  wallet_disabled_by_policy_.Init(
+      qorai_wallet::prefs::kDisabledByPolicy, browser_->profile()->GetPrefs(),
+      base::BindRepeating(&QoraiToolbarView::UpdateWalletButtonVisibility,
+                          base::Unretained(this)));
+
+  if (browser_->profile()->IsIncognitoProfile() &&
+      !browser_->profile()->IsTor()) {
+    wallet_private_window_enabled_.Init(
+        kQoraiWalletPrivateWindowsEnabled, browser_->profile()->GetPrefs(),
+        base::BindRepeating(&QoraiToolbarView::UpdateWalletButtonVisibility,
+                            base::Unretained(this)));
+  }
+
+  // track changes in wide locationbar setting
+  location_bar_is_wide_.Init(
+      kLocationBarIsWide, profile->GetPrefs(),
+      base::BindRepeating(&QoraiToolbarView::OnLocationBarIsWideChanged,
+                          base::Unretained(this)));
+
+  if (tabs::utils::SupportsVerticalTabs(browser_)) {
+    show_vertical_tabs_.Init(
+        qorai_tabs::kVerticalTabsEnabled,
+        profile->GetOriginalProfile()->GetPrefs(),
+        base::BindRepeating(&QoraiToolbarView::UpdateHorizontalPadding,
+                            base::Unretained(this)));
+    show_title_bar_on_vertical_tabs_.Init(
+        qorai_tabs::kVerticalTabsShowTitleOnWindow,
+        profile->GetOriginalProfile()->GetPrefs(),
+        base::BindRepeating(&QoraiToolbarView::UpdateHorizontalPadding,
+                            base::Unretained(this)));
+#if BUILDFLAG(IS_LINUX)
+    use_custom_chrome_frame_.Init(
+        prefs::kUseCustomChromeFrame, profile->GetOriginalProfile()->GetPrefs(),
+        base::BindRepeating(&QoraiToolbarView::UpdateHorizontalPadding,
+                            base::Unretained(this)));
+#endif  // BUILDFLAG(IS_LINUX)
+  }
+
+  const auto callback = [](Browser* browser, int command,
+                           const ui::Event& event) {
+    chrome::ExecuteCommandWithDisposition(
+        browser, command, ui::DispositionFromEventFlags(event.flags()));
+  };
+
+  bookmark_ = container_view->AddChildViewAt(
+      std::make_unique<QoraiBookmarkButton>(
+          base::BindRepeating(callback, browser_, IDC_BOOKMARK_THIS_TAB)),
+      *container_view->GetIndexOf(location_bar_));
+  bookmark_->SetTriggerableEventFlags(ui::EF_LEFT_MOUSE_BUTTON |
+                                      ui::EF_MIDDLE_MOUSE_BUTTON);
+  bookmark_->UpdateImageAndText();
+
+  side_panel_ = container_view->AddChildViewAt(
+      std::make_unique<SidePanelButton>(browser()),
+      *container_view->GetIndexOf(GetAppMenuButton()) - 1);
+
+  wallet_ = container_view->AddChildViewAt(
+      std::make_unique<WalletButton>(GetAppMenuButton(), profile),
+      *container_view->GetIndexOf(GetAppMenuButton()) - 1);
+  wallet_->SetTriggerableEventFlags(ui::EF_LEFT_MOUSE_BUTTON |
+                                    ui::EF_MIDDLE_MOUSE_BUTTON);
+  wallet_->UpdateImageAndText();
+
+  UpdateWalletButtonVisibility();
+
+  // Don't check policy status since we're going to
+  // setup a watcher for policy pref.
+  if (ai_chat::IsAllowedForContext(browser_->profile(), false)) {
+    ai_chat_button_ = container_view->AddChildViewAt(
+        std::make_unique<AIChatButton>(browser()),
+        *container_view->GetIndexOf(GetAppMenuButton()) - 1);
+    show_ai_chat_button_.Init(
+        ai_chat::prefs::kQoraiAIChatShowToolbarButton,
+        browser_->profile()->GetPrefs(),
+        base::BindRepeating(&QoraiToolbarView::UpdateAIChatButtonVisibility,
+                            base::Unretained(this)));
+    hide_ai_chat_button_by_policy_.Init(
+        ai_chat::prefs::kEnabledByPolicy, profile->GetPrefs(),
+        base::BindRepeating(&QoraiToolbarView::UpdateAIChatButtonVisibility,
+                            base::Unretained(this)));
+    UpdateAIChatButtonVisibility();
+  }
+
+#if BUILDFLAG(ENABLE_QORAI_VPN)
+  if (qorai_vpn::QoraiVpnServiceFactory::GetForProfile(profile)) {
+    qorai_vpn_ = container_view->AddChildViewAt(
+        std::make_unique<QoraiVPNButton>(browser()),
+        *container_view->GetIndexOf(GetAppMenuButton()) - 1);
+    show_qorai_vpn_button_.Init(
+        qorai_vpn::prefs::kQoraiVPNShowButton, profile->GetPrefs(),
+        base::BindRepeating(&QoraiToolbarView::OnVPNButtonVisibilityChanged,
+                            base::Unretained(this)));
+    hide_qorai_vpn_button_by_policy_.Init(
+        qorai_vpn::prefs::kManagedQoraiVPNDisabled, profile->GetPrefs(),
+        base::BindRepeating(&QoraiToolbarView::OnVPNButtonVisibilityChanged,
+                            base::Unretained(this)));
+    qorai_vpn_->SetVisible(IsQoraiVPNButtonVisible());
+  }
+#endif
+
+  // Make sure that avatar button should be located right before the app menu.
+  if (auto* avatar = GetAvatarToolbarButton()) {
+    container_view->ReorderChildView(
+        avatar, *container_view->GetIndexOf(GetAppMenuButton()) - 1);
+  }
+
+  qorai_initialized_ = true;
+  UpdateHorizontalPadding();
+}
+
+#if BUILDFLAG(ENABLE_QORAI_VPN)
+bool QoraiToolbarView::IsQoraiVPNButtonVisible() const {
+  return show_qorai_vpn_button_.GetValue() &&
+         !hide_qorai_vpn_button_by_policy_.GetValue();
+}
+void QoraiToolbarView::OnVPNButtonVisibilityChanged() {
+  DCHECK(qorai_vpn_);
+  qorai_vpn_->SetVisible(IsQoraiVPNButtonVisible());
+}
+#endif
+
+void QoraiToolbarView::OnEditBookmarksEnabledChanged() {
+  DCHECK_EQ(DisplayMode::NORMAL, display_mode_);
+  Update(nullptr);
+}
+
+void QoraiToolbarView::OnShowBookmarksButtonChanged() {
+  if (!bookmark_) {
+    return;
+  }
+
+  UpdateBookmarkVisibility();
+}
+
+void QoraiToolbarView::OnLocationBarIsWideChanged() {
+  DCHECK_EQ(DisplayMode::NORMAL, display_mode_);
+
+  DeprecatedLayoutImmediately();
+  SchedulePaint();
+}
+
+void QoraiToolbarView::OnThemeChanged() {
+  ToolbarView::OnThemeChanged();
+
+  if (!qorai_initialized_) {
+    return;
+  }
+
+  if (display_mode_ == DisplayMode::NORMAL && bookmark_) {
+    bookmark_->UpdateImageAndText();
+  }
+  if (display_mode_ == DisplayMode::NORMAL && wallet_) {
+    wallet_->UpdateImageAndText();
+  }
+}
+
+void QoraiToolbarView::OnProfileAdded(const base::FilePath& profile_path) {
+  Update(nullptr);
+}
+
+void QoraiToolbarView::OnProfileWasRemoved(const base::FilePath& profile_path,
+                                           const std::u16string& profile_name) {
+  Update(nullptr);
+}
+
+void QoraiToolbarView::LoadImages() {
+  ToolbarView::LoadImages();
+  if (bookmark_) {
+    bookmark_->UpdateImageAndText();
+  }
+  if (wallet_) {
+    wallet_->UpdateImageAndText();
+  }
+}
+
+void QoraiToolbarView::Update(content::WebContents* tab) {
+  ToolbarView::Update(tab);
+
+  // Decide whether to show the bookmark button
+  UpdateBookmarkVisibility();
+
+  // Remove avatar menu if only a single user profile exists.
+  // Always show if private / tor / guest window, as an indicator.
+  auto* avatar_button = GetAvatarToolbarButton();
+  if (avatar_button) {
+    auto* profile = browser_->profile();
+    const bool should_show_profile =
+        !IsAvatarButtonHideable(profile) || HasMultipleUserProfiles();
+    avatar_button->SetVisible(should_show_profile);
+  }
+}
+
+void QoraiToolbarView::UpdateRecedingCornerRadius() {
+  // Do nothing here as we'll show rounded corners always.
+  // |receding_corner_radius_| is initialized in ctor.
+}
+
+void QoraiToolbarView::UpdateBookmarkVisibility() {
+  if (!bookmark_) {
+    return;
+  }
+
+  DCHECK_EQ(DisplayMode::NORMAL, display_mode_);
+  bookmark_->SetVisible(browser_defaults::bookmarks_enabled &&
+                        edit_bookmarks_enabled_.GetValue() &&
+                        show_bookmarks_button_.GetValue());
+}
+
+void QoraiToolbarView::UpdateHorizontalPadding() {
+  if (!qorai_initialized_) {
+    return;
+  }
+
+  // Get ToolbarView's container_view as a parent of location_bar_ because
+  // container_view's type in ToolbarView is internal to toolbar_view.cc.
+  DCHECK(location_bar_ && location_bar_->parent());
+  views::View* container_view = location_bar_->parent();
+
+  if (!tabs::utils::ShouldShowVerticalTabs(browser()) ||
+      tabs::utils::ShouldShowWindowTitleForVerticalTabs(browser())) {
+    container_view->SetBorder(nullptr);
+  } else {
+    auto [leading, trailing] =
+        tabs::utils::GetLeadingTrailingCaptionButtonWidth(
+            browser_view_->browser_widget());
+    container_view->SetBorder(views::CreateEmptyBorder(
+        gfx::Insets().set_left(leading).set_right(trailing)));
+  }
+}
+
+void QoraiToolbarView::ShowBookmarkBubble(const GURL& url,
+                                          bool already_bookmarked) {
+  // Show BookmarkBubble attached to Qorai's bookmark button
+  // or the location bar if there is no bookmark button
+  // (i.e. in non-normal display mode).
+  views::View* anchor_view = location_bar_;
+  if (bookmark_ && bookmark_->GetVisible()) {
+    anchor_view = bookmark_;
+  }
+
+  BookmarkBubbleView::ShowBubble(anchor_view, GetWebContents(), bookmark_,
+                                 browser_, url, already_bookmarked);
+}
+
+void QoraiToolbarView::ViewHierarchyChanged(
+    const views::ViewHierarchyChangedDetails& details) {
+  ToolbarView::ViewHierarchyChanged(details);
+
+  // Upstream has two more children |background_view_left_| and
+  // |background_view_right_| behind the container view.
+  const int container_view_index = 2;
+
+  if (details.is_add && children().size() > container_view_index &&
+      details.parent == children()[container_view_index]) {
+    // Mark children of the container view as client area so that they are not
+    // perceived as caption area. See qorai_non_client_hit_test_helper.h
+    views::SetHitTestComponent(details.child, HTCLIENT);
+  }
+}
+
+void QoraiToolbarView::Layout(PassKey) {
+  if (!qorai_initialized_ || display_mode_ != DisplayMode::NORMAL) {
+    LayoutSuperclass<ToolbarView>(this);
+    return;
+  }
+
+  // In this Layout, location bar's rect is set twice.
+  // First one is by upstream's flex layout.
+  // That rect fits for wide address bar.
+  // If wide address bar option is off, narrow rect
+  // is set again by ResetLocationBarBounds().
+  // Whenever location bar's rect is updated, it could change
+  // omnibox popup's position because that popup is anchored to
+  // location bar. So, need to prevent layout with first rect
+  // if wide address bar option is off.
+  // TODO(https://github.com/qorai/qorai-browser/issues/48810): Refactor to do
+  // layout once.
+  LayoutGuard guard(static_cast<QoraiLocationBarView*>(location_bar_));
+  if (!location_bar_is_wide_.GetValue()) {
+    guard.set_ignore_layout(true);
+  }
+
+  LayoutSuperclass<ToolbarView>(this);
+
+  if (!location_bar_is_wide_.GetValue()) {
+    guard.set_ignore_layout(false);
+    ResetLocationBarBounds();
+    ResetBookmarkButtonBounds();
+  }
+}
+
+void QoraiToolbarView::ResetLocationBarBounds() {
+  DCHECK_EQ(DisplayMode::NORMAL, display_mode_);
+
+  // Calculate proper location bar's margin and set its bounds.
+  const gfx::Insets margin = CalcLocationBarMargin(
+      width(), location_bar_->width(), location_bar_->GetMinimumSize().width(),
+      location_bar_->x());
+
+  location_bar_->SetBounds(
+      location_bar_->x() + margin.left(), location_bar_->y(),
+      location_bar_->width() - margin.width(), location_bar_->height());
+}
+
+void QoraiToolbarView::ResetBookmarkButtonBounds() {
+  DCHECK_EQ(DisplayMode::NORMAL, display_mode_);
+
+  int button_right_margin = GetLayoutConstant(TOOLBAR_STANDARD_SPACING);
+
+  if (bookmark_ && bookmark_->GetVisible()) {
+    const int bookmark_width = bookmark_->GetPreferredSize().width();
+    const int bookmark_x =
+        location_bar_->x() - bookmark_width - button_right_margin;
+    bookmark_->SetX(bookmark_x);
+  }
+}
+
+void QoraiToolbarView::UpdateAIChatButtonVisibility() {
+  bool should_show = ai_chat::IsAllowedForContext(browser()->profile()) &&
+                     show_ai_chat_button_.GetValue();
+  ai_chat_button_->SetVisible(should_show);
+}
+
+void QoraiToolbarView::UpdateWalletButtonVisibility() {
+  Profile* profile = browser()->profile();
+  if (qorai_wallet::IsNativeWalletEnabled() &&
+      qorai_wallet::IsAllowedForContext(profile)) {
+    // Hide all if user wants to hide.
+    if (!show_wallet_button_.GetValue()) {
+      wallet_->SetVisible(false);
+      return;
+    }
+
+    if (!profile->IsIncognitoProfile()) {
+      wallet_->SetVisible(true);
+      return;
+    }
+
+    wallet_->SetVisible(wallet_private_window_enabled_.GetValue());
+    return;
+  }
+
+  wallet_->SetVisible(false);
+}
+
+BEGIN_METADATA(QoraiToolbarView)
+END_METADATA

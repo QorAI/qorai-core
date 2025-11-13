@@ -1,0 +1,29 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("ads_internals") {
+  sources = [
+    "ads_internals_ui.cc",
+    "ads_internals_ui.h",
+  ]
+
+  deps = [
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_ads/browser/resources:generated_resources",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_rewards/core",
+    "//chrome/browser:browser_public_dependencies",
+    "//chrome/browser/profiles:profile",
+  ]
+
+  public_deps = [
+    "//base",
+    "//qorai/components/qorai_ads/core/public:headers",
+    "//qorai/components/services/bat_ads/public/interfaces",
+    "//components/prefs",
+    "//content/public/browser",
+    "//mojo/public/cpp/bindings",
+  ]
+}

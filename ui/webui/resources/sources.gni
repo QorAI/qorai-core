@@ -1,0 +1,28 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# Extra GRDPs to give //ui/webui/resources:build_grd
+# (which generates //ui/webui/resources/webui_generated_resources.grd)
+
+qorai_resources_extra_grdps_path = "$root_gen_dir/qorai/ui/webui/resources"
+
+qorai_resources_extra_grdps = [
+  "$qorai_resources_extra_grdps_path/qorai_fonts_resources.grdp",
+  "$qorai_resources_extra_grdps_path/qorai_icons_resources.grdp",
+  "$qorai_resources_extra_grdps_path/qorai_static_resources.grdp",
+  "$root_gen_dir/qorai/web-ui-qora/qora.grdp",
+  "$root_gen_dir/qorai/web-ui-opaque_ke/opaque_ke.grdp",
+]
+
+qorai_resources_extra_grdps_deps = [ "//qorai/ui/webui/resources:grdp" ]
+
+# At the moment, all non-static resources are only required for polymer WebUI.
+# This could change and, when it does, the `include_polymer` conditional can be removed
+# here and the one in //qorai/ui/webui/resources/BUILD.gn be relied on to only add
+# polymer-related files when appropriate.
+if (!is_android && !is_ios) {
+  qorai_resources_extra_grdps +=
+      [ "$qorai_resources_extra_grdps_path/resources.grdp" ]
+}

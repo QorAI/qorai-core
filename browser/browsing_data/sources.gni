@@ -1,0 +1,36 @@
+# Copyright (c) 2021 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//extensions/buildflags/buildflags.gni")
+
+qorai_browser_browsing_data_sources = [
+  "//qorai/browser/browsing_data/qorai_browsing_data_remover_delegate.cc",
+  "//qorai/browser/browsing_data/qorai_browsing_data_remover_delegate.h",
+  "//qorai/browser/browsing_data/qorai_clear_browsing_data.cc",
+  "//qorai/browser/browsing_data/qorai_clear_browsing_data.h",
+]
+
+qorai_browser_browsing_data_deps = [
+  "//base",
+  "//qorai/browser/ai_chat",
+  "//qorai/components/ai_chat/core/browser",
+  "//qorai/components/content_settings/core/common",
+  "//chrome/browser:browser_process",
+  "//chrome/browser/browsing_data:constants",
+  "//chrome/browser/profiles:profile",
+  "//chrome/common",
+  "//components/browsing_data/core",
+  "//components/content_settings/core/browser",
+  "//components/content_settings/core/common",
+  "//components/prefs",
+  "//content/public/browser",
+]
+
+if (enable_extensions) {
+  qorai_browser_browsing_data_deps += [
+    "//qorai/common/extensions/api",
+    "//extensions/browser",
+  ]
+}

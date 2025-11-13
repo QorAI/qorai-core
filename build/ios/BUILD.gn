@@ -1,0 +1,5 @@
+import("//qorai/build/config.gni")
+
+group("qorai") {
+  deps = [ "//qorai/ios:qorai_ios" ]
+}

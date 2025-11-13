@@ -1,0 +1,20 @@
+diff --git a/components/permissions/permission_manager.cc b/components/permissions/permission_manager.cc
+index 0442bd0d0b27debbf396a89ae9fca790360c1313..a14ce22b86a8e04ac83f28ef9e1fa188335707cc 100644
+--- a/components/permissions/permission_manager.cc
++++ b/components/permissions/permission_manager.cc
+@@ -301,6 +301,7 @@ void PermissionManager::RequestPermissionsFromCurrentDocument(
+     base::OnceCallback<void(const std::vector<content::PermissionResult>&)>
+         permission_status_callback) {
+   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
++  QORAI_REQUEST_PERMISSION_FROM_CURRENT_DOCUMENT
+   RequestPermissionsInternal(render_frame_host, request_description,
+                              std::move(permission_status_callback));
+ }
+@@ -343,6 +344,7 @@ PermissionManager::GetPermissionResultForCurrentDocument(
+   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+ 
+   const GURL requesting_origin =
++      QORAI_GET_PERMISSION_RESULT_FOR_CURRENT_DOCUMENT
+       PermissionUtil::GetLastCommittedOriginAsURL(render_frame_host);
+   const GURL embedding_origin =
+       GetEmbeddingOrigin(render_frame_host, requesting_origin);

@@ -1,0 +1,174 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//extensions/buildflags/buildflags.gni")
+
+source_set("misc_metrics") {
+  sources = [
+    "//qorai/browser/misc_metrics/process_misc_metrics.h",
+    "//qorai/browser/misc_metrics/profile_misc_metrics_service.h",
+    "//qorai/browser/misc_metrics/profile_misc_metrics_service_factory.h",
+  ]
+
+  deps = [
+    "//components/keyed_service/content",
+    "//components/keyed_service/core",
+    "//components/prefs",
+    "//content/public/browser",
+  ]
+}
+
+static_library("misc_metrics_impl") {
+  visibility = [
+    "//qorai/browser/misc_metrics/*",
+    "//chrome/browser",
+  ]
+
+  sources = [
+    "//qorai/browser/misc_metrics/doh_metrics.cc",
+    "//qorai/browser/misc_metrics/doh_metrics.h",
+    "//qorai/browser/misc_metrics/page_metrics_tab_helper.cc",
+    "//qorai/browser/misc_metrics/page_metrics_tab_helper.h",
+    "//qorai/browser/misc_metrics/process_misc_metrics.cc",
+    "//qorai/browser/misc_metrics/uptime_monitor_impl.h",
+  ]
+
+  deps = [
+    "//qorai/browser:browser_process",
+    "//qorai/browser/misc_metrics",
+    "//qorai/browser/profiles:util",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/misc_metrics",
+    "//qorai/components/p3a_utils",
+    "//qorai/components/time_period_storage",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/autofill",
+    "//chrome/browser/profiles",
+    "//chrome/browser/search_engines",
+    "//chrome/browser/ui",
+    "//chrome/common:constants",
+    "//components/keyed_service/content",
+    "//components/keyed_service/core",
+    "//components/prefs",
+    "//components/user_prefs",
+    "//content/public/browser",
+  ]
+
+  if (enable_extensions) {
+    sources += [
+      "//qorai/browser/misc_metrics/extension_metrics.cc",
+      "//qorai/browser/misc_metrics/extension_metrics.h",
+    ]
+
+    deps += [ "//qorai/browser/extensions/manifest_v2" ]
+  }
+
+  if (!is_android) {
+    sources += [
+      "//qorai/browser/misc_metrics/default_browser_monitor.h",
+      "//qorai/browser/misc_metrics/theme_metrics.cc",
+      "//qorai/browser/misc_metrics/theme_metrics.h",
+      "//qorai/browser/misc_metrics/vertical_tab_metrics.cc",
+      "//qorai/browser/misc_metrics/vertical_tab_metrics.h",
+    ]
+    deps += [
+      "//qorai/browser/extensions/manifest_v2",
+      "//qorai/browser/themes",
+      "//chrome/browser/themes",
+      "//chrome/browser/ui/tabs:tab_strip",
+      "//extensions/browser",
+    ]
+  } else {
+    sources += [ "//qorai/browser/misc_metrics/misc_android_metrics.h" ]
+  }
+}
+
+if (!is_android) {
+  source_set("usage_clock") {
+    sources = [
+      "//qorai/browser/misc_metrics/usage_clock.cc",
+      "//qorai/browser/misc_metrics/usage_clock.h",
+    ]
+
+    deps = [
+      "//base",
+      "//chrome/browser/metrics/desktop_session_duration",
+    ]
+  }
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [
+    "doh_metrics_unittest.cc",
+    "page_metrics_unittest.cc",
+    "uptime_monitor_impl_unittest.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/browser",
+    "//qorai/browser/misc_metrics",
+    "//qorai/browser/misc_metrics:misc_metrics_impl",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/misc_metrics",
+    "//chrome/browser",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/history",
+    "//chrome/browser/search_engines",
+    "//chrome/common",
+    "//chrome/test:test_support",
+    "//components/bookmarks/browser",
+    "//components/prefs:test_support",
+    "//testing/gtest",
+  ]
+
+  if (!is_android) {
+    sources += [
+      "default_browser_monitor_unittest.cc",
+      "profile_new_tab_metrics_unittest.cc",
+      "theme_metrics_unittest.cc",
+      "usage_clock_unittest.cc",
+    ]
+
+    deps += [
+      ":usage_clock",
+      "//qorai/browser/themes",
+      "//chrome/browser/metrics/desktop_session_duration",
+      "//chrome/browser/themes",
+    ]
+  }
+
+  if (enable_extensions) {
+    sources += [ "extension_metrics_unittest.cc" ]
+
+    deps += [ "//qorai/browser/extensions/manifest_v2" ]
+  }
+}
+
+source_set("browser_tests") {
+  testonly = true
+
+  sources = []
+
+  if (!is_android) {
+    sources += [ "vertical_tab_metrics_browsertest.cc" ]
+  }
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/browser/misc_metrics:misc_metrics_impl",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/tab_group_sync:factories",
+    "//chrome/test:test_support",
+    "//components/prefs:test_support",
+    "//testing/gtest",
+  ]
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+}

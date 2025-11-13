@@ -1,0 +1,42 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/linux/channels.gni")
+
+assert(is_linux)
+
+group("qorai") {
+  public_deps = [
+    ":copy_exe",
+    ":copy_sandbox",
+  ]
+}
+
+copy("copy_exe") {
+  sources = [ "$root_out_dir/chrome" ]
+
+  outputs = [ "$root_out_dir/qorai" ]
+
+  deps = [ "//chrome:chrome_initial" ]
+}
+
+copy("copy_sandbox") {
+  sources = [ "$root_out_dir/chrome_sandbox" ]
+
+  outputs = [ "$root_out_dir/qorai_sandbox" ]
+
+  deps = [ "//sandbox/linux:chrome_sandbox" ]
+}
+
+config("linux_channel_names") {
+  defines = [
+    "QORAI_LINUX_CHANNEL_STABLE=\"$qorai_linux_channel_stable\"",
+    "QORAI_LINUX_CHANNEL_DEV=\"$qorai_linux_channel_dev\"",
+    "QORAI_LINUX_CHANNEL_NIGHTLY=\"$qorai_linux_channel_nightly\"",
+    "LINUX_CHANNEL_STABLE=\"$linux_channel_stable\"",
+    "LINUX_CHANNEL_BETA=\"$linux_channel_beta\"",
+    "LINUX_CHANNEL_DEV=\"$linux_channel_dev\"",
+  ]
+}

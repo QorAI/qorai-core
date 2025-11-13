@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grit-part>
+  <include name="IDR_QORAI_SHIELDS_ICON_64" file="../qorai_shields/resources/icon.png" type="BINDATA" />
+  <include name="IDR_QORAI_SHIELDS_ICON_64_DISABLED" file="../qorai_shields/resources/icon-off.png" type="BINDATA" />
+  <include name="IDR_SHIELDS_PANEL_HTML" file="../qorai_shields/resources/panel/qorai_shields.html" type="BINDATA" />
+</grit-part>

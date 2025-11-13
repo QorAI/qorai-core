@@ -1,0 +1,862 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/extensions/api/qorai_rewards_api.h"
+
+#include <string>
+#include <utility>
+
+#include "base/check.h"
+#include "base/functional/bind.h"
+#include "base/strings/string_number_conversions.h"
+#include "qorai/browser/qorai_adaptive_captcha/qorai_adaptive_captcha_service_factory.h"
+#include "qorai/browser/qorai_ads/ads_service_factory.h"
+#include "qorai/browser/qorai_rewards/rewards_service_factory.h"
+#include "qorai/browser/qorai_rewards/rewards_tab_helper.h"
+#include "qorai/browser/qorai_rewards/rewards_util.h"
+#include "qorai/browser/ui/qorai_rewards/rewards_panel_coordinator.h"
+#include "qorai/common/extensions/api/qorai_rewards.h"
+#include "qorai/components/qorai_adaptive_captcha/qorai_adaptive_captcha_service.h"
+#include "qorai/components/qorai_ads/core/browser/service/ads_service.h"
+#include "qorai/components/qorai_rewards/content/rewards_p3a.h"
+#include "qorai/components/qorai_rewards/content/rewards_service.h"
+#include "qorai/components/qorai_rewards/core/pref_names.h"
+#include "qorai/components/qorai_rewards/core/rewards_util.h"
+#include "chrome/browser/extensions/api/tabs/tabs_constants.h"
+#include "chrome/browser/extensions/extension_service.h"
+#include "chrome/browser/extensions/extension_tab_util.h"
+#include "chrome/browser/extensions/window_controller.h"
+#include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/ui/browser.h"
+#include "chrome/browser/ui/browser_finder.h"
+#include "chrome/browser/ui/browser_window/public/browser_window_features.h"
+#include "components/prefs/pref_service.h"
+#include "content/public/browser/web_contents.h"
+#include "extensions/browser/event_router.h"
+
+using qorai_ads::AdsService;
+using qorai_ads::AdsServiceFactory;
+using qorai_rewards::RewardsPanelCoordinator;
+using qorai_rewards::RewardsService;
+using qorai_rewards::RewardsServiceFactory;
+using qorai_rewards::RewardsTabHelper;
+
+namespace {
+
+RewardsTabHelper* GetRewardsTabHelperForTabId(
+    int tab_id,
+    content::BrowserContext* browser_context) {
+  DCHECK(browser_context);
+  content::WebContents* web_contents = nullptr;
+  extensions::WindowController* window = nullptr;
+  bool found = extensions::ExtensionTabUtil::GetTabById(
+      tab_id, browser_context, /*incognito_enabled=*/false, &window,
+      &web_contents, /*tab_index=*/nullptr);
+  if (!found || !window || !web_contents) {
+    return nullptr;
+  }
+  return RewardsTabHelper::FromWebContents(web_contents);
+}
+
+RewardsPanelCoordinator* GetPanelCoordinator(
+    content::WebContents* web_contents) {
+  DCHECK(web_contents);
+  auto* browser = chrome::FindBrowserWithTab(web_contents);
+  return browser ? browser->GetFeatures().rewards_panel_coordinator() : nullptr;
+}
+
+RewardsPanelCoordinator* GetPanelCoordinator(ExtensionFunction* function) {
+  DCHECK(function);
+  auto* web_contents = function->GetSenderWebContents();
+  if (!web_contents) {
+    return nullptr;
+  }
+  return GetPanelCoordinator(web_contents);
+}
+
+std::string StringifyResult(
+    qorai_rewards::mojom::CreateRewardsWalletResult result) {
+  switch (result) {
+    case qorai_rewards::mojom::CreateRewardsWalletResult::kSuccess:
+      return "success";
+    case qorai_rewards::mojom::CreateRewardsWalletResult::
+        kWalletGenerationDisabled:
+      return "wallet-generation-disabled";
+    case qorai_rewards::mojom::CreateRewardsWalletResult::
+        kGeoCountryAlreadyDeclared:
+      return "country-already-declared";
+    case qorai_rewards::mojom::CreateRewardsWalletResult::kUnexpected:
+      return "unexpected-error";
+  }
+}
+
+}  // namespace
+
+namespace extensions::api {
+
+QoraiRewardsIsSupportedFunction::~QoraiRewardsIsSupportedFunction() = default;
+
+ExtensionFunction::ResponseAction QoraiRewardsIsSupportedFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  bool is_supported = ::qorai_rewards::IsSupportedForProfile(profile);
+  return RespondNow(WithArguments(is_supported));
+}
+
+QoraiRewardsRecordNTPPanelTriggerFunction::
+    ~QoraiRewardsRecordNTPPanelTriggerFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsRecordNTPPanelTriggerFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+
+  if (!rewards_service) {
+    return RespondNow(NoArguments());
+  }
+
+  if (!profile->GetPrefs()->GetBoolean(::qorai_rewards::prefs::kEnabled)) {
+    rewards_service->GetP3AConversionMonitor()->RecordPanelTrigger(
+        ::qorai_rewards::p3a::PanelTrigger::kNTP);
+  }
+
+  return RespondNow(NoArguments());
+}
+
+QoraiRewardsOpenRewardsPanelFunction::~QoraiRewardsOpenRewardsPanelFunction() =
+    default;
+
+ExtensionFunction::ResponseAction QoraiRewardsOpenRewardsPanelFunction::Run() {
+  if (auto* coordinator = GetPanelCoordinator(this)) {
+    coordinator->OpenRewardsPanel();
+  }
+  return RespondNow(NoArguments());
+}
+
+QoraiRewardsGetPublisherInfoFunction::~QoraiRewardsGetPublisherInfoFunction() =
+    default;
+
+ExtensionFunction::ResponseAction QoraiRewardsGetPublisherInfoFunction::Run() {
+  std::optional<qorai_rewards::GetPublisherInfo::Params> params =
+      qorai_rewards::GetPublisherInfo::Params::Create(args());
+  EXTENSION_FUNCTION_VALIDATE(params);
+
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not initialized"));
+  }
+
+  rewards_service->GetPublisherInfo(
+      params->publisher_key,
+      base::BindOnce(&QoraiRewardsGetPublisherInfoFunction::OnGetPublisherInfo,
+                     this));
+
+  return RespondLater();
+}
+
+void QoraiRewardsGetPublisherInfoFunction::OnGetPublisherInfo(
+    const ::qorai_rewards::mojom::Result result,
+    ::qorai_rewards::mojom::PublisherInfoPtr info) {
+  if (!info) {
+    Respond(WithArguments(static_cast<int>(result)));
+    return;
+  }
+
+  base::Value::Dict dict;
+  dict.Set("publisherKey", info->id);
+  dict.Set("name", info->name);
+  dict.Set("percentage", static_cast<int>(info->percent));
+  dict.Set("status", static_cast<int>(info->status));
+  dict.Set("excluded", info->excluded ==
+                           ::qorai_rewards::mojom::PublisherExclude::EXCLUDED);
+  dict.Set("url", info->url);
+  dict.Set("provider", info->provider);
+  dict.Set("favIconUrl", info->favicon_url);
+
+  Respond(WithArguments(static_cast<int>(result), std::move(dict)));
+}
+
+QoraiRewardsGetPublisherInfoForTabFunction::
+    ~QoraiRewardsGetPublisherInfoForTabFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetPublisherInfoForTabFunction::Run() {
+  auto params = qorai_rewards::GetPublisherInfoForTab::Params::Create(args());
+  EXTENSION_FUNCTION_VALIDATE(params);
+
+  auto* profile = Profile::FromBrowserContext(browser_context());
+
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(NoArguments());
+  }
+
+  auto* tab_helper = GetRewardsTabHelperForTabId(params->tab_id, profile);
+  if (!tab_helper) {
+    return RespondNow(NoArguments());
+  }
+
+  std::string publisher_id = tab_helper->GetPublisherIdForTab();
+  if (publisher_id.empty()) {
+    return RespondNow(NoArguments());
+  }
+
+  rewards_service->GetPublisherPanelInfo(
+      publisher_id,
+      base::BindOnce(
+          &QoraiRewardsGetPublisherInfoForTabFunction::OnGetPublisherPanelInfo,
+          this));
+
+  return RespondLater();
+}
+
+void QoraiRewardsGetPublisherInfoForTabFunction::OnGetPublisherPanelInfo(
+    ::qorai_rewards::mojom::Result result,
+    ::qorai_rewards::mojom::PublisherInfoPtr info) {
+  if (!info) {
+    Respond(NoArguments());
+    return;
+  }
+
+  base::Value::Dict dict;
+  dict.Set("publisherKey", info->id);
+  dict.Set("name", info->name);
+  dict.Set("percentage", static_cast<int>(info->percent));
+  dict.Set("status", static_cast<int>(info->status));
+  dict.Set("excluded", info->excluded ==
+                           ::qorai_rewards::mojom::PublisherExclude::EXCLUDED);
+  dict.Set("url", info->url);
+  dict.Set("provider", info->provider);
+  dict.Set("favIconUrl", info->favicon_url);
+
+  Respond(WithArguments(std::move(dict)));
+}
+
+QoraiRewardsGetRewardsParametersFunction::
+    ~QoraiRewardsGetRewardsParametersFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetRewardsParametersFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not available"));
+  }
+
+  rewards_service->GetRewardsParameters(base::BindOnce(
+      &QoraiRewardsGetRewardsParametersFunction::OnGetRewardsParameters, this));
+  return RespondLater();
+}
+
+void QoraiRewardsGetRewardsParametersFunction::OnGetRewardsParameters(
+    ::qorai_rewards::mojom::RewardsParametersPtr parameters) {
+  base::Value::Dict data;
+
+  if (!parameters) {
+    data.Set("rate", 0.0);
+    data.Set("monthlyTipChoices", base::Value::List());
+    data.Set("payoutStatus", base::Value::Dict());
+    data.Set("walletProviderRegions", base::Value::Dict());
+    data.Set("vbatExpired", false);
+    return Respond(WithArguments(std::move(data)));
+  }
+
+  data.Set("rate", parameters->rate);
+  base::Value::List monthly_choices;
+  for (auto const& item : parameters->monthly_tip_choices) {
+    monthly_choices.Append(item);
+  }
+  data.Set("monthlyTipChoices", std::move(monthly_choices));
+
+  base::Value::Dict payout_status;
+  for (const auto& [key, value] : parameters->payout_status) {
+    payout_status.Set(key, value);
+  }
+  data.Set("payoutStatus", std::move(payout_status));
+
+  base::Value::Dict provider_regions;
+  for (const auto& [provider, regions] : parameters->wallet_provider_regions) {
+    base::Value::List allow;
+    for (const auto& country : regions->allow) {
+      allow.Append(country);
+    }
+    base::Value::List block;
+    for (const auto& country : regions->block) {
+      block.Append(country);
+    }
+    base::Value::Dict regions_dict;
+    regions_dict.Set("allow", std::move(allow));
+    regions_dict.Set("block", std::move(block));
+    provider_regions.Set(provider, std::move(regions_dict));
+  }
+  data.Set("walletProviderRegions", std::move(provider_regions));
+
+  if (!parameters->vbat_deadline.is_null()) {
+    data.Set("vbatDeadline",
+             floor(parameters->vbat_deadline.InSecondsFSinceUnixEpoch() *
+                   base::Time::kMillisecondsPerSecond));
+  }
+  data.Set("vbatExpired", parameters->vbat_expired);
+
+  Respond(WithArguments(std::move(data)));
+}
+
+QoraiRewardsCreateRewardsWalletFunction::
+    ~QoraiRewardsCreateRewardsWalletFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsCreateRewardsWalletFunction::Run() {
+  auto params = qorai_rewards::CreateRewardsWallet::Params::Create(args());
+  EXTENSION_FUNCTION_VALIDATE(params);
+
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(Error("RewardsService not available"));
+  }
+
+  rewards_service->CreateRewardsWallet(
+      params->country,
+      base::BindOnce(
+          &QoraiRewardsCreateRewardsWalletFunction::CreateRewardsWalletCallback,
+          this));
+
+  return RespondLater();
+}
+
+void QoraiRewardsCreateRewardsWalletFunction::CreateRewardsWalletCallback(
+    ::qorai_rewards::mojom::CreateRewardsWalletResult result) {
+  Respond(WithArguments(StringifyResult(result)));
+}
+
+QoraiRewardsGetAvailableCountriesFunction::
+    ~QoraiRewardsGetAvailableCountriesFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetAvailableCountriesFunction::Run() {
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not initialized"));
+  }
+
+  rewards_service->GetAvailableCountries(base::BindOnce(
+      &QoraiRewardsGetAvailableCountriesFunction::GetAvailableCountriesCallback,
+      this));
+
+  return RespondLater();
+}
+
+void QoraiRewardsGetAvailableCountriesFunction::GetAvailableCountriesCallback(
+    std::vector<std::string> countries) {
+  base::Value::List country_list;
+  for (auto& country : countries) {
+    country_list.Append(std::move(country));
+  }
+  Respond(WithArguments(std::move(country_list)));
+}
+
+QoraiRewardsGetDefaultCountryFunction::
+    ~QoraiRewardsGetDefaultCountryFunction() = default;
+
+ExtensionFunction::ResponseAction QoraiRewardsGetDefaultCountryFunction::Run() {
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not initialized"));
+  }
+
+  return RespondNow(WithArguments(rewards_service->GetCountryCode()));
+}
+
+QoraiRewardsGetDeclaredCountryFunction::
+    ~QoraiRewardsGetDeclaredCountryFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetDeclaredCountryFunction::Run() {
+  auto* prefs = Profile::FromBrowserContext(browser_context())->GetPrefs();
+  std::string country = prefs->GetString(::qorai_rewards::prefs::kDeclaredGeo);
+  return RespondNow(WithArguments(std::move(country)));
+}
+
+QoraiRewardsGetUserTypeFunction::~QoraiRewardsGetUserTypeFunction() = default;
+
+ExtensionFunction::ResponseAction QoraiRewardsGetUserTypeFunction::Run() {
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(WithArguments(std::string()));
+  }
+
+  rewards_service->GetUserType(
+      base::BindOnce(&QoraiRewardsGetUserTypeFunction::Callback, this));
+
+  return RespondLater();
+}
+
+void QoraiRewardsGetUserTypeFunction::Callback(
+    ::qorai_rewards::mojom::UserType user_type) {
+  auto map_user_type =
+      [](::qorai_rewards::mojom::UserType user_type) -> std::string {
+    switch (user_type) {
+      case ::qorai_rewards::mojom::UserType::kConnected:
+        return "connected";
+      case ::qorai_rewards::mojom::UserType::kUnconnected:
+        return "unconnected";
+    }
+  };
+  Respond(WithArguments(map_user_type(user_type)));
+}
+
+QoraiRewardsGetPublishersVisitedCountFunction::
+    ~QoraiRewardsGetPublishersVisitedCountFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetPublishersVisitedCountFunction::Run() {
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(WithArguments(0));
+  }
+
+  rewards_service->GetPublishersVisitedCount(base::BindOnce(
+      &QoraiRewardsGetPublishersVisitedCountFunction::Callback, this));
+
+  return RespondLater();
+}
+
+void QoraiRewardsGetPublishersVisitedCountFunction::Callback(int count) {
+  Respond(WithArguments(count));
+}
+
+QoraiRewardsGetBalanceReportFunction::~QoraiRewardsGetBalanceReportFunction() =
+    default;
+
+ExtensionFunction::ResponseAction QoraiRewardsGetBalanceReportFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not available"));
+  }
+
+  std::optional<qorai_rewards::GetBalanceReport::Params> params =
+      qorai_rewards::GetBalanceReport::Params::Create(args());
+
+  rewards_service->GetBalanceReport(
+      params->month, params->year,
+      base::BindOnce(&QoraiRewardsGetBalanceReportFunction::OnBalanceReport,
+                     this));
+  return RespondLater();
+}
+
+void QoraiRewardsGetBalanceReportFunction::OnBalanceReport(
+    const ::qorai_rewards::mojom::Result result,
+    ::qorai_rewards::mojom::BalanceReportInfoPtr report) {
+  base::Value::Dict data;
+  data.Set("ads", report ? report->earning_from_ads : 0.0);
+  data.Set("contribute", 0.0);
+  data.Set("tips", report ? report->one_time_donation : 0.0);
+  data.Set("monthly", report ? report->recurring_donation : 0.0);
+  Respond(WithArguments(std::move(data)));
+}
+
+QoraiRewardsSaveRecurringTipFunction::~QoraiRewardsSaveRecurringTipFunction() =
+    default;
+
+ExtensionFunction::ResponseAction QoraiRewardsSaveRecurringTipFunction::Run() {
+  std::optional<qorai_rewards::SaveRecurringTip::Params> params =
+      qorai_rewards::SaveRecurringTip::Params::Create(args());
+
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+
+  if (!rewards_service) {
+    return RespondNow(NoArguments());
+  }
+
+  rewards_service->SaveRecurringTip(
+      params->publisher_key, params->new_amount,
+      base::BindOnce(&QoraiRewardsSaveRecurringTipFunction::OnSaveRecurringTip,
+                     this));
+
+  return RespondLater();
+}
+
+void QoraiRewardsSaveRecurringTipFunction::OnSaveRecurringTip(
+    ::qorai_rewards::mojom::Result result) {
+  Respond(result == ::qorai_rewards::mojom::Result::OK
+              ? NoArguments()
+              : Error("Failed to save"));
+}
+
+QoraiRewardsRemoveRecurringTipFunction::
+    ~QoraiRewardsRemoveRecurringTipFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsRemoveRecurringTipFunction::Run() {
+  std::optional<qorai_rewards::RemoveRecurringTip::Params> params =
+      qorai_rewards::RemoveRecurringTip::Params::Create(args());
+
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+
+  if (rewards_service) {
+    rewards_service->RemoveRecurringTip(params->publisher_key);
+  }
+
+  return RespondNow(NoArguments());
+}
+
+QoraiRewardsGetRecurringTipsFunction::~QoraiRewardsGetRecurringTipsFunction() =
+    default;
+
+ExtensionFunction::ResponseAction QoraiRewardsGetRecurringTipsFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not initialized"));
+  }
+
+  rewards_service->GetRecurringTips(base::BindOnce(
+      &QoraiRewardsGetRecurringTipsFunction::OnGetRecurringTips, this));
+  return RespondLater();
+}
+
+void QoraiRewardsGetRecurringTipsFunction::OnGetRecurringTips(
+    std::vector<::qorai_rewards::mojom::PublisherInfoPtr> list) {
+  base::Value::Dict result;
+  base::Value::List recurring_tips;
+
+  if (!list.empty()) {
+    for (const auto& item : list) {
+      base::Value::Dict tip;
+      tip.Set("publisherKey", item->id);
+      tip.Set("amount", item->weight);
+      recurring_tips.Append(std::move(tip));
+    }
+  }
+
+  result.Set("recurringTips", std::move(recurring_tips));
+  Respond(WithArguments(std::move(result)));
+}
+
+QoraiRewardsRefreshPublisherFunction::~QoraiRewardsRefreshPublisherFunction() =
+    default;
+
+ExtensionFunction::ResponseAction QoraiRewardsRefreshPublisherFunction::Run() {
+  std::optional<qorai_rewards::RefreshPublisher::Params> params =
+      qorai_rewards::RefreshPublisher::Params::Create(args());
+
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(WithArguments(false, std::string()));
+  }
+  rewards_service->RefreshPublisher(
+      params->publisher_key,
+      base::BindOnce(&QoraiRewardsRefreshPublisherFunction::OnRefreshPublisher,
+                     this));
+  return RespondLater();
+}
+
+void QoraiRewardsRefreshPublisherFunction::OnRefreshPublisher(
+    const ::qorai_rewards::mojom::PublisherStatus status,
+    const std::string& publisher_key) {
+  Respond(WithArguments(static_cast<int>(status), publisher_key));
+}
+
+QoraiRewardsGetAllNotificationsFunction::
+    ~QoraiRewardsGetAllNotificationsFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetAllNotificationsFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+
+  base::Value::List list;
+
+  if (!rewards_service) {
+    return RespondNow(WithArguments(std::move(list)));
+  }
+
+  auto notifications = rewards_service->GetAllNotifications();
+
+  for (auto const& notification : notifications) {
+    base::Value::Dict item;
+    item.Set("id", notification.second.id_);
+    item.Set("type", notification.second.type_);
+    item.Set("timestamp", static_cast<double>(notification.second.timestamp_));
+
+    base::Value::List args;
+    for (auto const& arg : notification.second.args_) {
+      args.Append(arg);
+    }
+
+    item.Set("args", std::move(args));
+    list.Append(std::move(item));
+  }
+
+  return RespondNow(WithArguments(std::move(list)));
+}
+
+QoraiRewardsFetchBalanceFunction::~QoraiRewardsFetchBalanceFunction() = default;
+
+ExtensionFunction::ResponseAction QoraiRewardsFetchBalanceFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not available"));
+  }
+
+  rewards_service->FetchBalance(
+      base::BindOnce(&QoraiRewardsFetchBalanceFunction::OnFetchBalance, this));
+
+  return RespondLater();
+}
+
+void QoraiRewardsFetchBalanceFunction::OnFetchBalance(
+    ::qorai_rewards::mojom::BalancePtr balance) {
+  Respond(balance ? WithArguments(balance->total) : NoArguments());
+}
+
+QoraiRewardsGetExternalWalletProvidersFunction::
+    ~QoraiRewardsGetExternalWalletProvidersFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetExternalWalletProvidersFunction::Run() {
+  base::Value::List providers;
+
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  if (auto* rewards_service = RewardsServiceFactory::GetForProfile(profile)) {
+    for (auto& provider : rewards_service->GetExternalWalletProviders()) {
+      providers.Append(provider);
+    }
+  }
+  return RespondNow(WithArguments(std::move(providers)));
+}
+
+QoraiRewardsGetExternalWalletFunction::
+    ~QoraiRewardsGetExternalWalletFunction() = default;
+
+ExtensionFunction::ResponseAction QoraiRewardsGetExternalWalletFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  RewardsService* rewards_service =
+      RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not available"));
+  }
+
+  rewards_service->GetExternalWallet(base::BindOnce(
+      &QoraiRewardsGetExternalWalletFunction::OnGetExternalWallet, this));
+  return RespondLater();
+}
+
+void QoraiRewardsGetExternalWalletFunction::OnGetExternalWallet(
+    ::qorai_rewards::mojom::ExternalWalletPtr wallet) {
+  if (!wallet) {
+    return Respond(NoArguments());
+  }
+
+  base::Value::Dict data;
+  data.Set("type", wallet->type);
+  data.Set("address", wallet->address);
+  data.Set("status", static_cast<int>(wallet->status));
+  data.Set("userName", wallet->user_name);
+  data.Set("accountUrl", wallet->account_url);
+  data.Set("activityUrl", wallet->activity_url);
+
+  Respond(WithArguments(std::move(data)));
+}
+
+QoraiRewardsGetRewardsEnabledFunction::
+    ~QoraiRewardsGetRewardsEnabledFunction() = default;
+
+ExtensionFunction::ResponseAction QoraiRewardsGetRewardsEnabledFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  bool enabled =
+      profile->GetPrefs()->GetBoolean(::qorai_rewards::prefs::kEnabled);
+  return RespondNow(WithArguments(enabled));
+}
+
+QoraiRewardsGetAdsAccountStatementFunction::
+    ~QoraiRewardsGetAdsAccountStatementFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetAdsAccountStatementFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  AdsService* ads_service = AdsServiceFactory::GetForProfile(profile);
+
+  if (!ads_service) {
+    return RespondNow(Error("Ads service is not initialized"));
+  }
+
+  AddRef();  // Balanced in OnGetAdsAccountStatement().
+
+  ads_service->GetStatementOfAccounts(base::BindOnce(
+      &QoraiRewardsGetAdsAccountStatementFunction::OnGetAdsAccountStatement,
+      this));
+  return RespondLater();
+}
+
+void QoraiRewardsGetAdsAccountStatementFunction::OnGetAdsAccountStatement(
+    qorai_ads::mojom::StatementInfoPtr statement) {
+  if (!statement) {
+    Respond(WithArguments(false));
+  } else {
+    base::Value::Dict dict;
+    dict.Set("nextPaymentDate",
+             statement->next_payment_date.InSecondsFSinceUnixEpoch() * 1000);
+    auto& ad_type_map = statement->ads_summary_this_month;
+    dict.Set("adsReceivedThisMonth",
+             ad_type_map[qorai_ads::mojom::AdType::kNotificationAd] +
+                 ad_type_map[qorai_ads::mojom::AdType::kNewTabPageAd] +
+                 ad_type_map[qorai_ads::mojom::AdType::kSearchResultAd]);
+    dict.Set("minEarningsThisMonth", statement->min_earnings_this_month);
+    dict.Set("maxEarningsThisMonth", statement->max_earnings_this_month);
+    dict.Set("minEarningsLastMonth", statement->min_earnings_previous_month);
+    dict.Set("maxEarningsLastMonth", statement->max_earnings_previous_month);
+
+    Respond(WithArguments(true, std::move(dict)));
+  }
+
+  Release();  // Balanced in Run()
+}
+
+QoraiRewardsIsInitializedFunction::~QoraiRewardsIsInitializedFunction() =
+    default;
+
+ExtensionFunction::ResponseAction QoraiRewardsIsInitializedFunction::Run() {
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  return RespondNow(
+      WithArguments(rewards_service && rewards_service->IsInitialized()));
+}
+
+QoraiRewardsSelfCustodyInviteDismissedFunction::
+    ~QoraiRewardsSelfCustodyInviteDismissedFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsSelfCustodyInviteDismissedFunction::Run() {
+  auto* prefs = Profile::FromBrowserContext(browser_context())->GetPrefs();
+  return RespondNow(WithArguments(
+      prefs->GetBoolean(::qorai_rewards::prefs::kSelfCustodyInviteDismissed)));
+}
+
+QoraiRewardsDismissSelfCustodyInviteFunction::
+    ~QoraiRewardsDismissSelfCustodyInviteFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsDismissSelfCustodyInviteFunction::Run() {
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  profile->GetPrefs()->SetBoolean(
+      ::qorai_rewards::prefs::kSelfCustodyInviteDismissed, true);
+  if (auto* event_router = extensions::EventRouter::Get(profile)) {
+    event_router->BroadcastEvent(std::make_unique<Event>(
+        events::QORAI_START,
+        qorai_rewards::OnSelfCustodyInviteDismissed::kEventName,
+        base::Value::List()));
+  }
+  return RespondNow(NoArguments());
+}
+
+QoraiRewardsIsTermsOfServiceUpdateRequiredFunction::
+    ~QoraiRewardsIsTermsOfServiceUpdateRequiredFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsIsTermsOfServiceUpdateRequiredFunction::Run() {
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not initialized"));
+  }
+
+  return RespondNow(
+      WithArguments(rewards_service->IsTermsOfServiceUpdateRequired()));
+}
+
+QoraiRewardsAcceptTermsOfServiceUpdateFunction::
+    ~QoraiRewardsAcceptTermsOfServiceUpdateFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsAcceptTermsOfServiceUpdateFunction::Run() {
+  auto* profile = Profile::FromBrowserContext(browser_context());
+  auto* rewards_service = RewardsServiceFactory::GetForProfile(profile);
+  if (!rewards_service) {
+    return RespondNow(Error("Rewards service is not initialized"));
+  }
+
+  rewards_service->AcceptTermsOfServiceUpdate();
+  return RespondNow(NoArguments());
+}
+
+QoraiRewardsGetScheduledCaptchaInfoFunction::
+    ~QoraiRewardsGetScheduledCaptchaInfoFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsGetScheduledCaptchaInfoFunction::Run() {
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  auto* qorai_adaptive_captcha_service =
+      qorai_adaptive_captcha::QoraiAdaptiveCaptchaServiceFactory::GetForProfile(
+          profile);
+  if (!qorai_adaptive_captcha_service) {
+    return RespondNow(
+        Error("Adaptive captcha service called from incognito or unsupported "
+              "profile"));
+  }
+
+  std::string url;
+  bool max_attempts_exceeded = false;
+  qorai_adaptive_captcha_service->GetScheduledCaptchaInfo(
+      &url, &max_attempts_exceeded);
+
+  base::Value::Dict dict;
+  dict.Set("url", url);
+  dict.Set("maxAttemptsExceeded", max_attempts_exceeded);
+
+  return RespondNow(WithArguments(std::move(dict)));
+}
+
+QoraiRewardsUpdateScheduledCaptchaResultFunction::
+    ~QoraiRewardsUpdateScheduledCaptchaResultFunction() = default;
+
+ExtensionFunction::ResponseAction
+QoraiRewardsUpdateScheduledCaptchaResultFunction::Run() {
+  auto params =
+      qorai_rewards::UpdateScheduledCaptchaResult::Params::Create(args());
+  EXTENSION_FUNCTION_VALIDATE(params);
+
+  Profile* profile = Profile::FromBrowserContext(browser_context());
+  auto* qorai_adaptive_captcha_service =
+      qorai_adaptive_captcha::QoraiAdaptiveCaptchaServiceFactory::GetForProfile(
+          profile);
+  if (!qorai_adaptive_captcha_service) {
+    return RespondNow(
+        Error("Adaptive captcha service called from incognito or unsupported "
+              "profile"));
+  }
+
+  qorai_adaptive_captcha_service->UpdateScheduledCaptchaResult(params->result);
+
+  AdsService* ads_service = AdsServiceFactory::GetForProfile(profile);
+  if (ads_service && params->result) {
+    ads_service->NotifyDidSolveAdaptiveCaptcha();
+  }
+
+  return RespondNow(NoArguments());
+}
+
+}  // namespace extensions::api

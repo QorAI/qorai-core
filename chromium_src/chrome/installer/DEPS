@@ -1,0 +1,9 @@
+from qorai_chromium_utils import inline_file
+inline_file("//chrome/installer/DEPS", globals(), locals())
+
+include_rules += [
+  "+qorai/browser/qorai_vpn/win",
+  "+qorai/components/qorai_vpn/browser/connection/ikev2/win",
+  "+qorai/components/qorai_vpn/common/buildflags",
+  "+qorai/installer",
+]

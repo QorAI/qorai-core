@@ -1,0 +1,25 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+source_set("utils") {
+  sources = [
+    "qorai_certificate_utils.h",
+    "qorai_certificate_utils.mm",
+    "qorai_certificate_x509_utils.cc",
+    "qorai_certificate_x509_utils.h",
+  ]
+
+  deps = [
+    "//base",
+    "//net",
+    "//third_party/abseil-cpp:absl",
+    "//third_party/boringssl",
+  ]
+
+  frameworks = [
+    "Foundation.framework",
+    "Security.framework",
+  ]
+}

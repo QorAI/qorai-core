@@ -1,0 +1,40 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+source_set("prefs") {
+  sources = [ "browser_prefs_impl.mm" ]
+  deps = [
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/qorai_account",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/qorai_sync:prefs",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/constants",
+    "//qorai/components/de_amp/common",
+    "//qorai/components/debounce/core/browser",
+    "//qorai/components/decentralized_dns/core",
+    "//qorai/components/l10n/common",
+    "//qorai/components/ntp_background_images/browser",
+    "//qorai/components/p3a",
+    "//qorai/components/playlist/core/common",
+    "//qorai/components/skus/browser",
+    "//qorai/ios/browser/qorai_stats",
+    "//components/omnibox/browser",
+    "//components/pref_registry",
+    "//components/prefs",
+    "//ios/chrome/browser/shared/model/prefs",
+  ]
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/components/qorai_vpn/common" ]
+  }
+}

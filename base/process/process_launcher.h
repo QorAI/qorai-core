@@ -1,0 +1,32 @@
+/* Copyright (c) 2023 The QorAI Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_BASE_PROCESS_PROCESS_LAUNCHER_H_
+#define QORAI_BASE_PROCESS_PROCESS_LAUNCHER_H_
+
+#include <optional>
+#include <string>
+
+#include "base/process/launch.h"
+#include "base/process/process.h"
+
+namespace qorai {
+class ProcessLauncher {
+  ProcessLauncher();
+  ~ProcessLauncher();
+
+ public:
+  /**
+   * Launches process in this thread and reads the output.
+   * This works like GetAppOutput, but respects provided LaunchOptions.
+   */
+  static std::optional<std::string> ReadAppOutput(base::CommandLine cmdline,
+                                                  base::LaunchOptions options,
+                                                  int timeout_sec);
+};
+
+}  // namespace qorai
+
+#endif  // QORAI_BASE_PROCESS_PROCESS_LAUNCHER_H_

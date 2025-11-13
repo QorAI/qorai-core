@@ -1,0 +1,52 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/common/typescript.gni")
+import("//mojo/public/tools/bindings/mojom.gni")
+
+transpile_web_ui("qorai_new_tab_ui") {
+  entry_points = [ [
+        "qorai_new_tab",
+        rebase_path("qorai_new_tab.tsx"),
+      ] ]
+  public_deps = [
+    ":mojom_js",
+    "//qorai/components/qorai_news/common:mojom_js",
+    "//qorai/components/qorai_vpn/common/mojom:mojom_js",
+    "//qorai/components/resources:strings",
+  ]
+  if (!is_android && !is_ios) {
+    public_deps += [
+      "//components/omnibox/browser:mojo_bindings",
+      "//components/omnibox/browser:mojo_bindings_js",
+    ]
+  }
+  resource_name = "qorai_new_tab"
+  imports_from = [
+    "//qorai/components/qorai_new_tab_ui/",
+    "//qorai/components/qorai_news/browser/resources/",
+    "//qorai/components/qorai_rewards/resources/shared/",
+    "//qorai/components/web-components/",
+  ]
+}
+
+pack_web_resources("generated_resources") {
+  resource_name = "qorai_new_tab"
+  output_dir = "$root_gen_dir/qorai/components/qorai_new_tab/resources"
+  deps = [ ":qorai_new_tab_ui" ]
+}
+
+mojom("mojom") {
+  sources = [ "qorai_new_tab_page.mojom" ]
+  public_deps = [
+    "//qorai/components/qorai_vpn/common/mojom",
+    "//qorai/components/ntp_background_images/browser/mojom",
+    "//url/mojom:url_mojom_gurl",
+  ]
+  if (enable_qorai_vpn) {
+    enabled_features = [ "enable_qorai_vpn" ]
+  }
+}

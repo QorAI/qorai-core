@@ -1,0 +1,37 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/browser/updater/buildflags.gni")
+import("//build/config/ui.gni")
+
+group("ui") {
+  deps = [ "//qorai/components/qorai_vpn/common/buildflags" ]
+
+  if (!is_android) {
+    deps += [
+      "//chrome/browser/ui/tabs:tab_strip",
+      "//components/tabs:public",
+      "//content/public/browser",
+    ]
+  }
+
+  if (is_mac) {
+    deps += [ "//qorai/browser/updater:buildflags" ]
+  }
+
+  if (enable_omaha4) {
+    deps += [ "//qorai/browser/updater:features" ]
+  }
+
+  if (toolkit_views) {
+    deps += [
+      "//qorai/browser/ui/darker_theme",
+      "//qorai/components/ai_chat/content/browser",
+      "//qorai/components/ai_chat/core/browser",
+      "//qorai/components/ai_chat/core/common",
+      "//qorai/components/sidebar/browser",
+    ]
+  }
+}

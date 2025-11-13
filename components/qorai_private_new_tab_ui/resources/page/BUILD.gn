@@ -1,0 +1,25 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/common/typescript.gni")
+
+transpile_web_ui("qorai_private_new_tab_ui") {
+  output_module = false
+  entry_points = [ [
+        "private_new_tab",
+        rebase_path("private_new_tab.tsx"),
+      ] ]
+  resource_name = "qorai_private_new_tab"
+  imports_from =
+      [ "//qorai/components/qorai_private_new_tab_ui/resources/page/" ]
+  deps = [ "//qorai/components/qorai_private_new_tab_ui/common:mojom_js" ]
+}
+
+pack_web_resources("generated_resources") {
+  resource_name = "qorai_private_new_tab"
+  output_dir =
+      "$root_gen_dir/qorai/components/qorai_private_new_tab/resources/page"
+  deps = [ ":qorai_private_new_tab_ui" ]
+}

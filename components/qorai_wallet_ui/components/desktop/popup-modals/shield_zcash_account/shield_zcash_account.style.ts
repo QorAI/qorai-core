@@ -1,0 +1,67 @@
+// Copyright (c) 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+import styled from 'styled-components'
+import * as qora from '@qorai/qora/tokens/css/variables'
+import Icon from '@qorai/qora/react/icon'
+
+// Shared Styled
+import { Column, Row, WalletButton } from '../../../shared/style'
+
+export const StyledWrapper = styled(Column)`
+  overflow: hidden;
+`
+
+export const AccountRow = styled(Row)`
+  border-radius: ${qora.radius.xl};
+  background-color: ${qora.color.container.highlight};
+`
+
+export const ShieldIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background-color: ${qora.color.systemfeedback.successBackground};
+  position: absolute;
+  left: -20px;
+`
+
+export const ShieldIcon = styled(Icon).attrs({
+  name: 'shield-done-filled',
+})`
+  --qora-icon-size: 24px;
+  color: ${qora.color.systemfeedback.successIcon};
+`
+
+export const AdvancedSettingsWrapper = styled(Column)`
+  border-radius: ${qora.radius.m};
+  border: 1px solid ${qora.color.divider.subtle};
+`
+
+export const AdvancedSettingsButton = styled(WalletButton)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  padding: 12px 8px;
+  --qora-icon-size: 16px;
+  --qora-icon-color: ${qora.color.icon.default};
+  outline: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+`
+
+export const CollapseIcon = styled(Icon)<{
+  isCollapsed: boolean
+}>`
+  --qora-icon-size: 24px;
+  color: ${qora.color.icon.default};
+  transition-duration: 0.3s;
+  transform: ${(p) => (p.isCollapsed ? 'unset' : 'rotate(180deg)')};
+`

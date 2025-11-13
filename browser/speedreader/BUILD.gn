@@ -1,0 +1,64 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//build/config/ui.gni")
+
+assert(enable_speedreader)
+
+source_set("speedreader") {
+  sources = [
+    "page_distiller.cc",
+    "page_distiller.h",
+    "speedreader_service_factory.cc",
+    "speedreader_service_factory.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/browser:browser_process",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/profiles",
+    "//chrome/common",
+    "//components/keyed_service/content",
+    "//components/user_prefs",
+    "//content/public/browser",
+  ]
+
+  public_deps = [
+    "//qorai/components/speedreader",
+    "//qorai/components/speedreader/common",
+    "//qorai/components/speedreader/common:mojom",
+  ]
+}
+
+if (!is_android) {
+  source_set("browser_tests") {
+    testonly = true
+
+    defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+    sources = [ "speedreader_browsertest.cc" ]
+
+    deps = [
+      ":speedreader",
+      "//qorai/app:generate_command_metadata",
+      "//qorai/browser/speedreader",
+      "//qorai/browser/ui/speedreader",
+      "//qorai/browser/ui/views/frame/split_view",
+      "//qorai/components/ai_chat/core/common",
+      "//qorai/components/qorai_wallet/browser:utils",
+      "//chrome/browser/ui",
+      "//chrome/browser/ui:ui_features",
+      "//chrome/browser/ui/browser_window",
+      "//chrome/test:test_support_ui",
+      "//components/language/core/browser",
+      "//components/network_session_configurator/common",
+      "//content/test:test_support",
+      "//net:test_support",
+    ]
+  }
+}

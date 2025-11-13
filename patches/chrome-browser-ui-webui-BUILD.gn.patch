@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/ui/webui/BUILD.gn b/chrome/browser/ui/webui/BUILD.gn
+index b548763e58eca5fcd3703a5d24899c09b69e927f..1a56d13662b3e4856a7518be1fcf493f5c3371bf 100644
+--- a/chrome/browser/ui/webui/BUILD.gn
++++ b/chrome/browser/ui/webui/BUILD.gn
+@@ -121,6 +121,7 @@ source_set("configs") {
+   if (enable_session_service) {
+     deps += [ "//chrome/browser/ui/webui/tab_strip_internals" ]
+   }
++  import("//qorai/browser/ui/webui/sources.gni") deps += qorai_browser_ui_webui_configs_deps
+ }
+ 
+ source_set("webui") {

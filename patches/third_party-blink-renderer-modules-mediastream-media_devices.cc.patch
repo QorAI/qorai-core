@@ -1,0 +1,12 @@
+diff --git a/third_party/blink/renderer/modules/mediastream/media_devices.cc b/third_party/blink/renderer/modules/mediastream/media_devices.cc
+index a429bdb1d0db4bdc0083958d7e9522940babc4e6..a713297dbb9f1a2fc55858f9d8ddae06a7619146 100644
+--- a/third_party/blink/renderer/modules/mediastream/media_devices.cc
++++ b/third_party/blink/renderer/modules/mediastream/media_devices.cc
+@@ -1375,6 +1375,7 @@ void MediaDevices::DevicesEnumerated(
+     }
+   }
+ 
++  QORAI_MEDIA_DEVICES_DEVICES_ENUMERATED
+   RecordEnumeratedDevices(result_tracker->GetScriptState(), media_devices);
+   ReportCompletedEnumerateDevices(result_contains_nonempty_input_device_ids);
+   result_tracker->Resolve(media_devices);

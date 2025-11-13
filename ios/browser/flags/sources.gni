@@ -1,0 +1,25 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_flags_deps = [
+  "//base",
+  "//qorai/components/qorai_ads/core",
+  "//qorai/components/qorai_component_updater/browser:public",
+  "//qorai/components/qorai_rewards/core",
+  "//qorai/components/qorai_rewards/core/buildflags",
+  "//qorai/components/qorai_shields/core/common",
+  "//qorai/components/qorai_sync:features",
+  "//qorai/components/qorai_user_agent/common",
+  "//qorai/components/qorai_wallet/common",
+  "//qorai/components/de_amp/common",
+  "//qorai/components/debounce/core/common",
+  "//qorai/components/skus/common",
+  "//qorai/ios/browser/qorai_wallet",
+  "//qorai/ios/browser/ui/tab_tray:features",
+  "//qorai/ios/browser/ui/web_view:features",
+  "//qorai/ios/browser/ui/webui/ai_chat:features",
+  "//components/webui/flags",
+  "//net",
+]

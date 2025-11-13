@@ -1,0 +1,59 @@
+# Copyright (c) 2024 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+_qorai_policies = [
+  "QorAISoftware/.group.details.yaml",
+  "QorAISoftware/QorAIAIChatEnabled.yaml",
+  "QorAISoftware/QorAIDeAmpEnabled.yaml",
+  "QorAISoftware/QorAIDebouncingEnabled.yaml",
+  "QorAISoftware/QorAIGlobalPrivacyControlEnabled.yaml",
+  "QorAISoftware/QorAINewsDisabled.yaml",
+  "QorAISoftware/QorAIP3AEnabled.yaml",
+  "QorAISoftware/QorAIPlaylistEnabled.yaml",
+  "QorAISoftware/QorAIReduceLanguageEnabled.yaml",
+  "QorAISoftware/QorAIRewardsDisabled.yaml",
+  "QorAISoftware/QorAIShieldsDisabledForUrls.yaml",
+  "QorAISoftware/QorAIShieldsEnabledForUrls.yaml",
+  "QorAISoftware/QorAISpeedreaderEnabled.yaml",
+  "QorAISoftware/QorAIStatsPingEnabled.yaml",
+  "QorAISoftware/QorAISyncUrl.yaml",
+  "QorAISoftware/QorAITalkDisabled.yaml",
+  "QorAISoftware/QorAITrackingQueryParametersFilteringEnabled.yaml",
+  "QorAISoftware/QorAIVPNDisabled.yaml",
+  "QorAISoftware/QorAIWebDiscoveryEnabled.yaml",
+  "QorAISoftware/QorAIWalletDisabled.yaml",
+  "QorAISoftware/QorAIWaybackMachineEnabled.yaml",
+  "QorAISoftware/DefaultQorAIFingerprintingV2Setting.yaml",
+  "QorAISoftware/IPFSEnabled.yaml",
+  "QorAISoftware/TorDisabled.yaml",
+]
+
+_qorai_policies_sync_config_path =
+    "$root_build_dir/gen/qorai_policies_sync_config.json"
+
+# List QorAI's policy files as inputs for policy_templates.py to trigger a
+# rebuild if changes are detected.
+qorai_generate_policy_templates_inputs =
+    get_path_info(_qorai_policies, "abspath") +
+    [ _qorai_policies_sync_config_path ]
+
+# Generate a policy list to copy into Chromium policy_definitions directory.
+# This is to be used by policy_templates.py override. Make sure to only generate
+# the file for the default toolchain as this gni can be used by multiple
+# toolchains.
+if (current_toolchain == default_toolchain) {
+  write_file(
+      _qorai_policies_sync_config_path,
+      {
+        policies = _qorai_policies
+        copy_from = rebase_path(
+                "//qorai/components/policy/resources/templates/policy_definitions",
+                root_build_dir)
+        copy_to = rebase_path(
+                "//components/policy/resources/templates/policy_definitions",
+                root_build_dir)
+      },
+      "json")
+}

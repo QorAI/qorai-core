@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/qorai_wayback_machine/buildflags",
+  "+qorai/components/playlist/core/common/buildflags",
+  "+qorai/components/speedreader/common/buildflags",
+]

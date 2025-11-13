@@ -1,0 +1,30 @@
+/* Copyright (c) 2021 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "third_party/blink/renderer/modules/keyboard/navigator_keyboard.h"
+
+#include "qorai/third_party/blink/renderer/qorai_farbling_constants.h"
+#include "qorai/third_party/blink/renderer/core/farbling/qorai_session_cache.h"
+#include "third_party/blink/public/platform/web_content_settings_client.h"
+
+#define keyboard keyboard_ChromiumImpl
+#include <third_party/blink/renderer/modules/keyboard/navigator_keyboard.cc>
+#undef keyboard
+
+namespace blink {
+
+// static
+Keyboard* NavigatorKeyboard::keyboard(Navigator& navigator) {
+  if (ExecutionContext* context = navigator.GetExecutionContext()) {
+    if (qorai::GetQoraiFarblingLevelFor(
+            context, ContentSettingsType::QORAI_WEBCOMPAT_KEYBOARD,
+            QoraiFarblingLevel::OFF) != QoraiFarblingLevel::OFF) {
+      return nullptr;
+    }
+  }
+  return keyboard_ChromiumImpl(navigator);
+}
+
+}  // namespace blink

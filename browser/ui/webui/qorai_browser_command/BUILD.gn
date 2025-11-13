@@ -1,0 +1,35 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//build/config/features.gni")
+import("//chrome/common/features.gni")
+
+source_set("qorai_browser_command") {
+  sources = [
+    "qorai_browser_command_handler.cc",
+    "qorai_browser_command_handler.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/browser/ai_chat",
+    "//qorai/browser/qorai_rewards",
+    "//qorai/browser/qorai_wallet",
+    "//qorai/components/qorai_education",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/constants",
+    "//qorai/ui/webui/resources/js/qorai_browser_command:mojo_bindings",
+    "//chrome/browser/profiles:profile",
+    "//mojo/public/cpp/bindings",
+    "//ui/base:types",
+    "//url",
+  ]
+
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/browser/qorai_vpn" ]
+  }
+}

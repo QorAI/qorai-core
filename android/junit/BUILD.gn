@@ -1,0 +1,70 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/android/config.gni")
+import("//third_party/jni_zero/jni_zero.gni")
+
+testonly = true
+
+if (is_android) {
+  robolectric_library(
+      "qorai_junit_tests_org.chromium.chrome.browser.homepage") {
+    sources = [
+      "src/org/chromium/chrome/browser/homepage/QoraiHomepageManagerTest.java",
+      "src/org/chromium/chrome/browser/homepage/settings/QoraiHomepageSettingsUnitTest.java",
+    ]
+
+    deps = [
+      "//chrome/android/junit:chrome_junit_tests_helper",
+      "//components/bookmarks/common/android:bookmark_type_javagen",
+      "//components/bookmarks/common/android:bookmarks_java",
+    ]
+  }
+
+  robolectric_library(
+      "qorai_junit_tests_org.chromium.chrome.browser.tabbed_mode") {
+    sources = [ "src/org/chromium/chrome/browser/tabbed_mode/QoraiTabbedAppMenuPropertiesDelegateUnitTest.java" ]
+
+    deps = [
+      "//chrome/android/junit:chrome_junit_tests_helper",
+      "//components/browser_ui/accessibility/android:page_zoom_utils_java",
+    ]
+  }
+
+  robolectric_library("qorai_junit_tests_org.chromium.chrome.browser.toolbar") {
+    resources_package = "org.chromium.chrome.browser.toolbar"
+    sources = [
+      "src/org/chromium/chrome/browser/toolbar/QoraiToolbarLongPressMenuHandlerUnitTest.java",
+      "src/org/chromium/chrome/browser/toolbar/adaptive/settings/QoraiAdaptiveToolbarSettingsFragmentTest.java",
+    ]
+
+    deps = [
+      "//qorai/browser/ui/android/toolbar:java",
+      "//chrome/android/junit:chrome_junit_tests_helper",
+      "//chrome/browser/settings:java",
+    ]
+  }
+
+  robolectric_library("qorai_junit_tests_org.chromium.chrome.browser.vpn") {
+    resources_package = "org.chromium.chrome.browser.vpn"
+    sources = [ "src/org/chromium/chrome/browser/vpn/activities/QoraiVpnParentActivityTest.java" ]
+
+    deps = [ "//chrome/android/junit:chrome_junit_tests_helper" ]
+  }
+
+  robolectric_library(
+      "qorai_junit_tests_org.chromium.chrome.browser.crypto_wallet") {
+    sources = [
+      "src/org/chromium/chrome/browser/crypto_wallet/ApproveTxBottomSheetDialogFragmentTest.java",
+      "src/org/chromium/chrome/browser/crypto_wallet/TwoLineItemBottomSheetFragmentTest.java",
+      "src/org/chromium/chrome/browser/crypto_wallet/WalletBottomSheetDialogFragmentTest.java",
+    ]
+
+    deps = [
+      "//qorai/components/qorai_wallet/common:mojom_java",
+      "//chrome/android/junit:chrome_junit_tests_helper",
+    ]
+  }
+}

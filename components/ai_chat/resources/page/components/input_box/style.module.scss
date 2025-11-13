@@ -1,0 +1,181 @@
+// Copyright (c) 2023 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// you can obtain one at https://mozilla.org/MPL/2.0/.
+
+.form {
+  --editable-padding: 12px var(--qora-spacing-xl) 8px var(--qora-spacing-xl);
+  --editable-max-height: 300px;
+
+  border-radius: var(--qora-radius-xl);
+  border: 1px solid var(--qora-color-divider-subtle);
+  width: 100%;
+  font: var(--qora-font-large-regular);
+  color: var(--qora-color-text-primary);
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.form:hover,
+.form:focus-visible {
+  box-shadow: var(--qora-effect-elevation-01);
+}
+
+.buttonAgree {
+  background-color: var(--qora-color-button-background);
+  color: white;
+  border-radius: 30px;
+  border: none;
+  width: 100%;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  font-size: 13px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.alert {
+  width: 100%;
+  padding: 16px;
+  color: var(--qora-color-text-primary);
+  background-color: var(--qora-color-systemfeedback-info-background);
+  margin-bottom: 12px;
+  border-radius: 8px;
+}
+
+.counterText {
+  font: var(--qora-font-small-regular);
+  color: var(--qora-color-systemfeedback-warning-icon);
+  padding: 3px 16px;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    visibility 0.2s linear,
+    opacity 0.2s linear;
+}
+
+.counterTextVisible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.counterTextError {
+  color: var(--qora-color-systemfeedback-error-icon);
+}
+
+.toolsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--qora-spacing-m) var(--qora-spacing-m) var(--qora-spacing-xl);
+}
+
+.tools {
+  display: flex;
+  gap: var(--qora-spacing-xl);
+}
+
+.actionsLabelContainer {
+  padding: 10px var(--qora-spacing-xl) 0 var(--qora-spacing-xl);
+}
+
+.slashIconActive {
+  --qora-icon-color: var(--qora-color-icon-interactive);
+}
+
+.attachmentWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--qora-spacing-m) var(--qora-spacing-m) 0px var(--qora-spacing-m);
+  max-height: 240px;
+  overflow-y: auto;
+  gap: var(--qora-spacing-s);
+}
+
+.attachmentWrapperScrollStyles {
+  padding: var(--qora-spacing-m);
+  border-bottom: 1px solid var(--qora-color-divider-subtle);
+}
+
+.button {
+  --qora-button-radius: var(--qora-radius-full);
+  --qora-button-padding: var(--qora-spacing-m);
+}
+
+.sendButtonDisabled {
+  --qora-button-color: var(--qora-color-button-disabled);
+}
+
+.sendIconDisabled {
+  // Not able to use --qora-icon-color in .sendButtonDisabled class
+  // because it gets overridden by the button component's default styles.
+  --qora-icon-color: var(--qora-color-icon-disabled);
+}
+
+.contentAgentButtonEnabled {
+  --qora-icon-size: 20px;
+  --qora-icon-color: var(--qora-color-icon-interactive);
+}
+
+.streamingButton {
+  --qora-button-color: color-mix(
+    in srgb,
+    var(--qora-color-button-background) 5%,
+    transparent
+  );
+}
+
+.streamingIcon {
+  // Same is applied to the icon in the .streamingButton class.
+  --qora-icon-color: var(--qora-color-icon-interactive);
+}
+
+.modelSelectorAndSendButton {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--qora-spacing-m);
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 0 0 0 var(--qora-spacing-m);
+}
+
+.contentAgentWarning {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: var(--qora-spacing-m);
+  gap: var(--qora-spacing-m);
+  margin: var(--qora-spacing-m) var(--qora-spacing-m) 0 var(--qora-spacing-m);
+  border-radius: var(--qora-radius-m);
+  border: 1px solid rgba(250, 114, 80, 0.3);
+  background: linear-gradient(
+    314deg,
+    rgba(250, 114, 80, 0.08) 8.49%,
+    rgba(255, 24, 147, 0.08) 43.72%,
+    rgba(167, 138, 255, 0.08) 99.51%
+  );
+}
+
+.contentAgentWarningText {
+  font: var(--qora-font-small-regular);
+  color: var(--qora-color-text-secondary);
+  padding: var(--qora-spacing-s) 0;
+}
+
+.contentAgentWarningIcon {
+  --qora-icon-size: 20px;
+  --qora-icon-color: var(--qora-gradient-icons-active);
+  padding: 6px;
+  border-radius: var(--qora-radius-m);
+  background-color: var(--qora-color-container-background);
+  box-shadow: var(--qora-effect-elevation-01);
+}
+
+.learnMoreLink {
+  color: inherit;
+  &:hover {
+    color: var(--qora-color-text-interactive);
+  }
+}

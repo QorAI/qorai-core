@@ -1,0 +1,11 @@
+from qorai_chromium_utils import inline_file
+inline_file('//chrome/browser/ui/DEPS', globals(), locals())
+
+include_rules += [
+  "+qorai/browser/qorai_origin",
+  "+chrome/browser/ui",
+  "+qorai/components/vector_icons",
+  "+qorai/components/query_filter",
+  "+qorai/components/tabs",
+  "+qorai/components/text_recognition/common/buildflags",
+]

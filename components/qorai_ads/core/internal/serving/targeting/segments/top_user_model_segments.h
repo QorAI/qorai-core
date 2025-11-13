@@ -1,0 +1,29 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_SERVING_TARGETING_SEGMENTS_TOP_USER_MODEL_SEGMENTS_H_
+#define QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_SERVING_TARGETING_SEGMENTS_TOP_USER_MODEL_SEGMENTS_H_
+
+#include "qorai/components/qorai_ads/core/internal/segments/segment_alias.h"
+
+namespace qorai_ads {
+
+struct UserModelInfo;
+
+SegmentList GetTopChildSegments(const UserModelInfo& user_model);
+SegmentList GetTopParentSegments(const UserModelInfo& user_model);
+
+SegmentList GetTopChildInterestSegments(const UserModelInfo& user_model);
+SegmentList GetTopParentInterestSegments(const UserModelInfo& user_model);
+
+SegmentList GetTopChildLatentInterestSegments(const UserModelInfo& user_model);
+SegmentList GetTopParentLatentInterestSegments(const UserModelInfo& user_model);
+
+SegmentList GetTopChildIntentSegments(const UserModelInfo& user_model);
+SegmentList GetTopParentIntentSegments(const UserModelInfo& user_model);
+
+}  // namespace qorai_ads
+
+#endif  // QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_SERVING_TARGETING_SEGMENTS_TOP_USER_MODEL_SEGMENTS_H_

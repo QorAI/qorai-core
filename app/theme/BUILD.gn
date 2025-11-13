@@ -1,0 +1,37 @@
+# Copyright (c) 2022 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/playlist/core/common/buildflags/buildflags.gni")
+import("//qorai/resources/qorai_grit.gni")
+import("//chrome/common/features.gni")
+
+assert(!is_android)
+
+qorai_grit("qorai_theme_resources") {
+  source = "qorai_theme_resources.grd"
+  defines = chrome_grit_defines
+  defines += [ "enable_playlist_webui=$enable_playlist_webui" ]
+  outputs = [
+    "grit/qorai_theme_resources.h",
+    "grit/qorai_theme_resources_map.cc",
+    "grit/qorai_theme_resources_map.h",
+    "qorai_theme_resources_100_percent.pak",
+    "qorai_theme_resources_200_percent.pak",
+    "qorai_theme_resources_300_percent.pak",
+  ]
+
+  output_dir = "$root_gen_dir/qorai"
+}
+
+qorai_grit("qorai_unscaled_resources") {
+  source = "qorai_unscaled_resources.grd"
+  defines = chrome_grit_defines
+  outputs = [
+    "grit/qorai_unscaled_resources.h",
+    "qorai_unscaled_resources.pak",
+  ]
+
+  output_dir = "$root_gen_dir/qorai"
+}

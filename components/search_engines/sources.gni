@@ -1,0 +1,18 @@
+# Copyright (c) 2020 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_components_search_engines_deps =
+    [ "//qorai/components/resources:strings" ]
+
+# These are targeting third_party/search_engines_data/BUILD.gn
+
+qorai_third_party_search_engines_data_prepopulated_engines_sources = [
+  "//qorai/components/search_engines/qorai_prepopulated_engines.cc",
+  "//qorai/components/search_engines/qorai_prepopulated_engines.h",
+  "//qorai/components/search_engines/qorai_search_engines_pref_names.h",
+]
+
+qorai_third_party_search_engines_data_prepopulated_engines_deps =
+    [ "//components/search_engines:search_engine_type" ]

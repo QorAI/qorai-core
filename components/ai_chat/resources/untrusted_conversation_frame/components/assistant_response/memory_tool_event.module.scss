@@ -1,0 +1,44 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.memoryToolEvent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--qora-spacing-m);
+  color: var(--qora-color-text-secondary);
+  font: var(--qora-font-small-regular);
+  margin-bottom: var(--qora-spacing-xl);
+}
+
+.icon {
+  --qora-icon-size: var(--qora-icon-s);
+  align-self: center;
+}
+
+.textUndone {
+  color: var(--qora-color-systemfeedback-info-text);
+}
+
+.textError {
+  color: var(--qora-color-systemfeedback-error-text);
+}
+
+.button {
+  all: unset;
+  color: var(--qora-color-text-tertiary);
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline;
+
+  &:hover {
+    color: var(--qora-color-text-secondary);
+  }
+}
+
+.actions {
+  display: inline-flex;
+  flex-direction: row;
+  gap: var(--qora-spacing-m);
+}

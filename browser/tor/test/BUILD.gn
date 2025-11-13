@@ -1,0 +1,91 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//extensions/buildflags/buildflags.gni")
+
+assert(enable_tor)
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [
+    "tor_navigation_throttle_unittest.cc",
+    "tor_profile_manager_unittest.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/browser/tor",
+    "//qorai/components/constants",
+    "//qorai/components/tor",
+    "//qorai/components/tor:test_support",
+    "//chrome/browser/devtools",
+    "//chrome/common",
+    "//chrome/test:test_support",
+    "//components/keyed_service/content",
+    "//components/safe_browsing/core/common:safe_browsing_prefs",
+    "//components/translate/core/browser",
+    "//content/public/browser",
+    "//content/test:test_support",
+    "//testing/gtest",
+    "//third_party/blink/public/common",
+    "//url",
+  ]
+}
+
+source_set("browser_tests") {
+  testonly = true
+  sources = [
+    "//chrome//browser/net/profile_network_context_service_test_utils.cc",
+    "//chrome//browser/net/profile_network_context_service_test_utils.h",
+    "qorai_local_state_browsertest.cc",
+    "qorai_tor_browsertest.cc",
+    "onion_domain_throttle_browsertest.cc",
+    "onion_location_navigation_throttle_browsertest.cc",
+    "tor_profile_manager_browsertest.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/browser",
+    "//qorai/browser/qorai_ads",
+    "//qorai/browser/qorai_rewards",
+    "//qorai/browser/tor",
+    "//qorai/common",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_component_updater/browser",
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/constants",
+    "//qorai/components/tor",
+    "//qorai/components/tor:pref_names",
+    "//qorai/components/tor:test_support",
+    "//chrome/browser",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/prefs",
+    "//chrome/browser/search_engines",
+    "//chrome/browser/ui",
+    "//chrome/test:test_support",
+    "//chrome/test:test_support_ui",
+    "//components/bookmarks/browser",
+    "//components/bookmarks/common",
+    "//content/public/browser",
+    "//content/test:test_support",
+    "//net:test_support",
+    "//ui/views:test_support",
+  ]
+
+  if (enable_extensions) {
+    deps += [
+      "//extensions/browser",
+      "//extensions/common",
+    ]
+  }
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+}

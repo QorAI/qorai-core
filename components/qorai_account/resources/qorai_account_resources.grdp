@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grit-part>
+  <include name="IDR_QORAI_ACCOUNT_IMAGES_FULL_QORAI_BRAND_SVG" file="../qorai_account/resources/images/full_qorai_brand.svg" type="BINDATA" />
+  <include name="IDR_QORAI_ACCOUNT_IMAGES_FULL_QORAI_BRAND_DARK_SVG" file="../qorai_account/resources/images/full_qorai_brand_dark.svg" type="BINDATA" />
+</grit-part>

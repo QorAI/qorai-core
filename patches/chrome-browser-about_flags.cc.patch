@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
+index dc3bfe52f46d4af9b4e0780605628b5c26b0500e..3fd8f652ec284cfa54eec3af17cb8639e69fd91a 100644
+--- a/chrome/browser/about_flags.cc
++++ b/chrome/browser/about_flags.cc
+@@ -5001,6 +5001,7 @@ const FeatureEntry::FeatureVariation kSeamlessSigninPromoTypes[] = {
+ //
+ // When adding a new choice, add it to the end of the list.
+ const FeatureEntry kFeatureEntries[] = {
++    QORAI_ABOUT_FLAGS_FEATURE_ENTRIES
+ // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
+ // //tools/flags/generate_unexpire_flags.py.
+ #include "build/chromeos_buildflags.h"

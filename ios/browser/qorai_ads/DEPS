@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/qorai_ads/core/browser",
+  "+qorai/components/qorai_ads/core/mojom",
+  "+qorai/components/qorai_ads/core/public",
+]

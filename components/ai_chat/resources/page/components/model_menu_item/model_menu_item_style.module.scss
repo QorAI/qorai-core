@@ -1,0 +1,62 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.modelIcon {
+  --qora-icon-size: 20px;
+  --qora-icon-color: var(--qora-color-icon-default);
+
+  &[data-key='chat-automatic'] {
+    --qora-icon-color: var(--qora-gradient-icons-active);
+  }
+}
+
+.modelIconDetailed {
+  --qora-icon-size: 18px;
+  --qora-icon-color: var(--qora-color-icon-default);
+  border-radius: var(--qora-radius-m);
+  border: 1px solid var(--qora-color-divider-subtle);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+
+  &[data-key='chat-automatic'] {
+    --qora-icon-color: white;
+    background: var(--qora-gradient-icons-active);
+    border: none;
+  }
+}
+
+.column {
+  flex-grow: 1;
+}
+
+.modelName {
+  font: var(--qora-font-default-regular);
+  color: var(--qora-color-text-primary);
+}
+
+.modelSubtitle {
+  font: var(--qora-font-small-regular);
+  color: var(--qora-color-text-tertiary);
+  padding: 0;
+  margin: 0;
+}
+
+.nameAndLabel {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: var(--qora-spacing-s);
+}
+
+.modelLabel {
+  display: flex;
+}

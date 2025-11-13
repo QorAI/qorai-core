@@ -1,0 +1,13 @@
+// Copyright (c) 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import {RegisterStyleOverride} from '//resources/qorai/polymer_overriding.js'
+import {html} from '//resources/polymer/v3_0/polymer/polymer_bundled.min.js'
+
+RegisterStyleOverride('all-sites', html`<style>
+  div#sort {
+    padding-top: var(--qora-spacing-l);
+  }
+</style>`)

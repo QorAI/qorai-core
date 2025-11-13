@@ -1,0 +1,21 @@
+diff --git a/chrome/browser/ui/views/overlay/video_overlay_window_views.cc b/chrome/browser/ui/views/overlay/video_overlay_window_views.cc
+index d54cc1a443e3b2d869dc148f532b3138a6d02d29..48fcb04aabbc6a77a074ca626e2c167a8f6cd2a6 100644
+--- a/chrome/browser/ui/views/overlay/video_overlay_window_views.cc
++++ b/chrome/browser/ui/views/overlay/video_overlay_window_views.cc
+@@ -382,7 +382,7 @@ std::unique_ptr<VideoOverlayWindowViews> VideoOverlayWindowViews::Create(
+   // constructor. It's important that the constructor be private, because it
+   // doesn't initialize the object fully.
+   auto overlay_window =
+-      base::WrapUnique(new VideoOverlayWindowViews(controller));
++      std::make_unique<QoraiVideoOverlayWindowViews>(controller);
+ 
+   // The 2024 updated controls use dark mode colors.
+   if (Use2024UI()) {
+@@ -1018,6 +1018,7 @@ void VideoOverlayWindowViews::UpdateMaxSize(const gfx::Rect& work_area) {
+ 
+   max_size_ = new_max_size;
+ 
++  QORAI_UPDATE_MAX_SIZE
+   if (!native_widget()) {
+     return;
+   }

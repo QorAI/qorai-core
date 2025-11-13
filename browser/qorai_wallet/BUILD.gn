@@ -1,0 +1,244 @@
+# Copyright (c) 2019 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//extensions/buildflags/buildflags.gni")
+import("//testing/test.gni")
+
+source_set("qorai_wallet") {
+  sources = [
+    "asset_ratio_service_factory.cc",
+    "asset_ratio_service_factory.h",
+    "blockchain_images_source.cc",
+    "blockchain_images_source.h",
+    "qorai_wallet_context_utils.cc",
+    "qorai_wallet_context_utils.h",
+    "qorai_wallet_ipfs_service_factory.cc",
+    "qorai_wallet_ipfs_service_factory.h",
+    "qorai_wallet_service_factory.cc",
+    "qorai_wallet_service_factory.h",
+    "meld_integration_service_factory.cc",
+    "meld_integration_service_factory.h",
+    "simulation_service_factory.cc",
+    "simulation_service_factory.h",
+    "swap_service_factory.cc",
+    "swap_service_factory.h",
+  ]
+  if (!is_android) {
+    sources += [ "wallet_notification_helper.h" ]
+  }
+  deps = [
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:constants",
+    "//qorai/components/qorai_wallet/browser:pref_names",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//qorai/components/qorai_wallet/common",
+    "//qorai/components/qorai_wallet/common:mojom",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/profiles",
+    "//chrome/browser/profiles:profile",
+    "//components/keyed_service/content",
+    "//components/keyed_service/core",
+    "//components/prefs",
+    "//components/user_prefs",
+    "//content/public/browser",
+    "//mojo/public/cpp/bindings",
+    "//services/network/public/cpp",
+    "//third_party/abseil-cpp:absl",
+  ]
+  if (enable_extensions) {
+    deps += [
+      "//chrome/browser/extensions",
+      "//extensions/browser",
+    ]
+  }
+}
+
+source_set("qorai_wallet_delegate") {
+  sources = [
+    "qorai_wallet_service_delegate_base.cc",
+    "qorai_wallet_service_delegate_base.h",
+    "qorai_wallet_service_delegate_helper.cc",
+  ]
+  deps = [
+    "//qorai/browser/qorai_wallet",
+    "//qorai/browser/qorai_wallet:tab_helper",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:constants",
+    "//qorai/components/qorai_wallet/browser:permission_utils",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//qorai/components/qorai_wallet/common:mojom",
+    "//qorai/components/resources:strings_grit",
+    "//chrome/browser/profiles:profile",
+    "//components/content_settings/core/common",
+    "//components/permissions",
+    "//content/public/browser",
+    "//mojo/public/cpp/bindings",
+  ]
+  if (is_android) {
+    sources += [
+      "qorai_wallet_provider_delegate_impl_helper_android.cc",
+      "qorai_wallet_service_delegate_impl_android.cc",
+      "qorai_wallet_service_delegate_impl_android.h",
+    ]
+    deps += [
+      "//qorai/build/android:jni_headers",
+      "//chrome/browser/ui",
+      "//chrome/browser/ui/android/tab_model",
+      "//chrome/browser/ui/android/tab_model:enums_java",
+    ]
+  } else {
+    sources += [
+      "qorai_wallet_provider_delegate_impl_helper.cc",
+      "qorai_wallet_service_delegate_impl.cc",
+      "qorai_wallet_service_delegate_impl.h",
+    ]
+    deps += [
+      "//chrome/browser/ui",
+      "//chrome/browser/ui:browser_tab_strip",
+      "//chrome/browser/ui/tabs:tab_strip",
+    ]
+    if (enable_extensions) {
+      deps += [ ":external_wallets_importer" ]
+    }
+  }
+}
+
+source_set("external_wallets_importer") {
+  sources = [
+    "external_wallets_importer.cc",
+    "external_wallets_importer.h",
+  ]
+  deps = [
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/common",
+    "//qorai/components/qorai_wallet/common:mojom",
+    "//qorai/third_party/argon2",
+    "//components/value_store",
+  ]
+  if (enable_extensions) {
+    deps += [
+      "//extensions/browser",
+      "//extensions/common",
+    ]
+  }
+}
+
+source_set("tab_helper") {
+  sources = [
+    "qorai_wallet_provider_delegate_impl.cc",
+    "qorai_wallet_provider_delegate_impl.h",
+    "qorai_wallet_tab_helper.cc",
+    "qorai_wallet_tab_helper.h",
+  ]
+
+  deps = [
+    "//qorai/browser/qorai_wallet",
+    "//qorai/common",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:constants",
+    "//qorai/components/qorai_wallet/browser:permission_utils",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//components/permissions",
+    "//components/sessions",
+    "//components/user_prefs",
+    "//content/public/browser",
+  ]
+
+  public_deps = [ "//qorai/components/qorai_wallet/common:mojom" ]
+
+  if (!is_android) {
+    deps += [ "//qorai/browser/ui/qorai_wallet" ]
+  }
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [
+    "asset_discovery_manager_unittest.cc",
+    "asset_discovery_task_unittest.cc",
+    "blockchain_images_source_unittest.cc",
+    "qorai_wallet_service_unittest.cc",
+    "eth_allowance_manager_unittest.cc",
+    "eth_pending_tx_tracker_unittest.cc",
+  ]
+  deps = [
+    "//base/test:test_support",
+    "//qorai/browser/qorai_wallet",
+    "//qorai/browser/qorai_wallet:tab_helper",
+    "//qorai/common",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:constants",
+    "//qorai/components/qorai_wallet/browser:hd_keyring",
+    "//qorai/components/qorai_wallet/browser:permission_utils",
+    "//qorai/components/qorai_wallet/browser:pref_names",
+    "//qorai/components/qorai_wallet/browser:test_support",
+    "//qorai/components/qorai_wallet/browser:transaction",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//qorai/components/qorai_wallet/common",
+    "//qorai/components/qorai_wallet/common:mojom",
+    "//qorai/components/qorai_wallet/common:pref_names",
+    "//qorai/components/qorai_wallet/common:rust_lib",
+    "//qorai/components/qorai_wallet/common:test_support",
+    "//qorai/components/resources:strings_grit",
+    "//qorai/components/version_info",
+    "//chrome/browser",
+    "//chrome/browser/permissions",
+    "//chrome/browser/prefs",
+    "//chrome/test:test_support",
+    "//testing/gtest",
+  ]
+  if (!is_android) {
+    sources += [
+      "qorai_wallet_tab_helper_unittest.cc",
+      "ethereum_provider_impl_unittest.cc",
+      "notifications/wallet_notification_service_unittest.cc",
+      "solana_provider_impl_unittest.cc",
+    ]
+    deps += [
+      ":qorai_wallet_delegate",
+      "//qorai/components/qorai_wallet/common",
+      "//qorai/components/qorai_wallet/common:common_constants",
+      "//chrome/browser/content_settings:content_settings_factory",
+      "//chrome/browser/ui/hid",
+    ]
+    if (enable_extensions) {
+      sources += [ "external_wallets_importer_unittest.cc" ]
+      deps += [ ":external_wallets_importer" ]
+    }
+  }
+}
+
+source_set("browser_tests") {
+  testonly = true
+  if (!is_android) {
+    sources = [ "qorai_wallet_policy_browsertest.cc" ]
+
+    deps = [
+      ":qorai_wallet",
+      "//base/test:test_support",
+      "//qorai/app:command_ids",
+      "//qorai/browser",
+      "//qorai/browser/ui/sidebar",
+      "//qorai/components/qorai_wallet/browser:pref_names",
+      "//qorai/components/qorai_wallet/common",
+      "//qorai/components/qorai_wallet/common:pref_names",
+      "//qorai/components/sidebar/browser",
+      "//qorai/components/tor/buildflags",
+      "//chrome/browser/ui",
+      "//chrome/browser/ui/browser_window",
+      "//chrome/test:test_support",
+      "//chrome/test:test_support_ui",
+      "//components/policy/core/browser",
+      "//components/policy/core/common:test_support",
+      "//components/prefs",
+      "//components/user_prefs",
+      "//content/test:test_support",
+      "//testing/gtest",
+      "//url",
+    ]
+    defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+  }
+}  # source_set("browser_tests")

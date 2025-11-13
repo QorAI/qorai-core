@@ -1,0 +1,72 @@
+/* Copyright (c) 2021 The QorAI Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_BROWSER_QORAI_WALLET_QORAI_WALLET_PROVIDER_DELEGATE_IMPL_H_
+#define QORAI_BROWSER_QORAI_WALLET_QORAI_WALLET_PROVIDER_DELEGATE_IMPL_H_
+
+#include <optional>
+#include <string>
+#include <vector>
+
+#include "base/memory/weak_ptr.h"
+#include "qorai/components/qorai_wallet/browser/qorai_wallet_provider_delegate.h"
+#include "qorai/components/qorai_wallet/common/qorai_wallet.mojom-forward.h"
+#include "content/public/browser/global_routing_id.h"
+#include "content/public/browser/web_contents_observer.h"
+
+namespace content {
+class Page;
+class RenderFrameHost;
+class WebContents;
+}  // namespace content
+
+namespace qorai_wallet {
+
+class QorAIWalletProviderDelegateImpl : public QorAIWalletProviderDelegate,
+                                        public content::WebContentsObserver {
+ public:
+  explicit QorAIWalletProviderDelegateImpl(
+      content::WebContents* web_contents,
+      content::GlobalRenderFrameHostId render_frame_host_id);
+  QorAIWalletProviderDelegateImpl(const QorAIWalletProviderDelegateImpl&) =
+      delete;
+  QorAIWalletProviderDelegateImpl& operator=(
+      const QorAIWalletProviderDelegateImpl&) = delete;
+  ~QorAIWalletProviderDelegateImpl() override;
+
+  bool IsTabVisible() override;
+  void ShowPanel() override;
+  void ShowWalletBackup() override;
+  void UnlockWallet() override;
+  void WalletInteractionDetected() override;
+  void ShowWalletOnboarding() override;
+  void ShowAccountCreation(mojom::CoinType type) override;
+  url::Origin GetOrigin() const override;
+  std::optional<std::vector<std::string>> GetAllowedAccounts(
+      mojom::CoinType type,
+      const std::vector<std::string>& accounts) override;
+  void RequestPermissions(mojom::CoinType type,
+                          const std::vector<std::string>& accounts,
+                          RequestPermissionsCallback callback) override;
+  bool IsAccountAllowed(mojom::CoinType type,
+                        const std::string& account) override;
+  bool IsPermissionDenied(mojom::CoinType type) override;
+  void AddSolanaConnectedAccount(const std::string& account) override;
+  void RemoveSolanaConnectedAccount(const std::string& account) override;
+  bool IsSolanaAccountConnected(const std::string& account) override;
+
+ private:
+  // content::WebContentsObserver overrides
+  void RenderFrameHostChanged(content::RenderFrameHost* old_host,
+                              content::RenderFrameHost* new_host) override;
+  void PrimaryPageChanged(content::Page& page) override;
+
+  const content::GlobalRenderFrameHostId host_id_;
+  base::WeakPtrFactory<QorAIWalletProviderDelegateImpl> weak_ptr_factory_{this};
+};
+
+}  // namespace qorai_wallet
+
+#endif  // QORAI_BROWSER_QORAI_WALLET_QORAI_WALLET_PROVIDER_DELEGATE_IMPL_H_

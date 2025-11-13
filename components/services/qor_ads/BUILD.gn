@@ -1,0 +1,36 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+static_library("lib") {
+  visibility = [
+    "//qorai/browser/qorai_ads/services",
+    "//qorai/test:*",
+    "//chrome/utility:*",
+  ]
+
+  sources = [
+    "qor_ads_client_mojo_bridge.cc",
+    "qor_ads_client_mojo_bridge.h",
+    "qor_ads_client_notifier_impl.cc",
+    "qor_ads_client_notifier_impl.h",
+    "qor_ads_impl.cc",
+    "qor_ads_impl.h",
+    "qor_ads_observer.cc",
+    "qor_ads_observer.h",
+    "qor_ads_service_impl.cc",
+    "qor_ads_service_impl.h",
+  ]
+
+  public_deps = [
+    "public/interfaces",
+    "//qorai/components/qorai_ads/core/mojom",
+  ]
+
+  deps = [
+    "//qorai/components/qorai_ads/core",
+    "//mojo/public/cpp/bindings",
+    "//mojo/public/cpp/system",
+  ]
+}

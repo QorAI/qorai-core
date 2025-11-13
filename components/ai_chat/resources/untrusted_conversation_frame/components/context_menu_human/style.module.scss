@@ -1,0 +1,28 @@
+// Copyright (c) 2023 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// you can obtain one at https://mozilla.org/MPL/2.0/.
+
+.buttonMenu {
+  margin-top: var(--qora-spacing-xl);
+  qora-menu-item {
+    --qora-icon-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: var(--qora-spacing-xl);
+    padding: var(--qora-spacing-m);
+    min-width: 200px;
+  }
+}
+
+.moreButton {
+  color: var(--qora-color-icon-secondary);
+}
+
+.moreButtonActive {
+  color: var(--qora-color-icon-interactive);
+}
+
+.moreButtonHide {
+  display: none;
+}

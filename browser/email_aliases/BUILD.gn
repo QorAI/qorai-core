@@ -1,0 +1,38 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+static_library("email_aliases") {
+  sources = [
+    "email_aliases_service_factory.cc",
+    "email_aliases_service_factory.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/email_aliases:features",
+    "//qorai/components/email_aliases:mojom",
+    "//qorai/components/email_aliases:service",
+    "//chrome/browser/profiles:profile",
+    "//components/keyed_service/content",
+    "//content/public/browser",
+    "//mojo/public/cpp/bindings",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [ "email_aliases_service_factory_unittest.cc" ]
+  deps = [
+    ":email_aliases",
+    "//base",
+    "//qorai/components/email_aliases:features",
+    "//qorai/components/email_aliases:service",
+    "//chrome/browser/profiles",
+    "//chrome/test:test_support",
+    "//components/keyed_service/core",
+    "//mojo/public/cpp/bindings",
+    "//testing/gtest",
+  ]
+}

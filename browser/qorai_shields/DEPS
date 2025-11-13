@@ -1,0 +1,11 @@
+include_rules = [
+  "+qorai/components/qorai_shields/core/browser",
+  "+qorai/components/qorai_shields/content/test",
+  "+services/network/host_resolver.h",
+]
+
+specific_include_rules = {
+  "qorai_timestamp_rounding_browsertest\.cc": [
+    "!content/public/renderer/render_frame.h",
+  ],
+}

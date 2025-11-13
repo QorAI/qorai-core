@@ -1,0 +1,13 @@
+include_rules = [
+  "+qorai/components/ai_chat/content/browser",
+  "+qorai/components/ai_chat/core/browser",
+  "+qorai/components/ai_chat/core/browser",
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/ai_rewriter/common",
+  "+qorai/components/ai_rewriter/common/features.h",
+  "+qorai/components/qorai_shields/core/common",
+  "+qorai/components/containers/buildflags",
+  "+qorai/components/containers/core",
+  "+qorai/components/text_recognition/common",
+  "+qorai/components/tor/buildflags",
+]

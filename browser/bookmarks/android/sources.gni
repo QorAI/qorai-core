@@ -1,0 +1,15 @@
+# Copyright (c) 2025 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+# We have to do via sources to avoid circular dependencies.
+qorai_browser_bookmarks_android_sources = [
+  "//qorai/browser/bookmarks/android/java/src/org/chromium/chrome/browser/bookmarks/QorAIBookmarkDelegate.java",
+  "//qorai/browser/bookmarks/android/java/src/org/chromium/chrome/browser/bookmarks/QorAIBookmarkModel.java",
+  "//qorai/browser/bookmarks/android/java/src/org/chromium/chrome/browser/bookmarks/QorAIBookmarkUiPrefs.java",
+]
+
+# Additional deps for //chrome/browser/bookmarks/android:impl to support bookmarks import on Android
+qorai_browser_bookmarks_android_impl_deps =
+    [ "//components/user_data_importer/content" ]

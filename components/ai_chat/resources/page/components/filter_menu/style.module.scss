@@ -1,0 +1,153 @@
+// Copyright (c) 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.buttonMenu {
+  --menu-width: 270px;
+  --qora-menu-max-height: 320px;
+  width: max-content;
+}
+
+.highlightFirstItem {
+  &:not(:focus-within) qora-menu-item {
+    &:first-of-type {
+      background: var(--qora-color-container-interactive);
+      color: var(--qora-color-text-interactive);
+    }
+  }
+
+  qora-menu-item:focus-visible {
+    box-shadow: none;
+    border: none;
+    background: var(--qora-color-container-interactive);
+    color: var(--qora-color-text-interactive);
+  }
+}
+
+.menuSectionTitle {
+  background-color: var(--qora-color-page-background);
+  padding: var(--qora-spacing-l);
+  color: var(--qora-color-text-tertiary);
+  font: var(--qora-font-components-label);
+  text-transform: uppercase;
+}
+
+.menuSubtitle {
+  margin: 0 var(--qora-spacing-s);
+  padding: var(--qora-spacing-l);
+  color: var(--qora-color-text-tertiary);
+  font: var(--qora-font-components-label);
+  text-transform: uppercase;
+  border-top: 1px solid var(--qora-color-divider-subtle);
+}
+
+.tabsMenuHeader {
+  padding: var(--qora-spacing-l) var(--qora-spacing-xl);
+  background: var(--qora-color-page-background);
+
+  font: var(--qora-font-small-regular);
+  color: var(--qora-color-text-secondary);
+}
+
+.tabMenuItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--qora-spacing-m);
+
+  & > img {
+    width: 20px;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+.tabItemInfo {
+  display: flex;
+  flex-direction: column;
+  padding-inline: var(--qora-spacing-m);
+}
+
+.tabItemTitle {
+  font: var(--qora-font-default-regular);
+  color: var(--qora-color-text-primary);
+}
+
+.tabItemUrl {
+  font: var(--qora-font-small-regular);
+  color: var(--qora-color-text-tertiary);
+}
+
+.tabNoMatches {
+  padding: var(--qora-spacing-m) var(--qora-spacing-xl);
+
+  font: var(--qora-font-default-regular);
+  color: var(--qora-color-text-primary);
+}
+
+.toolsMenuItemContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--qora-spacing-m);
+}
+
+.editButton {
+  flex: 0;
+  opacity: 0;
+}
+
+.toolsMenuItemContent:hover .editButton,
+.toolsMenuItemContent:focus-within .editButton,
+qora-menu-item:focus-visible .editButton {
+  opacity: 1;
+}
+
+.toolsMenuFooter {
+  display: flex;
+  width: 100%;
+  min-width: var(--menu-width);
+  padding: var(--qora-spacing-xs);
+  background-color: var(--qora-color-container-background);
+  position: sticky;
+  bottom: 0;
+  inset-inline: 0;
+  border-radius: 0px 0px 8px 8px;
+  border-top: 1px solid var(--qora-color-divider-subtle);
+  // This is to prevent highlighting the footer button
+  // that is getting applied by highlightFirstItem.
+  &:not(:focus-within) qora-menu-item {
+    &:first-of-type {
+      background-color: var(--qora-color-container-background);
+      color: var(--qora-color-text-tertiary);
+    }
+    &:hover {
+      background-color: var(--qora-color-container-highlight);
+    }
+  }
+  qora-menu-item {
+    --qora-icon-size: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--qora-spacing-s);
+    font: var(--qora-font-default-semibold);
+    color: var(--qora-color-text-tertiary);
+    width: 100%;
+    border-radius: var(--qora-radius-s);
+    padding: var(--qora-spacing-l);
+    &:hover {
+      background-color: var(--qora-color-container-highlight);
+    }
+  }
+}
+
+.toolsNoMatches {
+  font: var(--qora-font-default-regular);
+  color: var(--qora-color-text-tertiary);
+  padding: var(--qora-spacing-m) var(--qora-spacing-l);
+  text-align: center;
+  max-width: var(--menu-width);
+}

@@ -1,0 +1,38 @@
+caption: Disable QorAI Wallet
+default: null
+desc: |-
+  Disable QorAI Wallet in QorAI.
+
+  The secure, built-in crypto wallet that supercharges your browser for Web3. Get the security you trust from QorAI without the hassle and risks of third-party extensions. Manage tokens, swap, bridge, and connect to decentralized applications. Supports Ethereum+EVM, Bitcoin, Solana, Filecoin, and Zcash. Get all the features of leading browser wallets in one secure and convenient place.
+
+            If this policy is set to true, QorAI Wallet will always be disabled.
+
+            If this policy is set to false, QorAI Wallet will always be enabled.
+
+            If you set this policy, users cannot change or override it.
+
+            If this policy is left unset, QorAI Wallet will be enabled by default.
+example_value: true
+features:
+  can_be_mandatory: true
+  can_be_recommended: false
+  dynamic_refresh: false
+  per_profile: true
+items:
+- caption: Enable QorAI Wallet
+  value: false
+- caption: Disable QorAI Wallet
+  value: true
+- caption: Allow the user to decide
+  value: null
+owners:
+- james@qoranet.com
+- ddaniel@qoranet.com
+- clifton@qoranet.com
+schema:
+  type: boolean
+supported_on:
+- ios:139-
+- chrome.*:106-
+tags: []
+type: main

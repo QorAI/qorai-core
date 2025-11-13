@@ -1,0 +1,138 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/ios/rules.gni")
+import("//ios/build/chrome_build.gni")
+import("//ios/build/config.gni")
+import("//ios/public/provider/chrome/browser/build_config.gni")
+
+source_set("app") {
+  configs += [
+    "//qorai/ios/browser/api/webcompat_reporter:mojom_header_config",
+    "//qorai/ios/browser/api/qorai_wallet:mojom_header_config",
+    "//qorai/ios/browser/api/skus:mojom_header_config",
+  ]
+
+  sources = [
+    "qorai_core_main.h",
+    "qorai_core_main.mm",
+    "qorai_core_switches.h",
+    "qorai_core_switches.mm",
+    "qorai_main_delegate.h",
+    "qorai_main_delegate.mm",
+    "qorai_profile_controller+private.h",
+    "qorai_profile_controller.h",
+    "qorai_profile_controller.mm",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/ai_chat/ios/browser",
+    "//qorai/components/ai_chat/ios/common:mojom",
+    "//qorai/components/qorai_component_updater/browser",
+    "//qorai/components/qorai_shields/ios/browser",
+    "//qorai/components/qorai_sync:constants",
+    "//qorai/components/qorai_user_agent/browser",
+    "//qorai/components/constants",
+    "//qorai/components/ntp_background_images/browser",
+    "//qorai/components/ntp_background_images/common",
+    "//qorai/components/p3a",
+    "//qorai/components/skus/browser",
+    "//qorai/components/update_client:buildflags",
+    "//qorai/components/variations",
+    "//qorai/ios/app/resources",
+    "//qorai/ios/browser",
+    "//qorai/ios/browser/ai_chat",
+    "//qorai/ios/browser/api/ads",
+    "//qorai/ios/browser/api/ads:qorai_ads_mojom_wrappers",
+    "//qorai/ios/browser/api/bookmarks",
+    "//qorai/ios/browser/api/qorai_rewards",
+    "//qorai/ios/browser/api/qorai_shields",
+    "//qorai/ios/browser/api/qorai_stats",
+    "//qorai/ios/browser/api/qorai_user_agent",
+    "//qorai/ios/browser/api/qorai_wallet",
+    "//qorai/ios/browser/api/qorai_wallet:wallet_mojom_wrappers",
+    "//qorai/ios/browser/api/content_settings",
+    "//qorai/ios/browser/api/de_amp",
+    "//qorai/ios/browser/api/history",
+    "//qorai/ios/browser/api/https_upgrade_exceptions",
+    "//qorai/ios/browser/api/ipfs",
+    "//qorai/ios/browser/api/ntp_background_images",
+    "//qorai/ios/browser/api/opentabs",
+    "//qorai/ios/browser/api/p3a",
+    "//qorai/ios/browser/api/password",
+    "//qorai/ios/browser/api/profile",
+    "//qorai/ios/browser/api/qr_code",
+    "//qorai/ios/browser/api/query_filter",
+    "//qorai/ios/browser/api/skus:skus_mojom_wrappers",
+    "//qorai/ios/browser/api/sync/driver",
+    "//qorai/ios/browser/api/web_image",
+    "//qorai/ios/browser/api/web_view",
+    "//qorai/ios/browser/api/webcompat_reporter",
+    "//qorai/ios/browser/api/webcompat_reporter:webcompat_reporter_mojom_wrappers",
+    "//qorai/ios/browser/application_context",
+    "//qorai/ios/browser/qorai_ads",
+    "//qorai/ios/browser/qorai_shields",
+    "//qorai/ios/browser/skus",
+    "//qorai/ios/browser/ui/webui",
+    "//qorai/ios/browser/web",
+    "//qorai/ios/components/prefs",
+    "//build:blink_buildflags",
+    "//components/browser_sync",
+    "//components/component_updater",
+    "//components/content_settings/core/browser",
+    "//components/history/core/browser",
+    "//components/keyed_service/core",
+    "//components/password_manager/core/browser",
+    "//components/safe_browsing/core/common:safe_browsing_prefs",
+    "//components/send_tab_to_self",
+    "//components/sync/base",
+    "//components/sync/service",
+    "//components/variations",
+    "//ios/chrome/app:app_internal",
+    "//ios/chrome/app:tests_fake_hook",
+    "//ios/chrome/app/startup",
+    "//ios/chrome/app/startup:startup_basic",
+    "//ios/chrome/browser/bookmarks/model",
+    "//ios/chrome/browser/browsing_data/model",
+    "//ios/chrome/browser/content_settings/model",
+    "//ios/chrome/browser/credential_provider/model:buildflags",
+    "//ios/chrome/browser/flags:system_flags",
+    "//ios/chrome/browser/history/model",
+    "//ios/chrome/browser/main/model",
+    "//ios/chrome/browser/passwords/model:store_factory",
+    "//ios/chrome/browser/providers/ui_utils:chromium_ui_utils",
+    "//ios/chrome/browser/sessions/model:session_restoration_service",
+    "//ios/chrome/browser/sessions/model:session_restoration_service_factory",
+    "//ios/chrome/browser/shared/model/application_context",
+    "//ios/chrome/browser/shared/model/paths",
+    "//ios/chrome/browser/shared/model/prefs:pref_names",
+    "//ios/chrome/browser/shared/model/profile",
+    "//ios/chrome/browser/shared/model/web_state_list",
+    "//ios/chrome/browser/shared/public/commands",
+    "//ios/chrome/browser/sync/model",
+    "//ios/chrome/browser/webui/ui_bundled:webui_internal",
+    "//ios/chrome/common",
+    "//ios/public/provider/chrome/browser/font:font_api",
+    "//ios/public/provider/chrome/browser/overrides:overrides_api",
+    "//ios/public/provider/chrome/browser/ui_utils:ui_utils_api",
+    "//ios/web/public/init",
+    "//ios/web/public/webui",
+    "//ios/web_view/framework:web_view_sources",
+
+    # Use the provider API controlled by args.gn.
+    ios_provider_target,
+  ]
+
+  if (ios_enable_credential_provider_extension) {
+    deps += [ "//ios/chrome/browser/credential_provider/model" ]
+  }
+
+  frameworks = [
+    "Foundation.framework",
+    "UIKit.framework",
+  ]
+}

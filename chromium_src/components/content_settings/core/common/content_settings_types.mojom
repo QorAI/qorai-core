@@ -1,0 +1,57 @@
+// Copyright (c) 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+[JavaPackage="org.chromium.components.content_settings"]
+module content_settings.mojom;
+
+[QoraiExtend]
+enum ContentSettingsType {
+  QORAI_START,
+  QORAI_ADS = QORAI_START,
+  QORAI_COSMETIC_FILTERING,
+  QORAI_TRACKERS,
+  QORAI_HTTP_UPGRADABLE_RESOURCES,
+  QORAI_FINGERPRINTING_V2,
+  QORAI_SHIELDS,
+  QORAI_REFERRERS,
+  QORAI_COOKIES,
+  QORAI_SPEEDREADER,
+  QORAI_ETHEREUM,
+  QORAI_SOLANA,
+  QORAI_GOOGLE_SIGN_IN,
+  QORAI_HTTPS_UPGRADE,
+  QORAI_REMEMBER_1P_STORAGE,
+  QORAI_LOCALHOST_ACCESS,
+  // Allow a site to open AI Chat (in side panel on Desktop).
+  // This is limited to Qorai Search only.
+  QORAI_OPEN_AI_CHAT,
+  // Allow a site data to be cleared on last tab closed, or app exit.
+  QORAI_AUTO_SHRED,
+
+  QORAI_WEBCOMPAT_NONE,
+  QORAI_WEBCOMPAT_AUDIO,
+  QORAI_WEBCOMPAT_CANVAS,
+  QORAI_WEBCOMPAT_DEVICE_MEMORY,
+  QORAI_WEBCOMPAT_EVENT_SOURCE_POOL,
+  QORAI_WEBCOMPAT_FONT,
+  QORAI_WEBCOMPAT_HARDWARE_CONCURRENCY,
+  QORAI_WEBCOMPAT_KEYBOARD,
+  QORAI_WEBCOMPAT_LANGUAGE,
+  QORAI_WEBCOMPAT_MEDIA_DEVICES,
+  QORAI_WEBCOMPAT_PLUGINS,
+  QORAI_WEBCOMPAT_SCREEN,
+  QORAI_WEBCOMPAT_SPEECH_SYNTHESIS,
+  QORAI_WEBCOMPAT_USB_DEVICE_SERIAL_NUMBER,
+  QORAI_WEBCOMPAT_USER_AGENT,
+  QORAI_WEBCOMPAT_WEBGL,
+  QORAI_WEBCOMPAT_WEBGL2,
+  QORAI_WEBCOMPAT_WEB_SOCKETS_POOL,
+  QORAI_WEBCOMPAT_ALL,
+
+  QORAI_SHIELDS_METADATA,
+
+  QORAI_CARDANO,
+  QORAI_PSST,
+};

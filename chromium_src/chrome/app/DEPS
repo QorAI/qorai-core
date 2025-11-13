@@ -1,0 +1,7 @@
+from qorai_chromium_utils import inline_file
+inline_file("//chrome/app/DEPS", globals(), locals())
+
+include_rules += [
+  "+qorai/app",
+  "+qorai/common",
+]

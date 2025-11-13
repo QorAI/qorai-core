@@ -1,0 +1,303 @@
+# Copyright 2023 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# @generated from third_party/rust/chromium_crates_io/BUILD.gn.hbs by
+# tools/crates/gnrt.
+# Do not edit!
+
+import("//build/rust/cargo_crate.gni")
+
+cargo_crate("lib") {
+  crate_name = "bitvec"
+  epoch = "1"
+  crate_type = "rlib"
+  crate_root =
+      "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/lib.rs"
+  sources = [
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/access.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/array.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/array/api.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/array/iter.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/array/ops.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/array/tests.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/array/traits.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/boxed.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/boxed/api.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/boxed/iter.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/boxed/ops.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/boxed/tests.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/boxed/traits.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/devel.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/domain.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/field.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/field/io.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/field/tests.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/index.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/lib.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/macros.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/macros/internal.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/macros/tests.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/mem.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/order.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/ptr.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/ptr/addr.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/ptr/proxy.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/ptr/range.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/ptr/single.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/ptr/span.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/ptr/tests.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/serdes.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/serdes/array.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/serdes/slice.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/serdes/utils.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/api.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/iter.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/ops.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/specialization.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/specialization/lsb0.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/specialization/msb0.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/tests.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/tests/api.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/tests/iter.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/tests/ops.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/tests/traits.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/slice/traits.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/store.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec/api.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec/iter.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec/ops.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec/tests.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec/tests/api.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec/tests/iter.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec/tests/traits.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/vec/traits.rs",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/view.rs",
+  ]
+  inputs = [
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../README.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/README.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/access/BitAccess.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/access/BitSafe.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/access/impl_BitSafe.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/access.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/array/BitArray.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/array/IntoIter.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/array/TryFromBitSliceError.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/array/api.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/array/iter.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/array.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/boxed/BitBox.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/boxed/iter.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/boxed.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/domain/BitDomain.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/domain/Domain.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/domain/PartialElement.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/domain.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Lsb0.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Lsb0_load_be.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Lsb0_load_le.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Lsb0_store_be.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Lsb0_store_le.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Msb0.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Msb0_load_be.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Msb0_load_le.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Msb0_store_be.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_Msb0_store_le.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_load.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_load_be.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_load_le.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_store.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_store_be.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/BitField_store_le.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/get.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/impl_BitArray.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/io/Read_BitSlice.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/io/Read_BitVec.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/io/Write_BitSlice.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/io/Write_BitVec.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/io.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/resize.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/set.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field/sign.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/field.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/index/BitEnd.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/index/BitIdx.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/index/BitIdxError.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/index/BitMask.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/index/BitPos.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/index/BitSel.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/index.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros/BitArr_type.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros/bitarr_value.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros/bitbox.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros/bits.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros/bitvec.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros/encode_bits.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros/internal.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros/make_elem.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/macros.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/mem/BitElement.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/mem/BitRegister.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/mem/elts.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/mem.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/order/BitOrder.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/order/LocalBits.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/order/Lsb0.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/order/Msb0.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/order/verify.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/order/verify_for_type.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/order.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/prelude.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/BitPtr.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/BitPtrRange.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/BitRef.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/BitSpan.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/addr.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/bitslice_from_raw_parts.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/bitslice_from_raw_parts_mut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/copy.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/copy_nonoverlapping.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/drop_in_place.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/eq.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/hash.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/null.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/null_mut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/proxy.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/range.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/read.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/read_unaligned.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/read_volatile.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/replace.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/single.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/slice_from_raw_parts.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/slice_from_raw_parts_mut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/span.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/swap.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/swap_nonoverlapping.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/write.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/write_bits.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/write_bytes.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/write_unaligned.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr/write_volatile.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/ptr.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/serdes/array.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/serdes/slice.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/serdes/utils.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/serdes.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/BitSlice.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/BitSliceIndex.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/api.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/bitop_assign.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/format.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/from_raw_parts.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/from_raw_parts_mut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/from_raw_parts_unchecked.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/from_raw_parts_unchecked_mut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/Chunks.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/ChunksExact.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/ChunksExactMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/ChunksMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/Iter.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/IterMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/IterOnes.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/IterZeros.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/NoAlias.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/RChunks.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/RChunksExact.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/RChunksExactMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/RChunksMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/RSplit.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/RSplitMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/RSplitN.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/RSplitNMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/Split.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/SplitInclusive.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/SplitInclusiveMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/SplitMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/SplitN.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/SplitNMut.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter/Windows.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/iter.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/ops.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/specialization.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/threadsafe.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice/traits.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/slice.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/store/BitStore.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/store.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/BitVec.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter/Drain.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter/Extend_BitRef.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter/Extend_bool.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter/FillStatus.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter/FromIterator_BitRef.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter/FromIterator_bool.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter/IntoIterator.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter/Splice.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec/iter.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/vec.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/view/AsBits.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/view/AsMutBits.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/view/BitView.md",
+    "//qorai/third_party/rust/chromium_crates_io/vendor/bitvec-v1/src/../doc/view.md",
+  ]
+
+  build_native_rust_unit_tests = false
+  edition = "2021"
+  cargo_pkg_name = "bitvec"
+  cargo_pkg_description =
+      "Addresses memory by bits, for packed collections and bitfields"
+  cargo_pkg_repository = "https://github.com/bitvecto-rs/bitvec"
+  cargo_pkg_version = "1.0.1"
+
+  deps = [
+    "//qorai/third_party/rust/funty/v2:lib",
+    "//qorai/third_party/rust/radium/v0_7:lib",
+    "//qorai/third_party/rust/serde/v1:lib",
+    "//qorai/third_party/rust/tap/v1:lib",
+    "//qorai/third_party/rust/wyz/v0_5:lib",
+  ]
+  features = [
+    "alloc",
+    "atomic",
+    "default",
+    "serde",
+    "std",
+  ]
+  rustenv = []
+  rustflags = []
+
+  #####################################################################
+  # Tweaking which GN `config`s apply to this target.
+
+  # Config changes that apply to all `//third_party/rust` crates.
+  _configs_to_remove = [
+    # We don't need code coverage data for any `chromium_crates_io` crates.
+    "//build/config/coverage:default_coverage",
+
+    # This is third-party code, so remove `chromium_code` config.  We are not
+    # at the same time adding `//build/config/compiler:no_chromium_code`,
+    # because 1) we don't want to pull how warnings are handled by that config
+    # and 2) that config doesn't have any non-warnings-related stuff.
+    "//build/config/compiler:chromium_code",
+  ]
+  _configs_to_add = []
+
+  # Changing (if needed) which configs apply to this specific crate (based on
+  # `extra_kv.configs_to_remove` and `extra_kv.configs_to_add` from
+  # `gnrt_config.toml`).
+  _configs_to_remove += []
+  _configs_to_add += []
+
+  # Applying config changes.
+  library_configs -= _configs_to_remove
+  library_configs += _configs_to_add
+  executable_configs -= _configs_to_remove
+  executable_configs += _configs_to_add
+  proc_macro_configs -= _configs_to_remove
+  proc_macro_configs += _configs_to_add
+}

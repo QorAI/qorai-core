@@ -1,0 +1,50 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_CREATIVES_CONVERSIONS_CREATIVE_SET_CONVERSION_DATABASE_TABLE_H_
+#define QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_CREATIVES_CONVERSIONS_CREATIVE_SET_CONVERSION_DATABASE_TABLE_H_
+
+#include <string>
+
+#include "base/functional/callback.h"
+#include "qorai/components/qorai_ads/core/internal/creatives/conversions/creative_set_conversion_info.h"
+#include "qorai/components/qorai_ads/core/internal/database/database_table_interface.h"
+#include "qorai/components/qorai_ads/core/mojom/qorai_ads.mojom-forward.h"
+#include "qorai/components/qorai_ads/core/public/ads_callback.h"
+
+namespace qorai_ads::database::table {
+
+using GetCreativeSetConversionsCallback = base::OnceCallback<void(
+    bool success,
+    const CreativeSetConversionList& creative_set_conversions)>;
+
+class CreativeSetConversions final : public TableInterface {
+ public:
+  void Save(const CreativeSetConversionList& creative_set_conversions,
+            ResultCallback callback);
+
+  void GetUnexpired(GetCreativeSetConversionsCallback callback) const;
+  void GetActive(GetCreativeSetConversionsCallback callback) const;
+
+  void PurgeExpired(ResultCallback callback) const;
+
+  std::string GetTableName() const override;
+
+  void Create(const mojom::DBTransactionInfoPtr& mojom_db_transaction) override;
+  void Migrate(const mojom::DBTransactionInfoPtr& mojom_db_transaction,
+               int to_version) override;
+
+ private:
+  void Insert(const mojom::DBTransactionInfoPtr& mojom_db_transaction,
+              const CreativeSetConversionList& creative_set_conversions);
+
+  std::string BuildInsertSql(
+      const mojom::DBActionInfoPtr& mojom_db_action,
+      const CreativeSetConversionList& creative_set_conversions) const;
+};
+
+}  // namespace qorai_ads::database::table
+
+#endif  // QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_CREATIVES_CONVERSIONS_CREATIVE_SET_CONVERSION_DATABASE_TABLE_H_

@@ -1,0 +1,139 @@
+<!-- Copyright (c) 2025 The Qorai Authors. All rights reserved.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this file,
+You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<style include="settings-shared md-select">
+  .header {
+    padding: var(--qora-spacing-2xl) var(--qora-spacing-2xl) 0 var(--qora-spacing-2xl);
+  }
+
+  .main-header {
+    font: var(--qora-font-heading-h4);
+  }
+
+  .description {
+    font: var(--qora-font-default-regular);
+    color: var(--qora-color-text-secondary);
+    margin-top: var(--qora-spacing-m);
+  }
+  .qora-customization-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--qora-spacing-2xl);
+    align-self: stretch;
+    padding: var(--qora-spacing-m) var(--qora-spacing-2xl) 0 var(--qora-spacing-2xl);
+  }
+  .qora-customization-form .actions {
+    display: flex;
+    flex-direction: row;
+    padding: 0 0 var(--qora-spacing-xl) 0;
+  }
+  .qora-customization-form qora-input {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--qora-spacing-s);
+    align-self: stretch;
+    width: 100%;
+    display: block;
+  }
+  .label-text {
+    margin-bottom: var(--qora-spacing-s);
+    font-weight: 600;
+  }
+  settings-toggle-button {
+    padding: var(--qora-spacing-l) var(--qora-spacing-2xl);
+  }
+  .error-message {
+    --qora-icon-color: var(--qora-color-systemfeedback-error-icon);
+
+    display: flex;
+    align-items: center;
+    gap: var(--qora-spacing-s);
+    color: var(--qora-color-systemfeedback-error-text);
+    font: var(--qora-font-small-regular);
+  }
+</style>
+
+<settings-subpage
+      page-title="$i18n{qoraiQoraAssistantCustomizationPageTitle}"
+      class="multi-card">
+  <settings-section section="customization">
+  <div class="settings-box header">
+    <div class="flex">
+      <div class="main-header">$i18n{qoraiQoraAssistantCustomizationTitle}</div>
+      <div class="label secondary">
+        <span>$i18nRaw{qoraiQoraAssistantCustomizationDescription}</span>
+      </div>
+    </div>
+  </div>
+
+  <settings-toggle-button
+      icon="tune"
+      pref="{{prefs.qorai.ai_chat.user_customization_enabled}}"
+      label="$i18n{qoraiQoraAssistantCustomizationEnabledLabel}">
+  </settings-toggle-button>
+
+  <template is="dom-if" if="[[prefs.qorai.ai_chat.user_customization_enabled.value]]" restamp>
+    <div class="qora-customization-form">
+      <qora-input
+        placeholder="$i18n{qoraiQoraAssistantCustomizationNamePlaceholder}"
+        value="[[nameInput_]]" on-input="onNameInputChanged_"
+        showErrors$="[[isTooLong(nameInput_)]]">
+        <span class="label-text">$i18n{qoraiQoraAssistantCustomizationNameLabel}</span>
+        <div slot="errors" class="error-message" hidden$="[[!isTooLong(nameInput_)]]">
+          <qora-icon name="warning-triangle-filled"></qora-icon>
+          <span>$i18n{qoraiQoraAssistantInputLengthError}</span>
+        </div>
+      </qora-input>
+      <qora-input
+        placeholder="$i18n{qoraiQoraAssistantCustomizationJobPlaceholder}"
+        value="[[jobInput_]]" on-input="onJobInputChanged_"
+        showErrors$="[[isTooLong(jobInput_)]]">
+        <span class="label-text">$i18n{qoraiQoraAssistantCustomizationJobLabel}</span>
+        <div slot="errors" class="error-message" hidden$="[[!isTooLong(jobInput_)]]">
+          <qora-icon name="warning-triangle-filled"></qora-icon>
+          <span>$i18n{qoraiQoraAssistantInputLengthError}</span>
+        </div>
+      </qora-input>
+      <qora-input
+        placeholder="$i18n{qoraiQoraAssistantCustomizationTonePlaceholder}"
+        value="[[toneInput_]]" on-input="onToneInputChanged_"
+        showErrors$="[[isTooLong(toneInput_)]]">
+        <span class="label-text">$i18n{qoraiQoraAssistantCustomizationToneLabel}</span>
+        <div slot="errors" class="error-message" hidden$="[[!isTooLong(toneInput_)]]">
+          <qora-icon name="warning-triangle-filled"></qora-icon>
+          <span>$i18n{qoraiQoraAssistantInputLengthError}</span>
+        </div>
+      </qora-input>
+      <qora-input
+        placeholder="$i18n{qoraiQoraAssistantCustomizationOtherPlaceholder}"
+        value="[[otherInput_]]" on-input="onOtherInputChanged_"
+        showErrors$="[[isTooLong(otherInput_)]]">
+        <span class="label-text">$i18n{qoraiQoraAssistantCustomizationOtherLabel}</span>
+        <div slot="errors" class="error-message" hidden$="[[!isTooLong(otherInput_)]]">
+          <qora-icon name="warning-triangle-filled"></qora-icon>
+          <span>$i18n{qoraiQoraAssistantInputLengthError}</span>
+        </div>
+      </qora-input>
+      <div class="actions">
+        <qora-button
+          kind="outline"
+          on-click="onSave"
+          isDisabled$="[[isSaveDisabled_]]"
+        >
+          [[getSaveButtonText_(changesSaved_)]]
+          <template is="dom-if" if="[[changesSaved_]]" restamp>
+            <qora-icon name="check-circle-outline" slot="icon-after"></qora-icon>
+          </template>
+        </qora-button>
+      </div>
+    </div>
+  </template>
+  </settings-section>
+
+  <settings-section section="memories">
+    <memory-section prefs="{{prefs}}"></memory-section>
+  </settings-section>
+</settings-subpage>

@@ -1,0 +1,216 @@
+/* Copyright (c) 2025 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+/* #css_wrapper_metadata_start
+ * #type=style-lit
+ * #css_wrapper_metadata_end */
+
+#qorai-tab-focus {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auto-tab-groups-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: var(--qora-spacing-xl);
+  gap: var(--qora-spacing-l);
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--qora-color-divider-subtle);
+}
+
+.title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  gap: var(--qora-spacing-m);
+  box-sizing: border-box;
+}
+
+.title-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--qora-spacing-s);
+}
+
+.input-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: var(--qora-spacing-m);
+}
+
+.title {
+  font: var(--qora-font-heading-h4);
+  color: var(--qora-color-text-primary);
+  text-align: left;
+}
+
+.subtitle {
+  font: var(--qora-font-default-regular);
+  color: var(--qora-color-text-secondary);
+  text-align: left;
+}
+
+.topics-title {
+  font: var(--qora-font-default-semibold);
+  color: var(--qora-color-text-secondary);
+  text-align: left;
+}
+
+.topic-input {
+  width: 100%;
+}
+
+.topics-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: var(--qora-spacing-xl) var(--qora-spacing-xl) 0px var(--qora-spacing-xl);
+  gap: var(--qora-spacing-m);
+  box-sizing: border-box;
+}
+
+.topics-button {
+  --qora-button-padding: 3px;
+  --qora-button-radius: var(--qora-radius-m);
+  width: 100%;
+  container-type: inline-size;
+  --qora-button-color: var(--qora-color-divider-subtle);
+}
+
+.topic-description {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100cqw;
+  gap: var(--qora-spacing-m);
+  color: var(--qora-color-text-secondary);
+  font: var(--qora-font-default-regular);
+  padding: 0 calc(var(--qora-button-padding) + var(--border-width));
+  text-align: left;
+}
+
+.emoji-wrapper {
+  display: flex;
+  flex-shrink: 0;
+  align-self: stretch;
+  min-height: 32px;
+  width: 32px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--qora-color-neutral-10);
+  padding: var(--qora-spacing-s);
+  font-size: 20px;
+  border-radius: var(--qora-radius-s);
+  margin-left: 4px;
+}
+
+.loading-ring {
+  --qora-progressring-color: var(--qora-color-icon-default);
+  --qora-progressring-size: 20px;
+}
+
+.empty-state {
+  display: flex;
+  width: 100%;
+  height: 24px;
+  background-color: var(--qora-color-neutral-10);
+  border-radius: var(--qora-radius-s);
+  margin-right: var(--qora-spacing-m);
+}
+
+.footer {
+  display: flex;
+  padding: var(--qora-spacing-xl);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--qora-spacing-s);
+  align-self: stretch;
+  color: var(--qora-color-text-tertiary);
+}
+
+.learn-more-link {
+  cursor: pointer;
+  color: var(--qora-color-text-tertiary);
+  font-feature-settings: 'ss03' on;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+}
+
+.error-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: var(--qora-spacing-l);
+  box-sizing: border-box;
+}
+
+.enable-tab-focus-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  padding: var(--qora-spacing-m);
+  gap: var(--qora-spacing-m);
+}
+
+.enable-tab-focus-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  border-radius: var(--qora-radius-m);
+  background-color: var(--qora-color-neutral-10);
+  overflow: hidden;
+}
+
+.enable-tab-focus-illustration {
+  background-image: url(/qorai/tab_organizer_illustration.svg);
+  background-size: cover;
+  align-items: stretch;
+  height: 174px;
+}
+
+.enable-tab-focus-info-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: var(--qora-spacing-xl);
+  gap: var(--qora-spacing-m);
+}
+
+.enable-tab-focus-info-text {
+  font: var(--qora-font-small-regular);
+  color: var(--qora-color-text-secondary);
+  text-align: left;
+}
+
+.enable-tab-focus-button-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}

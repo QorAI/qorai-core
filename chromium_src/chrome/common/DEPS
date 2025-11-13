@@ -1,0 +1,9 @@
+from qorai_chromium_utils import inline_file
+inline_file("//chrome/common/DEPS", globals(), locals())
+
+include_rules += [
+  "+qorai/common",
+  "+qorai/components/constants",
+  "+qorai/components/ipfs/buildflags",
+  "+qorai/grit",
+]

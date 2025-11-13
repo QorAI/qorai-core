@@ -1,0 +1,30 @@
+/* Copyright (c) 2025 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+/* #css_wrapper_metadata_start
+ * #type=style-lit
+ * #import=./item-chromium.css.js
+ * #scheme=relative
+ * #include=item-chromium
+ * #css_wrapper_metadata_end */
+
+#card {
+  height: calc(var(--extensions-card-height) + 32px);
+}
+
+#card.dev-mode {
+  height: calc(208px + 32px);
+}
+
+.qorai-hosted {
+  padding-inline: var(--qora-spacing-s);
+  padding-block: var(--qora-spacing-xs);
+  margin-block: calc(-1 * var(--qora-spacing-s)) var(--qora-spacing-s);
+  border-radius: var(--qora-radius-xs);
+  background-color: var(--qora-color-schemes-surface-variant);
+  color: var(--qora-color-text-tertiary);
+  font: var(--qora-font-components-button-small);
+  width: fit-content;
+}

@@ -1,0 +1,99 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/ai_chat/core/common/buildflags/buildflags.gni")
+
+source_set("ai_chat") {
+  sources = [
+    "ai_chat_ui.cc",
+    "ai_chat_ui.h",
+    "ai_chat_ui_page_handler.cc",
+    "ai_chat_ui_page_handler.h",
+    "ai_chat_untrusted_conversation_ui.cc",
+    "ai_chat_untrusted_conversation_ui.h",
+  ]
+
+  deps = [
+    "//qorai/browser/ai_chat",
+    "//qorai/browser/misc_metrics",
+    "//qorai/components/ai_chat/content/browser",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/ai_chat/core/common/buildflags",
+    "//qorai/components/ai_chat/core/common/mojom",
+    "//qorai/components/ai_chat/resources",
+    "//qorai/components/ai_chat/resources/custom_site_distiller_scripts:generated_resources",
+    "//qorai/components/resources:strings_grit",
+    "//chrome/browser/favicon",
+    "//chrome/browser/history",
+    "//chrome/browser/profiles:profile",
+    "//components/favicon/core",
+    "//components/prefs",
+    "//components/strings:components_strings",
+    "//components/user_prefs",
+    "//content/public/browser",
+    "//ui/webui",
+  ]
+
+  if (!is_android) {
+    deps += [
+      "//chrome/browser/ui/tabs:tab_model",
+      "//chrome/browser/ui/thumbnails",
+      "//chrome/browser/ui/webui/top_chrome",
+      "//chrome/browser/ui/webui/util",
+    ]
+  } else {
+    deps += [ "//chrome/browser/ui/android/tab_model" ]
+  }
+
+  if (enable_qorai_ai_chat_agent_profile) {
+    sources += [
+      "ai_chat_agent_new_tab_page_ui.cc",
+      "ai_chat_agent_new_tab_page_ui.h",
+    ]
+    deps += [
+      "//qorai/browser/ai_chat:ai_chat_agent_profile",
+      "//qorai/browser/resources/ai_chat_agent_new_tab_page:pack_js_resources",
+      "//qorai/browser/resources/ai_chat_agent_new_tab_page:pack_static_resources",
+    ]
+  }
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  deps = [
+    ":ai_chat",
+    "//qorai/browser/ai_chat",
+    "//qorai/components/ai_chat/content/browser",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/ai_chat/core/common/mojom",
+    "//chrome/test:test_support",
+    "//content/test:test_support",
+    "//testing/gtest",
+  ]
+
+  sources = [ "ai_chat_ui_page_handler_unittest.cc" ]
+}
+
+source_set("browser_tests") {
+  testonly = true
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+  deps = [
+    ":ai_chat",
+    "//qorai/browser/ai_chat",
+    "//qorai/components/ai_chat/core/browser",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/ai_chat/core/common/mojom",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui",
+    "//chrome/test",
+    "//chrome/test:test_support",
+  ]
+
+  sources = [ "ai_chat_ui_page_handler_browsertest.cc" ]
+}

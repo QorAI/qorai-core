@@ -1,0 +1,67 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import("//qorai/build/config.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//testing/test.gni")
+
+source_set("browser_tests") {
+  testonly = true
+  if (!is_android) {
+    defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+    sources = [ "decentralized_dns_navigation_throttle_browsertest.cc" ]
+    deps = [
+      "//base/test:test_support",
+      "//qorai/components/qorai_wallet/browser",
+      "//qorai/components/qorai_wallet/common",
+      "//qorai/components/qorai_wallet/common:pref_names",
+      "//qorai/components/decentralized_dns/content",
+      "//qorai/components/decentralized_dns/core",
+      "//chrome/browser:browser_process",
+      "//chrome/test:test_support",
+      "//chrome/test:test_support_ui",
+      "//components/policy/core/browser",
+      "//components/policy/core/common",
+      "//components/prefs",
+      "//components/security_interstitials/content:security_interstitial_page",
+      "//content/test:test_support",
+      "//testing/gtest",
+    ]
+  }  # !is_android
+}  # source_set("browser_tests") {
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [
+    "//qorai/browser/net/decentralized_dns_network_delegate_helper_unittest.cc",
+    "decentralized_dns_navigation_throttle_unittest.cc",
+    "utils_unittest.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/browser/qorai_wallet",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:test_support",
+    "//qorai/components/qorai_wallet/browser:utils",
+    "//qorai/components/qorai_wallet/common:mojom",
+    "//qorai/components/qorai_wallet/common:pref_names",
+    "//qorai/components/decentralized_dns/content",
+    "//qorai/components/decentralized_dns/core",
+    "//qorai/components/tor/buildflags",
+    "//chrome/test:test_support",
+    "//components/prefs",
+    "//net",
+    "//net:test_support",
+    "//testing/gmock",
+    "//testing/gtest",
+  ]
+
+  if (enable_tor) {
+    deps += [ "//qorai/browser/tor" ]
+  }
+}  # source_set("unit_tests")

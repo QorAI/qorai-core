@@ -1,0 +1,42 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/ai_rewriter/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//build/config/features.gni")
+
+source_set("renderer") {
+  visibility = [
+    "//qorai:child_dependencies",
+    "//qorai/renderer/*",
+    "//qorai/test:*",
+    "//chrome/renderer/*",
+  ]
+
+  public_deps = [ "//chrome/renderer" ]
+
+  deps = [
+    "//qorai/components/qorai_search/common",
+    "//qorai/components/qorai_search/renderer",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/qorai_wallet/renderer",
+    "//qorai/components/cosmetic_filters/renderer",
+    "//qorai/renderer/qorai_wallet/",
+    "//v8",
+  ]
+
+  if (enable_ai_rewriter) {
+    deps += [ "//qorai/components/ai_rewriter/renderer" ]
+  }
+
+  if (enable_speedreader) {
+    deps += [ "//qorai/components/speedreader/renderer" ]
+  }
+
+  if (is_android) {
+    deps += [ "//qorai/components/qorai_mobile_subscription/renderer/android" ]
+  }
+}

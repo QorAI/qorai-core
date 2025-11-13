@@ -1,0 +1,82 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--qora-spacing-xl);
+  margin-bottom: var(--qora-spacing-xl);
+}
+
+.quote {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 12px;
+  width: 100%;
+}
+
+.reasoningRow {
+  display: flex;
+  flex-direction: row;
+  gap: var(--qora-spacing-m);
+  align-items: center;
+}
+
+.reasoningLabel {
+  font: var(--qora-font-default-regular);
+  color: var(--qora-color-text-secondary);
+}
+
+.text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--qora-color-divider-strong);
+  border-radius: 2px;
+}
+
+.text {
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-wrap: break-word;
+  position: relative;
+  padding-left: 18px;
+  letter-spacing: -0.1px;
+  color: var(--qora-color-text-secondary);
+  white-space: pre-line;
+  margin: 0px;
+}
+
+.icon {
+  --qora-icon-size: var(--qora-icon-s);
+  color: var(--qora-color-icon-default);
+}
+
+.progressRing {
+  --qora-progressring-size: var(--qora-icon-s);
+  --qora-progressring-color: var(--qora-color-icon-default);
+}
+
+.showHide {
+  font: var(--qora-font-small-regular);
+  text-decoration: underline;
+  color: var(--qora-color-text-tertiary);
+  border: none;
+  background: none;
+  cursor: pointer;
+  &:hover {
+    color: var(--qora-color-text-primary);
+  }
+}

@@ -1,0 +1,26 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_IOS_BROWSER_API_IPFS_IPFS_API_PRIVATE_H_
+#define QORAI_IOS_BROWSER_API_IPFS_IPFS_API_PRIVATE_H_
+
+#import <Foundation/Foundation.h>
+
+#include "qorai/ios/browser/api/ipfs/ipfs_api.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+class ProfileIOS;
+
+@interface IpfsAPIImpl : NSObject <IpfsAPI>
+- (nullable NSURL*)resolveGatewayUrlFor:(NSURL*)input;
+- (nullable NSURL*)resolveGatewayUrlForNft:(NSURL*)input;
+- (instancetype)initWithBrowserState:(ProfileIOS*)profile;
+- (instancetype)init NS_UNAVAILABLE;
+@end
+
+NS_ASSUME_NONNULL_END
+
+#endif  // QORAI_IOS_BROWSER_API_IPFS_IPFS_API_PRIVATE_H_

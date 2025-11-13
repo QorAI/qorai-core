@@ -1,0 +1,19 @@
+include_rules = [
+  "+qorai/components/api_request_helper",
+  "+qorai/components/permissions",
+  "+qorai/components/version_info",
+]
+
+specific_include_rules = {
+  "external_wallets_importer\.cc": [
+    "+third_party/boringssl/src/include/openssl/digest.h",
+    "+third_party/boringssl/src/include/openssl/hkdf.h",
+    "+qorai/third_party/argon2/src/include/argon2.h",
+  ],
+  "solana_provider_browsertest\.cc": [
+    "!qorai/components/qorai_wallet/renderer/resource_helper.h",
+  ],
+  "solana_provider_renderer_browsertest\.cc": [
+    "!qorai/components/qorai_wallet/renderer/resource_helper.h",
+  ],
+}

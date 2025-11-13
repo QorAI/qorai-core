@@ -1,0 +1,27 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+assert(is_android)
+
+source_set("android") {
+  sources = [
+    "ntp_background_images_bridge.cc",
+    "ntp_background_images_bridge.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/browser:browser_process",
+    "//qorai/browser/ntp_background",
+    "//qorai/build/android:jni_headers",
+    "//qorai/components/qorai_ads/core/mojom",
+    "//qorai/components/qorai_referrals/browser",
+    "//qorai/components/qorai_stats/browser",
+    "//qorai/components/ntp_background_images/browser",
+    "//chrome/browser/profiles:profile",
+    "//components/keyed_service/content",
+    "//content/public/browser",
+  ]
+}

@@ -1,0 +1,13 @@
+diff --git a/chrome/browser/net/system_network_context_manager.cc b/chrome/browser/net/system_network_context_manager.cc
+index 80adf3f7b5f1102ad731e6921d2f56fcee546259..fb022a133a3b8b6cb4814c00356eeb859fe39387 100644
+--- a/chrome/browser/net/system_network_context_manager.cc
++++ b/chrome/browser/net/system_network_context_manager.cc
+@@ -475,7 +475,7 @@ class SystemNetworkContextManager::URLLoaderFactoryForSystem
+     if (!manager_)
+       return;
+     manager_->GetURLLoaderFactory()->CreateLoaderAndStart(
+-        std::move(receiver), request_id, options, url_request,
++        std::move(receiver), request_id, options, QORAI_CREATE_LOADER_AND_START,
+         std::move(client), traffic_annotation);
+   }
+ 

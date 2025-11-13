@@ -1,0 +1,16 @@
+diff --git a/tools/typescript/ts_library.gni b/tools/typescript/ts_library.gni
+index 9f8d59cdf04620ea6df5965b03a176043937d9d6..424d09870894a62ed5af31c3f5cbd40514b9b9e9 100644
+--- a/tools/typescript/ts_library.gni
++++ b/tools/typescript/ts_library.gni
+@@ -169,9 +169,11 @@ template("ts_library") {
+       ]
+     }
+ 
++    import("//qorai/tools/typescript/sources.gni") foreach(mapping, qorai_path_mappings) { path_mappings += [ mapping[0] + rebase_path(mapping[1], target_gen_dir) ] }
+     args += [ "--path_mappings" ] + path_mappings
+     if (defined(invoker.path_mappings)) {
+       args += invoker.path_mappings
+     }
++    response_file_contents = args args = [] args = ["--rsp", "{{response_file_name}}"]
+   }
+ }

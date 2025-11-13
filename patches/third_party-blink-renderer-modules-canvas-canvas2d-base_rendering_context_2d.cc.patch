@@ -1,0 +1,28 @@
+diff --git a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc b/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc
+index 7831167a986c3ff4a914762f20741cb52d51431d..38505c2bb574bc47dec2275647940c594e61d8dd 100644
+--- a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc
++++ b/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_context_2d.cc
+@@ -369,6 +369,7 @@ ImageData* BaseRenderingContext2D::getImageData(
+ perfetto::EventContext GetEventContext();
+ 
+ ImageData* BaseRenderingContext2D::getImageDataInternal(
++    QORAI_GET_IMAGE_DATA_PARAMS
+     int sx,
+     int sy,
+     int sw,
+@@ -556,6 +557,7 @@ ImageData* BaseRenderingContext2D::getImageDataInternal(
+       DCHECK(!bounds.intersect(SkIRect::MakeXYWH(sx, sy, sw, sh)));
+     }
+   }
++  QORAI_GET_IMAGE_DATA
+ 
+   return image_data;
+ }
+@@ -1239,6 +1241,7 @@ TextMetrics* BaseRenderingContext2D::measureText(const String& text) {
+       return MakeGarbageCollected<TextMetrics>();
+     }
+ 
++    QORAI_BASE_RENDERING_CONTEXT_2D_MEASURE_TEXT
+     canvas->GetDocument().UpdateStyleAndLayoutTreeForElement(
+         canvas, DocumentUpdateReason::kCanvas);
+   }

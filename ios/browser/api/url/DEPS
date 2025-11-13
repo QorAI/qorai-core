@@ -1,0 +1,4 @@
+include_rules = [
+  "+extensions/common/url_pattern.h",
+  "+ios/web/util"
+]

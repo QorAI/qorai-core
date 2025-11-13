@@ -1,0 +1,11 @@
+diff --git a/scripts/build/typescript/ts_library.py b/scripts/build/typescript/ts_library.py
+index 0dead52f06546e9e1d2e49b026fd4b9c944c7b78..f2f7e85e4630cc0722d204bbeb35b2b88954dd14 100644
+--- a/scripts/build/typescript/ts_library.py
++++ b/scripts/build/typescript/ts_library.py
+@@ -336,5 +336,6 @@ def main():
+     return 0
+ 
+ 
++from qorai_chromium_utils import inline_chromium_src_override; inline_chromium_src_override(globals(), locals())
+ if __name__ == '__main__':
+     sys.exit(main())

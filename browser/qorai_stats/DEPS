@@ -1,0 +1,6 @@
+include_rules = [
+  "+qorai/components/qorai_referrals/common",
+  "+qorai/components/qorai_stats/browser",
+  "+qorai/components/rpill/common",
+  "+qorai/components/version_info",
+]

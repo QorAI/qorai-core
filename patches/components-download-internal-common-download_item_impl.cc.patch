@@ -1,0 +1,15 @@
+diff --git a/components/download/internal/common/download_item_impl.cc b/components/download/internal/common/download_item_impl.cc
+index 6057b9b1e81f0ca42a3d083607dd9d09ef4d612d..4c89a130c2e98a646131501fca9c59c8c80d5331 100644
+--- a/components/download/internal/common/download_item_impl.cc
++++ b/components/download/internal/common/download_item_impl.cc
+@@ -1987,8 +1987,8 @@ void DownloadItemImpl::OnDownloadCompleting() {
+           &DownloadFile::RenameAndAnnotate,
+           base::Unretained(download_file_.get()), GetTargetFilePath(),
+           delegate_->GetApplicationClientIdForFileScanning(),
+-          delegate_->IsOffTheRecord() ? GURL() : GetURL(),
+-          delegate_->IsOffTheRecord() ? GURL() : GetReferrerUrl(),
++          GURL(),  // Never leak download URLs in metadata.
++          GURL(),  // See qorai-browser#2766.
+           delegate_->IsOffTheRecord() ? std::nullopt : GetRequestInitiator(),
+           std::move(quarantine), std::move(rename_callback)));
+ }

@@ -1,0 +1,33 @@
+/* Copyright (c) 2023 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_SERVING_TARGETING_USER_MODEL_LATENT_INTEREST_LATENT_INTEREST_USER_MODEL_INFO_H_
+#define QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_SERVING_TARGETING_USER_MODEL_LATENT_INTEREST_LATENT_INTEREST_USER_MODEL_INFO_H_
+
+#include "qorai/components/qorai_ads/core/internal/segments/segment_alias.h"
+
+namespace qorai_ads {
+
+struct LatentInterestUserModelInfo final {
+  LatentInterestUserModelInfo();
+  explicit LatentInterestUserModelInfo(SegmentList segments);
+
+  LatentInterestUserModelInfo(const LatentInterestUserModelInfo&);
+  LatentInterestUserModelInfo& operator=(const LatentInterestUserModelInfo&);
+
+  LatentInterestUserModelInfo(LatentInterestUserModelInfo&&) noexcept;
+  LatentInterestUserModelInfo& operator=(
+      LatentInterestUserModelInfo&&) noexcept;
+
+  ~LatentInterestUserModelInfo();
+
+  bool operator==(const LatentInterestUserModelInfo&) const = default;
+
+  SegmentList segments;
+};
+
+}  // namespace qorai_ads
+
+#endif  // QORAI_COMPONENTS_QORAI_ADS_CORE_INTERNAL_SERVING_TARGETING_USER_MODEL_LATENT_INTEREST_LATENT_INTEREST_USER_MODEL_INFO_H_

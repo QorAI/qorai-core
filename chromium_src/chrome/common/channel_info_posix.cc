@@ -1,0 +1,95 @@
+/* Copyright (c) 2018 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "chrome/common/channel_info.h"
+
+#include <string_view>
+
+#include "base/environment.h"
+#include "base/strings/strcat.h"
+#include "base/strings/string_util.h"
+#include "qorai/common/qorai_channel_info_posix.h"
+#include "build/build_config.h"
+#include "components/version_info/version_info.h"
+
+namespace chrome {
+
+std::string GetChannelName(WithExtendedStable with_extended_stable) {
+  std::string modifier;
+  qorai::GetChannelImpl(&modifier, nullptr);
+  return modifier;
+}
+
+std::string GetChannelSuffixForDataDir() {
+  return std::string();
+}
+
+#if BUILDFLAG(IS_LINUX)
+std::string GetChannelSuffixForExtraFlagsEnvVarName() {
+#if defined(OFFICIAL_BUILD)
+  version_info::Channel product_channel(chrome::GetChannel());
+  switch (product_channel) {
+    case version_info::Channel::DEV:
+      return "_DEV";
+    case version_info::Channel::BETA:
+      return "_BETA";
+    case version_info::Channel::CANARY:
+      return "_NIGHTLY";
+    case version_info::Channel::STABLE:
+      return "_STABLE";
+    default:
+      return std::string();
+  }
+#else   // defined(OFFICIAL_BUILD)
+  const char* const channel_name = getenv("CHROME_VERSION_EXTRA");
+  return channel_name
+             ? base::StrCat(
+                   {"_", base::ToUpperASCII(std::string_view(channel_name))})
+             : std::string();
+#endif  // defined(OFFICIAL_BUILD)
+}
+#endif  // BUILDFLAG(IS_LINUX)
+
+#if BUILDFLAG(IS_LINUX)
+std::string GetDesktopName(base::Environment* env) {
+  if (auto qorai_snap = env->GetVar("QORAI_SNAP");
+      qorai_snap && *qorai_snap == "1") {
+    return "qorai.desktop";
+  }
+#if defined(OFFICIAL_BUILD)
+  version_info::Channel product_channel(chrome::GetChannel());
+  switch (product_channel) {
+    case version_info::Channel::DEV:
+      return "qorai-browser-dev.desktop";
+    case version_info::Channel::BETA:
+      return "qorai-browser-beta.desktop";
+    case version_info::Channel::CANARY:
+      return "qorai-browser-nightly.desktop";
+    default:
+      return "qorai-browser.desktop";
+  }
+#else  // defined(OFFICIAL_BUILD)
+  // Allow $CHROME_DESKTOP to override the built-in value, so that development
+  // versions can set themselves as the default without interfering with
+  // non-official, packaged versions using the built-in value.
+  if (std::string name = env->GetVar("CHROME_DESKTOP").value_or(std::string());
+      !name.empty()) {
+    return name;
+  }
+  return "qorai-browser.desktop";
+#endif
+}
+#endif  // BUILDFLAG(IS_LINUX)
+
+version_info::Channel GetChannel() {
+  return qorai::GetChannelImpl(nullptr, nullptr);
+}
+
+bool IsExtendedStableChannel() {
+  // No extended stable channel for Qorai.
+  return false;
+}
+
+}  // namespace chrome

@@ -1,0 +1,11 @@
+include_rules = [
+  "+qorai/components/qorai_adblock/resources",
+  "+qorai/components/qorai_shields/core/browser",
+  "+qorai/components/ntp_background_images/common",
+  "+qorai/components/qorai_ads/core/browser/service",
+  "+qorai/components/email_aliases",
+  "+qorai/components/version_info",
+  "+qorai/components/sync/service",
+  "+qorai/components/sync_device_info",
+  "+qorai/components/webcompat_reporter/browser",
+]

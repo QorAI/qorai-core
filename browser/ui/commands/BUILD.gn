@@ -1,0 +1,52 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_wayback_machine/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [ "accelerator_service_unittest.cc" ]
+
+  deps = [
+    "//base",
+    "//qorai/app:generate_command_metadata",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wallet/common:pref_names",
+    "//qorai/components/qorai_wayback_machine/buildflags",
+    "//qorai/components/commands/browser",
+    "//qorai/components/constants",
+    "//qorai/components/speedreader/common/buildflags",
+    "//qorai/components/tor/buildflags",
+    "//chrome/app:command_ids",
+    "//chrome/browser/ui",
+    "//chrome/test:test_support",
+    "//components/sync_preferences:test_support",
+    "//content/test:test_support",
+    "//testing/gtest",
+  ]
+
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/components/qorai_vpn/common" ]
+  }
+
+  if (enable_tor) {
+    deps += [ "//qorai/components/tor:pref_names" ]
+  }
+
+  if (enable_speedreader) {
+    deps += [ "//qorai/components/speedreader" ]
+  }
+
+  if (enable_qorai_wayback_machine) {
+    deps += [ "//qorai/components/qorai_wayback_machine" ]
+  }
+}

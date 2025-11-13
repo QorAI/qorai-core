@@ -1,0 +1,56 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/features.gni")
+
+source_set("importer") {
+  sources = [
+    "qorai_importer_p3a.cc",
+    "qorai_importer_p3a.h",
+  ]
+
+  deps = [
+    "//base",
+    "//components/user_data_importer/common",
+  ]
+}
+if (!is_android) {
+  source_set("unit_tests") {
+    testonly = true
+    sources = [ "qorai_external_process_importer_host_unittest.cc" ]
+
+    deps = [
+      "//base",
+      "//base/test:test_support",
+      "//qorai/common/importer",
+      "//chrome/browser",
+      "//chrome/common",
+      "//chrome/test:test_support",
+      "//components/value_store:test_support",
+      "//extensions/browser",
+      "//extensions/common:common_constants",
+      "//testing/gtest",
+    ]
+  }
+
+  source_set("browser_tests") {
+    testonly = true
+    defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+    sources = [ "qorai_importer_browsertest.cc" ]
+
+    deps = [
+      "//base",
+      "//qorai/common/importer",
+      "//chrome/browser/importer",
+      "//chrome/browser/ui",
+      "//chrome/common:constants",
+      "//chrome/test:test_support",
+      "//components/value_store:test_support",
+      "//content/test:test_support",
+      "//testing/gtest",
+    ]
+  }
+}

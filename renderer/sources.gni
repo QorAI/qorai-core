@@ -1,0 +1,83 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/ai_rewriter/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//qorai/components/web_discovery/buildflags/buildflags.gni")
+import("//third_party/widevine/cdm/widevine.gni")
+
+qorai_chrome_renderer_sources = [
+  "//qorai/renderer/qorai_content_renderer_client.cc",
+  "//qorai/renderer/qorai_content_renderer_client.h",
+  "//qorai/renderer/qorai_render_frame_observer.cc",
+  "//qorai/renderer/qorai_render_frame_observer.h",
+  "//qorai/renderer/qorai_render_thread_observer.cc",
+  "//qorai/renderer/qorai_render_thread_observer.h",
+]
+
+qorai_chrome_renderer_deps = [
+  "//qorai/common:mojo_bindings",
+  "//qorai/components/ai_chat/core/common",
+  "//qorai/components/ai_chat/renderer",
+  "//qorai/components/ai_rewriter/common/buildflags",
+  "//qorai/components/qorai_search/common",
+  "//qorai/components/qorai_search/renderer",
+  "//qorai/components/qorai_shields/core/common",
+  "//qorai/components/qorai_vpn/common/buildflags",
+  "//qorai/components/qorai_wallet/common",
+  "//qorai/components/qorai_wallet/renderer",
+  "//qorai/components/cosmetic_filters/renderer",
+  "//qorai/components/playlist/content/renderer",
+  "//qorai/components/playlist/core/common/buildflags",
+  "//qorai/components/safe_builtins/renderer",
+  "//qorai/components/script_injector/renderer",
+  "//qorai/components/skus/common",
+  "//qorai/components/skus/renderer",
+  "//qorai/components/speedreader/common/buildflags",
+  "//qorai/components/tor/buildflags",
+  "//qorai/components/web_discovery/buildflags",
+  "//qorai/renderer/qorai_wallet",
+  "//mojo/public/cpp/bindings",
+  "//third_party/blink/public:blink",
+  "//third_party/blink/public/common",
+]
+
+if (enable_tor) {
+  qorai_chrome_renderer_deps += [ "//qorai/components/tor/renderer" ]
+}
+
+if (enable_speedreader) {
+  qorai_chrome_renderer_deps += [
+    "//qorai/components/speedreader/common",
+    "//qorai/components/speedreader/renderer",
+  ]
+}
+
+if (enable_ai_rewriter) {
+  qorai_chrome_renderer_deps += [ "//qorai/components/ai_rewriter/renderer" ]
+}
+
+if (enable_qorai_vpn) {
+  qorai_chrome_renderer_deps += [ "//qorai/components/qorai_vpn/common" ]
+}
+
+if (is_android) {
+  qorai_chrome_renderer_deps +=
+      [ "//qorai/components/qorai_mobile_subscription/renderer/android" ]
+}
+
+if (enable_web_discovery_native) {
+  qorai_chrome_renderer_deps += [
+    "//qorai/components/web_discovery/common",
+    "//qorai/components/web_discovery/renderer",
+  ]
+}
+
+qorai_chrome_renderer_deps += [ "//third_party/widevine/cdm:headers" ]
+
+# do not add anything else here
+qorai_chrome_renderer_public_deps = []

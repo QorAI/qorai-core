@@ -1,0 +1,8 @@
+include_rules = [
+  "+qorai/components/qorai_shields/core/common",
+  "+qorai/components/webcompat",
+  "+qorai/third_party/blink/renderer",
+  "+ui/display",
+  "+ui/gfx/geometry",
+  "+ui/gfx/skia_span_util.h",
+]

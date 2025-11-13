@@ -1,0 +1,15 @@
+include_rules = [
+  "+qorai/components/qorai_wallet_page/resources",
+  "+qorai/components/qorai_wallet_panel/resources",
+  # TODO(bridiver) move to appropriate DEPS file
+  # ledger
+  "+qorai/components/ledger_bridge/resources",
+  # line_chart
+  "+qorai/components/line_chart_display/resources",
+  # market
+  "+qorai/components/market_display/resources",
+  # nft
+  "+qorai/components/nft_display/resources",
+  # trezor
+  "+qorai/components/trezor_bridge/resources",
+]

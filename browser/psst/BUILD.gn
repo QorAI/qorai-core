@@ -1,0 +1,75 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+static_library("psst") {
+  public = [
+    "qorai_psst_permission_context_factory.h",
+    "psst_ui_delegate_impl.h",
+  ]
+
+  sources = [
+    "qorai_psst_permission_context_factory.cc",
+    "psst_ui_delegate_impl.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/components/constants",
+    "//qorai/components/psst/browser/content",
+    "//qorai/components/psst/browser/core",
+    "//qorai/components/psst/common",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/profiles",
+    "//components/permissions",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [ "qorai_psst_permission_context_unittest.cc" ]
+  deps = [
+    ":psst",
+    "//base",
+    "//qorai/components/psst/browser/core",
+    "//qorai/components/psst/common",
+    "//chrome/test:test_support",
+    "//components/content_settings/core/browser",
+    "//components/permissions",
+    "//components/sync_preferences:test_support",
+    "//content/public/browser",
+    "//content/test:test_support",
+    "//testing/gtest",
+    "//url",
+  ]
+}
+
+source_set("browser_tests") {
+  testonly = true
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+
+  sources = [ "psst_tab_web_contents_observer_browsertest.cc" ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/cosmetic_filters/browser",
+    "//qorai/components/psst/browser/content",
+    "//qorai/components/psst/browser/core",
+    "//qorai/components/psst/buildflags",
+    "//qorai/components/psst/common",
+    "//chrome/test:test_support",
+    "//components/component_updater:test_support",
+    "//content/test:test_support",
+    "//net:test_support",
+    "//url",
+  ]
+
+  if (is_android) {
+    deps += [ "//chrome/test:test_support_ui_android" ]
+  } else {
+    deps += [ "//chrome/test:test_support_ui" ]
+  }
+}

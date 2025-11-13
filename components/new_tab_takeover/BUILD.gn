@@ -1,0 +1,33 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/common/typescript.gni")
+import("//mojo/public/tools/bindings/mojom.gni")
+
+transpile_web_ui("new_tab_takeover_ui") {
+  output_module = false
+  resource_name = "new_tab_takeover"
+  entry_points = [ [
+        "new_tab_takeover",
+        rebase_path("new_tab_takeover.tsx"),
+      ] ]
+  public_deps = [
+    "//qorai/components/qorai_ads/core/mojom:mojom_js",
+    "//qorai/components/new_tab_takeover/mojom:mojom_js",
+    "//qorai/components/ntp_background_images/browser/mojom:mojom_js",
+    "//mojo/public/mojom/base",
+  ]
+  imports_from = [
+    "//qorai/components/new_tab_takeover/",
+    "//qorai/components/qorai_new_tab_ui/containers/newTab/",
+  ]
+}
+
+pack_web_resources("new_tab_takeover_generated_resources") {
+  resource_name = "new_tab_takeover"
+  output_dir = "$root_gen_dir/qorai/components/new_tab_takeover"
+  deps = [ ":new_tab_takeover_ui" ]
+}

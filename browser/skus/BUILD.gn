@@ -1,0 +1,30 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+static_library("skus") {
+  sources = [
+    "//qorai/browser/skus/skus_service_factory.cc",
+    "//qorai/browser/skus/skus_service_factory.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/skus/browser",
+    "//qorai/components/skus/common",
+    "//qorai/components/skus/common:mojom",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/profiles:profile",
+    "//components/keyed_service/content",
+    "//components/pref_registry",
+    "//components/user_prefs",
+    "//content/public/browser",
+  ]
+
+  if (is_android) {
+    sources +=
+        [ "//qorai/browser/skus/android/skus_service_factory_android.cc" ]
+    deps += [ "//qorai/browser/skus/android:jni_headers" ]
+  }
+}

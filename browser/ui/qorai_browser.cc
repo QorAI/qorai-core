@@ -1,0 +1,360 @@
+/* Copyright (c) 2021 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/ui/qorai_browser.h"
+
+#include <memory>
+#include <optional>
+#include <string>
+#include <utility>
+
+#include "base/check.h"
+#include "base/check_is_test.h"
+#include "base/feature_list.h"
+#include "base/functional/bind.h"
+#include "base/functional/callback_helpers.h"
+#include "qorai/browser/qorai_browser_features.h"
+#include "qorai/browser/ui/qorai_browser_window.h"
+#include "qorai/browser/ui/qorai_file_select_utils.h"
+#include "qorai/browser/ui/sidebar/sidebar.h"
+#include "qorai/browser/ui/sidebar/sidebar_controller.h"
+#include "qorai/browser/ui/tabs/qorai_tab_prefs.h"
+#include "qorai/browser/ui/tabs/features.h"
+#include "qorai/browser/ui/tabs/public/constants.h"
+#include "qorai/browser/ui/views/tabs/vertical_tab_utils.h"
+#include "qorai/components/constants/pref_names.h"
+#include "chrome/browser/lifetime/browser_close_manager.h"
+#include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/sessions/session_service.h"
+#include "chrome/browser/sessions/session_service_factory.h"
+#include "chrome/browser/ui/browser_commands.h"
+#include "chrome/browser/ui/browser_finder.h"
+#include "chrome/browser/ui/browser_tabstrip.h"
+#include "chrome/browser/ui/browser_window/public/browser_window_features.h"
+#include "chrome/browser/ui/tabs/tab_strip_model.h"
+#include "chrome/browser/ui/tabs/tab_strip_model_observer.h"
+#include "chrome/browser/ui/ui_features.h"
+#include "chrome/browser/ui/webui/new_tab_page/new_tab_page_ui.h"
+#include "chrome/browser/ui/webui/new_tab_page_third_party/new_tab_page_third_party_ui.h"
+#include "chrome/browser/ui/webui/ntp/new_tab_ui.h"
+#include "chrome/browser/ui/webui_browser/webui_browser.h"
+#include "components/bookmarks/common/bookmark_pref_names.h"
+#include "components/prefs/pref_service.h"
+#include "components/sessions/content/session_tab_helper.h"
+#include "components/tabs/public/tab_interface.h"
+#include "content/public/browser/file_select_listener.h"
+#include "content/public/browser/navigation_entry.h"
+#include "content/public/common/url_constants.h"
+#include "third_party/blink/public/mojom/choosers/file_chooser.mojom.h"
+#include "url/gurl.h"
+
+namespace {
+
+bool g_suppress_dialog_for_testing = false;
+
+}  // namespace
+
+// static
+void QoraiBrowser::SuppressBrowserWindowClosingDialogForTesting(bool suppress) {
+  g_suppress_dialog_for_testing = suppress;
+}
+
+QoraiBrowser::QoraiBrowser(const CreateParams& params) : Browser(params) {
+  if (auto* sidebar_controller = GetFeatures().sidebar_controller()) {
+    // TODO(https://github.com/qorai/qorai-browser/issues/45633): Cleanup this.
+    // Below call order is important.
+    // When reaches here, Sidebar UI is setup in QoraiBrowserView but
+    // not initialized. It's just empty because sidebar controller/model is not
+    // ready yet. QoraiBrowserView is instantiated by the ctor of Browser.
+    // So, initializing sidebar controller/model here and then ask to initialize
+    // sidebar UI. After that, UI will be updated for model's change.
+    sidebar_controller->SetSidebar(qorai_window()->InitSidebar());
+  }
+
+  if (webui_browser::IsWebUIBrowserEnabled() && is_type_normal()) {
+    // WebUIBrowserWindow was created in Browser's c'tor (in
+    // BrowserWindow::CreateBrowserWindow), not a QoraiBrowserWindow.
+    return;
+  }
+
+  // As browser window(BrowserView) is initialized before fullscreen controller
+  // is ready, it's difficult to know when browsr window can listen.
+  // Notify exact timing to do it.
+  CHECK(GetFeatures().exclusive_access_manager());
+  qorai_window()->ReadyToListenFullscreenChanges();
+}
+
+QoraiBrowser::~QoraiBrowser() = default;
+
+void QoraiBrowser::ScheduleUIUpdate(content::WebContents* source,
+                                    unsigned changed_flags) {
+  Browser::ScheduleUIUpdate(source, changed_flags);
+
+  if (tab_strip_model_->GetIndexOfWebContents(source) ==
+      TabStripModel::kNoTab) {
+    return;
+  }
+
+  // We need to update sidebar UI only when current active tab state is changed.
+  if (changed_flags & content::INVALIDATE_TYPE_URL) {
+    if (source == tab_strip_model_->GetActiveWebContents()) {
+      // sidebar() can return a nullptr in unit tests.
+      if (auto* sidebar_controller = GetFeatures().sidebar_controller()) {
+        if (sidebar_controller->sidebar()) {
+          sidebar_controller->sidebar()->UpdateSidebarItemsState();
+        } else {
+          CHECK_IS_TEST();
+        }
+      }
+    }
+  }
+}
+
+void QoraiBrowser::OnTabClosing(content::WebContents* contents) {
+  Browser::OnTabClosing(contents);
+
+  if (!AreAllTabsSharedPinnedTabs()) {
+    return;
+  }
+
+  if (chrome::FindAllTabbedBrowsersWithProfile(profile()).size() > 1) {
+    base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+        FROM_HERE, base::BindOnce(
+                       [](base::WeakPtr<QoraiBrowser> browser) {
+                         if (browser) {
+                           // We don't want close confirm dialog to show up. In
+                           // this case, Shared pinned tabs will be moved to
+                           // another window, so we don't have to warn users.
+                           browser->confirmed_to_close_ = true;
+                           chrome::CloseWindow(browser.get());
+                         }
+                       },
+                       weak_ptr_factory_.GetWeakPtr()));
+  }
+}
+
+void QoraiBrowser::TabStripEmpty() {
+  if (unload_controller_.is_attempting_to_close_browser() ||
+      !is_type_normal() || ignore_enable_closing_last_tab_pref_) {
+    Browser::TabStripEmpty();
+    return;
+  }
+
+  base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+      FROM_HERE, base::BindOnce(
+                     [](base::WeakPtr<QoraiBrowser> browser) {
+                       if (browser) {
+                         chrome::AddTabAt(browser.get(),
+                                          browser->GetNewTabURL(),
+                                          /*index=*/-1, /*foreground=*/true,
+                                          /*group=*/std::nullopt,
+                                          /*pinned=*/false);
+                       }
+                     },
+                     weak_ptr_factory_.GetWeakPtr()));
+}
+
+void QoraiBrowser::RunFileChooser(
+    content::RenderFrameHost* render_frame_host,
+    scoped_refptr<content::FileSelectListener> listener,
+    const blink::mojom::FileChooserParams& params) {
+#if BUILDFLAG(IS_ANDROID)
+  Browser::RunFileChooser(render_frame_host, listener, params);
+#else
+  auto new_params = params.Clone();
+  if (new_params->title.empty()) {
+    // Fill title of file chooser with origin of the frame.
+
+    // Note that save mode param is for PPAPI. 'Save As...' or downloading
+    // something doesn't reach here. They show 'select file dialog' from
+    // DownloadFilePicker::DownloadFilePicker directly.
+    // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/mojom/choosers/file_chooser.mojom;l=27;drc=047c7dc4ee1ce908d7fea38ca063fa2f80f92c77
+    CHECK(render_frame_host);
+    const url::Origin& origin = render_frame_host->GetLastCommittedOrigin();
+    new_params->title = qorai::GetFileSelectTitle(
+        content::WebContents::FromRenderFrameHost(render_frame_host), origin,
+        origin,
+        params.mode == blink::mojom::FileChooserParams::Mode::kSave
+            ? qorai::FileSelectTitleType::kSave
+            : qorai::FileSelectTitleType::kOpen);
+  }
+  Browser::RunFileChooser(render_frame_host, listener, *new_params);
+#endif
+}
+
+void QoraiBrowser::TabCustomTitleChanged(
+    content::WebContents* contents,
+    const std::optional<std::string>& custom_title) {
+  SessionService* session_service =
+      SessionServiceFactory::GetForProfileIfExisting(profile());
+  if (session_service) {
+    sessions::SessionTabHelper* session_tab_helper =
+        sessions::SessionTabHelper::FromWebContents(contents);
+    session_service->AddTabExtraData(session_id(),
+                                     session_tab_helper->session_id(),
+                                     tabs::kQoraiTabCustomTitleExtraDataKey,
+                                     custom_title.value_or(std::string()));
+  }
+}
+
+void QoraiBrowser::OnTabStripModelChanged(
+    TabStripModel* tab_strip_model,
+    const TabStripModelChange& change,
+    const TabStripSelectionChange& selection) {
+  Browser::OnTabStripModelChanged(tab_strip_model, change, selection);
+
+  if (!profile()->GetPrefs()->GetBoolean(kEnableClosingLastTab) &&
+      change.type() == TabStripModelChange::kRemoved) {
+    for (const auto& contents : change.GetRemove()->contents) {
+      // If there is no tab after this change for inserting them to
+      // another window, this browser should be closed.
+      if (contents.remove_reason ==
+              TabStripModelChange::RemoveReason::kInsertedIntoOtherTabStrip &&
+          tab_strip_model->empty()) {
+        // Each removed can only have same reason. so safe to early return here.
+        ignore_enable_closing_last_tab_pref_ = true;
+        break;
+      }
+    }
+  }
+
+  // sidebar() can return a nullptr in unit tests.
+  auto* sidebar_controller = GetFeatures().sidebar_controller();
+  if (!sidebar_controller || !sidebar_controller->sidebar()) {
+    return;
+  }
+  // We need to update sidebar UI whenever active tab is changed or
+  // inactive tab is added/removed.
+  if (change.type() == TabStripModelChange::Type::kInserted ||
+      change.type() == TabStripModelChange::Type::kRemoved ||
+      selection.active_tab_changed()) {
+    sidebar_controller->sidebar()->UpdateSidebarItemsState();
+  }
+}
+
+void QoraiBrowser::FinishWarnBeforeClosing(WarnBeforeClosingResult result) {
+  // Clear user's choice because user cancelled window closing by some
+  // warning(ex, download is in-progress).
+  if (result == WarnBeforeClosingResult::kDoNotClose) {
+    confirmed_to_close_ = false;
+  }
+  Browser::FinishWarnBeforeClosing(result);
+}
+
+void QoraiBrowser::BeforeUnloadFired(content::WebContents* source,
+                                     bool proceed,
+                                     bool* proceed_to_fire_unload) {
+  // Clear user's choice when user cancelled window closing by beforeunload
+  // handler.
+  if (!proceed) {
+    confirmed_to_close_ = false;
+  }
+  Browser::BeforeUnloadFired(source, proceed, proceed_to_fire_unload);
+}
+
+bool QoraiBrowser::TryToCloseWindow(
+    bool skip_beforeunload,
+    const base::RepeatingCallback<void(bool)>& on_close_confirmed) {
+  // Window closing could be asked directly to browser object by this method.
+  // For example, when user tries to delete profile, this method is called on
+  // all its browser object. After all handlers are done, its all browser window
+  // start to close. In this case, we should not ask to users about this
+  // closing. So, treats like user confirmed closing. If this try blocked by
+  // user, |confirmed_to_close_| is set to false by ResetTryToCloseWindow().
+  confirmed_to_close_ = true;
+  return Browser::TryToCloseWindow(skip_beforeunload,
+                                   std::move(on_close_confirmed));
+}
+
+void QoraiBrowser::ResetTryToCloseWindow() {
+  confirmed_to_close_ = false;
+  Browser::ResetTryToCloseWindow();
+}
+
+bool QoraiBrowser::NormalBrowserSupportsWindowFeature(
+    WindowFeature feature,
+    bool check_can_support) const {
+#if BUILDFLAG(IS_WIN)
+  if (feature == WindowFeature::FEATURE_TITLEBAR) {
+    // In case of vertical tab strip is allowed, we need to have ability to
+    // show title bar on Windows.
+    return tabs::utils::ShouldShowVerticalTabs(this) &&
+           tabs::utils::ShouldShowWindowTitleForVerticalTabs(this);
+  }
+#endif
+
+  return Browser::NormalBrowserSupportsWindowFeature(feature,
+                                                     check_can_support);
+}
+
+bool QoraiBrowser::IsWebContentsVisible(content::WebContents* web_contents) {
+  const auto original_visible = Browser::IsWebContentsVisible(web_contents);
+  auto* tab = tabs::TabInterface::MaybeGetFromContents(web_contents);
+  if (!tab) {
+    return original_visible;
+  }
+
+  if (original_visible && !tab->IsActivated()) {
+    return false;
+  }
+
+  return original_visible;
+}
+
+void QoraiBrowser::UpdateTargetURL(content::WebContents* source,
+                                   const GURL& url) {
+  GURL target_url = url;
+  if (url.SchemeIs(content::kChromeUIScheme)) {
+    GURL::Replacements replacements;
+    replacements.SetSchemeStr(content::kQoraiUIScheme);
+    target_url = target_url.ReplaceComponents(replacements);
+  }
+  Browser::UpdateTargetURL(source, target_url);
+}
+
+bool QoraiBrowser::ShouldAskForBrowserClosingBeforeHandlers() {
+  if (g_suppress_dialog_for_testing) {
+    return false;
+  }
+
+  // Don't need to ask when application closing is in-progress.
+  if (BrowserCloseManager::BrowserClosingStarted()) {
+    return false;
+  }
+
+  if (confirmed_to_close_) {
+    return false;
+  }
+
+  PrefService* prefs = profile()->GetPrefs();
+  if (!prefs->GetBoolean(kEnableWindowClosingConfirm)) {
+    return false;
+  }
+
+  // Only launch confirm dialog while closing when browser has multiple tabs.
+  return tab_strip_model()->count() > 1;
+}
+
+bool QoraiBrowser::AreAllTabsSharedPinnedTabs() {
+  if (!base::FeatureList::IsEnabled(tabs::features::kQoraiSharedPinnedTabs)) {
+    return false;
+  }
+
+  if (!is_type_normal()) {
+    return false;
+  }
+
+  if (!profile()->GetPrefs()->GetBoolean(qorai_tabs::kSharedPinnedTab)) {
+    return false;
+  }
+
+  return tab_strip_model()->count() > 0 &&
+         tab_strip_model()->count() ==
+             tab_strip_model()->IndexOfFirstNonPinnedTab();
+}
+
+QoraiBrowserWindow* QoraiBrowser::qorai_window() {
+  return static_cast<QoraiBrowserWindow*>(window_.get());
+}

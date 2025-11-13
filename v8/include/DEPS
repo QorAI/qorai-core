@@ -1,0 +1,9 @@
+include_rules = [
+  "+v8/include",
+]
+
+specific_include_rules = {
+  "v8-isolate-page-graph-utils\.h": [
+    "!qorai/components/qorai_page_graph/common/buildflags.h",
+  ]
+}

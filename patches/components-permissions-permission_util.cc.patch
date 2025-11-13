@@ -1,0 +1,28 @@
+diff --git a/components/permissions/permission_util.cc b/components/permissions/permission_util.cc
+index a82088f96079c3d5ddfbd35df98b2ebb2c0e62a4..ab870cd60db1792d9dac161bd54be6738216bb89 100644
+--- a/components/permissions/permission_util.cc
++++ b/components/permissions/permission_util.cc
+@@ -115,6 +115,7 @@ RequestTypeForUma PermissionUtil::GetUmaValueForRequests(
+   if (requests.size() == 1) {
+     return GetUmaValueForRequestType(request_type);
+   }
++  QORAI_GET_UMA_VALUE_FOR_REQUESTS
+   return permissions::GetUmaValueForRequests(request_type);
+ }
+ 
+@@ -210,6 +211,7 @@ RequestTypeForUma PermissionUtil::GetUmaValueForRequestType(
+ #endif
+     case RequestType::kIdentityProvider:
+       return RequestTypeForUma::PERMISSION_IDENTITY_PROVIDER;
++    QORAI_GET_UMA_VALUE_FOR_REQUEST_TYPE
+   }
+ }
+ 
+@@ -538,6 +540,7 @@ ContentSettingsType PermissionUtil::PermissionTypeToContentSettingsTypeSafe(
+       return ContentSettingsType::LOCAL_NETWORK_ACCESS;
+     case PermissionType::NUM:
+       break;
++    PERMISSION_UTIL_PERMISSION_TYPE_TO_CONTENT_SETTINGS_TYPE
+   }
+ 
+   return ContentSettingsType::DEFAULT;

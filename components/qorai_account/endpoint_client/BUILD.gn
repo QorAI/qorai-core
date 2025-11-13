@@ -1,0 +1,53 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("endpoint_client") {
+  sources = [
+    "client.h",
+    "is_endpoint.h",
+    "is_request.h",
+    "is_request_body.h",
+    "is_response_body.h",
+    "maybe_strip_with_headers.h",
+    "request.h",
+    "request_handle.cc",
+    "request_handle.h",
+    "request_types.h",
+    "with_headers.h",
+  ]
+
+  deps = [
+    "//base",
+    "//net",
+    "//services/network/public/cpp",
+    "//url",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [
+    "client_unittest.cc",
+    "concept_test.h",
+    "is_endpoint_unittest.cc",
+    "is_request_body_unittest.cc",
+    "is_request_unittest.cc",
+    "is_response_body_unittest.cc",
+    "maybe_strip_with_headers_unittest.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/components/qorai_account/endpoint_client",
+    "//net",
+    "//services/network:test_support",
+    "//services/network/public/cpp",
+    "//services/network/public/mojom",
+    "//testing/gtest",
+    "//url",
+  ]
+}

@@ -1,0 +1,298 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/ui/webui/settings/qorai_default_extensions_handler.h"
+
+#include <memory>
+#include <string>
+
+#include "base/check_op.h"
+#include "base/functional/bind.h"
+#include "base/values.h"
+#include "qorai/browser/qorai_wallet/qorai_wallet_service_factory.h"
+#include "qorai/browser/extensions/qorai_component_loader.h"
+#include "qorai/components/qorai_wallet/browser/qorai_wallet_service.h"
+#include "qorai/components/qorai_wallet/browser/qorai_wallet_utils.h"
+#include "qorai/components/qorai_wallet/browser/pref_names.h"
+#include "qorai/components/qorai_wallet/browser/tx_service.h"
+#include "qorai/components/qorai_wallet/common/common_utils.h"
+#include "qorai/components/constants/pref_names.h"
+#include "qorai/components/decentralized_dns/core/constants.h"
+#include "qorai/components/decentralized_dns/core/utils.h"
+#include "chrome/browser/about_flags.h"
+#include "chrome/browser/browser_process.h"
+#include "chrome/browser/extensions/component_loader.h"
+#include "chrome/browser/extensions/webstore_install_with_prompt.h"
+#include "chrome/browser/lifetime/application_lifetime.h"
+#include "chrome/browser/media/router/media_router_feature.h"
+#include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/ui/browser.h"
+#include "chrome/browser/ui/browser_finder.h"
+#include "chrome/browser/ui/browser_window.h"
+#include "chrome/browser/ui/chrome_select_file_policy.h"
+#include "chrome/common/chrome_switches.h"
+#include "chrome/common/pref_names.h"
+#include "components/grit/qorai_components_strings.h"
+#include "components/prefs/pref_service.h"
+#include "components/webui/flags/flags_ui_constants.h"
+#include "components/webui/flags/pref_service_flags_storage.h"
+#include "content/public/browser/web_ui.h"
+#include "extensions/browser/extension_registrar.h"
+#include "extensions/browser/extension_registry.h"
+#include "extensions/browser/extension_system.h"
+#include "extensions/common/constants.h"
+#include "extensions/common/feature_switch.h"
+#include "ui/base/l10n/l10n_util.h"
+#include "ui/shell_dialogs/selected_file_info.h"
+
+#if BUILDFLAG(ENABLE_WIDEVINE)
+#include "qorai/browser/widevine/widevine_utils.h"
+#endif
+
+using decentralized_dns::EnsOffchainResolveMethod;
+using decentralized_dns::ResolveMethodTypes;
+
+namespace {
+
+template <typename T>
+base::Value::Dict MakeSelectValue(T value, const std::u16string& name) {
+  base::Value::Dict item;
+  item.Set("value", base::Value(static_cast<int>(value)));
+  item.Set("name", base::Value(name));
+  return item;
+}
+
+base::Value::List GetResolveMethodList() {
+  base::Value::List list;
+  list.Append(MakeSelectValue(
+      ResolveMethodTypes::ASK,
+      l10n_util::GetStringUTF16(IDS_DECENTRALIZED_DNS_RESOLVE_OPTION_ASK)));
+  list.Append(
+      MakeSelectValue(ResolveMethodTypes::DISABLED,
+                      l10n_util::GetStringUTF16(
+                          IDS_DECENTRALIZED_DNS_RESOLVE_OPTION_DISABLED)));
+  list.Append(MakeSelectValue(
+      ResolveMethodTypes::ENABLED,
+      l10n_util::GetStringUTF16(IDS_DECENTRALIZED_DNS_RESOLVE_OPTION_ENABLED)));
+
+  return list;
+}
+
+base::Value::List GetEnsOffchainResolveMethodList() {
+  base::Value::List list;
+  list.Append(MakeSelectValue(
+      EnsOffchainResolveMethod::kAsk,
+      l10n_util::GetStringUTF16(
+          IDS_DECENTRALIZED_DNS_ENS_OFFCHAIN_RESOLVE_OPTION_ASK)));
+  list.Append(MakeSelectValue(
+      EnsOffchainResolveMethod::kDisabled,
+      l10n_util::GetStringUTF16(
+          IDS_DECENTRALIZED_DNS_ENS_OFFCHAIN_RESOLVE_OPTION_DISABLED)));
+  list.Append(MakeSelectValue(
+      EnsOffchainResolveMethod::kEnabled,
+      l10n_util::GetStringUTF16(
+          IDS_DECENTRALIZED_DNS_ENS_OFFCHAIN_RESOLVE_OPTION_ENABLED)));
+
+  return list;
+}
+}  // namespace
+
+QoraiDefaultExtensionsHandler::QoraiDefaultExtensionsHandler()
+    : weak_ptr_factory_(this) {
+#if BUILDFLAG(ENABLE_WIDEVINE)
+  was_widevine_enabled_ = ::IsWidevineEnabled();
+#endif
+}
+
+QoraiDefaultExtensionsHandler::~QoraiDefaultExtensionsHandler() = default;
+
+void QoraiDefaultExtensionsHandler::RegisterMessages() {
+  profile_ = Profile::FromWebUI(web_ui());
+  web_ui()->RegisterMessageCallback(
+      "resetWallet",
+      base::BindRepeating(&QoraiDefaultExtensionsHandler::ResetWallet,
+                          base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+      "resetTransactionInfo",
+      base::BindRepeating(&QoraiDefaultExtensionsHandler::ResetTransactionInfo,
+                          base::Unretained(this)));
+
+#if BUILDFLAG(ENABLE_ORCHARD)
+  if (qorai_wallet::IsZCashShieldedTransactionsEnabled()) {
+    web_ui()->RegisterMessageCallback(
+        "resetZCashSyncState",
+        base::BindRepeating(&QoraiDefaultExtensionsHandler::ResetZCashSyncState,
+                            base::Unretained(this)));
+  }
+#endif
+
+  // TODO(petemill): If anything outside this handler is responsible for causing
+  // restart-neccessary actions, then this should be moved to a generic handler
+  // and the flag should be moved to somewhere more static / singleton-like.
+  web_ui()->RegisterMessageCallback(
+      "getRestartNeeded",
+      base::BindRepeating(&QoraiDefaultExtensionsHandler::GetRestartNeeded,
+                          base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+      "setWidevineEnabled",
+      base::BindRepeating(&QoraiDefaultExtensionsHandler::SetWidevineEnabled,
+                          base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+      "isWidevineEnabled",
+      base::BindRepeating(&QoraiDefaultExtensionsHandler::IsWidevineEnabled,
+                          base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+      "getDecentralizedDnsResolveMethodList",
+      base::BindRepeating(
+          &QoraiDefaultExtensionsHandler::GetDecentralizedDnsResolveMethodList,
+          base::Unretained(this)));
+  web_ui()->RegisterMessageCallback(
+      "getEnsOffchainResolveMethodList",
+      base::BindRepeating(
+          &QoraiDefaultExtensionsHandler::GetEnsOffchainResolveMethodList,
+          base::Unretained(this)));
+
+  // Can't call this in ctor because it needs to access web_ui().
+  InitializePrefCallbacks();
+}
+
+void QoraiDefaultExtensionsHandler::InitializePrefCallbacks() {
+#if BUILDFLAG(ENABLE_WIDEVINE)
+  local_state_change_registrar_.Init(g_browser_process->local_state());
+  local_state_change_registrar_.Add(
+      kWidevineEnabled,
+      base::BindRepeating(
+          &QoraiDefaultExtensionsHandler::OnWidevineEnabledChanged,
+          base::Unretained(this)));
+#endif
+  pref_change_registrar_.Init(profile_->GetPrefs());
+}
+
+bool QoraiDefaultExtensionsHandler::IsRestartNeeded() {
+#if BUILDFLAG(ENABLE_WIDEVINE)
+  if (was_widevine_enabled_ != ::IsWidevineEnabled()) {
+    return true;
+  }
+#endif
+
+  return false;
+}
+
+void QoraiDefaultExtensionsHandler::GetRestartNeeded(
+    const base::Value::List& args) {
+  CHECK_EQ(args.size(), 1U);
+
+  AllowJavascript();
+  ResolveJavascriptCallback(args[0], base::Value(IsRestartNeeded()));
+}
+
+#if BUILDFLAG(ENABLE_ORCHARD)
+void QoraiDefaultExtensionsHandler::ResetZCashSyncState(
+    const base::Value::List& args) {
+  auto* qorai_wallet_service =
+      qorai_wallet::QoraiWalletServiceFactory::GetServiceForContext(profile_);
+  if (!qorai_wallet_service) {
+    return;
+  }
+  auto* zcash_wallet_service = qorai_wallet_service->GetZcashWalletService();
+  if (!zcash_wallet_service) {
+    return;
+  }
+  zcash_wallet_service->Reset();
+}
+#endif
+
+void QoraiDefaultExtensionsHandler::ResetWallet(const base::Value::List& args) {
+  auto* qorai_wallet_service =
+      qorai_wallet::QoraiWalletServiceFactory::GetServiceForContext(profile_);
+  if (qorai_wallet_service) {
+    qorai_wallet_service->Reset();
+  }
+}
+
+void QoraiDefaultExtensionsHandler::ResetTransactionInfo(
+    const base::Value::List& args) {
+  auto* qorai_wallet_service =
+      qorai_wallet::QoraiWalletServiceFactory::GetServiceForContext(profile_);
+  if (qorai_wallet_service) {
+    qorai_wallet_service->tx_service()->Reset();
+  }
+}
+
+bool QoraiDefaultExtensionsHandler::IsExtensionInstalled(
+    const std::string& extension_id) const {
+  extensions::ExtensionRegistry* registry = extensions::ExtensionRegistry::Get(
+      static_cast<content::BrowserContext*>(profile_));
+  return registry && registry->GetInstalledExtension(extension_id);
+}
+
+void QoraiDefaultExtensionsHandler::OnInstallResult(
+    const std::string& pref_name,
+    bool success,
+    const std::string& error,
+    extensions::webstore_install::Result result) {
+  if (result != extensions::webstore_install::Result::SUCCESS &&
+      result != extensions::webstore_install::Result::LAUNCH_IN_PROGRESS) {
+    profile_->GetPrefs()->SetBoolean(pref_name, false);
+  }
+}
+
+void QoraiDefaultExtensionsHandler::OnRestartNeededChanged() {
+  if (IsJavascriptAllowed()) {
+    FireWebUIListener("qorai-needs-restart-changed",
+                      base::Value(IsRestartNeeded()));
+  }
+}
+
+void QoraiDefaultExtensionsHandler::SetWidevineEnabled(
+    const base::Value::List& args) {
+#if BUILDFLAG(ENABLE_WIDEVINE)
+  CHECK_EQ(args.size(), 1U);
+  bool enabled = args[0].GetBool();
+  enabled ? EnableWidevineCdm() : DisableWidevineCdm();
+  AllowJavascript();
+#endif
+}
+
+void QoraiDefaultExtensionsHandler::IsWidevineEnabled(
+    const base::Value::List& args) {
+  CHECK_EQ(args.size(), 1U);
+  AllowJavascript();
+  ResolveJavascriptCallback(args[0],
+#if BUILDFLAG(ENABLE_WIDEVINE)
+                            base::Value(::IsWidevineEnabled()));
+#else
+                            base::Value(false));
+#endif
+}
+
+void QoraiDefaultExtensionsHandler::OnWidevineEnabledChanged() {
+  if (IsJavascriptAllowed()) {
+    FireWebUIListener("widevine-enabled-changed",
+#if BUILDFLAG(ENABLE_WIDEVINE)
+                      base::Value(::IsWidevineEnabled()));
+#else
+                      base::Value(false));
+#endif
+    OnRestartNeededChanged();
+  }
+}
+
+void QoraiDefaultExtensionsHandler::GetDecentralizedDnsResolveMethodList(
+    const base::Value::List& args) {
+  CHECK_EQ(args.size(), 1U);
+  AllowJavascript();
+
+  ResolveJavascriptCallback(args[0], ::GetResolveMethodList());
+}
+
+void QoraiDefaultExtensionsHandler::GetEnsOffchainResolveMethodList(
+    const base::Value::List& args) {
+  CHECK_EQ(args.size(), 1U);
+  AllowJavascript();
+
+  ResolveJavascriptCallback(args[0],
+                            base::Value(::GetEnsOffchainResolveMethodList()));
+}

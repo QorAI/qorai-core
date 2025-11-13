@@ -1,0 +1,12 @@
+diff --git a/scripts/build/typescript/typescript.gni b/scripts/build/typescript/typescript.gni
+index 9eadb09b6ffa3a9be7b9168cb0d22ca87388a816..c1b222b73fea71683968b12ac4f2747994e98c51 100644
+--- a/scripts/build/typescript/typescript.gni
++++ b/scripts/build/typescript/typescript.gni
+@@ -190,6 +190,7 @@ template("ts_library") {
+ 
+       foreach(src, sources) {
+         _extension = get_path_info(src, "extension")
++        if (label_matches(src, ["//qorai/*"])) { src = get_path_info(src, "name") }
+         _relative_file_name = rebase_path(src, _rootdir)
+         _fileName = get_path_info(_relative_file_name, "dir") + "/" +
+                     get_path_info(_relative_file_name, "name")

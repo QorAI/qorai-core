@@ -1,0 +1,29 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/ios/rules.gni")
+import("//ios/build/config.gni")
+
+source_set("model") {
+  sources = [
+    "qorai_keyed_service_factories.h",
+    "qorai_keyed_service_factories.mm",
+  ]
+  deps = [
+    "//base",
+    "//qorai/components/qorai_account:features",
+    "//qorai/ios/browser/ai_chat",
+    "//qorai/ios/browser/api/webcompat_reporter",
+    "//qorai/ios/browser/qorai_account",
+    "//qorai/ios/browser/qorai_ads",
+    "//qorai/ios/browser/qorai_shields",
+    "//qorai/ios/browser/qorai_wallet",
+    "//qorai/ios/browser/debounce",
+    "//qorai/ios/browser/favicon",
+    "//qorai/ios/browser/misc_metrics",
+    "//qorai/ios/browser/skus",
+    "//qorai/ios/browser/url_sanitizer",
+  ]
+}

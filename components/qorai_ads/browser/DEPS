@@ -1,0 +1,15 @@
+
+include_rules = [
+  "+qorai/components/constants",
+  "+components/content_settings",
+  "+components/metrics",
+  "+components/history",
+  "+components/prefs",
+  "+components/variations",
+  "+content/public/browser",
+  "+mojo/public/cpp/bindings",
+  "+services/network/public",
+  "+third_party/blink/public",
+  "+ui/base",
+  "+ui/message_center/public",
+]

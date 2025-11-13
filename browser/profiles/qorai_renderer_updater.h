@@ -1,0 +1,81 @@
+/* Copyright (c) 2021 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_BROWSER_PROFILES_QORAI_RENDERER_UPDATER_H_
+#define QORAI_BROWSER_PROFILES_QORAI_RENDERER_UPDATER_H_
+
+#include <vector>
+
+#include "base/memory/raw_ptr.h"
+#include "qorai/common/qorai_renderer_configuration.mojom-forward.h"
+#include "qorai/components/tor/buildflags/buildflags.h"
+#include "components/keyed_service/core/keyed_service.h"
+#include "components/prefs/pref_change_registrar.h"
+#include "components/prefs/pref_member.h"
+#include "mojo/public/cpp/bindings/associated_remote.h"
+
+class Profile;
+
+namespace qorai_wallet {
+class KeyringService;
+}
+
+namespace content {
+class RenderProcessHost;
+}
+
+class QoraiRendererUpdater : public KeyedService {
+ public:
+  QoraiRendererUpdater(Profile* profile,
+                       qorai_wallet::KeyringService* keyring_service,
+                       PrefService* local_state);
+  QoraiRendererUpdater(const QoraiRendererUpdater&) = delete;
+  QoraiRendererUpdater& operator=(const QoraiRendererUpdater&) = delete;
+  ~QoraiRendererUpdater() override;
+
+  // Initialize a newly-started renderer process.
+  void InitializeRenderer(content::RenderProcessHost* render_process_host);
+
+ private:
+  std::vector<mojo::AssociatedRemote<qorai::mojom::QoraiRendererConfiguration>>
+  GetRendererConfigurations();
+
+  mojo::AssociatedRemote<qorai::mojom::QoraiRendererConfiguration>
+  GetRendererConfiguration(content::RenderProcessHost* render_process_host);
+
+  // Update renderers if wallet keyring has been initialized
+  void CheckActiveWalletAndMaybeUpdateRenderers();
+
+  // Update active wallet bool, returns true if status has changed
+  bool CheckActiveWallet();
+
+  // Update all renderers due to a configuration change.
+  void UpdateAllRenderers();
+
+  // Update the given renderer due to a configuration change.
+  void UpdateRenderer(
+      mojo::AssociatedRemote<qorai::mojom::QoraiRendererConfiguration>*
+          renderer_configuration);
+
+  raw_ptr<Profile> profile_ = nullptr;
+  raw_ptr<qorai_wallet::KeyringService> keyring_service_ = nullptr;
+  raw_ptr<PrefService> local_state_ = nullptr;
+  PrefChangeRegistrar pref_change_registrar_;
+  PrefChangeRegistrar local_state_change_registrar_;
+
+  // Prefs that we sync to the renderers.
+  IntegerPrefMember qorai_wallet_ethereum_provider_;
+  IntegerPrefMember qorai_wallet_solana_provider_;
+  IntegerPrefMember qorai_wallet_cardano_provider_;
+  BooleanPrefMember de_amp_enabled_;
+#if BUILDFLAG(ENABLE_TOR)
+  BooleanPrefMember onion_only_in_tor_windows_;
+#endif
+  BooleanPrefMember widevine_enabled_;
+  bool is_wallet_allowed_for_context_ = false;
+  bool is_wallet_created_ = false;
+};
+
+#endif  // QORAI_BROWSER_PROFILES_QORAI_RENDERER_UPDATER_H_

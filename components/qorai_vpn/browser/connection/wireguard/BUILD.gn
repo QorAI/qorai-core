@@ -1,0 +1,43 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+
+assert(enable_qorai_vpn)
+assert(!is_android)
+
+source_set("wireguard") {
+  sources = [
+    "wireguard_connection_api_impl_base.cc",
+    "wireguard_connection_api_impl_base.h",
+  ]
+  deps = [
+    "credentials",
+    "//base",
+    "//qorai/components/qorai_vpn/browser/api",
+    "//qorai/components/qorai_vpn/browser/connection:api",
+    "//qorai/components/qorai_vpn/browser/connection:common",
+    "//qorai/components/qorai_vpn/common",
+    "//qorai/components/qorai_vpn/common/mojom",
+    "//qorai/components/qorai_vpn/common/wireguard",
+    "//components/prefs",
+    "//services/network/public/cpp",
+  ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+  sources = [ "qorai_vpn_wireguard_connection_api_unittest.cc" ]
+
+  deps = [
+    ":wireguard",
+    "//qorai/components/qorai_vpn/browser/connection:api",
+    "//qorai/components/qorai_vpn/common",
+    "//components/sync_preferences:test_support",
+    "//content/test:test_support",
+    "//services/network:test_support",
+    "//testing/gtest",
+  ]
+}

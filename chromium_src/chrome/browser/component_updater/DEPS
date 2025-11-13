@@ -1,0 +1,9 @@
+include_rules = [
+  "+qorai/components/qorai_component_updater/browser",
+  "+qorai/components/ai_chat/core/browser",
+  "+qorai/components/qorai_user_agent/browser",
+  "+qorai/components/qorai_wallet/browser",
+  "+qorai/components/psst/buildflags",
+  "+qorai/components/p3a",
+  "+qorai/components/psst/browser/core",
+]

@@ -1,0 +1,59 @@
+// Copyright (c) 2023 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.buttonMenu {
+  line-height: 0;
+  qora-menu-item {
+    padding: var(--qora-spacing-m);
+    min-width: 260px;
+    max-width: 280px;
+    margin-bottom: 0;
+    gap: var(--qora-spacing-m);
+  }
+  qora-menu-item:first-of-type {
+    margin-top: var(--qora-spacing-s);
+  }
+  qora-menu-item:last-of-type {
+    margin-bottom: var(--qora-spacing-s);
+  }
+}
+
+.menuSeparator {
+  padding: 0;
+  height: 1px;
+  background-color: var(--qora-color-divider-subtle);
+}
+
+.menuItemWithIcon {
+  --qora-icon-size: 20px;
+  --qora-icon-color: var(--qora-color-icon-default);
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+
+  & > qora-icon {
+    margin-left: 8px;
+  }
+}
+
+.menuItemMainItem {
+  margin-left: -6px;
+  margin-right: -6px;
+}
+
+.menuText {
+  flex-grow: 1;
+  font: var(--qora-font-default-regular);
+}
+
+qora-toggle {
+  margin-right: var(--qora-spacing-m);
+}
+
+.lockOpen {
+  --qora-icon-color: var(--qora-color-systemfeedback-success-icon);
+}

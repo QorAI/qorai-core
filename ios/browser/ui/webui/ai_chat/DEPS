@@ -1,0 +1,6 @@
+include_rules = [
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/ai_chat/ios/browser",
+  "+qorai/components/ai_chat/resources/grit",
+  "+qorai/components/constants",
+]

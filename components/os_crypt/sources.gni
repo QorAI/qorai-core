@@ -1,0 +1,21 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+qorai_components_os_crypt_deps = [ "//qorai/components/constants" ]
+
+qorai_components_os_crypt_visibility = [
+  "//qorai/components/ai_chat/core/browser",
+  "//qorai/components/qorai_account",
+  "//qorai/components/qorai_rewards/content",
+  "//qorai/components/qorai_sync:prefs",
+  "//qorai/components/sync/service:unit_tests",
+  "//chrome/utility",
+  "//components/os_crypt/sync",
+]
+
+if (is_ios) {
+  qorai_components_os_crypt_visibility +=
+      [ "//qorai/ios/browser/api/qorai_rewards" ]
+}

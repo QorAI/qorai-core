@@ -1,0 +1,69 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/ios/mojom/mojom_wrappers.gni")
+import("//build/config/ios/rules.gni")
+
+config("external_config") {
+  visibility = [ ":*" ]
+  include_dirs = [ "$target_gen_dir" ]
+}
+
+source_set("ads") {
+  configs += [ ":external_config" ]
+
+  sources = [
+    "ads_client_bridge.h",
+    "ads_client_ios.h",
+    "ads_client_ios.mm",
+    "qorai_ads.h",
+    "qorai_ads.mm",
+    "inline_content_ad_ios.h",
+    "inline_content_ad_ios.mm",
+    "new_tab_page_ad_ios.h",
+    "new_tab_page_ad_ios.mm",
+    "notification_ad_ios.h",
+    "notification_ad_ios.mm",
+  ]
+
+  deps = [
+    ":qorai_ads_mojom_wrappers",
+    "//base",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/l10n/common",
+    "//qorai/components/ntp_background_images/browser",
+    "//qorai/components/ntp_background_images/common",
+    "//qorai/ios/browser/api/common",
+    "//qorai/ios/browser/qorai_ads",
+    "//components/prefs",
+    "//ios/chrome/browser/shared/model/application_context",
+    "//ios/chrome/browser/shared/model/profile",
+  ]
+
+  frameworks = [
+    "Foundation.framework",
+    "UIKit.framework",
+    "Network.framework",
+  ]
+}
+
+ios_objc_mojom_wrappers("qorai_ads_mojom_wrappers") {
+  mojom_target = "//qorai/components/qorai_ads/core/mojom"
+  sources = [ "//qorai/components/qorai_ads/core/mojom/qorai_ads.mojom" ]
+  exclude_types = [
+    "DBActionInfo",
+    "DBBindColumnInfo",
+    "DBTransactionResultInfo",
+    "DBRowsUnion",
+    "DBRowInfo",
+    "DBTransactionInfo",
+    "DBColumnValueUnion",
+  ]
+
+  # The module name is `QoraiAds` now which matches the class we already have
+  generate_namespace = false
+}

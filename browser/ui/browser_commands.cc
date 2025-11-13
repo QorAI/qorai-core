@@ -1,0 +1,1095 @@
+/* Copyright (c) 2019 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/ui/browser_commands.h"
+
+#include <algorithm>
+#include <memory>
+#include <numeric>
+#include <stack>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "base/check.h"
+#include "base/check_op.h"
+#include "base/feature_list.h"
+#include "base/functional/callback_helpers.h"
+#include "base/i18n/file_util_icu.h"
+#include "base/i18n/time_formatting.h"
+#include "base/logging.h"
+#include "base/notreached.h"
+#include "base/path_service.h"
+#include "base/strings/utf_string_conversions.h"
+#include "qorai/app/qorai_command_ids.h"
+#include "qorai/browser/qorai_shields/qorai_shields_tab_helper.h"
+#include "qorai/browser/debounce/debounce_service_factory.h"
+#include "qorai/browser/ui/bookmark/qorai_bookmark_prefs.h"
+#include "qorai/browser/ui/qorai_browser.h"
+#include "qorai/browser/ui/sidebar/sidebar_service_factory.h"
+#include "qorai/browser/ui/tabs/qorai_tab_prefs.h"
+#include "qorai/browser/ui/tabs/qorai_tab_strip_model.h"
+#include "qorai/browser/ui/tabs/features.h"
+#include "qorai/browser/ui/views/frame/vertical_tabs/vertical_tab_strip_region_view.h"
+#include "qorai/browser/ui/views/frame/vertical_tabs/vertical_tab_strip_widget_delegate_view.h"
+#include "qorai/browser/url_sanitizer/url_sanitizer_service_factory.h"
+#include "qorai/components/qorai_vpn/common/buildflags/buildflags.h"
+#include "qorai/components/constants/pref_names.h"
+#include "qorai/components/debounce/core/browser/debounce_service.h"
+#include "qorai/components/query_filter/utils.h"
+#include "qorai/components/sidebar/browser/sidebar_service.h"
+#include "qorai/components/speedreader/common/buildflags/buildflags.h"
+#include "qorai/components/tor/buildflags/buildflags.h"
+#include "qorai/components/url_sanitizer/core/browser/url_sanitizer_service.h"
+#include "chrome/browser/bookmarks/bookmark_html_writer.h"
+#include "chrome/browser/browser_process.h"
+#include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/profiles/profile_manager.h"
+#include "chrome/browser/profiles/profile_metrics.h"
+#include "chrome/browser/profiles/profile_window.h"
+#include "chrome/browser/ui/browser.h"
+#include "chrome/browser/ui/browser_commands.h"
+#include "chrome/browser/ui/browser_list.h"
+#include "chrome/browser/ui/browser_navigator_params.h"
+#include "chrome/browser/ui/browser_tabstrip.h"
+#include "chrome/browser/ui/browser_window/public/browser_window_features.h"
+#include "chrome/browser/ui/profiles/profile_picker.h"
+#include "chrome/browser/ui/tabs/tab_enums.h"
+#include "chrome/browser/ui/tabs/tab_group_model.h"
+#include "chrome/browser/ui/tabs/tab_model.h"
+#include "chrome/browser/ui/tabs/tab_strip_model.h"
+#include "chrome/browser/ui/tabs/tab_utils.h"
+#include "chrome/browser/ui/ui_features.h"
+#include "chrome/common/channel_info.h"
+#include "chrome/common/chrome_paths.h"
+#include "chrome/common/pref_names.h"
+#include "chrome/common/webui_url_constants.h"
+#include "chrome/grit/generated_resources.h"
+#include "components/tab_groups/tab_group_visual_data.h"
+#include "components/tabs/public/split_tab_visual_data.h"
+#include "components/tabs/public/tab_group.h"
+#include "content/public/browser/browser_thread.h"
+#include "content/public/browser/page_navigator.h"
+#include "content/public/browser/web_contents.h"
+#include "ui/base/clipboard/clipboard_buffer.h"
+#include "ui/base/clipboard/scoped_clipboard_writer.h"
+#include "ui/base/window_open_disposition.h"
+#include "ui/shell_dialogs/select_file_dialog.h"
+#include "ui/shell_dialogs/select_file_policy.h"
+#include "ui/shell_dialogs/selected_file_info.h"
+#include "url/origin.h"
+
+#if defined(TOOLKIT_VIEWS)
+#include "qorai/browser/ui/views/frame/qorai_browser_view.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_entry.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_entry_id.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_enums.h"
+#include "chrome/browser/ui/views/side_panel/side_panel_ui.h"
+#endif
+
+#if BUILDFLAG(ENABLE_SPEEDREADER)
+#include "qorai/browser/speedreader/speedreader_service_factory.h"
+#include "qorai/browser/ui/speedreader/speedreader_tab_helper.h"
+#include "qorai/components/speedreader/speedreader_service.h"
+#endif
+
+#if BUILDFLAG(ENABLE_TOR)
+#include "qorai/browser/tor/tor_profile_manager.h"
+#include "qorai/browser/tor/tor_profile_service_factory.h"
+#include "qorai/components/tor/tor_profile_service.h"
+#endif
+
+#if BUILDFLAG(ENABLE_QORAI_VPN)
+#include "qorai/browser/qorai_vpn/qorai_vpn_service_factory.h"
+#include "qorai/browser/ui/qorai_vpn/qorai_vpn_controller.h"
+#include "qorai/components/qorai_vpn/browser/qorai_vpn_service.h"
+#include "qorai/components/qorai_vpn/common/qorai_vpn_constants.h"
+#include "qorai/components/qorai_vpn/common/qorai_vpn_utils.h"
+#include "qorai/components/qorai_vpn/common/pref_names.h"
+
+#if BUILDFLAG(IS_WIN)
+#include "qorai/browser/qorai_vpn/win/storage_utils.h"
+#include "qorai/browser/qorai_vpn/win/wireguard_utils_win.h"
+#endif  // BUILDFLAG(ENABLE_QORAI_VPN)
+
+#endif  // BUILDFLAG(ENABLE_QORAI_VPN)
+
+#if BUILDFLAG(ENABLE_COMMANDER)
+#include "qorai/browser/ui/commander/commander_service.h"
+#include "qorai/browser/ui/commander/commander_service_factory.h"
+#endif
+
+using content::WebContents;
+
+namespace qorai {
+
+namespace {
+
+bool CanTakeTabs(const Browser* from, const Browser* to) {
+  return from != to && from->type() == Browser::TYPE_NORMAL &&
+         !from->IsAttemptingToCloseBrowser() && !from->IsBrowserClosing() &&
+         !from->is_delete_scheduled() && to->profile() == from->profile();
+}
+
+std::vector<int> GetSelectedIndices(Browser* browser) {
+  auto* model = browser->tab_strip_model();
+  const auto selection = model->selection_model();
+  auto indices = std::vector<int>(selection.selected_indices().begin(),
+                                  selection.selected_indices().end());
+  CHECK(!indices.empty())
+      << "Returning empty indices could case infinite recursion";
+  return indices;
+}
+
+}  // namespace
+
+/**
+ * @note This function creates a default filename like
+ * "bookmarks_10_31_24.html", for example, if the date was October 31, 2024.
+ *
+ * @note This function mimics the behavior of a function with the same name in
+ * the Chromium source code.
+ *
+ * @see
+ * https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/extensions/api/bookmark_manager_private/bookmark_manager_private_api.cc;l=205-222?q=IDS_EXPORT_BOOKMARKS_DEFAULT_FILENAME
+ */
+base::FilePath GetDefaultFilepathForBookmarkExport() {
+  std::string bookmarks_MM_DD_YY = l10n_util::GetStringFUTF8(
+      IDS_EXPORT_BOOKMARKS_DEFAULT_FILENAME,
+      base::TimeFormatShortDateNumeric(base::Time::Now()));
+
+  base::FilePath path = base::FilePath::FromUTF8Unsafe(bookmarks_MM_DD_YY);
+  base::FilePath::StringType path_str = path.value();
+  base::i18n::ReplaceIllegalCharactersInPath(&path_str, '_');
+  base::FilePath default_path;
+  base::PathService::Get(chrome::DIR_USER_DOCUMENTS, &default_path);
+  return default_path.Append(base::FilePath(path_str));
+}
+
+/**
+ * @class BookmarksExportListener
+ * @brief A listener class for handling bookmark export file selection.
+ *
+ * This class is responsible for showing a file dialog to the user for selecting
+ * the location to save exported bookmarks.
+ *
+ * @note The lifetime of this class is tied to the FileSelected dialog. It will
+ * be automatically deleted when the dialog is closed, a file is selected, or
+ * the dialog is cancelled.
+ */
+class BookmarksExportListener : public ui::SelectFileDialog::Listener {
+ public:
+  explicit BookmarksExportListener(Profile* profile)
+      : profile_(profile),
+        file_selector_(ui::SelectFileDialog::Create(this, nullptr)) {}
+  void FileSelected(const ui::SelectedFileInfo& file, int index) override {
+    bookmark_html_writer::WriteBookmarks(profile_, file.file_path,
+                                         base::DoNothing());
+    file_selector_->ListenerDestroyed();
+    delete this;
+  }
+  void FileSelectionCanceled() override {
+    file_selector_->ListenerDestroyed();
+    delete this;
+  }
+  void ShowFileDialog(Browser* browser) {
+    ui::SelectFileDialog::FileTypeInfo file_types;
+
+    // Only show HTML files in the file dialog.
+    file_types.extensions.push_back({FILE_PATH_LITERAL("html")});
+    file_selector_->SelectFile(
+        ui::SelectFileDialog::SELECT_SAVEAS_FILE,
+        l10n_util::GetStringUTF16(IDS_BOOKMARK_MANAGER_MENU_EXPORT),
+        GetDefaultFilepathForBookmarkExport(), &file_types, 1,
+        FILE_PATH_LITERAL("html"), browser->window()->GetNativeWindow(),
+        nullptr);
+  }
+
+ private:
+  raw_ptr<Profile> profile_;
+  scoped_refptr<ui::SelectFileDialog> file_selector_;
+};
+
+#if BUILDFLAG(ENABLE_TOR)
+void NewOffTheRecordWindowTor(Browser* browser) {
+  CHECK(browser);
+  NewOffTheRecordWindowTor(browser->profile());
+}
+
+void NewOffTheRecordWindowTor(Profile* profile) {
+  CHECK(profile);
+  if (profile->IsTor()) {
+    chrome::OpenEmptyWindow(profile);
+    return;
+  }
+
+  TorProfileManager::SwitchToTorProfile(profile);
+}
+
+void NewTorConnectionForSite(Browser* browser) {
+  Profile* profile = browser->profile();
+  DCHECK(profile);
+  tor::TorProfileService* service =
+      TorProfileServiceFactory::GetForContext(profile);
+  DCHECK(service);
+  WebContents* current_tab = browser->tab_strip_model()->GetActiveWebContents();
+  if (!current_tab) {
+    return;
+  }
+  service->SetNewTorCircuit(current_tab);
+}
+#endif
+
+void MaybeDistillAndShowSpeedreaderBubble(Browser* browser) {
+#if BUILDFLAG(ENABLE_SPEEDREADER)
+  WebContents* contents = browser->tab_strip_model()->GetActiveWebContents();
+  if (!contents) {
+    return;
+  }
+  if (auto* tab_helper =
+          speedreader::SpeedreaderTabHelper::FromWebContents(contents)) {
+    tab_helper->ProcessIconClick();
+  }
+#endif  // BUILDFLAG(ENABLE_SPEEDREADER)
+}
+
+void ShowQoraiVPNBubble(Browser* browser) {
+#if BUILDFLAG(ENABLE_QORAI_VPN)
+  browser->GetFeatures().qorai_vpn_controller()->ShowQoraiVPNBubble();
+#endif
+}
+
+void ToggleQoraiVPNTrayIcon() {
+#if BUILDFLAG(ENABLE_QORAI_VPN) && BUILDFLAG(IS_WIN)
+  qorai_vpn::EnableVPNTrayIcon(!qorai_vpn::IsVPNTrayIconEnabled());
+  if (qorai_vpn::IsVPNTrayIconEnabled()) {
+    qorai_vpn::wireguard::ShowQoraiVpnStatusTrayIcon();
+  }
+#endif
+}
+
+void ToggleQoraiVPNButton(Browser* browser) {
+#if BUILDFLAG(ENABLE_QORAI_VPN)
+  auto* prefs = browser->profile()->GetPrefs();
+  const bool show = prefs->GetBoolean(qorai_vpn::prefs::kQoraiVPNShowButton);
+  prefs->SetBoolean(qorai_vpn::prefs::kQoraiVPNShowButton, !show);
+#endif
+}
+
+void OpenQoraiVPNUrls(Browser* browser, int command_id) {
+#if BUILDFLAG(ENABLE_QORAI_VPN)
+  qorai_vpn::QoraiVpnService* vpn_service =
+      qorai_vpn::QoraiVpnServiceFactory::GetForProfile(browser->profile());
+  CHECK(vpn_service);
+  std::string target_url;
+  switch (command_id) {
+    case IDC_SEND_QORAI_VPN_FEEDBACK:
+      target_url = qorai_vpn::kFeedbackUrl;
+      break;
+    case IDC_ABOUT_QORAI_VPN:
+      target_url = qorai_vpn::kAboutUrl;
+      break;
+    case IDC_MANAGE_QORAI_VPN_PLAN:
+      target_url =
+          qorai_vpn::GetManageUrl(vpn_service->GetCurrentEnvironment());
+      break;
+    default:
+      NOTREACHED() << "This should only be called with one of the above VPN "
+                      "commands. (was "
+                   << command_id << ")";
+  }
+
+  chrome::AddTabAt(browser, GURL(target_url), -1, true);
+#endif
+}
+
+void ToggleAIChat(Browser* browser) {
+#if defined(TOOLKIT_VIEWS)
+  SidePanelUI* side_panel_ui = browser->GetFeatures().side_panel_ui();
+  side_panel_ui->Toggle(SidePanelEntry::Key(SidePanelEntryId::kChatUI),
+                        SidePanelOpenTrigger::kToolbarButton);
+#endif
+}
+
+void ShowWalletBubble(Browser* browser) {
+#if defined(TOOLKIT_VIEWS)
+  static_cast<QoraiBrowserView*>(browser->window())->CreateWalletBubble();
+#endif
+}
+
+void ShowApproveWalletBubble(Browser* browser) {
+#if defined(TOOLKIT_VIEWS)
+  static_cast<QoraiBrowserView*>(browser->window())
+      ->CreateApproveWalletBubble();
+#endif
+}
+
+void CloseWalletBubble(Browser* browser) {
+#if defined(TOOLKIT_VIEWS)
+  static_cast<QoraiBrowserView*>(browser->window())->CloseWalletBubble();
+#endif
+}
+
+void CopySanitizedURL(Browser* browser, const GURL& url) {
+  if (!browser || !browser->profile()) {
+    return;
+  }
+  GURL sanitized_url = qorai::URLSanitizerServiceFactory::GetForBrowserContext(
+                           browser->profile())
+                           ->SanitizeURL(url);
+
+  ui::ScopedClipboardWriter scw(ui::ClipboardBuffer::kCopyPaste);
+  scw.WriteText(base::UTF8ToUTF16(sanitized_url.spec()));
+}
+
+// Copies an url cleared through:
+// - Debouncer (potentially debouncing many levels)
+// - Query filter
+// - URLSanitizerService
+void CopyLinkWithStrictCleaning(Browser* browser, const GURL& url) {
+  if (!browser || !browser->profile()) {
+    return;
+  }
+  DCHECK(url.SchemeIsHTTPOrHTTPS());
+  GURL final_url;
+  // Apply debounce rules.
+  auto* debounce_service =
+      debounce::DebounceServiceFactory::GetForBrowserContext(
+          browser->profile());
+  if (debounce_service && !debounce_service->Debounce(url, &final_url)) {
+    VLOG(1) << "Unable to apply debounce rules";
+    final_url = url;
+  }
+  // Apply query filters.
+  auto filtered_url = query_filter::ApplyQueryFilter(final_url);
+  if (filtered_url.has_value()) {
+    final_url = filtered_url.value();
+  }
+  // Sanitize url.
+  final_url = qorai::URLSanitizerServiceFactory::GetForBrowserContext(
+                  browser->profile())
+                  ->SanitizeURL(final_url);
+
+  ui::ScopedClipboardWriter scw(ui::ClipboardBuffer::kCopyPaste);
+  scw.WriteText(base::UTF8ToUTF16(final_url.spec()));
+}
+
+void ToggleWindowTitleVisibilityForVerticalTabs(Browser* browser) {
+  auto* prefs = browser->profile()->GetOriginalProfile()->GetPrefs();
+  prefs->SetBoolean(
+      qorai_tabs::kVerticalTabsShowTitleOnWindow,
+      !prefs->GetBoolean(qorai_tabs::kVerticalTabsShowTitleOnWindow));
+}
+
+void ToggleVerticalTabStrip(Browser* browser) {
+  auto* profile = browser->profile()->GetOriginalProfile();
+  auto* prefs = profile->GetPrefs();
+  const bool was_using_vertical_tab_strip =
+      prefs->GetBoolean(qorai_tabs::kVerticalTabsEnabled);
+  prefs->SetBoolean(qorai_tabs::kVerticalTabsEnabled,
+                    !was_using_vertical_tab_strip);
+}
+
+void ToggleVerticalTabStripFloatingMode(Browser* browser) {
+  auto* prefs = browser->profile()->GetOriginalProfile()->GetPrefs();
+  prefs->SetBoolean(
+      qorai_tabs::kVerticalTabsFloatingEnabled,
+      !prefs->GetBoolean(qorai_tabs::kVerticalTabsFloatingEnabled));
+}
+
+void ToggleVerticalTabStripExpanded(Browser* browser) {
+  auto* prefs = browser->profile()->GetPrefs();
+  bool expanded_state_per_window =
+      prefs->GetBoolean(qorai_tabs::kVerticalTabsExpandedStatePerWindow);
+  // Toggle preference if all tabs share the same state (derived from prefs)
+  if (!expanded_state_per_window) {
+    prefs->SetBoolean(qorai_tabs::kVerticalTabsCollapsed,
+                      !prefs->GetBoolean(qorai_tabs::kVerticalTabsCollapsed));
+    return;
+  }
+  // Otherwise, retrieve current vertical tab strip region view
+  auto* browser_view = static_cast<QoraiBrowserView*>(browser->window());
+  if (!browser_view) {
+    return;
+  }
+  auto* vtsr_view = browser_view->vertical_tab_strip_widget_delegate_view()
+                        ->vertical_tab_strip_region_view();
+  if (!vtsr_view) {
+    return;
+  }
+  // toggle state for only this vtsr view
+  vtsr_view->ToggleState();
+}
+
+void ToggleActiveTabAudioMute(Browser* browser) {
+  WebContents* contents = browser->tab_strip_model()->GetActiveWebContents();
+  if (!contents || !contents->IsCurrentlyAudible()) {
+    return;
+  }
+
+  bool mute_tab = !contents->IsAudioMuted();
+  SetTabAudioMuted(contents, mute_tab, TabMutedReason::AUDIO_INDICATOR,
+                   std::string());
+}
+
+void ToggleSidebarPosition(Browser* browser) {
+  auto* prefs = browser->profile()->GetPrefs();
+  prefs->SetBoolean(prefs::kSidePanelHorizontalAlignment,
+                    !prefs->GetBoolean(prefs::kSidePanelHorizontalAlignment));
+}
+
+void ToggleSidebar(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  if (auto* qorai_browser_window =
+          QoraiBrowserWindow::From(browser->window())) {
+    qorai_browser_window->ToggleSidebar();
+  }
+}
+
+bool HasSelectedURL(Browser* browser) {
+  if (!browser) {
+    return false;
+  }
+  auto* qorai_browser_window = QoraiBrowserWindow::From(browser->window());
+  return qorai_browser_window && qorai_browser_window->HasSelectedURL();
+}
+
+void CleanAndCopySelectedURL(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+  auto* qorai_browser_window = QoraiBrowserWindow::From(browser->window());
+  if (qorai_browser_window) {
+    qorai_browser_window->CleanAndCopySelectedURL();
+  }
+}
+
+void ToggleShieldsEnabled(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  auto* contents = browser->tab_strip_model()->GetActiveWebContents();
+  if (!contents) {
+    return;
+  }
+  auto* shields =
+      qorai_shields::QoraiShieldsTabHelper::FromWebContents(contents);
+  if (!shields) {
+    return;
+  }
+
+  shields->SetQoraiShieldsEnabled(!shields->GetQoraiShieldsEnabled());
+}
+
+void ToggleJavascriptEnabled(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  auto* contents = browser->tab_strip_model()->GetActiveWebContents();
+  if (!contents) {
+    return;
+  }
+  auto* shields =
+      qorai_shields::QoraiShieldsTabHelper::FromWebContents(contents);
+  if (!shields) {
+    return;
+  }
+
+  shields->SetIsNoScriptEnabled(!shields->GetNoScriptEnabled());
+}
+
+#if BUILDFLAG(ENABLE_COMMANDER)
+void ToggleCommander(Browser* browser) {
+  if (auto* commander_service =
+          commander::CommanderServiceFactory::GetForBrowserContext(
+              browser->profile())) {
+    commander_service->Toggle();
+  }
+}
+#endif
+
+#if BUILDFLAG(ENABLE_PLAYLIST_WEBUI)
+void ShowPlaylistBubble(Browser* browser) {
+  QoraiBrowserWindow::From(browser->window())->ShowPlaylistBubble();
+}
+#endif
+
+#if BUILDFLAG(ENABLE_QORAI_WAYBACK_MACHINE)
+void ShowWaybackMachineBubble(Browser* browser) {
+  QoraiBrowserWindow::From(browser->window())->ShowWaybackMachineBubble();
+}
+#endif
+
+void GroupTabsOnCurrentOrigin(Browser* browser) {
+  auto url =
+      browser->tab_strip_model()->GetActiveWebContents()->GetVisibleURL();
+  auto origin = url::Origin::Create(url);
+
+  std::vector<int> group_indices;
+  for (int index = 0; index < browser->tab_strip_model()->count(); ++index) {
+    auto* tab = browser->tab_strip_model()->GetWebContentsAt(index);
+    auto tab_origin = url::Origin::Create(tab->GetVisibleURL());
+    if (origin.IsSameOriginWith(tab_origin)) {
+      group_indices.push_back(index);
+    }
+  }
+  auto group_id = browser->tab_strip_model()->AddToNewGroup(group_indices);
+  auto* group =
+      browser->tab_strip_model()->group_model()->GetTabGroup(group_id);
+
+  auto data = *group->visual_data();
+  data.SetTitle(base::UTF8ToUTF16(origin.host()));
+  group->SetVisualData(data);
+}
+
+void MoveGroupToNewWindow(Browser* browser) {
+  auto* tsm = browser->tab_strip_model();
+  auto current_group_id = tsm->GetTabGroupForTab(tsm->active_index());
+  if (!current_group_id.has_value()) {
+    return;
+  }
+
+  tsm->delegate()->MoveGroupToNewWindow(current_group_id.value());
+}
+
+bool IsInGroup(Browser* browser) {
+  if (!browser) {
+    return false;
+  }
+
+  auto* tsm = browser->tab_strip_model();
+  auto current_group_id = tsm->GetTabGroupForTab(tsm->active_index());
+  return current_group_id.has_value();
+}
+
+bool HasUngroupedTabs(Browser* browser) {
+  if (!browser) {
+    return false;
+  }
+
+  auto* tsm = browser->tab_strip_model();
+  for (int i = 0; i < tsm->GetTabCount(); ++i) {
+    if (!tsm->GetTabGroupForTab(i)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void GroupUngroupedTabs(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+  auto* tsm = browser->tab_strip_model();
+  std::vector<int> group_indices;
+
+  for (int i = 0; i < tsm->GetTabCount(); ++i) {
+    if (tsm->GetTabGroupForTab(i)) {
+      continue;
+    }
+    group_indices.push_back(i);
+  }
+
+  if (group_indices.empty()) {
+    return;
+  }
+
+  tsm->AddToNewGroup(group_indices);
+}
+
+void UngroupCurrentGroup(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+  auto* tsm = browser->tab_strip_model();
+
+  auto group_id = tsm->GetTabGroupForTab(tsm->active_index());
+  if (!group_id) {
+    return;
+  }
+
+  auto* group = tsm->group_model()->GetTabGroup(group_id.value());
+  std::vector<int> indices(group->tab_count());
+  tabs::TabInterface* first_tab = group->GetFirstTab();
+  DCHECK(first_tab);
+  std::iota(indices.begin(), indices.end(), tsm->GetIndexOfTab(first_tab));
+  tsm->RemoveFromGroup(indices);
+}
+
+void RemoveTabFromGroup(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+  auto* tsm = browser->tab_strip_model();
+  tsm->RemoveFromGroup({tsm->active_index()});
+}
+
+void NameGroup(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  auto* tsm = browser->tab_strip_model();
+  auto group_id = tsm->GetTabGroupForTab(tsm->active_index());
+  if (!group_id) {
+    return;
+  }
+
+  tsm->OpenTabGroupEditor(*group_id);
+}
+
+void NewTabInGroup(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  auto* tsm = browser->tab_strip_model();
+  auto group_id = tsm->GetTabGroupForTab(tsm->active_index());
+  if (!group_id) {
+    return;
+  }
+
+  const auto tabs = tsm->group_model()->GetTabGroup(*group_id)->ListTabs();
+  tsm->delegate()->AddTabAt(GURL(), tabs.end(), true, *group_id);
+}
+
+bool CanUngroupAllTabs(Browser* browser) {
+  if (!browser) {
+    return false;
+  }
+  auto* tsm = browser->tab_strip_model();
+  for (int i = 0; i < tsm->GetTabCount(); ++i) {
+    if (tsm->GetTabGroupForTab(i)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void UngroupAllTabs(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  std::vector<int> indices(browser->tab_strip_model()->GetTabCount());
+  std::iota(indices.begin(), indices.end(), 0);
+  browser->tab_strip_model()->RemoveFromGroup(indices);
+}
+
+void ToggleGroupExpanded(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+  auto* tsm = browser->tab_strip_model();
+  auto group_id = tsm->GetTabGroupForTab(tsm->active_index());
+  if (!group_id) {
+    return;
+  }
+
+  auto* group = tsm->group_model()->GetTabGroup(*group_id);
+  auto* vd = group->visual_data();
+  tab_groups::TabGroupVisualData vd_update(vd->title(), vd->color(),
+                                           !vd->is_collapsed());
+  group->SetVisualData(vd_update);
+}
+
+void CloseUngroupedTabs(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+  auto* tsm = static_cast<QoraiTabStripModel*>(browser->tab_strip_model());
+  CHECK(tsm);
+
+  std::vector<int> indices;
+
+  for (int i = tsm->GetTabCount() - 1; i >= 0; --i) {
+    if (!tsm->GetTabGroupForTab(i)) {
+      indices.push_back(i);
+    }
+  }
+
+  for (const auto& index : indices) {
+    tsm->CloseWebContentsAt(index,
+                            TabCloseTypes::CLOSE_USER_GESTURE |
+                                TabCloseTypes::CLOSE_CREATE_HISTORICAL_TAB);
+  }
+}
+
+void CloseTabsNotInCurrentGroup(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  auto* tsm = static_cast<QoraiTabStripModel*>(browser->tab_strip_model());
+  CHECK(tsm);
+
+  auto group_id = tsm->GetTabGroupForTab(tsm->active_index());
+  if (!group_id) {
+    return;
+  }
+
+  std::vector<int> indices;
+  for (int i = tsm->GetTabCount() - 1; i >= 0; --i) {
+    if (tsm->GetTabGroupForTab(i) != *group_id) {
+      indices.push_back(i);
+    }
+  }
+
+  for (const auto& index : indices) {
+    tsm->CloseWebContentsAt(index,
+                            TabCloseTypes::CLOSE_USER_GESTURE |
+                                TabCloseTypes::CLOSE_CREATE_HISTORICAL_TAB);
+  }
+}
+
+void CloseGroup(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  auto* tsm = browser->tab_strip_model();
+  auto group_id = tsm->GetTabGroupForTab(tsm->active_index());
+  if (!group_id) {
+    return;
+  }
+  tsm->CloseAllTabsInGroup(*group_id);
+}
+
+bool CanBringAllTabs(Browser* browser) {
+  if (!browser) {
+    return false;
+  }
+
+  return std::ranges::any_of(
+      *BrowserList::GetInstance(),
+      [&](const Browser* from) { return CanTakeTabs(from, browser); });
+}
+
+void BringAllTabs(Browser* browser) {
+  if (!browser) {
+    return;
+  }
+
+  // Find all browsers with the same profile
+  std::vector<Browser*> browsers;
+  base::flat_set<Browser*> browsers_to_close;
+  std::ranges::copy_if(
+      *BrowserList::GetInstance(), std::back_inserter(browsers),
+      [&](const Browser* from) { return CanTakeTabs(from, browser); });
+
+  // Detach all tabs from other browsers
+  std::stack<std::unique_ptr<tabs::TabModel>> detached_pinned_tabs;
+  std::stack<std::unique_ptr<tabs::TabModel>> detached_unpinned_tabs;
+
+  const bool shared_pinned_tab_enabled =
+      base::FeatureList::IsEnabled(tabs::features::kQoraiSharedPinnedTabs) &&
+      browser->profile()->GetPrefs()->GetBoolean(qorai_tabs::kSharedPinnedTab);
+
+  std::ranges::for_each(browsers, [&detached_pinned_tabs,
+                                   &detached_unpinned_tabs, &browsers_to_close,
+                                   shared_pinned_tab_enabled](auto* other) {
+    static_cast<QoraiBrowser*>(other)
+        ->set_ignore_enable_closing_last_tab_pref();
+
+    auto* tab_strip_model = other->tab_strip_model();
+    const int pinned_tab_count = tab_strip_model->IndexOfFirstNonPinnedTab();
+    for (int i = tab_strip_model->count() - 1; i >= 0; --i) {
+      const bool is_pinned = i < pinned_tab_count;
+      if (is_pinned && shared_pinned_tab_enabled) {
+        // SharedPinnedTabService is responsible for synchronizing pinned
+        // tabs, thus we shouldn't manually detach and attach tabs here.
+        // Meanwhile, the tab strips don't get empty when they have dummy
+        // contents, we should close the browsers manually.
+        browsers_to_close.insert(other);
+        continue;
+      }
+
+      auto tab = tab_strip_model->DetachTabAtForInsertion(i);
+      if (is_pinned) {
+        detached_pinned_tabs.push(std::move(tab));
+      } else {
+        detached_unpinned_tabs.push(std::move(tab));
+      }
+    }
+  });
+
+  // Insert pinned tabs
+  auto* tab_strip_model = browser->tab_strip_model();
+  while (!detached_pinned_tabs.empty()) {
+    tab_strip_model->InsertDetachedTabAt(
+        tab_strip_model->IndexOfFirstNonPinnedTab(),
+        std::move(detached_pinned_tabs.top()), AddTabTypes::ADD_PINNED);
+    detached_pinned_tabs.pop();
+  }
+
+  // Insert unpinned tabs
+  while (!detached_unpinned_tabs.empty()) {
+    tab_strip_model->InsertDetachedTabAt(
+        tab_strip_model->count(), std::move(detached_unpinned_tabs.top()),
+        AddTabTypes::ADD_NONE);
+    detached_unpinned_tabs.pop();
+  }
+
+  if (shared_pinned_tab_enabled) {
+    std::ranges::for_each(browsers_to_close,
+                          [](auto* other) { other->window()->Close(); });
+  }
+}
+
+bool HasDuplicateTabs(Browser* browser) {
+  if (!browser) {
+    return false;
+  }
+
+  auto* tsm = browser->tab_strip_model();
+  auto* active_web_contents = tsm->GetActiveWebContents();
+  if (!active_web_contents) {
+    return false;
+  }
+
+  auto url = active_web_contents->GetVisibleURL();
+  for (int i = 0; i < tsm->GetTabCount(); ++i) {
+    // Don't check the active tab.
+    if (tsm->active_index() == i) {
+      continue;
+    }
+
+    auto* tab = tsm->GetWebContentsAt(i);
+    if (tab->GetVisibleURL() == url) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void CloseDuplicateTabs(Browser* browser) {
+  auto* tsm = browser->tab_strip_model();
+  auto url = tsm->GetActiveWebContents()->GetVisibleURL();
+
+  for (int i = tsm->GetTabCount() - 1; i >= 0; --i) {
+    // Don't close the active tab.
+    if (tsm->active_index() == i) {
+      continue;
+    }
+
+    auto* tab = tsm->GetWebContentsAt(i);
+    if (tab->GetVisibleURL() == url) {
+      tab->Close();
+    }
+  }
+}
+
+bool CanCloseTabsToLeft(Browser* browser) {
+  auto* tsm = browser->tab_strip_model();
+  const auto& selection = tsm->selection_model();
+  if (selection.empty()) {
+    return false;
+  }
+
+  int left_selected = *(selection.selected_indices().begin());
+  return left_selected > 0;
+}
+
+void CloseTabsToLeft(Browser* browser) {
+  auto* tsm = browser->tab_strip_model();
+  const auto& selection = tsm->selection_model();
+  if (selection.empty()) {
+    return;
+  }
+
+  int left_selected = *(selection.selected_indices().begin());
+  for (int i = left_selected - 1; i >= 0; --i) {
+    tsm->CloseWebContentsAt(i, TabCloseTypes::CLOSE_CREATE_HISTORICAL_TAB |
+                                   TabCloseTypes::CLOSE_USER_GESTURE);
+  }
+}
+
+bool CanCloseUnpinnedTabs(Browser* browser) {
+  auto first_unpinned_index =
+      browser->tab_strip_model()->IndexOfFirstNonPinnedTab();
+  return first_unpinned_index < browser->tab_strip_model()->count();
+}
+
+void CloseUnpinnedTabs(Browser* browser) {
+  auto* tsm = browser->tab_strip_model();
+  DCHECK(CanCloseUnpinnedTabs(browser));
+
+  for (int i = tsm->count() - 1; i >= tsm->IndexOfFirstNonPinnedTab(); --i) {
+    tsm->CloseWebContentsAt(i, TabCloseTypes::CLOSE_CREATE_HISTORICAL_TAB |
+                                   TabCloseTypes::CLOSE_USER_GESTURE);
+  }
+}
+
+void AddAllTabsToNewGroup(Browser* browser) {
+  std::vector<int> indices(browser->tab_strip_model()->count());
+  std::iota(indices.begin(), indices.end(), 0);
+  browser->tab_strip_model()->AddToNewGroup(indices);
+}
+
+bool CanMuteAllTabs(Browser* browser, bool exclude_active) {
+  auto* tsm = browser->tab_strip_model();
+  for (int i = 0; i < tsm->count(); ++i) {
+    if (exclude_active && tsm->active_index() == i) {
+      continue;
+    }
+
+    auto* contents = tsm->GetWebContentsAt(i);
+    if (contents->IsCurrentlyAudible()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void MuteAllTabs(Browser* browser, bool exclude_active) {
+  auto* tsm = browser->tab_strip_model();
+  for (int i = 0; i < tsm->count(); ++i) {
+    if (exclude_active && tsm->active_index() == i) {
+      continue;
+    }
+
+    auto* contents = tsm->GetWebContentsAt(i);
+    if (contents->IsCurrentlyAudible()) {
+      contents->SetAudioMuted(true);
+    }
+  }
+}
+
+bool CanUnmuteAllTabs(Browser* browser) {
+  auto* tsm = browser->tab_strip_model();
+  for (int i = 0; i < tsm->count(); ++i) {
+    auto* contents = tsm->GetWebContentsAt(i);
+    if (contents->IsAudioMuted()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void UnmuteAllTabs(Browser* browser) {
+  auto* tsm = browser->tab_strip_model();
+  for (int i = 0; i < tsm->count(); ++i) {
+    auto* contents = tsm->GetWebContentsAt(i);
+    if (contents->IsAudioMuted()) {
+      contents->SetAudioMuted(false);
+    }
+  }
+}
+
+void ScrollTabToTop(Browser* browser) {
+  auto* contents = browser->tab_strip_model()->GetActiveWebContents();
+  contents->ScrollToTopOfDocument();
+}
+
+void ScrollTabToBottom(Browser* browser) {
+  auto* contents = browser->tab_strip_model()->GetActiveWebContents();
+  contents->ScrollToBottomOfDocument();
+}
+
+void ExportAllBookmarks(Browser* browser) {
+  (new BookmarksExportListener(browser->profile()))->ShowFileDialog(browser);
+}
+
+void ToggleAllBookmarksButtonVisibility(Browser* browser) {
+  auto* prefs = browser->profile()->GetPrefs();
+  prefs->SetBoolean(
+      qorai::bookmarks::prefs::kShowAllBookmarksButton,
+      !prefs->GetBoolean(qorai::bookmarks::prefs::kShowAllBookmarksButton));
+}
+
+bool CanOpenNewSplitTabsWithSideBySide(Browser* browser) {
+  CHECK(base::FeatureList::IsEnabled(features::kSideBySide));
+
+  auto* tab_strip_model = browser->tab_strip_model();
+  auto active_index = tab_strip_model->active_index();
+  if (active_index == TabStripModel::kNoTab) {
+    return false;
+  }
+
+  return !tab_strip_model->GetSplitForTab(active_index).has_value();
+}
+
+bool CanSplitTabsWithSideBySide(Browser* browser) {
+  CHECK(base::FeatureList::IsEnabled(features::kSideBySide));
+
+  auto* tab_strip_model = browser->tab_strip_model();
+  if (tab_strip_model->empty()) {
+    return false;
+  }
+
+  auto selected_indices = GetSelectedIndices(browser);
+  if (selected_indices.size() != 2) {
+    return false;
+  }
+
+  return std::ranges::none_of(selected_indices, [&](auto index) {
+    return tab_strip_model->GetSplitForTab(index).has_value();
+  });
+}
+
+bool IsSplitTabs(Browser* browser) {
+  auto* tab_strip_model = browser->tab_strip_model();
+  if (tab_strip_model->empty()) {
+    return false;
+  }
+
+  auto selected_indices = GetSelectedIndices(browser);
+  return std::ranges::any_of(selected_indices, [&](auto index) {
+    return tab_strip_model->GetSplitForTab(index).has_value();
+  });
+}
+
+void SplitTabsWithSideBySide(Browser* browser,
+                             split_tabs::SplitTabCreatedSource source) {
+  CHECK(qorai::CanSplitTabsWithSideBySide(browser));
+
+  auto selected_indices = GetSelectedIndices(browser);
+  CHECK(selected_indices.size() == 2);
+  auto* tab_strip_model = browser->tab_strip_model();
+  const auto active_index = tab_strip_model->active_index();
+  CHECK_NE(TabStripModel::kNoTab, active_index);
+  // selected indices must have active tab index.
+  CHECK(active_index == selected_indices[0] ||
+        active_index == selected_indices[1]);
+  const int non_active_index_from_selected_indices =
+      active_index == selected_indices[0] ? selected_indices[1]
+                                          : selected_indices[0];
+  tab_strip_model->AddToNewSplit(
+      {non_active_index_from_selected_indices},
+      split_tabs::SplitTabVisualData(split_tabs::SplitTabLayout::kVertical),
+      source);
+}
+
+void RemoveSplitWithSideBySide(Browser* browser) {
+  CHECK(base::FeatureList::IsEnabled(features::kSideBySide));
+
+  auto selected_indices = GetSelectedIndices(browser);
+  auto* tab_strip_model = browser->tab_strip_model();
+  for (auto index : selected_indices) {
+    if (auto split_id = tab_strip_model->GetSplitForTab(index)) {
+      tab_strip_model->RemoveSplit(*split_id);
+    }
+  }
+}
+
+void SwapTabsInSplitWithSideBySide(Browser* browser) {
+  CHECK(base::FeatureList::IsEnabled(features::kSideBySide));
+
+  auto* tab_strip_model = browser->tab_strip_model();
+  auto active_index = tab_strip_model->active_index();
+  CHECK_NE(TabStripModel::kNoTab, active_index);
+
+  auto split_id = tab_strip_model->GetSplitForTab(active_index);
+  CHECK(split_id.has_value());
+  tab_strip_model->ReverseTabsInSplit(*split_id);
+}
+
+}  // namespace qorai

@@ -1,0 +1,290 @@
+build/commands/ @qorai/build-commands-reviewers
+patches/ @qorai/patch-reviewers
+chromium_src/ @qorai/chromium-src-reviewers
+script/audit_deps.py @qorai/sec-team
+script/build-bisect.py @bsclifton
+script/uplift.py @bsclifton
+/README.md @bsclifton
+script/deps.py @qorai/deps-reviewers
+package*.json @qorai/js-deps-reviewers
+rewrite/ @qorai/qorai-core-owners
+
+# Layered Components
+/components/**/ios/ @qorai/ios
+
+# Views
+# Do not add to QORAI_VIEW_OWNED_BY_CLIENT_PASS_KEY
+chromium_src/ui/views/view.h @qorai/qorai-core-owners
+
+# qorai/browser/ui/BUILD.gn should not have new source files added to it. see
+# https://github.com/qorai/qorai-core/blob/master/docs/gni_sources.md#circular-dependencies-circular-dependencies
+browser/ui/BUILD.gn @bridiver
+
+# QorAIBrowserProcess public interface
+# Global services should use GlobalDesktopFeatures
+# https://chromium.googlesource.com/chromium/src/+/main/docs/chrome_browser_design_principles.md#structure_modularity
+browser/qorai_browser_process.h @qorai/qorai-core-owners
+
+# Deprecated - do not use
+QorAINewsUtils.java @bridiver
+
+# New WebUI should use RegisterChromeWebUIConfigs
+browser/ui/webui/qorai_web_uicontroller_factory.cc @bridiver @petemill
+
+# QorAIComponent is deprecated
+components/qorai_component_updater/browser/qorai_component.h @bridiver @antonok-edm
+components/qorai_component_updater/browser/local_data_files_observer.h @bridiver @antonok-edm
+components/qorai_component_updater/browser/local_data_files_service.h @bridiver @antonok-edm
+components/qorai_component_updater/browser/BUILD.gn @bridiver
+
+# QorAIPrefServiceBridge is deprecated
+browser/android/preferences/qorai_pref_service_bridge.cc @bridiver
+
+# Rewards
+browser/qorai_rewards/ @qorai/rewards-client
+browser/extensions/api/qorai_rewards_api.cc @qorai/rewards-client
+browser/extensions/api/qorai_rewards_api.h @qorai/rewards-client
+browser/ui/webui/qorai_rewards_page_ui.cc @qorai/rewards-client
+browser/ui/webui/qorai_rewards_page_ui.h @qorai/rewards-client
+browser/ui/webui/qorai_rewards_ui.cc @qorai/rewards-client
+browser/ui/webui/qorai_rewards_ui.h @qorai/rewards-client
+components/qorai_rewards/ @qorai/rewards-client
+components/services/bat_rewards/ @qorai/rewards-client
+components/qorai_rewards/core/engine/util/signer.cc @qorai/sec-team
+components/qorai_rewards/core/engine/util/signer.h @qorai/sec-team
+components/qorai_rewards/core/engine/util/request_signer.cc @qorai/sec-team
+components/qorai_rewards/core/engine/util/request_signer.h @qorai/sec-team
+
+# Ads
+browser/qorai_ads/**/*.cc @qorai/ads-client
+browser/qorai_ads/**/*.h @qorai/ads-client
+browser/qorai_ads/**/*.java @qorai/ads-client
+browser/qorai_ads/**/*.mm @qorai/ads-client
+browser/ui/qorai_ads/**/*.cc @qorai/ads-client
+browser/ui/qorai_ads/**/*.h @qorai/ads-client
+browser/ui/qorai_ads/**/*.mm @qorai/ads-client
+components/qorai_ads/**/*.cc @qorai/ads-client
+components/qorai_ads/**/*.h @qorai/ads-client
+components/qorai_ads/**/*.mm @qorai/ads-client
+components/services/bat_ads/**/*.cc @qorai/ads-client
+components/services/bat_ads/**/*.h @qorai/ads-client
+components/services/bat_ads/**/*.mm @qorai/ads-client
+qorai/components/qorai_ads/core/internal/privacy/**/*.cc @qorai/ads-client
+qorai/components/qorai_ads/core/internal/privacy/**/*.h @qorai/ads-client
+qorai/components/qorai_ads/core/internal/privacy/**/*.mm @qorai/ads-client
+qorai/components/qorai_ads/core/internal/security/**/*.cc @qorai/ads-client
+qorai/components/qorai_ads/core/internal/security/**/*.h @qorai/ads-client
+qorai/components/qorai_ads/core/internal/security/**/*.mm @qorai/ads-client
+
+# QorAI l10n components are deprecated. Use Chromium's functionality
+# unless no equivalent is available.
+qorai/components/l10n/ @tmancey @bridiver
+
+# Network
+browser/net/ @qorai/qorai-core-owners
+chromium_src/chrome/browser/net/profile_network_context_service.cc @qorai/sec-team
+chromium_src/net/tools/transport_security_state_generator/input_file_parsers.cc @qorai/sec-team
+
+# Tor
+browser/tor/ @qorai/tor-reviewers
+browser/ui/webui/tor_internals_ui.* @qorai/tor-reviewers
+browser/ui/webui/settings/qorai_tor*.* @qorai/tor-reviewers
+components/tor/ @qorai/tor-reviewers
+net/proxy_resolution/ @qorai/tor-reviewers
+
+# New tab page
+browser/resources/qorai_new_tab_page_refresh @qorai/qorai-core-ntp
+browser/ui/webui/qorai_new_tab_page_refresh @qorai/qorai-core-ntp
+
+# Chromium Extension API modifications
+chromium_src/**/extensions/**/*_features.json @qorai/sec-team
+chromium_src/tools/json_schema_compiler/ @qorai/sec-team
+common/extensions/api/ @qorai/sec-team
+
+# chromium_src Typescript and CSS overrides
+chromium_src/**/*.css @qorai/chromium-src-web-reviewers
+chromium_src/**/*.ts @qorai/chromium-src-web-reviewers
+
+# Lit Mangling
+tools/chromium_src/lit_mangler/ @qorai/chromium-src-web-reviewers
+
+# QorAI theme
+browser/themes @simonhong
+
+# Widevine
+browser/widevine @simonhong
+
+# Wayback machine
+browser/ui/views/infobars/qorai_wayback_machine_* @simonhong
+components/qorai_wayback_machine @simonhong
+
+# Licensing of third-party components
+common/licenses/ @fmarier
+script/qorai_license_helper.py @fmarier
+script/check_npm_licenses.py @fmarier
+script/generate_licenses.py @fmarier
+
+# Crypto Wallets
+browser/qorai_wallet/ @qorai/crypto-wallets-core
+browser/ui/qorai_wallet/ @qorai/crypto-wallets-core
+browser/ui/wallet_bubble_manager_delegate_impl.* @qorai/crypto-wallets-core
+browser/ui/webui/qorai_wallet/ @qorai/crypto-wallets-core
+browser/ui/views/wallet_bubble_focus_observer* @qorai/crypto-wallets-core
+components/qorai_wallet/ @qorai/crypto-wallets-core
+components/qorai_wallet/browser/qorai_wallet_provider_delegate.h @qorai/crypto-wallets-core @qorai/crypto-wallets-ios
+components/qorai_wallet/resources/*.js @qorai/crypto-wallets-core @qorai/crypto-wallets-ios
+components/qorai_wallet_ui/ @qorai/crypto-wallets-front-end
+ios/browser/qorai_wallet/ @qorai/crypto-wallets-ios
+ios/browser/api/qorai_wallet @qorai/crypto-wallets-ios
+
+# QorAI Referrals Service
+components/qorai_referrals/browser/qorai_referrals_service* @simonhong
+
+# QorAI Sync
+browser/android/qorai_sync_worker.* @qorai/sync-reviewers
+browser/sync/ @qorai/sync-reviewers
+browser/ui/webui/settings/qorai_sync_handler.* @qorai/sync-reviewers
+components/qorai_sync/ @qorai/sync-reviewers
+components/sync/service/ @qorai/sync-reviewers
+components/sync_device_info/ @qorai/sync-reviewers
+ios/browser/api/sync/qorai_sync_worker.* @qorai/sync-reviewers
+
+# P3A
+browser/p3a/ @qorai/p3a-reviewers
+components/p3a/ @qorai/p3a-reviewers
+components/time_period_storage/ @qorai/p3a-reviewers
+
+# Perf predictor
+components/qorai_perf_predictor/ @qorai/adblock-team
+
+# Permissions
+browser/permissions/**/*expiration* @goodov
+browser/permissions/**/*lifetime* @goodov
+components/permissions/**/*expiration* @goodov
+components/permissions/**/*lifetime* @goodov
+
+# Java patching
+build/android/bytecode/ @qorai/java-patch-reviewers
+patches/*.java.patch @qorai/java-patch-reviewers
+
+# Bitcoin-core
+third_party/bitcoin-core/BUILD.gn @qorai/sec-team
+
+# Boost imports (i.e. config, multiprecision)
+third_party/boost @qorai/deps-reviewers
+
+# Network auditor
+browser/net/qorai_network_audit_allowed_lists.h @qorai/sec-team
+browser/net/qorai_network_audit_rewards_browsertest.cc @qorai/sec-team
+browser/net/qorai_network_audit_search_ad_browsertest.cc @qorai/sec-team
+
+# Canary
+tools/cr/ @qorai/chromium-rebase-team
+
+# iOS
+/ios/ @qorai/ios
+build/ios/ @qorai/ios
+
+# Android tests
+android/android_browser_tests.gni @qorai/android-tests-reviewers
+
+# Android res
+android/java/res @qorai/Android
+
+# QorAIPrefServiceBridge.java is going to be retired soon. We
+# have that owners record temporary to avoid people adding
+# new things there
+android/java/org/chromium/chrome/browser/preferences/QorAIPrefServiceBridge.java @AlexeyBarabash @samartnik @SergeyZhukovsky
+
+# GitHub configuration
+/.github/ @qorai/devops-team
+/.github/CODEOWNERS @bridiver @bsclifton
+/.github/PULL_REQUEST_TEMPLATE.md @bsclifton
+
+# Semgrep configuration
+/.semgrepignore @thypon
+
+# Deprecated android util directory
+android/java/org/chromium/chrome/browser/util @bridiver
+# This file should be removed once our UI is adjusted to Dynamic Colors
+android/java/org/chromium/chrome/browser/util/QorAIDynamicColors.java @qorai/Android
+
+# mojo interfaces should be implemented directly by the underlying classes
+browser/ai_chat/ai_chat_settings_helper.* @bridiver @petemill
+
+# These rules are last to take precedence over directory rules.Do not add any
+# new rules below this line without checking with @bridiver
+
+# Renderer code
+**/renderer/**/* @qorai/renderer-reviewers
+
+# Rust deps
+**/Cargo.* @qorai/rust-deps-reviewers
+third_party/rust @bridiver @cdesouza-chromium
+
+# include_rules
+DEPS @qorai/deps-reviewers
+
+# sources.gni - see docs/gni_sources.md
+**/sources.gni @qorai/sources-gni-reviewers
+**/*_sources.gni @qorai/sources-gni-reviewers
+android/qorai_java_sources.gni @qorai/Android
+docs/gni_sources.md @qorai/sources-gni-reviewers
+
+# Rust code
+**/*.rs @qorai/rust-reviewers
+
+# Third-party binaries
+**/*.aar @qorai/sec-team
+**/*.jar @qorai/sec-team
+**/*.apk @qorai/sec-team
+**/*.dex @qorai/sec-team
+**/*.lib @qorai/sec-team
+**/*.so @qorai/sec-team
+**/*.o @qorai/sec-team
+**/*.dll @qorai/sec-team
+**/*.dylib @qorai/sec-team
+
+# Strings
+**/*.grd @qorai/string-reviewers-team
+**/*.grdp @qorai/string-reviewers-team
+components/qorai_extension/extension/qorai_extension/_locales/en_US/messages.json @qorai/string-reviewers-team
+
+# Browser commands available via QorAI Education content
+browser/ui/webui/qorai_browser_command/qorai_browser_command_handler.cc @qorai/sec-team
+browser/resources/qorai_education/qorai_education_app.ts @qorai/sec-team
+components/qorai_education/education_urls.* @qorai/sec-team
+ui/webui/resources/js/qorai_browser_command/qorai_browser_command.mojom @qorai/sec-team
+
+# l10n scripts deps
+script/lib/l10n/requirements.txt @qorai/sec-team
+
+# protected URLs (needs security review)
+components/skus/common/skus_utils.h @qorai/sec-team
+
+# for qorai_exec_script_allowlist
+build/dotfile_settings.gni @qorai/qorai-core-owners
+
+docs/gni_sources.md @bridiver
+docs/keyed_services.md @bridiver
+
+build/commands/lib/branding.js @bridiver
+
+# deprecated
+/components/constants @bridiver
+
+# changes to upstream content settings should be done as patches
+content_settings_registry.cc @qorai/content-settings-reviewers
+
+# new content settings need review
+content_settings_types.mojom @qorai/content-settings-reviewers
+
+# Keyed service factories need special attention for browser context handling
+# See docs/keyed_services.md
+*_service_factory.cc @qorai/qorai-core-owners
+*_service_factory.mm @qorai/qorai-core-owners
+*_service_factory_ios.mm @qorai/qorai-core-owners
+
+# QorAI Account
+*qorai_account* @szilardszaloki
+*QorAIAccount* @szilardszaloki

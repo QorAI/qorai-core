@@ -1,0 +1,92 @@
+// Copyright (c) 2024 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// You can obtain one at https://mozilla.org/MPL/2.0/.
+
+.notice {
+  position: relative;
+  border-radius: var(--qora-radius-m);
+  background-color: var(--qora-color-container-highlight);
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  overflow: hidden;
+  color: var(--qora-color-text-secondary);
+}
+
+.illustration {
+  flex: 0 0 auto;
+  width: 40%;
+  max-width: 260px;
+  background-color: #ff815c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3%;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.content {
+  flex-grow: 1;
+  padding: var(--qora-spacing-xl);
+
+  h4 {
+    margin: 0 0 var(--qora-spacing-s) 0;
+    // width of close button, make sure no overlap
+    padding-right: var(--qora-spacing-2xl);
+    display: block;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    font: var(--qora-font-heading-h4);
+    color: var(--qora-color-text-primary);
+  }
+
+  p {
+    margin: 0 0 var(--qora-spacing-s) 0;
+    font: var(--qora-font-default-regular);
+  }
+
+  a {
+    font: var(--qora-font-default-link);
+    color: inherit;
+  }
+}
+
+.closeButton {
+  --qora-button-color: color-mix(
+    in srgb,
+    transparent 50%,
+    var(--qora-color-container-background)
+  );
+  --qora-button-padding: var(--qora-spacing-xs);
+  --qora-button-radius: 100px;
+  position: absolute;
+  top: var(--qora-spacing-xl);
+  right: var(--qora-spacing-xl);
+}
+.closeIcon {
+  --qora-icon-color: var(--qora-color-icon-default);
+}
+
+@container (width < 410px) {
+  .notice {
+    flex-direction: column;
+  }
+  .illustration {
+    max-width: none;
+    width: auto;
+    padding: 3%;
+    height: 136px;
+    img {
+      width: auto;
+      max-width: 260px;
+      height: auto;
+      max-height: 100%;
+    }
+  }
+}

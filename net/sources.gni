@@ -1,0 +1,13 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+qorai_net_sources = [
+  "//qorai/net/decentralized_dns/constants.cc",
+  "//qorai/net/decentralized_dns/constants.h",
+  "//qorai/net/http/partitioned_host_state_map.cc",
+  "//qorai/net/http/partitioned_host_state_map.h",
+  "//qorai/net/proxy_resolution/proxy_config_service_tor.cc",
+  "//qorai/net/proxy_resolution/proxy_config_service_tor.h",
+]

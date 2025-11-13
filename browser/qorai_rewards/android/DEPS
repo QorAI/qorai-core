@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/qorai_ads/core/browser/service",
+  "+qorai/components/qorai_ads/core/mojom",
+]

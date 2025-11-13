@@ -1,0 +1,20 @@
+include_rules = [
+  "+qorai/content/public/browser",
+  "+qorai/components/qorai_shields/core/browser",
+  "+qorai/components/qorai_shields/content/test",
+  "+qorai/components/qorai_user_agent/common/features.h",
+  "+qorai/components/geolocation",
+  "+qorai/components/update_client/buildflags.h",
+  "+qorai/components/query_filter",
+  "+qorai/components/qorai_service_keys",
+  "+qorai/components/speech_to_text/buildflags.h",
+  "+qorai/components/speech_to_text/features.h",
+  "+qorai/components/static_redirect_helper",
+  "+services/network/host_resolver.h",
+]
+
+specific_include_rules = {
+  "qorai_ad_block_tp_network_delegate_helper_unittest\.cc": [
+    "+qorai/components/qorai_component_updater/browser/qorai_component.h",
+  ],
+}

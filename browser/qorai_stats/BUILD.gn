@@ -1,0 +1,90 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import("//qorai/browser/qorai_stats/buildflags.gni")
+import("//build/buildflag_header.gni")
+
+buildflag_header("buildflags") {
+  header = "buildflags.h"
+  flags = [ "QORAI_USAGE_SERVER=\"$qorai_stats_updater_url\"" ]
+}
+
+source_set("qorai_stats") {
+  sources = [
+    "//qorai/browser/qorai_stats/qorai_stats_updater.cc",
+    "//qorai/browser/qorai_stats/qorai_stats_updater.h",
+    "//qorai/browser/qorai_stats/qorai_stats_updater_params.cc",
+    "//qorai/browser/qorai_stats/qorai_stats_updater_params.h",
+    "//qorai/browser/qorai_stats/features.cc",
+    "//qorai/browser/qorai_stats/features.h",
+    "//qorai/browser/qorai_stats/first_run_util.cc",
+    "//qorai/browser/qorai_stats/first_run_util.h",
+    "//qorai/browser/qorai_stats/switches.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/browser:browser_process",
+    "//qorai/browser/qorai_stats:buildflags",
+    "//qorai/common",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_referrals/common",
+    "//qorai/components/qorai_stats/browser",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:pref_names",
+    "//qorai/components/constants",
+    "//qorai/components/misc_metrics",
+    "//qorai/components/rpill/common",
+    "//qorai/components/version_info",
+    "//chrome/browser:browser_process",
+    "//chrome/browser/headless",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui",
+    "//chrome/common",
+    "//components/prefs",
+    "//net",
+    "//services/network/public/cpp",
+  ]
+}
+
+source_set("browser_tests") {
+  testonly = true
+
+  sources = [ "//qorai/browser/qorai_stats/qorai_stats_updater_browsertest.cc" ]
+
+  deps = [
+    "//qorai/browser/qorai_stats",
+    "//qorai/components/qorai_referrals/browser",
+    "//chrome/browser",
+    "//chrome/test:test_support",
+  ]
+
+  defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [
+    "//qorai/browser/qorai_stats/qorai_stats_updater_unittest.cc",
+    "//qorai/browser/qorai_stats/first_run_util_unittest.cc",
+  ]
+
+  deps = [
+    "//qorai/browser/qorai_ads",
+    "//qorai/browser/qorai_stats",
+    "//qorai/components/qorai_ads/core",
+    "//qorai/components/qorai_referrals/browser",
+    "//qorai/components/qorai_rewards/content",
+    "//qorai/components/qorai_stats/browser",
+    "//qorai/components/qorai_wallet/browser",
+    "//qorai/components/qorai_wallet/browser:pref_names",
+    "//qorai/components/misc_metrics",
+    "//chrome/browser",
+    "//chrome/browser/prefs",
+    "//chrome/test:test_support",
+    "//components/prefs",
+  ]
+}

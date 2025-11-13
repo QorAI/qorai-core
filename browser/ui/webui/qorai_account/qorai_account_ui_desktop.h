@@ -1,0 +1,46 @@
+/* Copyright (c) 2025 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#ifndef QORAI_BROWSER_UI_WEBUI_QORAI_ACCOUNT_QORAI_ACCOUNT_UI_DESKTOP_H_
+#define QORAI_BROWSER_UI_WEBUI_QORAI_ACCOUNT_QORAI_ACCOUNT_UI_DESKTOP_H_
+
+#include "qorai/browser/qorai_account/qorai_account_service_factory.h"
+#include "qorai/components/qorai_account/qorai_account_ui_base.h"
+#include "chrome/browser/ui/webui/constrained_web_dialog_ui.h"
+#include "components/prefs/pref_member.h"
+#include "content/public/browser/web_ui_controller.h"
+#include "content/public/browser/web_ui_data_source.h"
+#include "content/public/browser/webui_config.h"
+
+namespace content {
+class WebUI;
+}  // namespace content
+
+class QoraiAccountUIDesktop
+    : public QoraiAccountUIBase<content::WebUIDataSource,
+                                qorai_account::QoraiAccountServiceFactory>,
+      public ConstrainedWebDialogUI {
+ public:
+  explicit QoraiAccountUIDesktop(content::WebUI* web_ui);
+
+  ~QoraiAccountUIDesktop() override;
+
+ private:
+  void OnVerificationTokenChanged();
+
+  StringPrefMember pref_verification_token_;
+
+  WEB_UI_CONTROLLER_TYPE_DECL();
+};
+
+class QoraiAccountUIDesktopConfig
+    : public content::DefaultWebUIConfig<QoraiAccountUIDesktop> {
+ public:
+  QoraiAccountUIDesktopConfig();
+};
+
+void ShowQoraiAccountDialog(content::WebUI* web_ui);
+
+#endif  // QORAI_BROWSER_UI_WEBUI_QORAI_ACCOUNT_QORAI_ACCOUNT_UI_DESKTOP_H_

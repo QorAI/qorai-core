@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/constants",
+  "+qorai/components/widevine/constants.h",
+]

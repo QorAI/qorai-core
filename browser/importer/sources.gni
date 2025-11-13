@@ -1,0 +1,50 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//extensions/buildflags/buildflags.gni")
+
+qorai_browser_importer_sources = []
+qorai_browser_importer_public_deps = []
+qorai_browser_importer_impl_sources = []
+qorai_browser_importer_impl_deps = []
+
+if (!is_android) {
+  qorai_browser_importer_sources +=
+      [ "//qorai/browser/importer/qorai_external_process_importer_host.h" ]
+  qorai_browser_importer_public_deps += [
+    "//base",
+    "//chrome/common/extensions",
+    "//extensions/buildflags",
+  ]
+  qorai_browser_importer_impl_sources += [
+    "//qorai/browser/importer/qorai_external_process_importer_client.cc",
+    "//qorai/browser/importer/qorai_external_process_importer_client.h",
+    "//qorai/browser/importer/qorai_external_process_importer_host.cc",
+    "//qorai/browser/importer/qorai_in_process_importer_bridge.cc",
+    "//qorai/browser/importer/qorai_in_process_importer_bridge.h",
+  ]
+  if (enable_extensions) {
+    qorai_browser_importer_impl_sources += [
+      "//qorai/browser/importer/extensions_import_helpers.cc",
+      "//qorai/browser/importer/extensions_import_helpers.h",
+    ]
+    qorai_browser_importer_impl_deps += [
+      "//qorai/common/importer",
+      "//chrome/browser/extensions",
+      "//components/value_store",
+      "//extensions/browser",
+      "//extensions/common:common_constants",
+    ]
+  }
+  qorai_browser_importer_impl_deps += [
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit_grit",
+    "//qorai/browser/importer",
+    "//qorai/common/importer:interfaces",
+    "//content/public/browser",
+    "//extensions/buildflags",
+    "//mojo/public/cpp/bindings",
+  ]
+}

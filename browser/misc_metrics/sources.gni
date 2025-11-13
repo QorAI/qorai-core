@@ -1,0 +1,41 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# These files needs access to some files in chrome/browser target.
+qorai_browser_misc_metrics_sources = [
+  "//qorai/browser/misc_metrics/profile_misc_metrics_service.cc",
+  "//qorai/browser/misc_metrics/profile_misc_metrics_service_factory.cc",
+  "//qorai/browser/misc_metrics/uptime_monitor_impl.cc",
+]
+
+qorai_browser_misc_metrics_deps = [
+  "//qorai/browser:browser_process",
+  "//qorai/browser/profiles:util",
+  "//qorai/components/ai_chat/core/browser",
+  "//qorai/components/misc_metrics",
+  "//qorai/components/ntp_background_images/browser",
+  "//qorai/components/ntp_background_images/common",
+  "//chrome/browser:browser_process",
+  "//chrome/browser/profiles",
+  "//components/keyed_service/content",
+  "//components/keyed_service/core",
+  "//content/public/browser",
+]
+
+if (!is_android) {
+  qorai_browser_misc_metrics_sources += [
+    "//qorai/browser/misc_metrics/default_browser_monitor.cc",
+    "//qorai/browser/misc_metrics/profile_new_tab_metrics.cc",
+    "//qorai/browser/misc_metrics/profile_new_tab_metrics.h",
+  ]
+
+  qorai_browser_misc_metrics_deps +=
+      [ "//qorai/browser/misc_metrics:usage_clock" ]
+}
+
+qorai_browser_misc_metrics_android_sources = [
+  "//qorai/browser/misc_metrics/misc_android_metrics.cc",
+  "//qorai/browser/misc_metrics/misc_android_metrics_factory_android.cc",
+]

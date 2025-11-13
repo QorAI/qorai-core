@@ -1,0 +1,8 @@
+include_rules = [
+  "+qorai/components/ai_chat/core/common",
+  "+qorai/components/ai_chat/core/common/buildflags",
+  "+qorai/components/sync/service",
+  "+qorai/components/constants",
+  "+qorai/components/tor",
+  "+qorai/components/constants",
+]

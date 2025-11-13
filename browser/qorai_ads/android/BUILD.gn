@@ -1,0 +1,37 @@
+# Copyright (c) 2023 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+import("//third_party/jni_zero/jni_zero.gni")
+
+assert(is_android)
+
+source_set("android") {
+  sources = [
+    "qorai_ads_native_helper.cc",
+    "qorai_ads_native_helper.h",
+  ]
+
+  public_deps = [ "//base" ]
+
+  deps = [
+    "//qorai/browser/qorai_ads",
+    "//qorai/browser/qorai_ads/android:jni_headers",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_ads/core/public:headers",
+    "//chrome/browser/profiles:profile",
+    "//components/prefs",
+  ]
+}
+
+generate_jni("jni_headers") {
+  sources = [
+    "java/org/chromium/chrome/browser/QoraiAdsNativeHelper.java",
+    "java/org/chromium/chrome/browser/device_id/DeviceIdImplAndroid.java",
+    "java/org/chromium/chrome/browser/dialogs/QoraiAdsNotificationDialog.java",
+    "java/org/chromium/chrome/browser/dialogs/QoraiAdsSignupDialog.java",
+    "java/org/chromium/chrome/browser/notifications/QoraiAds.java",
+  ]
+}

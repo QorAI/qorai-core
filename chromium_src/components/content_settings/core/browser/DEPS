@@ -1,0 +1,8 @@
+include_rules = [
+  "+qorai/components/content_settings/core/browser",
+  "+qorai/components/qorai_shields/core/common",
+  "+qorai/components/constants",
+  "+qorai/components/psst/buildflags/buildflags.h",
+  "+qorai/components/psst/common/constants.h",
+  "+qorai/components/psst/common/features.h"
+]

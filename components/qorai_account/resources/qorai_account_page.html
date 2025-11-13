@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html lang="$i18n{language}">
+  <head>
+    <meta charset="utf-8">
+    <title>$i18n{qoraiAccountPageTitle}</title>
+    <if expr="is_android or is_ios">
+      <meta name="viewport" content="width=device-width, user-scalable=no">
+    </if>
+  </head>
+  <body>
+    <link rel="stylesheet" href="//resources/qorai/css/reset.css">
+    <link rel="stylesheet" href="//resources/css/text_defaults.css">
+    <link rel="stylesheet" href="//resources/qorai/fonts/inter.css">
+    <link rel="stylesheet" href="//resources/qorai/fonts/manrope.css">
+    <link rel="stylesheet" href="//resources/qorai/fonts/poppins.css">
+    <link rel="stylesheet" href="//resources/qorai/css/nala.css">
+    <link rel="stylesheet" href="qorai_account_page.css">
+    <script type="module" src="./strings.m.js"></script>
+    <script type="module" src="//resources/qorai/qora.bundle.js"></script>
+    <script type="module" src="qorai_account_dialogs.js"></script>
+    <if expr="is_ios">
+      <!-- TODO(crbug.com/487000): Remove this once injected by web. -->
+      <script src="//resources/js/ios/mojo_api.js"></script>
+      <script src="//resources/js/ios/web_ui.js"></script>
+    </if>
+    <qorai-account-dialogs></qorai-account-dialogs>
+  </body>
+</html>

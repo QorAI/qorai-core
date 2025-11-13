@@ -1,0 +1,40 @@
+# Copyright (c) 2021 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/tor/buildflags/buildflags.gni")
+
+qorai_utility_importer_sources = []
+qorai_utility_importer_deps = []
+qorai_utility_importer_public_deps = [
+  "//qorai/components/services/qor_ads:lib",
+  "//qorai/components/services/qor_rewards:lib",
+]
+
+if (!is_android) {
+  qorai_utility_importer_sources += [
+    "//qorai/utility/importer/qorai_external_process_importer_bridge.cc",
+    "//qorai/utility/importer/qorai_external_process_importer_bridge.h",
+    "//qorai/utility/importer/qorai_profile_import_impl.cc",
+    "//qorai/utility/importer/qorai_profile_import_impl.h",
+    "//qorai/utility/importer/chrome_importer.cc",
+    "//qorai/utility/importer/chrome_importer.h",
+  ]
+
+  qorai_utility_importer_deps += [
+    "//base",
+    "//qorai/app:qorai_generated_resources_grit",
+    "//qorai/common/importer",
+    "//qorai/common/importer:interfaces",
+    "//chrome/app:branded_strings",
+    "//components/os_crypt/sync",
+    "//components/password_manager/core/browser",
+    "//components/user_data_importer/common",
+    "//components/webdata/common",
+  ]
+}
+
+if (enable_tor) {
+  qorai_utility_importer_deps += [ "//qorai/components/services/tor" ]
+}

@@ -1,0 +1,48 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_wallet/common/config.gni")
+
+source_set("orchard_storage") {
+  sources = [
+    "orchard_shard_tree_types.cc",
+    "orchard_storage.cc",
+  ]
+
+  visibility = [
+    "//qorai/components/qorai_wallet/browser:*",
+    "//qorai/components/qorai_wallet/browser/internal:orchard_bundle",
+    "//qorai/components/qorai_wallet/browser/test:*",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_wallet/common",
+    "//sql",
+  ]
+
+  public_deps = [ ":headers" ]
+}
+
+source_set("headers") {
+  sources = [
+    "orchard_shard_tree_types.h",
+    "orchard_storage.h",
+  ]
+
+  visibility = [
+    ":orchard_storage",
+    "//qorai/components/qorai_wallet/browser/internal:orchard_bundle",
+    "//qorai/components/qorai_wallet/browser/test:*",
+    "//qorai/components/qorai_wallet/browser/zcash/rust:*",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_wallet/common",
+    "//qorai/components/services/qorai_wallet/public/mojom",
+    "//sql",
+  ]
+}

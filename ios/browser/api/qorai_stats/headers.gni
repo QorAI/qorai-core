@@ -1,0 +1,2 @@
+qorai_stats_public_headers =
+    [ "//qorai/ios/browser/api/qorai_stats/qorai_stats.h" ]

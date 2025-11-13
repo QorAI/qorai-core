@@ -1,0 +1,9 @@
+diff --git a/components/sync/protocol/protocol_sources.gni b/components/sync/protocol/protocol_sources.gni
+index 6959758f950ed954ef07d0dea6190994fdf88985..d9ea4fd7dc8a91d4466a2b483f09baaf2f6f8748 100644
+--- a/components/sync/protocol/protocol_sources.gni
++++ b/components/sync/protocol/protocol_sources.gni
+@@ -90,3 +90,4 @@ sync_protocol_sources = [
+   "wifi_configuration_specifics.proto",
+   "workspace_desk_specifics.proto",
+ ]
++import("//qorai/components/sync/protocol/protocol_sources.gni") sync_protocol_sources += qorai_sync_protocol_sources

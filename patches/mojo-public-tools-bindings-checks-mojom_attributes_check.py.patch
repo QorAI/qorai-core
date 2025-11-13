@@ -1,0 +1,20 @@
+diff --git a/mojo/public/tools/bindings/checks/mojom_attributes_check.py b/mojo/public/tools/bindings/checks/mojom_attributes_check.py
+index 1322069ffa94a1d32e9b03eef69c117195d21b3b..892fa7a5803fb4db7cdf065795f8b5d00df3bee9 100644
+--- a/mojo/public/tools/bindings/checks/mojom_attributes_check.py
++++ b/mojo/public/tools/bindings/checks/mojom_attributes_check.py
+@@ -7,6 +7,7 @@ import mojom.generate.check as check
+ import mojom.generate.module as module
+ 
+ _COMMON_ATTRIBUTES = {
++    'QoraiAdd', 'QoraiExtend',
+     'EnableIf',
+     'EnableIfNot',
+ }
+@@ -185,6 +186,7 @@ _NATIVE_ALLOWLIST = {
+     'search.mojom.OmniboxFocusState',
+     'ui.mojom.EventPointerType',
+     'ui.mojom.ScrollGranularity',
++    'qorai.mojom.ImportItem', 'qorai.mojom.SourceProfile',
+ }
+ 
+ 

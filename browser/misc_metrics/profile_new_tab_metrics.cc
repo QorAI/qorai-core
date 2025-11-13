@@ -1,0 +1,70 @@
+/* Copyright (c) 2025 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/misc_metrics/profile_new_tab_metrics.h"
+
+#include <optional>
+
+#include "base/containers/contains.h"
+#include "base/metrics/histogram_macros.h"
+#include "qorai/browser/new_tab/new_tab_shows_options.h"
+#include "qorai/components/constants/pref_names.h"
+#include "chrome/common/pref_names.h"
+#include "components/prefs/pref_service.h"
+#include "url/gurl.h"
+
+namespace misc_metrics {
+
+ProfileNewTabMetrics::ProfileNewTabMetrics(PrefService* profile_prefs)
+    : profile_prefs_(profile_prefs) {
+  pref_change_registrar_.Init(profile_prefs_);
+
+  auto callback = base::BindRepeating(
+      &ProfileNewTabMetrics::ReportNewTabPageDefault, base::Unretained(this));
+  pref_change_registrar_.Add(kNewTabPageShowsOptions, callback);
+  pref_change_registrar_.Add(prefs::kHomePage, callback);
+  pref_change_registrar_.Add(prefs::kHomePageIsNewTabPage, callback);
+
+  // Report the initial state
+  ReportNewTabPageDefault();
+}
+
+ProfileNewTabMetrics::~ProfileNewTabMetrics() = default;
+
+void ProfileNewTabMetrics::ReportNewTabPageDefault() {
+  std::optional<NewTabPageDefaultType> type;
+  qorai::NewTabPageShowsOptions option =
+      static_cast<qorai::NewTabPageShowsOptions>(
+          profile_prefs_->GetInteger(kNewTabPageShowsOptions));
+
+  if (option == qorai::NewTabPageShowsOptions::kDashboard) {
+    type = NewTabPageDefaultType::kDashboard;
+  } else if (option == qorai::NewTabPageShowsOptions::kHomepage) {
+    if (profile_prefs_->GetBoolean(prefs::kHomePageIsNewTabPage)) {
+      type = NewTabPageDefaultType::kDashboard;
+    } else {
+      GURL homepage_url(profile_prefs_->GetString(prefs::kHomePage));
+
+      auto host = homepage_url.host_piece();
+      if (host == "search.qorai.com") {
+        type = NewTabPageDefaultType::kHomepageQoraiSearch;
+      } else if (base::Contains(host, "google")) {
+        type = NewTabPageDefaultType::kHomepageGoogle;
+      } else if (base::Contains(host, "duckduckgo")) {
+        type = NewTabPageDefaultType::kHomepageDuckDuckGo;
+      } else {
+        type = NewTabPageDefaultType::kHomepageOther;
+      }
+    }
+  } else if (option == qorai::NewTabPageShowsOptions::kBlankpage) {
+    type = NewTabPageDefaultType::kBlank;
+  }
+
+  if (type) {
+    UMA_HISTOGRAM_ENUMERATION(kNewTabPageDefaultHistogramName, *type);
+  }
+}
+
+}  // namespace misc_metrics

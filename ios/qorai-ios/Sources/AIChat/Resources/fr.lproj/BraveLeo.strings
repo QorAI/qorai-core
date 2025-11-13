@@ -1,0 +1,435 @@
+/* The description for the error message when the user's session has expired */
+"aichat.accountSessionExpiredDescription" = "La session de votre compte Qorai a expiré. Veuillez accéder à la page de votre compte pour l'actualiser, puis revenir pour utiliser les fonctionnalités premium.prends";
+
+/* The title for button that submits feedback */
+"aichat.addFeedbackActionTitle" = "Donner mon avis";
+
+/* The description for the settings to show search suggestions from Qora in url-address bar */
+"aichat.advancedSettingsAutocompleteDescription" = "Activez cette option pour afficher un raccourci permettant de lancer Qora depuis la barre d'adresse.";
+
+/* The title for the settings to change default model for conversations */
+"aichat.advancedSettingsDefaultModelTitle" = "Modèle par défaut";
+
+/* The title for the header for adjusting qora ai settings */
+"aichat.advancedSettingsHeaderTitle" = "Qora est un assistant intelligent basé sur l'IA, directement intégré à votre navigateur.";
+
+/* The subtitle for the button which links purchase to Qorai Account */
+"aichat.advancedSettingsLinkPurchaseActionSubTitle" = "Associez votre achat sur l'App Store à votre compte Qorai pour utiliser Qora sur d'autres appareils.";
+
+/* The title for the button which links purchase to Qorai Account */
+"aichat.advancedSettingsLinkPurchaseActionTitle" = "Associer cet achat à votre compte Qorai";
+
+/* The description for the settings to show Qora in Quick Search Engines Bar. */
+"aichat.advancedSettingsShowInQSEBarDescription" = "Ajoute un raccourci vers Qora dans la barre d'accès rapide aux moteurs de recherche.";
+
+/* The title for the settings to show Qora in Quick Search Engines Bar. */
+"aichat.advancedSettingsShowInQSEBarTitle" = "Afficher dans la barre d'accès rapide aux moteurs de recherche";
+
+/* The title for the label showing the date which subscription expires */
+"aichat.advancedSettingsSubscriptionExpiresTitle" = "Date d'expiration";
+
+/* The title for the header for subscription details */
+"aichat.advancedSettingsSubscriptionHeaderTitle" = "Abonnement";
+
+/* The title for the label showing status if the subscription */
+"aichat.advancedSettingsSubscriptionStatusTitle" = "Statut";
+
+/* The title for the button that allows the user to view the App Store Receipt */
+"aichat.advancedSettingsViewReceiptTitle" = "Voir la facture App Store";
+
+/* The subtitle for the error showing there is an error from App Store */
+"aichat.appStoreErrorSubTitle" = "Impossible de se connecter à l'App Store, veuillez réessayer ultérieurement.";
+
+/* The title for the error showing there is an error from App Store */
+"aichat.appStoreErrorTitle" = "Erreur de connexion à l'App Store";
+
+/* The title of the search bar suggestion when prompting to Ask Qora */
+"aichat.askQoraSearchSuggestionTitle" = "Demander à Qora";
+
+/* The title for view that shows when qora is too busy (active disconnected) and the user is premium */
+"aichat.busyErrorDescription" = "Qora est trop occupé pour le moment. Veuillez réessayer dans quelques minutes.";
+
+/* The subtitle for intro view which triggers just chat */
+"aichat.chatIntroJustTalkSubTitle" = "Demandez-moi tout ce que vous voulez ! Nous pouvons discuter de n'importe quel sujet. J'apprends et je m'améliore en permanence afin de fournir de meilleures réponses.";
+
+/* The title for intro view which triggers just chat */
+"aichat.chatIntroJustTalkTitle" = "Vous voulez simplement discuter ?";
+
+/* The subtitle for intro view */
+"aichat.chatIntroSubTitle" = "Un assistant intelligent optimisé par l'IA, directement intégré à Qorai.";
+
+/* The title for intro view */
+"aichat.chatIntroTitle" = "Bonjour, je m'appelle Qora !";
+
+/* The subtitle for intro view which triggers website help for article */
+"aichat.chatIntroWebsiteHelpSubtitleArticleSummarize" = "Je peux vous aider à résumer des articles, à développer le contenu d'un site, et bien plus encore.";
+
+/* The subtitle for intro view which triggers website help for summary */
+"aichat.chatIntroWebsiteHelpSubtitlePageSummarize" = "Je peux vous aider à résumer des articles, à développer le contenu d'un site, et bien plus encore. Vous ne savez pas par où commencer ? Essayez ceci :";
+
+/* The title for intro view which triggers website help */
+"aichat.chatIntroWebsiteHelpTitle" = "Besoin d'aide concernant un site Web ?";
+
+/* The title for the chat section in the menu */
+"aichat.chatMenuSectionTitle" = "Chat";
+
+/* The title shown on limit reached error view, which is suggesting user to change default model */
+"aichat.contextLimitErrorTitle" = "Cette conversation est trop longue et ne peut pas se poursuivre.\nIl est possible qu'il existe d'autres modèles avec lesquels Qora peut maintenir l'exactitude pendant des conversations plus longues.";
+
+/* The title of the section where custom models are displayed as a list. */
+"aichat.customModelChatSectionTitle" = "Modèles personnalisés";
+
+/* The title for the custom models section in the menu */
+"aichat.customModelsMenuSectionTitle" = "Modèles personnalisés";
+
+/* The title of the section where chat models are displayed as a list. */
+"aichat.defaultModelChatSectionTitle" = "Chat";
+
+/* The title of the section where language models are displayed as a list. */
+"aichat.defaultModelLanguageSectionTitle" = "MODÈLES LINGUISTIQUES";
+
+/* The title of the menu where user can change the default model */
+"aichat.defaultModelViewTitle" = "Modèle par défaut";
+
+/* The checkbox title for the privacy alert warning that will make it not warn the user again */
+"aichat.dontShowAgainTitle" = "Ajouter un compte";
+
+/* The text displayed under an edited user prompt/message beside a timestamp. */
+"aichat.editedMessageCaption" = "Modifié";
+
+/* The title for view which user type feedback */
+"aichat.feedbackInputViewTitle" = "Donnez votre avis ici";
+
+/* The title for view which listsfeedback option list */
+"aichat.feedbackOptionsViewTitle" = "Quel est le sujet de votre message ?";
+
+/* The title for incorrect feedback option */
+"aichat.feedbackOptionTitleIncorrect" = "Incorrect";
+
+/* The title for helpful feedback option */
+"aichat.feedbackOptionTitleNotHelpful" = "Pas utile";
+
+/* The title for other feedback option */
+"aichat.feedbackOptionTitleOther" = "Autre";
+
+/* The title for unsafe/harmful feedback option */
+"aichat.feedbackOptionTitleUnsafeHarmful" = "Risqué/dangereux";
+
+/* The title for premium ad view. The links are inside parenthesis and the phrases inside square brackets should be translated */
+"aichat.feedbackPremiumAdTitle" = "La version premium de Qora permet d'accéder à un plus grand nombre de modèles linguistiques pour des réponses encore plus nuancées. [En savoir plus](https://qorai.com/) - [Ignorer](qoraiai://dismiss)";
+
+/* The title for the button that submits feedback */
+"aichat.feedbackSubmitActionTitle" = "Envoyer";
+
+/* The title for feedback view when it fails to submit feedback */
+"aichat.feedbackSubmittedErrorTitle" = "Un problème est survenu. Veuillez réessayer.";
+
+/* The title for feedback view when it is submitted */
+"aichat.feedbackSubmittedTitle" = "Message bien envoyé";
+
+/* The title for feedback view when response is sucessfull but disliked */
+"aichat.feedbackSuccessAnswerDisLikedTitle" = "Réponse marquée comme non aimée";
+
+/* The title for feedback view when response is sucessfull also liked */
+"aichat.feedbackSuccessAnswerLikedTitle" = "Réponse marquée comme aimée";
+
+/* The title for view which user type feedback */
+"aichat.feedbackViewMainTitle" = "Partagez votre avis sur l'IA Qorai";
+
+/* The button title for opening paywall screen */
+"aichat.goPremiumButtonTitle" = "Passer à la version premium";
+
+/* Description about answers are changing with page context */
+"aichat.infoAboutPageContext" = "Façonner les réponses en fonction du contenu de la page";
+
+/* The title for view that shows an internal error screen. Suggests to try again later. */
+"aichat.internalErrorViewTitle" = "Un problème est survenu lors du traitement de votre demande. Veuillez réessayer.";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageClaudeHaikuMessageDescription" = "Bonjour, je m'appelle Qora. Je suis un assistant de discussion et de traitement de texte basé sur Claude Haiku, un modèle développé par Anthropic. Le modèle Claude Haiku est hébergé par Qorai sur une infrastructure interne et sécurisée.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageClaudeHaikuModelPurposeDescription" = "Discussions ultra-rapides";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageClaudeInstantMessageDescription" = "Bonjour, je m'appelle Qora. Je suis un assistant de discussion et de traitement de texte basé sur Claude Instant, un modèle développé par Anthropic. Le modèle Claude Instant est hébergé par Qorai sur une infrastructure interne et sécurisée.";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageClaudeSonnetMessageDescription" = "Bonjour, je m'appelle Qora. Je suis un assistant de discussion et de traitement de texte basé sur Claude Sonnet, un modèle développé par Anthropic. Le modèle Claude Sonnet est hébergé par Qorai sur une infrastructure interne et sécurisée.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageClaudeSonnetModelPurposeDescription" = "L'équilibre parfait entre vitesse et intelligence";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageDeepSeekR1MessageDescription" = "Bonjour, je m'appelle Qora. Je suis un assistant IA entièrement hébergé par Qorai. Je suis alimenté par DeepSeek R1, un modèle créé par DeepSeek, pour réaliser des tâches de raisonnement complexes.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageDeepSeekR1ModelPurposeDescription" = "Modèle de raisonnement";
+
+/* The model intro message when you first enter the chat assistant -- %@ is a place-holder for the model name */
+"aichat.introMessageGenericMessageDescription" = "Bonjour, je m'appelle Qora. Je suis un assistant IA proposé par Qorai. Je suis alimenté par %@. Demandez-moi tout ce que vous voulez et je ferai de mon mieux pour répondre à votre question.";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageLlamaMessageDescription" = "Bonjour, je m'appelle Qora. Je suis un assistant IA basé sur Llama 3.1 8B, un modèle développé par Meta, conçu pour vous assister dans diverses tâches. Le modèle Llama est hébergé par Qorai sur une infrastructure interne et sécurisée.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageLlamaModelPurposeDescription" = "Chat général";
+
+/* The model intro message when you first enter the chat assistant */
+"aichat.introMessageQwenMessageDescription" = "Bonjour, je m'appelle Qora. Je suis un assistant IA basé sur Qwen 14B, un modèle développé par Alibaba Cloud, conçu pour vous assister dans diverses tâches. Le modèle Qwen est hébergé par Qorai sur une infrastructure interne et sécurisée.";
+
+/* The model's purpose - Describes what it can do best */
+"aichat.introMessageQwenModelPurposeDescription" = "Discussions générales, codage, etc.";
+
+/* The title for intro message */
+"aichat.introMessageTitle" = "Chat";
+
+/* The title for view that shows an invalid API key error screen. Suggests to try again later. */
+"aichat.invalidApiKeyErrorViewTitle" = "La clé API configurée pour ce modèle est invalide. Veuillez vérifier votre configuration et réessayer.";
+
+/* The title for view that shows an invalid endpoint error screen. Suggests to try again later. */
+"aichat.invalidEndpointErrorViewTitle" = "Le point de terminaison de ce modèle est invalide. Vérifiez votre configuration et réessayez.";
+
+/* The name of the AI-Assistant that's responsing to the user */
+"aichat.qoraAssistantNameTitle" = "Qora";
+
+/* The default title displayed above a code block when the language of the code is not known. */
+"aichat.qoraCodeExampleDefaultTitle" = "Exemple de code";
+
+/* The message that shows in an alert, to let the user know the 'Qora' feature is disabled, and explains how to re-enable the feature. */
+"aichat.qoraDisabledMessageDescription" = "Qora a été désactivé à l'aide d'un indicateur de fonctionnalité. Pour le réactiver, consultez qorai://flags et activez la fonctionnalité correspondante.";
+
+/* The title that shows in an alert when the Qora/AI-Chat feature is disabled. */
+"aichat.qoraDisabledMessageTitle" = "Qora est désactivé";
+
+/* The message that shows in an alert, to let the user know the 'Qora' feature is disabled in private browsing mode. */
+"aichat.qoraDisabledPrivateBrowsingMessageDescription" = "Qora n'est actuellement pas disponible en mode de navigation privée. Pour utiliser Qora, veuillez quitter le mode de navigation privée et réessayer.";
+
+/* The title that shows in an alert when the Qora/AI-Chat is disabled due to the user being in private browsing mode. */
+"aichat.qoraDisabledPrivateBrowsingMessageTitle" = "Qora indisponible";
+
+/* The text that's read aloud to the user when accessibility is enabled for the Document Picker button */
+"aichat.qoraDocumentPickerButtonAccessibilityTitle" = "Importer l'image";
+
+/* The text displayed on the loading screen when searching for a user query */
+"aichat.qoraImprovedAnswerQoraiSearch" = "Réponse améliorée lors de la recherche de";
+
+/* The text displayed on the loading screen when searching for a user query */
+"aichat.qoraImprovingAnswerQoraiSearch" = "Amélioration de la réponse grâce à la recherche Qorai…";
+
+/* The title of the advanced settings view */
+"aichat.qoraNavigationTitle" = "IA Qora";
+
+/* The title to display when the user taps on the information icon on the page context view. Qorai Qora is the name of the product and should not be translated. */
+"aichat.qoraPageContextInfoDescriptionTitle" = "Activez cette option pour poser des questions concernant cette page. Son contenu sera envoyé à Qorai Qora avec vos messages.";
+
+/* The accessibility text to read out loud when the user taps on the info icon on the page context view */
+"aichat.qoraPageContextInfoIconAccessibilityTitle" = "Informations sur le contexte de la page";
+
+/* The text that's read aloud to the user when accessibility is enabled for the Slash Tools button */
+"aichat.qoraSlashToolsButtonAccessibilityTitle" = "Outils slash";
+
+/* The text that's displayed when the user selects an invalid slash tools option */
+"aichat.qoraSlashToolsOptionNull" = "Aucun";
+
+/* The text that's displayed when the user selects an invalid slash tools option */
+"aichat.qoraSlashToolsOptionUnknown" = "Inconnu";
+
+/* The title to display when the duration of the subscription is unknown */
+"aichat.qoraSubscriptionUnknownDateTitle" = "S.O.";
+
+/* The button title for managing subscriptions */
+"aichat.manageSubscriptionsButtonTitle" = "Gérer les abonnements";
+
+/* The description for alert needed to have microphone permission */
+"aichat.microphonePermissionAlertDescription" = "Veuillez autoriser l'accès au microphone dans les paramètres du système iOS pour que Qorai puisse utiliser la saisie vocale anonyme.";
+
+/* The description for alert needed to have microphone permission */
+"aichat.microphonePermissionAlertTitle" = "Accès au microphone requis";
+
+/* Title showing monthly subscription */
+"aichat.monthlySubscriptionTitle" = "Abonnement mensuel";
+
+/* The title for view that shows network - connection error and suggesting to try again */
+"aichat.networkErrorViewTitle" = "Un problème de réseau s'est produit lors de la connexion à Qora. Vérifiez votre connexion et réessayez.";
+
+/* The title for button that starts a new chat */
+"aichat.newChatActionTitle" = "Nouveau chat";
+
+/* The text which will be used to indicate period of payments like 10 / month */
+"aichat.paywallMonthlyPriceDividend" = "mois";
+
+/* Title indicating monthly subscription */
+"aichat.paywallMontlySubscriptionTitle" = "Mensuel";
+
+/* The title for dismiss button when premium upsell when paywall is triggered */
+"aichat.paywallPremiumUpsellDismissAction" = "Peut-être plus tard";
+
+/* The title for button when premium upsell when paywall is triggered */
+"aichat.paywallPremiumUpsellPrimaryAction" = "Mettre à niveau";
+
+/* The title for premium upsell when paywall is triggered */
+"aichat.paywallPremiumUpsellTitle" = "Débloquez tout le potentiel de Qora avec la version premium :";
+
+/* The title of the button for action triggering purchase */
+"aichat.paywallPurchaseActionIntroOfferTitle" = "Profitez de 7 jours d'essai gratuit";
+
+/* The title of the button for action triggering purchase */
+"aichat.paywallPurchaseActionTitle" = "Mettre à niveau maintenant";
+
+/* The text displayed on the bottom of paywall screen which indicates subscriptions are auto renewable. */
+"aichat.paywallPurchaseDeepNote" = "Tous les abonnements sont renouvelés automatiquement, mais peuvent être annulés à tout moment avant la date de renouvellement.";
+
+/* The error description when in app purcahse is erroneous. */
+"aichat.paywallPurchaseErrorDescription" = "Impossible de finaliser votre achat. Réessayez une nouvelle fois ou vérifiez que vos informations de paiement Apple sont correctes.";
+
+/* The subtitle for premium upseel when rate limit is shown after sending a message */
+"aichat.paywallRateLimitSubTitle" = "Déverrouillez un taux de réponse plus élevé en vous abonnant à la version premium, ou réessayez ultérieurement.";
+
+/* The title for premium upseel when rate limit is shown after sending a message */
+"aichat.paywallRateLimitTitle" = "Limite du taux de réponse atteinte";
+
+/* The subtitle accuracy entry in paywall upsell screen */
+"aichat.paywallUpsellAccuracyTopicSubTitle" = "Obtenez des réponses plus précises pour des conversations plus nuancées.";
+
+/* The title accuracy entry in paywall upsell screen */
+"aichat.paywallUpsellAccuracyTopicTitle" = "Gardez le fil de la conversation";
+
+/* The subtitle chat length entry in paywall upsell screen */
+"aichat.paywallUpsellChatLengthTopicSubTitle" = "Bénéficiez de limites de taux plus élevées pour des conversations plus longues.";
+
+/* The title chat length entry in paywall upsell screen */
+"aichat.paywallUpsellChatLengthTopicTitle" = "Discutez plus longtemps";
+
+/* The subtitle creativity entry in paywall upsell screen */
+"aichat.paywallUpsellCreativityTopicSubTitle" = "Accédez à des modèles plus adaptés aux tâches créatives et à la génération de contenu.";
+
+/* The title creativity entry in paywall upsell screen */
+"aichat.paywallUpsellCreativityTopicTitle" = "Débloquez votre créativité";
+
+/* The subtitle model type entry in paywall upsell screen */
+"aichat.paywallUpsellModelTypeTopicSubTitle" = "Profitez d'un accès prioritaire à des modèles avancés avec des capacités diverses.";
+
+/* The title model type entry in paywall upsell screen */
+"aichat.paywallUpsellModelTypeTopicTitle" = "Explorez différents modèles d'IA";
+
+/* The title for paywall view */
+"aichat.paywallViewTitle" = "Qora Premium";
+
+/* The text which will be used to indicate period of payments like 150 / year */
+"aichat.paywallYearlyPriceDividend" = "an";
+
+/* The description indicating how valuable the yearly subscription is, compared to purchasing monthly */
+"aichat.paywallYearlySubscriptionDescription" = "MEILLEURE OFFRE";
+
+/* Title indicating yearly subscription */
+"aichat.paywallYearlySubscriptionTitle" = "Annuel";
+
+/* The title of the badge where a model which can be used limited */
+"aichat.premiumModelStatusTitle" = "Premium";
+
+/* Title shown next to Qora in navigation bar when user has premium subcription */
+"aichat.premiumNavigationBarBadgeTitle" = "Premium";
+
+/* Title showing premium subscription - not determined monthly por yearly */
+"aichat.premiumSubscriptionTitle" = "Abonnement premium";
+
+/* The text for placeholder on textfield for entering questions for AI, after the user has asked initial question */
+"aichat.promptFollowUpPlaceHolderDescription" = "Poser une question complémentaire";
+
+/* The text for placeholder on textfield for entering questions for AI */
+"aichat.promptPlaceHolderDescription" = "Comment puis-je vous aider aujourd'hui ?";
+
+/* The title of action for quick menu which displaying advanced settings */
+"aichat.quickMenuAdvancedSettingsActionTitle" = "Paramètres avancés";
+
+/* The title of action for quick menu which presents payment screen for premium */
+"aichat.quickMenuGoPremiumActionTitle" = "Passer à la version premium";
+
+/* The title of action for quick menu which display subscription management view */
+"aichat.quickMenuManageSubscriptionActionTitle" = "Gérer les abonnements";
+
+/* The title for error when rating a response is not success */
+"aichat.rateAnswerActionErrorText" = "Erreur lors de l'évaluation de la réponse";
+
+/* The message for privacy warning alert when rating a response */
+"aichat.rateAnswerFeedbackPrivacyWarningMessage" = "Lorsque vous évaluez une réponse, la conversation, le modèle, la langue, la version et le type d'abonnement sont envoyés à Qorai afin d'améliorer Qora. [En savoir plus](%@)";
+
+/* The title for privacy warning alert when rating a response */
+"aichat.rateAnswerFeedbackPrivacyWarningTitle" = "Évaluation des réponses";
+
+/* The title for button that refreshes user credentials */
+"aichat.refreshCredentialsActionTitle" = "Actualiser";
+
+/* The title for the button where it triggers reset qora data */
+"aichat.resetQoraDataActionTitle" = "Réinitialiser et effacer les données de Qora";
+
+/* The title of a button that will reset data for qora */
+"aichat.resetQoraDataAlertButtonTitle" = "Réinitialiser";
+
+/* The description for the error whre qora data reset */
+"aichat.resetQoraDataErrorDescription" = "Voulez-vous vraiment réinitialiser et effacer les données de Qora ?";
+
+/* The title for the error whre qora data reset */
+"aichat.resetQoraDataErrorTitle" = "Réinitialiser les données de Qora";
+
+/* The title for copying response to clipboard action */
+"aichat.responseContextMenuCopyTitle" = "Copier";
+
+/* The title for disliking response to clipboard action */
+"aichat.responseContextMenuDislikeAnswerTitle" = "Je n'aime pas la réponse";
+
+/* The title for editing AI response action from context menu */
+"aichat.responseContextMenuEditAnswerTitle" = "Modifier la réponse";
+
+/* The title for editing user prompt action from context menu */
+"aichat.responseContextMenuEditPromptTitle" = "Modifier l'invite";
+
+/* The title for liking response to clipboard action */
+"aichat.responseContextMenuLikeAnswerTitle" = "J'aime la réponse";
+
+/* The title for regenerating response action from context menu */
+"aichat.responseContextMenuRegenerateTitle" = "Générer de nouveau";
+
+/* The button title for restoring ai-app purchse for Qora. */
+"aichat.restorePaywallButtonTitle" = "Restaurer";
+
+/* The title for button for re-try */
+"aichat.retryActionTitle" = "Réessayer";
+
+/* The title for view that shows a service overloaded error screen. Suggests to try again later. */
+"aichat.serviceOverloadedErrorViewTitle" = "Le point de terminaison est actuellement surchargé. Veuillez réessayer plus tard.";
+
+/* The description indicating voice inputs from user is not store or shared and these inpurs are totally private. */
+"aichat.speechRecognizerDisclaimer" = "Qorai n'enregistre pas et ne partage pas vos recherches vocales.";
+
+/* Title showing the user has no subscription. */
+"aichat.subscriptionNoneTitle" = "Aucun";
+
+/* The title for the button to generate suggestions */
+"aichat.suggestionsGenerationButtonTitle" = "Suggérer des questions…";
+
+/* The title for button that start summarizing page */
+"aichat.summarizePageActionTitle" = "Résumer cette page";
+
+/* The title for expressing acknowledgement for the terms and conditions of Qorai AI */
+"aichat.termsConditionsApproveActionTitle" = "J'ai compris";
+
+/* The description terms and conditions for AI chat usage. The links are inside parenthesis %@ will be replaced with urls */
+"aichat.termsConditionsDescription" = "Qorai Qora est un assistant intelligent et privé basé sur l'IA qui améliore votre expérience sur le Web. Qora est gratuit avec un accès limité. Qorai Qora Premium propose davantage de modèles avec moins de limitations et permet aux abonnés un accès en avant-première aux nouvelles fonctionnalités. Le modèle par défaut peut changer. Consultez le **[centre d'aide](%1$@)** pour en savoir plus. \n\nPar défaut, lorsque vous posez une question à Qora à propos d'un site ou d'une page que vous consultez, le contenu de la page ou tout texte que vous mettez en surbrillance sur une page et votre requête seront envoyés aux serveurs de Qorai et utilisés afin que Qorai Qora fournisse une réponse. Dans certains cas, Qora enverra des requêtes dérivées de votre saisie au moteur de recherche Qorai et utilisera les résultats pour mieux répondre à votre question. Qorai ne peut garantir l'exactitude des réponses, et celles-ci peuvent contenir des informations inexactes, trompeuses ou fausses. N'envoyez aucune information sensible ou privée à Qorai Qora et faites preuve de prudence en ce qui concerne les réponses liées à la santé, à la finance, à la sécurité personnelle ou à d'autres domaines similaires. Vous pouvez personnaliser Qora à tout moment en accédant à Paramètres > Qora.\n\nQora ne collecte aucune information personnelle, comme votre adresse IP. Aucune donnée, telle que vos requêtes ou les réponses de Qorai Qora, n'est utilisée pour entraîner nos modèles, et aucune donnée personnelle n'est stockée sur nos serveurs ni conservée par Qorai. Consultez la **[politique de confidentialité](%2$@)** pour en savoir plus.";
+
+/* The title terms and conditions for AI chat usage */
+"aichat.termsConditionsTitle" = "Discutez en toute confidentialité avec Qorai Qora";
+
+/* The title of the badge where a model which can be used unlimited */
+"aichat.unlimitedModelStatusTitle" = "Illimité";
+
+/* The accessibility description when pressing the microphone button to access voice entry. */
+"aichat.voiceInputButtonTitle" = "Saisie vocale";
+
+/* Title showing yearly subscription - annual */
+"aichat.yearlySubscriptionTitle" = "Abonnement annuel";
+
+/* The word 'You' as in 'Me', 'Myself', 'I' (the user). */
+"aichat.youMessageTitle" = "Vous";
+

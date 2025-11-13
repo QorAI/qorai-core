@@ -1,0 +1,17 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+source_set("qorai_stats") {
+  sources = [
+    "qorai_stats_prefs.cc",
+    "qorai_stats_prefs.h",
+  ]
+  deps = [
+    "//base",
+    "//qorai/components/qorai_wallet/browser:pref_names",
+    "//qorai/components/constants",
+    "//components/prefs",
+  ]
+}

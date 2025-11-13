@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/components/qorai_sync",
+  "+qorai/components/history/core/browser/sync",
+]

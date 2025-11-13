@@ -1,0 +1,12 @@
+diff --git a/ios/chrome/browser/flags/about_flags.mm b/ios/chrome/browser/flags/about_flags.mm
+index 5337490ce108c72aeed044b306b0788a74390894..2fc2fbba5bf7038bafc30af2c60a68073d45d7d6 100644
+--- a/ios/chrome/browser/flags/about_flags.mm
++++ b/ios/chrome/browser/flags/about_flags.mm
+@@ -1520,6 +1520,7 @@ const FeatureEntry::FeatureVariation kTaiyakiChoiceScreenSurfaceVariations[] = {
+ //
+ // When adding a new choice, add it to the end of the list.
+ const flags_ui::FeatureEntry kFeatureEntries[] = {
++    QORAI_ABOUT_FLAGS_FEATURE_ENTRIES
+     {"in-product-help-demo-mode-choice",
+      flag_descriptions::kInProductHelpDemoModeName,
+      flag_descriptions::kInProductHelpDemoModeDescription, flags_ui::kOsIos,

@@ -1,0 +1,39 @@
+// Copyright (c) 2025 The Qorai Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// you can obtain one at https://mozilla.org/MPL/2.0/.
+
+.conversationNameWrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: var(--qora-spacing-l);
+  border-radius: var(--qora-radius-m);
+  border: 1px solid var(--qora-color-divider-subtle);
+  font: var(--qora-font-heading-h4);
+  color: var(--qora-color-text-secondary);
+}
+
+.deleteConversationDialogTitle {
+  font: var(--qora-font-heading-h3);
+}
+
+.deleteConversationDialog {
+  --qora-dialog-padding: 24px;
+}
+
+.deleteConversationBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--qora-spacing-xl);
+}
+
+.deleteConversationActionsRow {
+  justify-content: flex-end;
+}
+
+.buttonsWrapper {
+  display: flex;
+  gap: var(--qora-spacing-m);
+}

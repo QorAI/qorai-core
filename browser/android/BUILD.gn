@@ -1,0 +1,73 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/build/config.gni")
+
+assert(is_android)
+
+source_set("android_browser_process") {
+  sources = [
+    "qorai_feature_util.cc",
+    "qorai_local_state_android.cc",
+    "qorai_relaunch_utils.cc",
+    "qorai_shields_content_settings.cc",
+    "qorai_shields_content_settings.h",
+    "qorai_sync_worker.cc",
+    "qorai_sync_worker.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/qorai_domains/android:jni_headers",
+    "//qorai/browser/android/preferences",
+    "//qorai/browser/android/safe_browsing",
+    "//qorai/browser/qorai_ads/android:jni_headers",
+    "//qorai/browser/skus/android:jni_headers",
+    "//qorai/build/android:jni_headers",
+    "//qorai/components/qorai_ads/browser",
+    "//qorai/components/qorai_shields/content/browser",
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/qorai_sync",
+    "//qorai/components/qorai_sync:crypto",
+    "//qorai/components/qorai_sync:prefs",
+    "//qorai/components/qorai_sync:sync_service_impl_helper",
+    "//qorai/components/qorai_sync:time_limited_codes",
+    "//chrome/android:jni_headers",
+    "//chrome/browser:browser_process",
+    "//chrome/browser:browser_public_dependencies",
+    "//chrome/browser:flags",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/sync",
+    "//chrome/common",
+    "//components/content_settings/core/browser",
+    "//components/content_settings/core/browser:cookie_settings",
+    "//components/ntp_tiles",
+    "//components/sync",
+    "//components/translate/core/browser",
+    "//components/unified_consent",
+    "//components/webui/flags",
+    "//url",
+  ]
+}
+
+source_set("tabs_public") {
+  public = [ "qorai_tab_features.h" ]
+
+  public_deps = [ "//chrome/browser/android:tabs_public" ]
+}
+
+source_set("tabs_impl") {
+  visibility = [ "//chrome/browser" ]
+  sources = [ "qorai_tab_features.cc" ]
+
+  deps = [
+    ":tabs_public",
+    "//base",
+    "//qorai/browser/ai_chat",
+    "//chrome/browser/profiles:profile",
+    "//content/public/browser",
+  ]
+}

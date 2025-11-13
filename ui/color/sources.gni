@@ -1,0 +1,10 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_ui_color_sources = []
+qorai_ui_color_public_deps = [ "//qorai/ui/color:nala_color_id" ]
+
+qorai_ui_color_mixer_sources = []
+qorai_ui_color_mixer_public_deps = [ "//qorai/ui/color:qorai_color_mixers" ]

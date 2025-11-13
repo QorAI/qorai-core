@@ -1,0 +1,4 @@
+include_rules = [
+  "+qorai/net/decentralized_dns",
+  "+components/prefs",
+]

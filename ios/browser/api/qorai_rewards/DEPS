@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/qorai_rewards/core",
+  "+qorai/components/qorai_rewards/core/engine",
+  "!components/os_crypt/sync",
+]

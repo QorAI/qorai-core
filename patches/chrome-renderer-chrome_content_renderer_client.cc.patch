@@ -1,0 +1,13 @@
+diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
+index 58e4666970289841afc34a6cfdbf4cf8e20fd578..3c76e5131e31d2b2ab9cc17cb6b62542f64b70c1 100644
+--- a/chrome/renderer/chrome_content_renderer_client.cc
++++ b/chrome/renderer/chrome_content_renderer_client.cc
+@@ -609,7 +609,7 @@ void ChromeContentRendererClient::RenderFrameCreated(
+       extensions::ExtensionsRendererClient::Get()->dispatcher());
+ #endif
+   content_settings::ContentSettingsAgentImpl* content_settings =
+-      new content_settings::ContentSettingsAgentImpl(
++      new content_settings::QoraiContentSettingsAgentImpl(
+           render_frame, std::move(content_settings_delegate));
+   if (chrome_observer_.get()) {
+     if (chrome_observer_->content_settings_manager()) {

@@ -1,0 +1,59 @@
+# Copyright (c) 2019 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//build/config/android/rules.gni")
+
+source_set("preferences") {
+  sources = [ "qorai_pref_service_bridge.cc" ]
+
+  deps = [
+    "//base",
+    "//qorai/build/android:jni_headers",
+    "//qorai/components/qorai_adaptive_captcha",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_perf_predictor/common",
+    "//qorai/components/qorai_referrals/common",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_shields/core/browser",
+    "//qorai/components/qorai_sync:prefs",
+    "//qorai/components/constants",
+    "//chrome/browser:browser_process",
+    "//chrome/browser:browser_public_dependencies",
+    "//chrome/browser/content_settings:content_settings_factory",
+    "//chrome/browser/profiles:profile",
+    "//chrome/common",
+    "//components/content_settings/core/browser",
+    "//components/content_settings/core/browser:cookie_settings",
+    "//components/prefs",
+    "//third_party/blink/public/common",
+    "//url",
+  ]
+}
+
+java_cpp_strings("java_pref_names_srcjar") {
+  sources = [
+    "//qorai/components/ai_chat/core/common/pref_names.h",
+    "//qorai/components/qorai_adaptive_captcha/pref_names.h",
+    "//qorai/components/qorai_origin/pref_names.h",
+    "//qorai/components/qorai_rewards/core/pref_names.h",
+    "//qorai/components/qorai_shields/core/common/pref_names.h",
+    "//qorai/components/qorai_vpn/common/pref_names.h",
+    "//qorai/components/constants/pref_names.h",
+    "//qorai/components/de_amp/common/pref_names.cc",
+    "//qorai/components/de_amp/common/pref_names.h",
+    "//qorai/components/debounce/core/common/pref_names.h",
+    "//qorai/components/decentralized_dns/core/pref_names.h",
+    "//qorai/components/ntp_background_images/common/pref_names.h",
+    "//qorai/components/omnibox/browser/qorai_omnibox_prefs.cc",
+    "//qorai/components/omnibox/browser/qorai_omnibox_prefs.h",
+    "//qorai/components/p3a/pref_names.h",
+    "//qorai/components/request_otr/common/pref_names.h",
+    "//qorai/components/search_engines/qorai_search_engines_pref_names.h",
+    "//components/translate/core/browser/translate_pref_names.h",
+  ]
+
+  template =
+      "//qorai/browser/preferences/android/java_templates/QoraiPref.java.tmpl"
+}

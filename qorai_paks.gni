@@ -1,0 +1,195 @@
+# Copyright (c) 2023 The QorAI Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/ai_chat/core/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//build/config/locales.gni")
+import("//chrome/common/features.gni")
+import("//extensions/buildflags/buildflags.gni")
+import("//tools/grit/repack.gni")
+import("//ui/base/ui_features.gni")
+
+assert(!is_ios)
+
+# Generates a rule to repack a set of resources, substituting a given string
+# in for the percentage (e.g. "100", "200"). It generates the repacked files in
+# the "gen" directory, and then introduces a copy rule to copy it to the root
+# build directory.
+#
+# Argument:
+#   percent [required]
+#      String to substitute for the percentage.
+template("qorai_repack_percent") {
+  percent = invoker.percent
+
+  repack(target_name) {
+    forward_variables_from(invoker,
+                           [
+                             "copy_data_to_bundle",
+                             "repack_whitelist",
+                             "visibility",
+                           ])
+
+    # All sources should also have deps for completeness.
+    sources =
+        [ "$root_gen_dir/qorai/qorai_theme_resources_${percent}_percent.pak" ]
+
+    deps = [ "//qorai/app/theme:qorai_theme_resources" ]
+
+    if (defined(invoker.deps)) {
+      deps += invoker.deps
+    }
+
+    output = "${invoker.output_dir}/qorai_${percent}_percent.pak"
+  }
+}
+
+template("qorai_extra_paks") {
+  repack(target_name) {
+    forward_variables_from(invoker,
+                           [
+                             "copy_data_to_bundle",
+                             "repack_whitelist",
+                             "visibility",
+                           ])
+    output = "${invoker.output_dir}/qorai_resources.pak"
+    sources = [
+      "$root_gen_dir/qorai/components/qorai_rewards/resources/qorai_rewards_resources.pak",
+      "$root_gen_dir/components/qorai_components_resources.pak",
+    ]
+
+    if (!is_android) {
+      sources += [
+        "$root_gen_dir/qorai/qorai_education_resources.pak",
+        "$root_gen_dir/qorai/qorai_generated_resources.pak",
+        "$root_gen_dir/qorai/qorai_unscaled_resources.pak",
+        "$root_gen_dir/qorai/browser/resources/qorai_new_tab_page_refresh/qorai_new_tab_page_refresh_generated.pak",
+        "$root_gen_dir/qorai/browser/resources/settings/qorai_settings_resources.pak",
+      ]
+    }
+
+    deps = [
+      "//qorai/components/qorai_rewards/resources",
+      "//qorai/components/resources",
+    ]
+
+    if (!is_android) {
+      deps += [
+        "//qorai/app:qorai_generated_resources_grit",
+        "//qorai/app/theme:qorai_unscaled_resources",
+        "//qorai/browser/resources/qorai_education:resources_grit",
+        "//qorai/browser/resources/qorai_new_tab_page_refresh:generated_resources",
+        "//qorai/browser/resources/settings:resources",
+        "//qorai/components/resources:strings",
+      ]
+    }
+
+    if (enable_qorai_ai_chat_agent_profile) {
+      sources += [ "$root_gen_dir/qorai/browser/resources/ai_chat_agent_new_tab_page/ai_chat_agent_new_tab_page_all.pak" ]
+
+      deps += [ "//qorai/browser/resources/ai_chat_agent_new_tab_page" ]
+    }
+
+    if (enable_tor) {
+      sources +=
+          [ "$root_gen_dir/qorai/components/tor/resources/tor_resources.pak" ]
+
+      deps += [ "//qorai/components/tor/resources" ]
+    }
+
+    if (enable_extensions) {
+      sources += [ "$root_gen_dir/qorai/components/qorai_extension/qorai_extension_resources.pak" ]
+
+      deps += [
+        "//qorai/common/extensions/api",
+        "//qorai/components/qorai_extension:resources",
+      ]
+    }
+
+    if (defined(invoker.deps)) {
+      deps += invoker.deps
+    }
+    if (defined(invoker.additional_paks)) {
+      sources += invoker.additional_paks
+    }
+  }
+}
+
+# Defines repack() targets used by QorAI. Specifically:
+# * qorai_100_percent.pak
+# * qorai_200_percent.pak (optionally)
+# * resources.pak
+#
+# Paramters:
+#   output_dir [required]: Directory to output .pak files.
+#   additional_extra_paks: List of extra .pak sources for resources.pak.
+#   locale_whitelist: if set, override repack_whitelist for locale .pak files.
+#   copy_data_to_bundle:
+#   deps:
+#   output_dir:
+#   public_deps:
+#   repack_whitelist:
+#   visibility:
+#     Normal meanings.
+#
+template("qorai_paks") {
+  if (!is_android) {
+    qorai_repack_percent("${target_name}_100_percent") {
+      percent = "100"
+      forward_variables_from(invoker,
+                             [
+                               "copy_data_to_bundle",
+                               "deps",
+                               "output_dir",
+                               "repack_whitelist",
+                               "visibility",
+                             ])
+    }
+
+    if (enable_hidpi) {
+      qorai_repack_percent("${target_name}_200_percent") {
+        percent = "200"
+        forward_variables_from(invoker,
+                               [
+                                 "copy_data_to_bundle",
+                                 "deps",
+                                 "output_dir",
+                                 "repack_whitelist",
+                                 "visibility",
+                               ])
+      }
+    }
+  }
+
+  qorai_extra_paks("${target_name}_extra") {
+    forward_variables_from(invoker,
+                           [
+                             "copy_data_to_bundle",
+                             "deps",
+                             "output_dir",
+                             "repack_whitelist",
+                             "visibility",
+                           ])
+    if (defined(invoker.additional_extra_paks)) {
+      additional_paks = invoker.additional_extra_paks
+    }
+  }
+
+  group(target_name) {
+    forward_variables_from(invoker, [ "deps" ])
+    public_deps = [ ":${target_name}_extra" ]
+
+    if (!is_android) {
+      public_deps += [ ":${target_name}_100_percent" ]
+      if (enable_hidpi) {
+        public_deps += [ ":${target_name}_200_percent" ]
+      }
+    }
+
+    if (defined(invoker.public_deps)) {
+      public_deps += invoker.public_deps
+    }
+  }
+}

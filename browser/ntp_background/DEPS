@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/qorai_ads/core/browser/service",
+  "+qorai/components/qorai_ads/core/mojom",
+  "+qorai/components/infobars/core/qorai_confirm_infobar_delegate.h",
+]

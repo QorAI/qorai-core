@@ -1,0 +1,31 @@
+/* Copyright (c) 2020 The Qorai Authors. All rights reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "qorai/browser/net/global_privacy_control_network_delegate_helper.h"
+
+#include <memory>
+
+#include "base/feature_list.h"
+#include "qorai/components/constants/network_constants.h"
+#include "qorai/components/global_privacy_control/global_privacy_control_utils.h"
+#include "chrome/browser/profiles/profile.h"
+#include "net/base/net_errors.h"
+#include "net/http/http_request_headers.h"
+
+namespace qorai {
+
+int OnBeforeStartTransaction_GlobalPrivacyControlWork(
+    net::HttpRequestHeaders* headers,
+    const ResponseCallback& next_callback,
+    std::shared_ptr<QoraiRequestInfo> ctx) {
+  Profile* profile = Profile::FromBrowserContext(ctx->browser_context);
+  if (profile && global_privacy_control::IsGlobalPrivacyControlEnabled(
+                     profile->GetPrefs())) {
+    headers->SetHeader(kSecGpcHeader, "1");
+  }
+  return net::OK;
+}
+
+}  // namespace qorai

@@ -1,0 +1,35 @@
+# Copyright (c) 2020 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+source_set("models") {
+  sources = [
+    "qorai_certificate_enums.h",
+    "qorai_certificate_fingerprint.h",
+    "qorai_certificate_fingerprint.mm",
+    "qorai_certificate_model+private.h",
+    "qorai_certificate_public_key_info.h",
+    "qorai_certificate_public_key_info.mm",
+    "qorai_certificate_rdns_sequence.h",
+    "qorai_certificate_rdns_sequence.mm",
+    "qorai_certificate_signature.h",
+    "qorai_certificate_signature.mm",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/base/apple",
+    "//qorai/ios/browser/api/certificate/utils",
+    "//qorai/ios/browser/api/common",
+    "//crypto",
+    "//net",
+    "//third_party/abseil-cpp:absl",
+    "//third_party/boringssl",
+  ]
+
+  frameworks = [
+    "Foundation.framework",
+    "Security.framework",
+  ]
+}

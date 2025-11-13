@@ -1,0 +1,72 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+source_set("qorai_account") {
+  sources = [
+    "qorai_account_service.cc",
+    "qorai_account_service.h",
+    "qorai_account_service_constants.h",
+    "qorai_account_ui_base.h",
+    "pref_names.h",
+    "prefs.cc",
+    "prefs.h",
+  ]
+
+  deps = [
+    "//base",
+    "//qorai/components/qorai_account:features",
+    "//qorai/components/qorai_account/endpoint_client",
+    "//qorai/components/qorai_account/endpoints",
+    "//qorai/components/qorai_account/mojom",
+    "//qorai/components/qorai_account/resources",
+    "//qorai/components/constants",
+    "//qorai/components/password_strength_meter",
+    "//qorai/components/password_strength_meter:mojom",
+    "//qorai/components/resources:static_resources_grit",
+    "//qorai/components/resources:strings_grit",
+    "//components/keyed_service/core",
+    "//components/os_crypt/sync",
+    "//components/prefs",
+    "//mojo/public/cpp/bindings",
+    "//net",
+    "//net/traffic_annotation",
+    "//services/network/public/cpp",
+    "//services/network/public/mojom:mojom_content_security_policy",
+    "//ui/base",
+    "//url",
+  ]
+}
+
+source_set("features") {
+  sources = [
+    "features.cc",
+    "features.h",
+  ]
+
+  deps = [ "//base" ]
+}
+
+source_set("unit_tests") {
+  testonly = true
+
+  sources = [
+    "qorai_account_service_test.h",
+    "qorai_account_service_unittest.cc",
+  ]
+
+  deps = [
+    "//base",
+    "//base/test:test_support",
+    "//qorai/components/qorai_account",
+    "//qorai/components/qorai_account:features",
+    "//qorai/components/qorai_account/endpoints",
+    "//qorai/components/qorai_account/mojom",
+    "//components/prefs:test_support",
+    "//net",
+    "//services/network:test_support",
+    "//services/network/public/cpp",
+    "//testing/gtest",
+  ]
+}

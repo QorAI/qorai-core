@@ -1,0 +1,5 @@
+include_rules = [
+  "+qorai/components/skus/common",
+  "+qorai/components/skus/browser",
+  "+qorai/components/constants",
+]

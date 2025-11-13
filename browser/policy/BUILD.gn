@@ -1,0 +1,60 @@
+# Copyright (c) 2025 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+import("//qorai/components/qorai_vpn/common/buildflags/buildflags.gni")
+import("//qorai/components/qorai_wayback_machine/buildflags/buildflags.gni")
+import("//qorai/components/ipfs/buildflags/buildflags.gni")
+import("//qorai/components/speedreader/common/buildflags/buildflags.gni")
+import("//qorai/components/tor/buildflags/buildflags.gni")
+import("//build/config/features.gni")
+
+source_set("qorai_simple_policy_map") {
+  sources = [ "qorai_simple_policy_map.h" ]
+
+  deps = [
+    "//base",
+    "//qorai/components/ai_chat/core/common",
+    "//qorai/components/qorai_news/common",
+    "//qorai/components/qorai_rewards/core",
+    "//qorai/components/qorai_shields/core/common",
+    "//qorai/components/qorai_sync:prefs",
+    "//qorai/components/qorai_vpn/common/buildflags",
+    "//qorai/components/qorai_wallet/common:pref_names",
+    "//qorai/components/qorai_wayback_machine/buildflags",
+    "//qorai/components/constants",
+    "//qorai/components/de_amp/common",
+    "//qorai/components/debounce/core/common",
+    "//qorai/components/global_privacy_control",
+    "//qorai/components/ipfs/buildflags",
+    "//qorai/components/p3a",
+    "//qorai/components/playlist/content/browser",
+    "//qorai/components/playlist/core/common/buildflags",
+    "//qorai/components/query_filter",
+    "//qorai/components/speedreader/common/buildflags",
+    "//qorai/components/tor/buildflags",
+    "//components/policy/core/browser",
+    "//components/policy/core/common:common_constants",
+  ]
+
+  if (enable_tor) {
+    deps += [ "//qorai/components/tor:pref_names" ]
+  }
+
+  if (enable_qorai_vpn) {
+    deps += [ "//qorai/components/qorai_vpn/common" ]
+  }
+
+  if (enable_speedreader) {
+    deps += [ "//qorai/components/speedreader" ]
+  }
+
+  if (enable_qorai_wayback_machine) {
+    deps += [ "//qorai/components/qorai_wayback_machine" ]
+  }
+
+  if (deprecate_ipfs) {
+    deps += [ "//qorai/components/ipfs" ]
+  }
+}

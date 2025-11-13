@@ -1,0 +1,15 @@
+# Copyright (c) 2024 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at https://mozilla.org/MPL/2.0/.
+
+qorai_wallet_public_headers = [
+  "//qorai/ios/browser/api/qorai_wallet/qorai_wallet_api.h",
+  "//qorai/ios/browser/api/qorai_wallet/qorai_wallet_provider_delegate_ios.h",
+  "//qorai/ios/browser/api/qorai_wallet/qorai_wallet_solana_utils.h",
+  "//qorai/ios/browser/api/qorai_wallet/token_registry_utils.h",
+  "$root_gen_dir/qorai/ios/browser/api/qorai_wallet/qorai_wallet.mojom.objc.h",
+  "$root_gen_dir/qorai/ios/browser/api/qorai_wallet/meld_integration.mojom.objc.h",
+]
+qorai_wallet_public_deps =
+    [ "//qorai/ios/browser/api/qorai_wallet:wallet_mojom_wrappers" ]

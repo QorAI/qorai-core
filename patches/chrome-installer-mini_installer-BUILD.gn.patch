@@ -1,0 +1,21 @@
+diff --git a/chrome/installer/mini_installer/BUILD.gn b/chrome/installer/mini_installer/BUILD.gn
+index 93cfcfeffc0b7b23cf2a8365ee4a6a2b08e86672..75922038a9b4bafd01aa4f07f6f01b26bcee31c7 100644
+--- a/chrome/installer/mini_installer/BUILD.gn
++++ b/chrome/installer/mini_installer/BUILD.gn
+@@ -140,7 +140,7 @@ if (enable_uncompressed_archive) {
+       "$target_gen_dir/mini_installer/packed_files_uncompressed.rc"
+ }
+ 
+-action("mini_installer_archive") {
++import("//qorai/chromium_src/chrome/installer/mini_installer/build.gni") qorai_mini_installer_archive_action("mini_installer_archive") {
+   script = "//chrome/tools/build/win/create_installer_archive.py"
+ 
+   release_file = "chrome.release"
+@@ -318,6 +318,7 @@ template("generate_mini_installer") {
+       no_default_deps = true
+       ldflags += [ "/ENTRY:MainEntryPoint" ]
+     }
++if (defined(invoker.extra_deps)) { deps += invoker.extra_deps } }} generate_mini_installer("delta_installer_unsigned") { rc_file = "$target_gen_dir/packed_delta_files.rc" extra_deps = [ "//qorai:delta_installer_archive" ] if (false) {
+   }
+ }
+ 

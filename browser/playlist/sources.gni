@@ -1,0 +1,34 @@
+# Copyright (c) 2022 The Qorai Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+qorai_browser_playlist_sources = [
+  "//qorai/browser/playlist/playlist_service_factory.cc",
+  "//qorai/browser/playlist/playlist_service_factory.h",
+]
+
+qorai_browser_playlist_deps = [
+  "//base",
+  "//qorai/components/playlist/content/browser",
+  "//chrome/browser:browser_process",
+  "//chrome/browser/profiles:profile",
+  "//chrome/common",
+  "//components/keyed_service/content",
+  "//components/pref_registry",
+]
+
+if (is_android) {
+  qorai_browser_playlist_sources +=
+      [ "//qorai/browser/playlist/android/playlist_service_factory_android.cc" ]
+
+  qorai_browser_playlist_deps += [
+    "//qorai/build/android:jni_headers",
+    "//mojo/public/cpp/bindings",
+  ]
+} else {
+  qorai_browser_playlist_sources += [
+    "//qorai/browser/playlist/playlist_data_source.cc",
+    "//qorai/browser/playlist/playlist_data_source.h",
+  ]
+}

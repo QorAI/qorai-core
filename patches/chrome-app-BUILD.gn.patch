@@ -1,0 +1,12 @@
+diff --git a/chrome/app/BUILD.gn b/chrome/app/BUILD.gn
+index 188d34fc4634f56f0798e50c12e742eb234236fe..013ed94ff2b597a3484b24bf40a9dff36465ee49 100644
+--- a/chrome/app/BUILD.gn
++++ b/chrome/app/BUILD.gn
+@@ -88,6 +88,7 @@ grit_strings("generated_resources") {
+   if (is_android) {
+     create_android_resources = true
+   }
++  deps = [ "//qorai/app:qorai_generated_resources_grit" ]
+ }
+ 
+ if (is_android) {
