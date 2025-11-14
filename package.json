@@ -78,7 +78,7 @@
         "dir": "src",
         "tag": "142.0.7444.135",
         "repository": {
-          "url": "https://github.com/qorai/chromium"
+          "url": "https://github.com/brave/chromium"
         }
       },
       "depot_tools": {
