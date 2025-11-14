@@ -1,6 +1,6 @@
 {
   "name": "qorai-core",
-  "version": "1.86.58",
+   "version": "1.86.81",
   "description": "Qorai Core is a set of changes, APIs and scripts used for customizing Chromium to make QorAI.",
   "main": "index.js",
   "scripts": {
